@@ -1,6 +1,6 @@
 ﻿namespace Domain.JSONEntities;
 
-public class EmploymentType
+public class EmploymentTypeRecord
 {
     public bool IsPartTime { get; set; } = false;
     public bool IsFullTime { get; set; } = false;

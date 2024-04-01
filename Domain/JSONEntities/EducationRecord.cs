@@ -1,6 +1,6 @@
 ﻿namespace Domain.JSONEntities;
 
-public class Education
+public class EducationRecord
 {
     public string Institution { get; set; } = "";
     public string Location { get; set; } = "";
