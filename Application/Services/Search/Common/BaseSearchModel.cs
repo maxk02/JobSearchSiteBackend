@@ -2,5 +2,5 @@
 
 public class BaseSearchModel
 {
-    public Guid Id { get; set; }
+    public long Id { get; set; }
 }

@@ -5,7 +5,7 @@ namespace Application.Services.Search.Application;
 
 public class ApplicationSearchModel : BaseSearchModel
 {
-    public Guid JobId { get; set; }
+    public long JobId { get; set; }
     public List<EducationRecord> EducationList { get; set; } = [];
     public List<WorkRecord> WorkRecordList { get; set; } = [];
     public List<string> SkillList { get; set; } = [];

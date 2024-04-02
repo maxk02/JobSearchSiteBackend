@@ -6,5 +6,5 @@ public interface IBaseSearchService<T> where T : BaseSearchModel
     void Update(T searchModel);
     void Delete(T searchModel);
     // zwraca listę Id znalezionych elementów
-    Task<List<int>> Search(string query);
+    Task<List<long>> Search(string query);
 }

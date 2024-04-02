@@ -1,4 +1,6 @@
-﻿namespace Application.Services.Identity;
+﻿using Domain.Enums;
+
+namespace Application.Services.Identity;
 
 public interface IUserService
 {
@@ -6,5 +8,6 @@ public interface IUserService
     Task<(string?, string?)> SignIn(string email, string password, bool rememberMe);
     Task SignOut();
     Task<string?> Register(string email, string password);
-    Task<string?> Delete(string userId);
+    Task<string?> Delete(long id);
+    Task<bool> IsInRole(long id, RoleValue roleValue);
 }

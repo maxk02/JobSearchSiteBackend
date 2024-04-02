@@ -4,5 +4,5 @@ namespace Application.Services.Search.Application;
 
 public interface IApplicationSearchService : IBaseSearchService<ApplicationSearchModel>
 {
-    Task<List<int>> SearchForJobId(string query, Guid jobId);
+    Task<List<long>> SearchForJobId(string query, long jobId);
 }
