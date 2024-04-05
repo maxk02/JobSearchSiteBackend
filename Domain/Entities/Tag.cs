@@ -6,7 +6,7 @@ namespace Domain.Entities;
 public class Tag : BaseEntity
 {
     public virtual Company? Company { get; set; }
-    public Guid CompanyId { get; set; }
+    public long CompanyId { get; set; }
     
     public string Name { get; set; } = "";
     public string? Description { get; set; }

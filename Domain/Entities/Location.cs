@@ -6,10 +6,10 @@ namespace Domain.Entities;
 public class Location : BaseEntity, ITreeEntity
 {
     public virtual Location? Parent { get; set; }
-    public Guid? ParentId { get; set; }
+    public long? ParentId { get; set; }
     
     public virtual Country? Country { get; set; }
-    public Guid CountryId { get; set; }
+    public long CountryId { get; set; }
     
     public int Level { get; set; }
     public string Name { get; set; } = "";

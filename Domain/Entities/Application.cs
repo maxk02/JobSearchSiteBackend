@@ -6,10 +6,10 @@ namespace Domain.Entities;
 public class Application : BaseEntity
 {
     public virtual UserDataSet? User { get; set; }
-    public Guid UserId { get; set; }
+    public long UserId { get; set; }
     
     public virtual Job? Job { get; set; }
-    public Guid JobId { get; set; }
+    public long JobId { get; set; }
     
     public int? MinSalary { get; set; }
     public List<EducationRecord> EducationList { get; set; } = [];

@@ -7,10 +7,10 @@ public class Job : BaseEntity, IHideableEntity
 {
     // nullable typ do wsparcia lazy loading
     public virtual Company? Company { get; set; }
-    public Guid CompanyId { get; set; }
+    public long CompanyId { get; set; }
     
     public virtual Category? Category { get; set; }
-    public Guid CategoryId { get; set; }
+    public long CategoryId { get; set; }
     
     public string Title { get; set; } = "";
     public DateTimeOffset? DateTimeExpiring { get; set; }
