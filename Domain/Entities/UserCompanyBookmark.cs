@@ -4,7 +4,7 @@ namespace Domain.Entities;
 
 public class UserCompanyBookmark : BaseEntity
 {
-    public virtual UserDataSet? User { get; set; }
+    public virtual User? User { get; set; }
     public long UserId { get; set; }
     
     public virtual Company? Company { get; set; }

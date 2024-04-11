@@ -5,5 +5,5 @@ namespace Application.Repositories;
 
 public interface IAddressRepository : IBaseRepository<Address>
 {
-    
+    Task<IList<Address>> GetAddressesForJobId(long jobId);
 }

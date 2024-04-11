@@ -10,5 +10,5 @@ public class Category : BaseEntity, ITreeEntity
     public string Name { get; set; } = "";
     
     public virtual IList<Job>? Jobs { get; set; }
-    public virtual IList<UserDataSet>? Users { get; set; }
+    public virtual IList<User>? Users { get; set; }
 }

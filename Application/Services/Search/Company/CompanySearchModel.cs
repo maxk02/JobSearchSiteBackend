@@ -4,6 +4,7 @@ namespace Application.Services.Search.Company;
 
 public class CompanySearchModel : BaseSearchModel
 {
+    public IList<long> CountryIds { get; set; } = [];
     public string Name { get; set; } = "";
     public string? Description { get; set; }
 }

@@ -2,7 +2,7 @@
 
 namespace Application.Services.Identity;
 
-public interface IUserService
+public interface IIdentityUserService
 {
     // jwt, error text
     Task<(string?, string?)> SignIn(string email, string password, bool rememberMe);

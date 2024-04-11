@@ -16,5 +16,5 @@ public class Location : BaseEntity, ITreeEntity
     public string? Description { get; set; }
     public string? Code { get; set; }
     
-    public virtual IList<UserDataSet>? Users { get; set; }
+    public virtual IList<User>? Users { get; set; }
 }

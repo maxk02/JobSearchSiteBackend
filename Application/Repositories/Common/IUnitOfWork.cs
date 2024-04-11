@@ -1,4 +1,4 @@
-﻿namespace Application.Repositories.Persistence.Common;
+﻿namespace Application.Repositories.Common;
 
 public interface IUnitOfWork
 {

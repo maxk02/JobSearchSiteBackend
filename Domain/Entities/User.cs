@@ -4,7 +4,7 @@ using Domain.JSONEntities;
 
 namespace Domain.Entities;
 
-public class UserDataSet : BaseEntity, IHideableEntity
+public class User : BaseEntity, IHideableEntity
 {
     public string FirstName { get; set; } = "";
     public string? MiddleName { get; set; }
@@ -13,10 +13,10 @@ public class UserDataSet : BaseEntity, IHideableEntity
     public string Email { get; set; } = "";
     public string? Phone { get; set; }
     
-    public int? MinSalary { get; set; }
-    public List<EducationRecord> EducationRecordList { get; set; } = [];
-    public List<WorkRecord> WorkRecordList { get; set; } = [];
-    public List<string> SkillList { get; set; } = [];
+    public SalaryRecord? SalaryExpectation { get; set; }
+    public IList<EducationRecord> EducationRecordList { get; set; } = [];
+    public IList<WorkRecord> WorkRecordList { get; set; } = [];
+    public IList<string> SkillList { get; set; } = [];
     public EmploymentTypeRecord? EmploymentTypeRecord { get; set; }
     
     public string? Description { get; set; }
