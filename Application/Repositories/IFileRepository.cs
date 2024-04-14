@@ -1,13 +1,15 @@
-﻿using Application.DTOs.RepositoryDTOs;
+﻿using Application.DTOs.DataRetrievalDTOs;
 using Domain.Entities;
 
 namespace Application.Repositories;
 
 public interface IFileRepository
 {
+    void RemoveAllFilesForUser(long userId);
+    Task<IList<MyFileInfoDto>> GetAllFileInfosForUser(long userId);
     Task<byte[]> GetContent(long fileId);
-    Task<MyFileInfoDto> GetInfo(long fileId);
+    // Task<MyFileInfoDto> GetInfo(long fileId);
     Task<long> GetOwner(long fileId);
-    void AddForUser(MyFile file, long userId);
+    void CreateForUser(MyFile file, long userId);
     void Remove(long fileId);
 }

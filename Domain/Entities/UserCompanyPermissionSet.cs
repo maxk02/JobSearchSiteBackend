@@ -2,7 +2,7 @@
 
 namespace Domain.Entities;
 
-public class UserCompanyPermissionSet : BaseEntity
+public class UserCompanyPermissionSet
 {
     public virtual User? User { get; set; }
     public long UserId { get; set; }

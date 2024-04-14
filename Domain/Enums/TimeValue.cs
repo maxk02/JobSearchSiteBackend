@@ -2,8 +2,8 @@
 
 public enum TimeValue
 {
-    Hour = 0,
-    Day = 1,
-    Week = 2,
-    Year = 3
+    Hour = 1,
+    Day = 2,
+    Week = 3,
+    Year = 4
 }

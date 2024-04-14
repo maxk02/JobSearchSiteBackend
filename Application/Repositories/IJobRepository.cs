@@ -1,5 +1,4 @@
-﻿using Application.DTOs.RepositoryDTOs;
-using Application.DTOs.SortFilterDTOs;
+﻿using Application.DTOs.SortFilterDTOs;
 using Application.Repositories.Common;
 using Domain.Entities;
 
@@ -8,10 +7,10 @@ namespace Application.Repositories;
 public interface IJobRepository : IBaseRepository<Job>
 {
     //contracttypes, addresses
-    Task<IList<Job>> GetNonPrivilegedResults(JobSortFilterDto sortFilterDto, CancellationToken cancellationToken);
+    Task<(IList<Job>, int)> GetNonPrivilegedResults(JobSortFilterDto sortFilterDto, CancellationToken cancellationToken);
     // permissions, tags, contracttypes, addresses
-    Task<IList<Job>> GetManageModeJobsWithNonTagPermissions(long userId, JobSortFilterDto sortFilterDto, CancellationToken cancellationToken);
-    Task<IList<Job>> GetManageModeJobsWithTagPermissions(long userId, JobSortFilterDto sortFilterDto, CancellationToken cancellationToken);
+    Task<Job> GetManageModeJob(long jobId, long userId, CancellationToken cancellationToken);
+    Task<(IList<Job>, int)> GetManageModeResults(JobSortFilterDto sortFilterDto, long userId, CancellationToken cancellationToken);
     
     void AttachContractType(long jobId, long contractTypeId);
     void DetachContractType(long jobId, long contractTypeId);

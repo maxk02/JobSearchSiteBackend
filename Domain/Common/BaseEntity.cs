@@ -3,5 +3,5 @@
 public abstract class BaseEntity
 {
     public long Id { get; set; }
-    public DateTimeOffset DateTimeCreated { get; set; }
+    public DateTime DateTimeCreatedUtc { get; set; }
 }

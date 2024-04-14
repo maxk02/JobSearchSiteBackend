@@ -2,6 +2,5 @@
 
 public interface ICurrentUserProvider
 {
-    bool IsAuthenticated { get; }
-    long UserId { get; }
+    long? UserId { get; }
 }

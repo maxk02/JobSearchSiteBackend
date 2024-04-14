@@ -1,5 +1,4 @@
 ﻿using Application.Repositories.Common;
-using Application.DTOs.RepositoryDTOs;
 using Domain.Entities;
 
 namespace Application.Repositories;
@@ -13,9 +12,6 @@ public interface IUserRepository : IBaseRepository<User>
     void AttachCategory(long userId, long categoryId);
     void DetachCategory(long userId, long categoryId);
     Task<IList<Category>> GetAllCategories(long userId);
-    
-    void RemoveAllFiles(long userId);
-    Task<IList<MyFileInfoDto>> GetAllFileInfos(long userId); //
     
     void AddJobBookmark(long userId, long jobId);
     void RemoveJobBookmark(long userId, long jobId);

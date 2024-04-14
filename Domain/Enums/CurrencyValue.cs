@@ -2,5 +2,5 @@
 
 public enum CurrencyValue
 {
-    PLN = 0
+    PLN = 1
 }

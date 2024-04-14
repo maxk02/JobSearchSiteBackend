@@ -5,5 +5,6 @@ namespace Application.Repositories;
 
 public interface IAddressRepository : IBaseRepository<Address>
 {
-    Task<IList<Address>> GetAddressesForJobId(long jobId);
+    void CreateForJob(Address address, long jobId);
+    Task<IList<Address>> GetAddressesForJobId(long jobId, CancellationToken cancellationToken);
 }
