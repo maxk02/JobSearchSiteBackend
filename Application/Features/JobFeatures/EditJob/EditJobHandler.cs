@@ -5,9 +5,9 @@
 // using Domain.Entities;
 // using MediatR;
 //
-// namespace Application.Features.JobFeatures.CreateJob;
+// namespace Application.Features.JobFeatures.EditJob;
 //
-// public sealed class CreateJobHandler : IRequestHandler<CreateJobRequest, CreateJobResponse>
+// public sealed class EditJobHandler : IRequestHandler<EditJobRequest>
 // {
 //     private readonly IUnitOfWork _unitOfWork;
 //     private readonly IJobRepository _jobRepository;
@@ -16,7 +16,7 @@
 //     private readonly IMapper _mapper;
 //     private readonly ICurrentUserProvider _currentUserProvider;
 //     
-//     public CreateJobHandler(IUnitOfWork unitOfWork, IJobRepository jobRepository,
+//     public EditJobHandler(IUnitOfWork unitOfWork, IJobRepository jobRepository,
 //         IAddressRepository addressRepository, ICompanyRepository companyRepository,
 //         IMapper mapper, ICurrentUserProvider currentUserProvider)
 //     {
@@ -28,20 +28,21 @@
 //         _currentUserProvider = currentUserProvider;
 //     }
 //
-//     public async Task<CreateJobResponse> Handle(CreateJobRequest request, CancellationToken cancellationToken)
+//     public async Task Handle(EditJobRequest request, CancellationToken cancellationToken)
 //     {
 //         var currentUserId = _currentUserProvider.UserId;
 //         if (currentUserId is null)
-//             return new CreateJobResponse(null);
+//             return;
+//
+//         if (request.Id is null)
+//             return;
+//
+//         var job = await _jobRepository.GetManageModeJob((int)request.Id, (int)currentUserId, cancellationToken);
 //         
-//         var job = _mapper.Map<Job>(request);
-//         
-//         var companyPermissionSet = await _companyRepository
-//             .GetUserPermissionSet(job.CompanyId, (long)currentUserId, cancellationToken);
-//         if (companyPermissionSet is null)
-//             return new CreateJobResponse(null);
+//         if (job.Tags.SelectMany(x => x.UserTagPermissionSets).Where(x => x.UserId == currentUserId) is null)
+//             return;
 //         if (companyPermissionSet.CanCreateJobs == false)
-//             return new CreateJobResponse(null);
+//             return;
 //         
 //         var newJobId = await _jobRepository.Create(job);
 //
@@ -60,11 +61,11 @@
 //             {
 //                 if (contractTypeId is null or < 1)
 //                     continue;
-//                 _jobRepository.AttachContractType(newJobId, (long)contractTypeId);
+//                 _jobRepository.AttachContractType(newJobId, (int)contractTypeId);
 //             }
 //         }
 //         
-//         _jobRepository.AddUserPermissionSet(new UserJobPermissionSet((long)currentUserId, newJobId, true, true));
+//         _jobRepository.AddUserPermissionSet(new UserJobPermissionSet((int)currentUserId, newJobId, true, true));
 //
 //         await _unitOfWork.Save(cancellationToken);
 //

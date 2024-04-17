@@ -4,5 +4,5 @@ namespace Application.Services.Search.Location;
 
 public interface ILocationSearchService : IBaseSearchService<LocationSearchModel>
 {
-    Task<IList<long>> SearchForCountryId(string query, long countryId);
+    Task<IList<int>> SearchForCountryId(string query, int countryId);
 }

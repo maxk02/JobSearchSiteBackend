@@ -17,10 +17,4 @@ public interface IJobRepository : IBaseRepository<Job>
 
     void AttachTag(long jobId, long tagId);
     void DetachTag(long jobId, long tagId);
-    
-    Task<UserJobPermissionSet?> GetUserPermissionSet(long jobId, long userId, CancellationToken cancellationToken);
-    // Task<IList<UserJobPermissionSet>> GetAllUserPermissionSets(long jobId, CancellationToken cancellationToken);
-    void AddUserPermissionSet(UserJobPermissionSet permissionSet);
-    void UpdateUserPermissionSet(UserJobPermissionSet permissionSet);
-    void RemoveUserPermissionSet(long jobId, long userId);
 }

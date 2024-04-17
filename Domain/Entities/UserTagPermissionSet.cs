@@ -1,15 +1,17 @@
-﻿namespace Domain.Entities;
+﻿using Domain.Common;
 
-public class UserTagPermissionSet
+namespace Domain.Entities;
+
+public class UserTagPermissionSet : BaseEntity
 {
     public virtual User? User { get; set; }
-    public long UserId { get; set; }
+    public int UserId { get; set; }
     
     public virtual Tag? Tag { get; set; }
-    public long TagId { get; set; }
-
-    public bool CanReadHiddenJobs { get; set; }
+    public int TagId { get; set; }
+    
     public bool CanManageApplications { get; set; }
-    public bool CanEditJobs { get; set; }
-    public bool CanEditTag { get; set; }
+    public bool CanCreateEditDeleteJobs { get; set; }
+    public bool IsTagAdmin { get; set; }
+    public bool IsTagOwner { get; set; }
 }

@@ -8,10 +8,10 @@ public class JobSortFilterDto : BaseSortFilterDto
 {
     public JobSortValue SortValue { get; set; }
     
-    public IList<long> IdList { get; set; } = [];
-    public long CompanyId { get; set; }
-    public IList<long> CategoryIdList { get; set; } = [];
-    public IList<long> JobContractTypeIdList { get; set; } = [];
+    public IList<int> IdList { get; set; } = [];
+    public int CompanyId { get; set; }
+    public IList<int> CategoryIdList { get; set; } = [];
+    public IList<int> JobContractTypeIdList { get; set; } = [];
     public EmploymentTypeRecord? EmploymentTypeRecord { get; set; }
     public bool MustHaveSalarySpecified { get; set; } = false;
 }

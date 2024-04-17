@@ -4,10 +4,8 @@ namespace Application.Services.Identity;
 
 public interface IIdentityUserService
 {
-    // jwt, error text
-    Task<(string?, string?)> SignIn(string email, string password, bool rememberMe);
-    Task SignOut();
+    Task<string?> SignInWithEmail(string email, string password);
     Task<string?> Register(string email, string password);
-    Task<string?> Delete(long id);
-    Task<bool> IsInRole(long id, RoleValue roleValue);
+    Task<bool> Delete(int id);
+    Task<bool?> IsInRole(int id, RoleValue roleValue);
 }

@@ -4,7 +4,7 @@ namespace Application.Services.Search.Job;
 
 public class JobSearchModel : BaseSearchModel
 {
-    public long CompanyId { get; set; }
+    public int CompanyId { get; set; }
     public string Title { get; set; } = "";
     public string Description { get; set; } = "";
     public IList<string> Responsibilities { get; set; } = [];

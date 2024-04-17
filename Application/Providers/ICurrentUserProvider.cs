@@ -2,5 +2,5 @@
 
 public interface ICurrentUserProvider
 {
-    long? UserId { get; }
+    int? UserId { get; }
 }

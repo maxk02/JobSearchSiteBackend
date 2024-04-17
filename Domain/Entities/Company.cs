@@ -12,7 +12,6 @@ public class Company : BaseEntity, IHideableEntity
     
     public virtual IList<Tag>? Tags { get; set; }
     public virtual IList<Job>? Jobs { get; set; }
-    public virtual IList<Country>? Countries { get; set; }
     
     public virtual IList<UserCompanyBookmark>? UserCompanyBookmarks { get; set; }
     public virtual IList<UserCompanyPermissionSet>? UserCompanyPermissionSets { get; set; }

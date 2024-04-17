@@ -7,5 +7,5 @@ public class ApplicationSortFilterDto : BaseSortFilterDto
 {
     public ApplicationSortValue SortValue { get; set; }
     
-    public long JobId { get; set; }
+    public int JobId { get; set; }
 }

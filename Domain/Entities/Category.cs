@@ -4,7 +4,8 @@ namespace Domain.Entities;
 
 public class Category : BaseEntity, ITreeEntity
 {
-    public long? ParentId { get; set; }
+    public int? ParentId { get; set; }
+    public virtual Category? Parent { get; set; }
     
     public int Level { get; set; }
     public string Name { get; set; } = "";

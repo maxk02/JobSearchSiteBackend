@@ -27,12 +27,6 @@ public interface IUserRepository : IBaseRepository<User>
     void UpdateTagPermissionSet(UserTagPermissionSet permissionSet);
     void RemoveTagPermissionSet(long userId, long tagId);
     
-    Task<UserJobPermissionSet?> GetJobPermissionSet(long userId, long jobId, CancellationToken cancellationToken);
-    // Task<IList<UserJobPermissionSet>> GetAllJobPermissionSets(long userId, CancellationToken cancellationToken);
-    void AddJobPermissionSet(UserJobPermissionSet permissionSet);
-    void UpdateJobPermissionSet(UserJobPermissionSet permissionSet);
-    void RemoveJobPermissionSet(long userId, long jobId);
-    
     Task<UserCompanyPermissionSet?> GetCompanyPermissionSet(long userId, long companyId, CancellationToken cancellationToken);
     // Task<IList<UserCompanyPermissionSet>> GetAllCompanyPermissionSets(long userId, CancellationToken cancellationToken);
     void AddCompanyPermissionSet(UserCompanyPermissionSet permissionSet);
