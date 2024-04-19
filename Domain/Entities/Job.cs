@@ -18,15 +18,16 @@ public class Job : BaseEntity, IHideableEntity
     public IList<string> Responsibilities { get; set; } = [];
     public IList<string> Requirements { get; set; } = [];
     public IList<string> Advantages { get; set; } = [];
+    public IList<AddressRecord> Addresses { get; set; } = [];
     public EmploymentTypeRecord? EmploymentTypeRecord { get; set; }
     
     public bool IsHidden { get; set; }
     public bool IsExpired { get; }
     
     public virtual IList<MyApplication>? MyApplications { get; set; }
-    public virtual IList<Address>? Addresses { get; set; }
     public virtual IList<ContractType>? ContractTypes { get; set; }
     public virtual IList<Tag>? Tags { get; set; }
+    public virtual IList<Location>? Locations { get; set; }
     
     public virtual IList<UserJobBookmark>? UserJobBookmarks { get; set; }
 }

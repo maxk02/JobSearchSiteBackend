@@ -1,5 +1,7 @@
 ﻿using System.Text;
 using Application.Common.Exceptions;
+using Application.Services.Email;
+using Infrastructure.EmailSender;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
@@ -43,7 +45,7 @@ public static class ServiceExtensions
         {
             options.Password.RequireDigit = true;
             options.Password.RequireLowercase = true;
-            options.SignIn.RequireConfirmedEmail = false;
+            options.SignIn.RequireConfirmedEmail = true;
         });
 
         serviceCollection.AddAuthentication(options =>
@@ -62,6 +64,16 @@ public static class ServiceExtensions
                 ValidAudience = configuration["Jwt:Audience"],
                 IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["Jwt:Key"]!))
             };
+        });
+        
+        serviceCollection.AddTransient<IEmailSenderService, SendGridEmailSenderService>(provider =>
+        {
+            var sendGridApiKey = configuration["SendGrid:ApiKey"];
+            var senderEmail = configuration["SendGrid:SenderEmail"];
+            if (sendGridApiKey == null || senderEmail == null)
+                throw new AppSettingsNullException();
+            
+            return new SendGridEmailSenderService(sendGridApiKey, senderEmail);
         });
     }
 }

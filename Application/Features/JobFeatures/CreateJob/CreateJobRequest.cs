@@ -1,5 +1,4 @@
-﻿using Application.Features.JobFeatures.CreateJob.NestedDTOs.AddressDTO;
-using Domain.JSONEntities;
+﻿using Domain.JSONEntities;
 using MediatR;
 
 namespace Application.Features.JobFeatures.CreateJob;
@@ -20,6 +19,6 @@ public sealed record CreateJobRequest : IRequest<CreateJobResponse>
     
     public bool? IsHidden { get; init; }
 
-    public IList<CreateJobAddressDto?>? Addresses { get; init; }
+    public IList<AddressRecord?>? Addresses { get; init; }
     public IList<long?>? ContractTypeIds { get; init; }
 }

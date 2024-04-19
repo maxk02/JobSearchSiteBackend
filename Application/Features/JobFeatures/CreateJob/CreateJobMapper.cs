@@ -1,5 +1,4 @@
 ﻿using Application.Common.Exceptions;
-using Application.Features.JobFeatures.CreateJob.NestedDTOs.AddressDTO;
 using AutoMapper;
 using Domain.Entities;
 
@@ -18,14 +17,6 @@ public class CreateJobMapper : Profile
                 if (src.DateTimeExpiringUtc is null) throw new NullToNonNullableMappingException();
                 if (src.Description is null) throw new NullToNonNullableMappingException();
                 if (src.IsHidden is null) throw new NullToNonNullableMappingException();
-            })
-            .ForMember(dest => dest.Id,
-                opt => opt.MapFrom(src => 0));
-
-        CreateMap<CreateJobAddressDto, Address>()
-            .BeforeMap((src, dest) =>
-            {
-                if (src.Line1 is null) throw new NullToNonNullableMappingException();
             })
             .ForMember(dest => dest.Id,
                 opt => opt.MapFrom(src => 0));

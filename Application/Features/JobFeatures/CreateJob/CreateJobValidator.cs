@@ -1,5 +1,4 @@
 ﻿using Application.Common.Validators;
-using Application.Features.JobFeatures.CreateJob.NestedDTOs.AddressDTO;
 using FluentValidation;
 
 namespace Application.Features.JobFeatures.CreateJob;
@@ -38,7 +37,7 @@ public sealed class CreateJobValidator : AbstractValidator<CreateJobRequest>
         RuleFor(x => x.IsHidden).NotNull();
         
         RuleFor(x => x.Addresses!)
-            .ForEach(x => x.NotNull().SetValidator(new CreateJobAddressDtoValidator()))
+            .ForEach(x => x.NotNull().SetValidator(new AddressRecordValidator()))
             .When(x => x.Addresses != null);
 
         RuleFor(x => x.ContractTypeIds!)

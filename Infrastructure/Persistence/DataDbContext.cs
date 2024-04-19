@@ -6,7 +6,6 @@ namespace Infrastructure.Persistence;
 public class DataDbContext : DbContext
 {
 #pragma warning disable CS8618
-    public DbSet<Address> Addresses { get; set; }
     public DbSet<Category> Categories { get; set; }
     public DbSet<Company> Companies { get; set; }
     public DbSet<ContractType> ContractTypes { get; set; }
@@ -28,9 +27,13 @@ public class DataDbContext : DbContext
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
+        
         modelBuilder.Entity<Job>().OwnsOne(job => job.SalaryRecord,
             ownedNavigationBuilder => ownedNavigationBuilder.ToJson());
         modelBuilder.Entity<Job>().OwnsOne(job => job.EmploymentTypeRecord,
+            ownedNavigationBuilder => ownedNavigationBuilder.ToJson());
+        
+        modelBuilder.Entity<Job>().OwnsMany(job => job.Addresses,
             ownedNavigationBuilder => ownedNavigationBuilder.ToJson());
         modelBuilder.Entity<Job>().OwnsMany(job => job.Advantages,
             ownedNavigationBuilder => ownedNavigationBuilder.ToJson());
@@ -43,6 +46,7 @@ public class DataDbContext : DbContext
             ownedNavigationBuilder => ownedNavigationBuilder.ToJson());
         modelBuilder.Entity<User>().OwnsOne(user => user.EmploymentTypeRecord,
             ownedNavigationBuilder => ownedNavigationBuilder.ToJson());
+        
         modelBuilder.Entity<User>().OwnsMany(user => user.EducationRecords,
             ownedNavigationBuilder => ownedNavigationBuilder.ToJson());
         modelBuilder.Entity<User>().OwnsMany(user => user.Skills,
@@ -55,9 +59,6 @@ public class DataDbContext : DbContext
                     nestedOwnedNavigationBuilder => nestedOwnedNavigationBuilder.ToJson());
             });
 
-        // filestream
-        modelBuilder.Entity<MyFile>().Ignore(myFile => myFile.Content);
-
         modelBuilder.Entity<Category>()
             .HasMany(c => c.Jobs)
             .WithOne(j => j.Category)
@@ -66,8 +67,5 @@ public class DataDbContext : DbContext
         modelBuilder.Entity<Job>()
             .Property(j => j.IsExpired)
             .HasComputedColumnSql("CASE WHEN DateTimeExpiringUtc < GETUTCDATE() THEN 1 ELSE 0 END");
-        
-        // modelBuilder.Entity<User>()
-        //     .HasMany(u => u.)
     }
 }

@@ -1,6 +1,6 @@
 ﻿namespace Application.Providers;
 
-public interface ICurrentUserProvider
+public interface ICurrentAccountProvider
 {
     int? UserId { get; }
 }
