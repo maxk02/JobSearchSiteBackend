@@ -1,4 +1,4 @@
-﻿using Domain.JSONEntities;
+﻿using Domain.ValueObjects;
 using MediatR;
 
 namespace Application.Features.JobFeatures.CreateJob;
@@ -19,6 +19,6 @@ public sealed record CreateJobRequest : IRequest<CreateJobResponse>
     
     public bool? IsHidden { get; init; }
 
-    public IList<AddressRecord?>? Addresses { get; init; }
+    public IList<string?>? Addresses { get; init; }
     public IList<long?>? ContractTypeIds { get; init; }
 }

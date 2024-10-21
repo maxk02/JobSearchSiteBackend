@@ -1,4 +1,4 @@
-﻿using Domain.JSONEntities;
+﻿using Domain.ValueObjects;
 using FluentValidation;
 
 namespace Application.Common.Validators;

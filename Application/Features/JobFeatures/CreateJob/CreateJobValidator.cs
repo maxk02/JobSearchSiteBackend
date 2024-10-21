@@ -37,7 +37,7 @@ public sealed class CreateJobValidator : AbstractValidator<CreateJobRequest>
         RuleFor(x => x.IsHidden).NotNull();
         
         RuleFor(x => x.Addresses!)
-            .ForEach(x => x.NotNull().SetValidator(new AddressRecordValidator()))
+            .ForEach(x => x.NotEmpty().MaximumLength(100))
             .When(x => x.Addresses != null);
 
         RuleFor(x => x.ContractTypeIds!)

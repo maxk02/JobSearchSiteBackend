@@ -1,15 +1,14 @@
 ﻿using Microsoft.AspNetCore.Http;
 using System.Security.Claims;
-
 using Application.Providers;
 
 namespace Infrastructure.Identity;
 
-public class JwtCurrentAccountProvider : ICurrentAccountProvider
+public class JwtCurrentAccountService : ICurrentAccountProvider
 {
     private readonly IHttpContextAccessor _httpContextAccessor;
 
-    public JwtCurrentAccountProvider(IHttpContextAccessor httpContextAccessor)
+    public JwtCurrentAccountService(IHttpContextAccessor httpContextAccessor)
     {
         _httpContextAccessor = httpContextAccessor;
     }

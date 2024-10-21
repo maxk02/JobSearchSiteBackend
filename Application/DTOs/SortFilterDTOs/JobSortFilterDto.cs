@@ -1,6 +1,6 @@
 ﻿using Application.DTOs.SortFilterDTOs.Common;
 using Application.DTOs.SortFilterDTOs.Enums;
-using Domain.JSONEntities;
+using Domain.ValueObjects;
 
 namespace Application.DTOs.SortFilterDTOs;
 

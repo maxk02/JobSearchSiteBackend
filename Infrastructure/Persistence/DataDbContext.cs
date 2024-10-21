@@ -1,4 +1,12 @@
 ﻿using Domain.Entities;
+using Domain.Entities.Categories;
+using Domain.Entities.Companies;
+using Domain.Entities.ContractTypes;
+using Domain.Entities.Fileinfos;
+using Domain.Entities.Jobs;
+using Domain.Entities.Locations;
+using Domain.Entities.Tags;
+using Domain.Entities.Users;
 using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.Persistence;
@@ -11,8 +19,8 @@ public class DataDbContext : DbContext
     public DbSet<ContractType> ContractTypes { get; set; }
     public DbSet<Job> Jobs { get; set; }
     public DbSet<Location> Locations { get; set; }
-    public DbSet<MyApplication> MyApplications { get; set; }
-    public DbSet<MyFile> MyFiles { get; set; }
+    public DbSet<Domain.Entities.Applications.Application> MyApplications { get; set; }
+    public DbSet<Fileinfo> MyFiles { get; set; }
     public DbSet<Tag> Tags { get; set; }
     public DbSet<User> Users { get; set; }
     public DbSet<UserCompanyBookmark> UserCompanyBookmarks { get; set; }
