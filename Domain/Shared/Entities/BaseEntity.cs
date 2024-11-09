@@ -2,8 +2,6 @@
 
 public abstract class BaseEntity
 {
-    protected BaseEntity() { }
-
     public int Id { get; protected set; }
-    public DateTime DateTimeCreatedUtc { get; protected set; } = DateTime.Now;
+    public DateTime DateTimeCreatedUtc { get; protected set; } = DateTime.UtcNow;
 }

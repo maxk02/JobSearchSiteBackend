@@ -1,6 +1,6 @@
 ﻿namespace Domain.Enums;
 
-public enum RoleValue : int
+public enum RoleValue
 {
     User = 1,
     Moderator = 2,

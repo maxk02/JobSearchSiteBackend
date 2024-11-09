@@ -1,12 +1,12 @@
-﻿using Domain.Shared.Errors;
+﻿using FluentValidation.Results;
 
-namespace Domain.Shared.Results;
+namespace Shared.Results;
 
 public class Result<TValue> : Result
 {
     private readonly TValue? _value;
 
-    protected internal Result(TValue? value, bool isSuccess, List<DomainLayerError> errors)
+    protected internal Result(TValue? value, bool isSuccess, ICollection<ValidationFailure> errors)
         : base(isSuccess, errors)
     {
         if (isSuccess && value == null)
