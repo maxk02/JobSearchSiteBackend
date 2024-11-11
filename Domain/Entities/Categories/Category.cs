@@ -1,4 +1,5 @@
 ﻿using Domain.Entities.Jobs;
+using Domain.Entities.Users;
 using Domain.Shared.Entities;
 using Shared.Results;
 
@@ -6,55 +7,59 @@ namespace Domain.Entities.Categories;
 
 public class Category : BaseEntity, ITreeEntity
 {
-    public static Result<Category> Create(int? parentId, int level, string name)
+    public static CategoryValidator Validator { get; } = new();
+    
+    public static Result<Category> Create(int? parentId, string name)
     {
-        var category = new Category(parentId, level, name);
+        var category = new Category(parentId, name);
+
+        var validationResult = Validator.Validate(category);
         
-        return Result.Success(category);
+        return validationResult.IsValid ? Result.Success(category) : Result.Failure<Category>(validationResult.Errors);
     }
     
-    private Category(int? parentId, int level, string name)
+    private Category(int? parentId, string name)
     {
         ParentId = parentId;
-        Level = level;
         Name = name;
     }
     
-    public int? ParentId { get; private set; }
-    // private static LongIntValidator ParentIdValidator(long? parentId)
-    // {
-    //     var validator = new LongIntValidator(parentId, nameof(Category), nameof(ParentId))
-    //         .MustBeEqualOrMoreThan(1);
-    //
-    //     return validator;
-    // }
-    public virtual Category? Parent { get; set; }
+    public long? ParentId { get; private set; }
+    public Result SetParentId(long? newValue)
+    {
+        var oldValue = ParentId;
+        ParentId = newValue;
+        
+        var validationResult = Validator.Validate(this);
+        if (!validationResult.IsValid)
+        {
+            ParentId = oldValue;
+            return Result.Failure(validationResult.Errors);
+        }
+
+        return Result.Success();
+    }
     
-    public int Level { get; private set; }
-    // private static LongIntValidator LevelValidator(long level)
-    // {
-    //     var validator = new LongIntValidator(level, nameof(Category), nameof(Level))
-    //         .MustBeEqualOrMoreThan(0)
-    //         .MustBeEqualOrLessThan(10);
-    //
-    //     return validator;
-    // }
+    public int Level { get; private set; } //todo
 
     public string Name { get; private set; }
-    // private static StringValidator NameValidator(string name)
-    // {
-    //     var validator = new StringValidator(name, nameof(Category), nameof(Name))
-    //         .ForbidWhitespaceOrEmpty()
-    //         .AllowLetters()
-    //         .AllowDigits()
-    //         .AllowSpaces()
-    //         .AllowPunctuation()
-    //         .AllowSymbols()
-    //         .LengthBetween(2, 30);
-    //
-    //     return validator;
-    // }
+    public Result SetName(string newValue)
+    {
+        var oldValue = Name;
+        Name = newValue;
+        
+        var validationResult = Validator.Validate(this);
+        if (!validationResult.IsValid)
+        {
+            Name = oldValue;
+            return Result.Failure(validationResult.Errors);
+        }
+
+        return Result.Success();
+    }
     
+    
+    public virtual Category? Parent { get; set; }
     public virtual IList<Job>? Jobs { get; set; }
     public virtual IList<User>? Users { get; set; }
 }

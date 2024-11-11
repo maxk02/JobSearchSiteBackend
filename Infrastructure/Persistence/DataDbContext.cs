@@ -2,11 +2,12 @@
 using Domain.Entities.Categories;
 using Domain.Entities.Companies;
 using Domain.Entities.ContractTypes;
-using Domain.Entities.Fileinfos;
+using Domain.Entities.FileInformations;
 using Domain.Entities.Jobs;
 using Domain.Entities.Locations;
 using Domain.Entities.Tags;
 using Domain.Entities.Users;
+
 using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.Persistence;
@@ -20,7 +21,7 @@ public class DataDbContext : DbContext
     public DbSet<Job> Jobs { get; set; }
     public DbSet<Location> Locations { get; set; }
     public DbSet<Domain.Entities.Applications.Application> MyApplications { get; set; }
-    public DbSet<Fileinfo> MyFiles { get; set; }
+    public DbSet<FileInformation> MyFiles { get; set; }
     public DbSet<Tag> Tags { get; set; }
     public DbSet<User> Users { get; set; }
     public DbSet<UserCompanyBookmark> UserCompanyBookmarks { get; set; }
@@ -72,8 +73,8 @@ public class DataDbContext : DbContext
             .WithOne(j => j.Category)
             .OnDelete(DeleteBehavior.Restrict);
 
-        modelBuilder.Entity<Job>()
-            .Property(j => j.IsExpired)
-            .HasComputedColumnSql("CASE WHEN DateTimeExpiringUtc < GETUTCDATE() THEN 1 ELSE 0 END");
+        // modelBuilder.Entity<Job>()
+        //     .Property(j => j.IsExpired)
+        //     .HasComputedColumnSql("CASE WHEN DateTimeExpiringUtc < GETUTCDATE() THEN 1 ELSE 0 END");
     }
 }

@@ -1,5 +1,4 @@
-﻿using Application.Common.Validators;
-using FluentValidation;
+﻿using FluentValidation;
 
 namespace Application.Features.JobFeatures.CreateJob;
 
@@ -13,9 +12,9 @@ public sealed class CreateJobValidator : AbstractValidator<CreateJobRequest>
         RuleFor(x => x.DateTimeExpiringUtc).NotNull()
             .InclusiveBetween(DateTime.UtcNow.AddHours(3), DateTime.UtcNow.AddDays(60));
 
-        RuleFor(x => x.SalaryInfo!)
-            .SetValidator(new SalaryRecordValidator())
-            .When(x => x.SalaryInfo != null);
+        // RuleFor(x => x.SalaryInfo!)
+        //     .SetValidator(new SalaryRecordValidator())
+        //     .When(x => x.SalaryInfo != null);
         
         RuleFor(x => x.Description).NotEmpty().MaximumLength(1000);
         

@@ -2,6 +2,6 @@
 
 public interface ITreeEntity
 {
-    public int? ParentId { get; }
+    public long? ParentId { get; }
     public int Level { get; }
 }

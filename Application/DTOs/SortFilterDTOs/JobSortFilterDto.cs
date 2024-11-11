@@ -1,6 +1,6 @@
 ﻿using Application.DTOs.SortFilterDTOs.Common;
 using Application.DTOs.SortFilterDTOs.Enums;
-using Domain.ValueObjects;
+using Domain.Shared.ValueEntities;
 
 namespace Application.DTOs.SortFilterDTOs;
 

@@ -1,38 +1,33 @@
 ﻿using Domain.Entities.Jobs;
 using Domain.Shared.Entities;
+using Shared.Results;
 
 namespace Domain.Entities.Users;
 
 public class UserJobBookmark : BaseEntity
 {
-    private int _userId;
-    private int _jobId;
+    public static UserJobBookmarkValidator Validator { get; } = new();
+
+    public static Result<UserJobBookmark> Create(long userId, long jobId)
+    {
+        var bookmark = new UserJobBookmark(userId, jobId);
+
+        var validationResult = Validator.Validate(bookmark);
+
+        return validationResult.IsValid
+            ? Result.Success(bookmark)
+            : Result.Failure<UserJobBookmark>(validationResult.Errors);
+    }
+    
+    private UserJobBookmark(long userId, long jobId)
+    {
+        UserId = userId;
+        JobId = jobId;
+    }
+    
+    public long UserId { get; private set; }
+    public long JobId { get; private set; }
     
     public virtual User? User { get; set; }
-    public required int UserId
-    {
-        get => _userId;
-        set
-        {
-            if (_userId < 1)
-            {
-                throw new ArgumentException("Value cannot be empty");
-            }
-            _userId = value;
-        }
-    }
-    
     public virtual Job? Job { get; set; }
-    public required int JobId
-    {
-        get => _jobId;
-        set
-        {
-            if (_jobId < 1)
-            {
-                throw new ArgumentException("Value cannot be empty");
-            }
-            _jobId = value;
-        }
-    }
 }

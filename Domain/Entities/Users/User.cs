@@ -1,108 +1,273 @@
 ﻿using Domain.Entities.Applications;
 using Domain.Entities.Categories;
-using Domain.Entities.Fileinfos;
 using Domain.Entities.Locations;
-using Domain.Entities.Users;
 using Domain.Entities.Users.ValueEntities;
 using Domain.Shared.Entities;
-using Domain.ValueObjects;
+using Domain.Shared.ValueEntities;
+using Shared.Results;
 
-namespace Domain.Entities;
+namespace Domain.Entities.Users;
 
 public class User : BaseEntity, IHideableEntity
 {
-    private string _firstName = null!; //possible null assignment and other validations handled in Name set accessor
-    private string? _middleName;
-    private string _lastName = null!; //possible null assignment and other validations handled in Name set accessor
-    private DateOnly? _dateOfBirth;
-    private string _email = null!; //possible null assignment and other validations handled in Name set accessor
-    private string? _phone;
+    public static UserValidator Validator { get; } = new();
 
-    public required string FirstName
+    public static Result<User> Create(string firstName, string? middleName, string lastName,
+        DateOnly? dateOfBirth, string email, string? phone, string? bio,
+        SalaryRecord salaryRecord, EmploymentTypeRecord employmentTypeRecord,
+        ICollection<EducationRecord> educationRecords,
+        ICollection<WorkRecord> workRecords, ICollection<string> skills)
     {
-        get => _firstName;
-        set
-        {
-            if (string.IsNullOrWhiteSpace(value))
-            {
-                throw new ArgumentException("Value cannot be empty");
-            }
+        var user = new User(firstName, middleName, lastName, dateOfBirth, email, phone, bio,
+                salaryRecord, employmentTypeRecord, educationRecords, workRecords, skills);
 
-            if (value.Length > 25)
-            {
-                throw new ArgumentException("Too long string");
-            }
-            _firstName = value;
-        }
-    }
-    public string? MiddleName
-    {
-        get => _middleName;
-        set
-        {
-            if (value != null && value.Length > 25)
-            {
-                throw new ArgumentException("Too long string");
-            }
-            _middleName = value;
-        }
-    }
-    public required string LastName
-    {
-        get => _lastName;
-        set
-        {
-            if (string.IsNullOrWhiteSpace(value))
-            {
-                throw new ArgumentException("Value cannot be empty");
-            }
+        var validationResult = Validator.Validate(user);
 
-            if (value.Length > 25)
-            {
-                throw new ArgumentException("Too long string");
-            }
-            _lastName = value;
-        }
+        return validationResult.IsValid ? Result.Success(user) : Result.Failure<User>(validationResult.Errors);
     }
 
-    public DateOnly? DateOfBirth
+    private User(string firstName, string? middleName, string lastName,
+        DateOnly? dateOfBirth, string email, string? phone, string? bio,
+        SalaryRecord salaryRecord, EmploymentTypeRecord employmentTypeRecord,
+        ICollection<EducationRecord> educationRecords,
+        ICollection<WorkRecord> workRecords, ICollection<string> skills)
     {
-        get => _dateOfBirth;
-        set
-        {
-            if (value != null && value < new DateOnly(1920, 01, 01))
-            {
-                throw new ArgumentException("Wrong date");
-            }
-            if (value != null && value > new DateOnly(1920, 01, 01))
-            {
-                throw new ArgumentException("Wrong date");
-            }
-            _dateOfBirth = value;
-        }
+        FirstName = firstName;
+        MiddleName = middleName;
+        LastName = lastName;
+        DateOfBirth = dateOfBirth;
+        Email = email;
+        Phone = phone;
+        Bio = bio;
+        SalaryRecord = salaryRecord;
+        EmploymentTypeRecord = employmentTypeRecord;
+        _educationRecords = educationRecords.ToList();
+        _workRecords = workRecords.ToList();
+        _skills = skills.ToList();
     }
-    public required string Email { get; set; }
-    public string? Phone { get; set; }
     
-    public SalaryRecord? SalaryRecord { get; set; }
-    public IList<EducationRecord> EducationRecords { get; set; } = [];
-    public IList<WorkRecord> WorkRecords { get; set; } = [];
-    public IList<string> Skills { get; set; } = [];
-    public EmploymentTypeRecord? EmploymentTypeRecord { get; set; }
+    public string FirstName { get; private set; }
+    public Result SetFirstName(string newValue)
+    {
+        var oldValue = FirstName;
+        FirstName = newValue;
+        
+        var validationResult = Validator.Validate(this);
+        if (!validationResult.IsValid)
+        {
+            FirstName = oldValue;
+            return Result.Failure(validationResult.Errors);
+        }
+
+        return Result.Success();
+    }
     
-    public string? Description { get; set; }
+    public string? MiddleName { get; private set; }
+    public Result SetMiddleName(string? newValue)
+    {
+        var oldValue = MiddleName;
+        MiddleName = newValue;
+        
+        var validationResult = Validator.Validate(this);
+        if (!validationResult.IsValid)
+        {
+            MiddleName = oldValue;
+            return Result.Failure(validationResult.Errors);
+        }
+
+        return Result.Success();
+    }
     
-    public bool IsHidden { get; set; }
+    public string LastName { get; private set; }
+    public Result SetLastName(string newValue)
+    {
+        var oldValue = LastName;
+        LastName = newValue;
+        
+        var validationResult = Validator.Validate(this);
+        if (!validationResult.IsValid)
+        {
+            LastName = oldValue;
+            return Result.Failure(validationResult.Errors);
+        }
+
+        return Result.Success();
+    }
+
+    public DateOnly? DateOfBirth { get; private set; }
+    public Result SetDateOfBirth(DateOnly newValue)
+    {
+        var oldValue = DateOfBirth;
+        DateOfBirth = newValue;
+        
+        var validationResult = Validator.Validate(this);
+        if (!validationResult.IsValid)
+        {
+            DateOfBirth = oldValue;
+            return Result.Failure(validationResult.Errors);
+        }
+
+        return Result.Success();
+    }
+    
+    public string Email { get; private set; }
+    public Result SetEmail(string newValue)
+    {
+        var oldValue = Email;
+        Email = newValue;
+        
+        var validationResult = Validator.Validate(this);
+        if (!validationResult.IsValid)
+        {
+            Email = oldValue;
+            return Result.Failure(validationResult.Errors);
+        }
+
+        return Result.Success();
+    }
+    
+    public string? Phone { get; private set; }
+    public Result SetPhone(string? newValue)
+    {
+        var oldValue = Phone;
+        Phone = newValue;
+        
+        var validationResult = Validator.Validate(this);
+        if (!validationResult.IsValid)
+        {
+            Phone = oldValue;
+            return Result.Failure(validationResult.Errors);
+        }
+
+        return Result.Success();
+    }
+    
+    public string? Bio { get; private set; }
+    public Result SetBio(string? newValue)
+    {
+        var oldValue = Bio;
+        Bio = newValue;
+        
+        var validationResult = Validator.Validate(this);
+        if (!validationResult.IsValid)
+        {
+            Bio = oldValue;
+            return Result.Failure(validationResult.Errors);
+        }
+
+        return Result.Success();
+    }
+    
+    
+    public SalaryRecord? SalaryRecord { get; private set; }
+    public Result SetSalaryRecord(SalaryRecord? newValue)
+    {
+        var oldValue = SalaryRecord;
+        SalaryRecord = newValue;
+        
+        var validationResult = Validator.Validate(this);
+        if (!validationResult.IsValid)
+        {
+            SalaryRecord = oldValue;
+            return Result.Failure(validationResult.Errors);
+        }
+
+        return Result.Success();
+    }
+    
+    
+    public EmploymentTypeRecord? EmploymentTypeRecord { get; private set; }
+    public Result SetEmploymentTypeRecord(EmploymentTypeRecord? newValue)
+    {
+        var oldValue = EmploymentTypeRecord;
+        EmploymentTypeRecord = newValue;
+        
+        var validationResult = Validator.Validate(this);
+        if (!validationResult.IsValid)
+        {
+            EmploymentTypeRecord = oldValue;
+            return Result.Failure(validationResult.Errors);
+        }
+
+        return Result.Success();
+    }
+    
+
+    private List<EducationRecord> _educationRecords;
+    public IReadOnlyCollection<EducationRecord> EducationRecords => _educationRecords.AsReadOnly();
+    public Result SetEducationRecords(ICollection<EducationRecord> newValues)
+    {
+        var oldValues = _educationRecords;
+        _educationRecords = newValues.ToList();
+        
+        var validationResult = Validator.Validate(this);
+        if (!validationResult.IsValid)
+        {
+            _educationRecords = oldValues;
+            return Result.Failure(validationResult.Errors);
+        }
+
+        return Result.Success();
+    }
+    
+    
+    private List<WorkRecord> _workRecords;
+    public IReadOnlyCollection<WorkRecord> WorkRecords => _workRecords.AsReadOnly();
+    public Result SetWorkRecords(ICollection<WorkRecord> newValues)
+    {
+        var oldValues = _workRecords;
+        _workRecords = newValues.ToList();
+        
+        var validationResult = Validator.Validate(this);
+        if (!validationResult.IsValid)
+        {
+            _workRecords = oldValues;
+            return Result.Failure(validationResult.Errors);
+        }
+
+        return Result.Success();
+    }
+    
+
+    private List<string> _skills;
+    public IReadOnlyCollection<string> Skills => _skills.AsReadOnly();
+    public Result SetSkills(ICollection<string> newValues)
+    {
+        var oldValues = _skills;
+        _skills = newValues.ToList();
+        
+        var validationResult = Validator.Validate(this);
+        if (!validationResult.IsValid)
+        {
+            _skills = oldValues;
+            return Result.Failure(validationResult.Errors);
+        }
+
+        return Result.Success();
+    }
+    
+    
+    public bool IsHidden { get; private set; }
+    public Result MakeHidden()
+    {
+        IsHidden = true;
+        return Result.Success();
+    }
+    public Result MakeVisible()
+    {
+        IsHidden = false;
+        return Result.Success();
+    }
+
     
     public virtual IList<Location>? Locations { get; set; }
     public virtual IList<Category>? Categories { get; set; }
-    public virtual IList<Fileinfo>? MyFiles { get; set; }
+    public virtual IList<FileInfo>? MyFiles { get; set; }
     public virtual IList<Application>? MyApplications { get; set; }
     
     public virtual IList<UserJobBookmark>? UserJobBookmarks { get; set; }
-    
     public virtual IList<UserCompanyBookmark>? UserCompanyBookmarks { get; set; }
-    public virtual IList<UserCompanyPermissionSet>? UserCompanyPermissionSets { get; set; }
     
+    public virtual IList<UserCompanyPermissionSet>? UserCompanyPermissionSets { get; set; }
     public virtual IList<UserTagPermissionSet>? UserTagPermissionSets { get; set; }
 }

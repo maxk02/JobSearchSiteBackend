@@ -7,7 +7,7 @@ using Microsoft.IdentityModel.Tokens;
 
 using Application.Common.Exceptions;
 using Application.Services.Identity;
-using Domain.Enums;
+using Domain.Shared.Enums;
 
 namespace Infrastructure.Identity;
 
@@ -51,7 +51,7 @@ public class IdentityAccountService : IAccountService
         return result.Succeeded;
     }
 
-    public async Task<bool> ChangeRole(string id, RoleValue newRoleValue)
+    public async Task<bool> ChangeRole(string id, RoleValues newRoleValue)
     {
         var user = await _userManager.FindByIdAsync(id);
         if (user == null)

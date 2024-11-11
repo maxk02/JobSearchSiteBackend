@@ -1,5 +1,4 @@
-﻿using Domain.Entities;
-using Domain.Entities.Fileinfos;
+﻿using Domain.Entities.FileInformations;
 
 namespace Domain.Repos;
 
@@ -10,6 +9,6 @@ public interface IFileRepository
     Task<byte[]> GetContent(long fileId);
     // Task<MyFileInfoDto> GetInfo(long fileId);
     Task<long> GetOwner(long fileId);
-    void CreateForUser(Fileinfo fileinfo, long userId);
+    void CreateForUser(FileInformation fileInfo, long userId);
     void Remove(long fileId);
 }

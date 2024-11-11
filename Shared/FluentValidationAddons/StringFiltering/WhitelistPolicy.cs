@@ -21,6 +21,20 @@ public class WhitelistPolicy : CustomStringPolicy
 
         return this;
     }
+    
+    
+    private void ExecuteAllowStandardLatinLetters()
+    {
+        _charactersOutOfWhitelists = Regex.Replace(_charactersOutOfWhitelists, @"[A-Za-z]", "");
+    }
+    public WhitelistPolicy StandardLatinLetters()
+    {
+        MethodCalls.Add(ExecuteAllowStandardLatinLetters);
+        AllowedCharTypes.Add("standard latin letters");
+
+        return this;
+    }
+    
 
     private void ExecuteAllowDigits()
     {
