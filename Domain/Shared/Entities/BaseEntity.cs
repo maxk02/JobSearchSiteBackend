@@ -2,6 +2,14 @@
 
 public abstract class BaseEntity
 {
-    public int Id { get; protected set; }
-    public DateTime DateTimeCreatedUtc { get; protected set; } = DateTime.UtcNow;
+    protected BaseEntity() {}
+
+    protected BaseEntity(long id, Guid guidIdentifier)
+    {
+        Id = id;
+        GuidIdentifier = guidIdentifier;
+    }
+
+    public long Id { get; protected set; }
+    public Guid GuidIdentifier { get; protected set; } = Guid.NewGuid();
 }

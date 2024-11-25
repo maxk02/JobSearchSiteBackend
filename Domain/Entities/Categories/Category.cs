@@ -1,11 +1,13 @@
-﻿using Domain.Entities.Jobs;
-using Domain.Entities.Users;
+﻿using Domain.Entities.Cvs;
+using Domain.Entities.Jobs;
 using Domain.Shared.Entities;
-using Shared.Results;
+using Domain.Shared.Entities.Interfaces;
+using Shared.Result;
+using Shared.Result.FluentValidation;
 
 namespace Domain.Entities.Categories;
 
-public class Category : BaseEntity, ITreeEntity
+public class Category : BaseEntity, IHierarchicalEntity<Category>
 {
     public static CategoryValidator Validator { get; } = new();
     
@@ -15,7 +17,7 @@ public class Category : BaseEntity, ITreeEntity
 
         var validationResult = Validator.Validate(category);
         
-        return validationResult.IsValid ? Result.Success(category) : Result.Failure<Category>(validationResult.Errors);
+        return validationResult.IsValid ? category : Result<Category>.Invalid(validationResult.AsErrors());
     }
     
     private Category(int? parentId, string name)
@@ -34,13 +36,11 @@ public class Category : BaseEntity, ITreeEntity
         if (!validationResult.IsValid)
         {
             ParentId = oldValue;
-            return Result.Failure(validationResult.Errors);
+            return Result.Invalid(validationResult.AsErrors());
         }
 
         return Result.Success();
     }
-    
-    public int Level { get; private set; } //todo
 
     public string Name { get; private set; }
     public Result SetName(string newValue)
@@ -52,7 +52,7 @@ public class Category : BaseEntity, ITreeEntity
         if (!validationResult.IsValid)
         {
             Name = oldValue;
-            return Result.Failure(validationResult.Errors);
+            return Result.Invalid(validationResult.AsErrors());
         }
 
         return Result.Success();
@@ -60,6 +60,7 @@ public class Category : BaseEntity, ITreeEntity
     
     
     public virtual Category? Parent { get; set; }
-    public virtual IList<Job>? Jobs { get; set; }
-    public virtual IList<User>? Users { get; set; }
+    public virtual ICollection<Category>? Children { get; set; }
+    public virtual ICollection<Job>? Jobs { get; set; }
+    public virtual ICollection<Cv>? Cvs { get; set; }
 }

@@ -1,34 +1,38 @@
-﻿using Domain.Entities.Jobs;
+﻿using Domain.Entities.Countries;
+using Domain.Entities.Jobs;
 using Domain.Entities.Users;
 using Domain.Shared.Entities;
-using Shared.Results;
+using Domain.Shared.Entities.Interfaces;
+using Shared.Result;
+using Shared.Result.FluentValidation;
 
 namespace Domain.Entities.Locations;
 
-public class Location : BaseEntity, ITreeEntity
+public class Location : BaseEntity, IHierarchicalEntity<Location>
 {
     public static LocationValidator Validator { get; } = new();
     
-    public static Result<Location> Create(long? parentId, string name, string? description, string? code)
+    public static Result<Location> Create(long countryId, long? parentId, string name, string? description, string? code)
     {
-        var location = new Location(parentId, name, description, code);
+        var location = new Location(countryId, parentId, name, description, code);
 
         var validationResult = Validator.Validate(location);
 
-        return validationResult.IsValid ? Result.Success(location) : Result.Failure<Location>(validationResult.Errors);
+        return validationResult.IsValid ? location : Result<Location>.Invalid(validationResult.AsErrors());
     }
     
-    private Location(long? parentId, string name, string? description, string? code)
+    private Location(long countryId, long? parentId, string name, string? description, string? code)
     {
+        CountryId = countryId;
         ParentId = parentId;
         Name = name;
         Description = description;
         Code = code;
     }
     
-    public long? ParentId { get; private set; }
+    public long CountryId { get; private set; }
     
-    public int Level { get; private set; }
+    public long? ParentId { get; private set; }
 
     public string Name { get; private set; }
     public Result SetName(string newValue)
@@ -40,7 +44,7 @@ public class Location : BaseEntity, ITreeEntity
         if (!validationResult.IsValid)
         {
             Name = oldValue;
-            return Result.Failure(validationResult.Errors);
+            return Result.Invalid(validationResult.AsErrors());
         }
 
         return Result.Success();
@@ -56,7 +60,7 @@ public class Location : BaseEntity, ITreeEntity
         if (!validationResult.IsValid)
         {
             Description = oldValue;
-            return Result.Failure(validationResult.Errors);
+            return Result.Invalid(validationResult.AsErrors());
         }
 
         return Result.Success();
@@ -72,13 +76,15 @@ public class Location : BaseEntity, ITreeEntity
         if (!validationResult.IsValid)
         {
             Code = oldValue;
-            return Result.Failure(validationResult.Errors);
+            return Result.Invalid(validationResult.AsErrors());
         }
 
         return Result.Success();
     }
     
+    public virtual Country? Country { get; set; }
     public virtual Location? Parent { get; set; }
-    public virtual IList<User>? Users { get; set; }
-    public virtual IList<Job>? Jobs { get; set; }
+    public virtual ICollection<Location>? Children { get; set; }
+    public virtual ICollection<User>? Users { get; set; }
+    public virtual ICollection<Job>? Jobs { get; set; }
 }

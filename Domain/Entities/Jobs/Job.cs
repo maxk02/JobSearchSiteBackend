@@ -1,38 +1,37 @@
-﻿using Domain.Entities.Applications;
-using Domain.Entities.Categories;
+﻿using Domain.Entities.Categories;
 using Domain.Entities.Companies;
 using Domain.Entities.ContractTypes;
+using Domain.Entities.Folders;
+using Domain.Entities.JobApplications;
 using Domain.Entities.Locations;
-using Domain.Entities.Tags;
 using Domain.Entities.Users;
 using Domain.Shared.Entities;
+using Domain.Shared.Entities.Interfaces;
 using Domain.Shared.ValueEntities;
-using Shared.Results;
+using Shared.Result;
+using Shared.Result.FluentValidation;
 
 namespace Domain.Entities.Jobs;
 
-public class Job : BaseEntity, IHideableEntity
+public class Job : BaseEntity, IPublicOrPrivateEntity
 {
     public static JobValidator Validator { get; } = new();
 
     public static Result<Job> Create(long companyId, long categoryId, string title, string description,
-        DateTime dateTimeExpiringUtc,
-        ICollection<string> responsibilities, ICollection<string> requirements,
-        ICollection<string> advantages, ICollection<string> addresses,
-        SalaryRecord salaryRecord, EmploymentTypeRecord employmentTypeRecord)
+        DateTime dateTimeExpiringUtc, ICollection<string> responsibilities, ICollection<string> requirements,
+        ICollection<string> advantages, SalaryRecord salaryRecord, EmploymentTypeRecord employmentTypeRecord)
     {
         var job = new Job(companyId, categoryId, title, description, dateTimeExpiringUtc,
-            responsibilities, requirements, advantages, addresses, salaryRecord, employmentTypeRecord);
+            responsibilities, requirements, advantages, salaryRecord, employmentTypeRecord);
 
         var validationResult = Validator.Validate(job);
 
-        return validationResult.IsValid ? Result.Success(job) : Result.Failure<Job>(validationResult.Errors);
+        return validationResult.IsValid ? job : Result<Job>.Invalid(validationResult.AsErrors());
     }
 
-    private Job(long companyId, long categoryId, string title, string description, DateTime dateTimeExpiringUtc,
-        ICollection<string> responsibilities, ICollection<string> requirements,
-        ICollection<string> advantages, ICollection<string> addresses,
-        SalaryRecord salaryRecord, EmploymentTypeRecord employmentTypeRecord)
+    private Job(long companyId, long categoryId, string title, string description,
+        DateTime dateTimeExpiringUtc, ICollection<string> responsibilities, ICollection<string> requirements,
+        ICollection<string> advantages, SalaryRecord salaryRecord, EmploymentTypeRecord employmentTypeRecord)
     {
         CompanyId = companyId;
         CategoryId = categoryId;
@@ -42,7 +41,6 @@ public class Job : BaseEntity, IHideableEntity
         _responsibilities = responsibilities.ToList();
         _requirements = requirements.ToList();
         _advantages = advantages.ToList();
-        _addresses = addresses.ToList();
         SalaryRecord = salaryRecord;
         EmploymentTypeRecord = employmentTypeRecord;
     }
@@ -59,7 +57,7 @@ public class Job : BaseEntity, IHideableEntity
         if (!validationResult.IsValid)
         {
             CategoryId = oldValue;
-            return Result.Failure(validationResult.Errors);
+            return Result.Invalid(validationResult.AsErrors());
         }
 
         return Result.Success();
@@ -75,7 +73,7 @@ public class Job : BaseEntity, IHideableEntity
         if (!validationResult.IsValid)
         {
             Title = oldValue;
-            return Result.Failure(validationResult.Errors);
+            return Result.Invalid(validationResult.AsErrors());
         }
 
         return Result.Success();
@@ -91,7 +89,7 @@ public class Job : BaseEntity, IHideableEntity
         if (!validationResult.IsValid)
         {
             Description = oldValue;
-            return Result.Failure(validationResult.Errors);
+            return Result.Invalid(validationResult.AsErrors());
         }
 
         return Result.Success();
@@ -107,7 +105,7 @@ public class Job : BaseEntity, IHideableEntity
         if (!validationResult.IsValid)
         {
             DateTimeExpiringUtc = oldValue;
-            return Result.Failure(validationResult.Errors);
+            return Result.Invalid(validationResult.AsErrors());
         }
 
         return Result.Success();
@@ -123,7 +121,7 @@ public class Job : BaseEntity, IHideableEntity
         if (!validationResult.IsValid)
         {
             SalaryRecord = oldValue;
-            return Result.Failure(validationResult.Errors);
+            return Result.Invalid(validationResult.AsErrors());
         }
 
         return Result.Success();
@@ -139,7 +137,7 @@ public class Job : BaseEntity, IHideableEntity
         if (!validationResult.IsValid)
         {
             EmploymentTypeRecord = oldValue;
-            return Result.Failure(validationResult.Errors);
+            return Result.Invalid(validationResult.AsErrors());
         }
 
         return Result.Success();
@@ -156,7 +154,7 @@ public class Job : BaseEntity, IHideableEntity
         if (!validationResult.IsValid)
         {
             _responsibilities = oldValues;
-            return Result.Failure(validationResult.Errors);
+            return Result.Invalid(validationResult.AsErrors());
         }
 
         return Result.Success();
@@ -173,7 +171,7 @@ public class Job : BaseEntity, IHideableEntity
         if (!validationResult.IsValid)
         {
             _requirements = oldValues;
-            return Result.Failure(validationResult.Errors);
+            return Result.Invalid(validationResult.AsErrors());
         }
 
         return Result.Success();
@@ -190,49 +188,31 @@ public class Job : BaseEntity, IHideableEntity
         if (!validationResult.IsValid)
         {
             _advantages = oldValues;
-            return Result.Failure(validationResult.Errors);
+            return Result.Invalid(validationResult.AsErrors());
         }
 
         return Result.Success();
     }
     
-    private List<string> _addresses;
-    public IReadOnlyCollection<string> Addresses => _addresses.AsReadOnly();
-    public Result SetAddresses(ICollection<string> newValues)
+    public bool IsPublic { get; private set; }
+    public Result MakePublic()
     {
-        var oldValues = _addresses;
-        _addresses = newValues.ToList();
-        
-        var validationResult = Validator.Validate(this);
-        if (!validationResult.IsValid)
-        {
-            _addresses = oldValues;
-            return Result.Failure(validationResult.Errors);
-        }
-
+        IsPublic = true;
         return Result.Success();
     }
-    
-    public bool IsHidden { get; private set; }
-    public Result MakeHidden()
+    public Result MakePrivate()
     {
-        IsHidden = true;
+        IsPublic = false;
         return Result.Success();
     }
-    public Result MakeVisible()
-    {
-        IsHidden = false;
-        return Result.Success();
-    }
-
-    // public bool IsExpired { get; set; } //todo
     
     public virtual Company? Company { get; set; }
     public virtual Category? Category { get; set; }
-    public virtual ICollection<Application>? MyApplications { get; set; }
+    public virtual ICollection<JobApplication>? JobApplications { get; set; }
     public virtual ICollection<ContractType>? ContractTypes { get; set; }
-    public virtual ICollection<Tag>? Tags { get; set; }
     public virtual ICollection<Location>? Locations { get; set; }
     
-    public virtual ICollection<UserJobBookmark>? UserJobBookmarks { get; set; }
+    public virtual ICollection<User>? UsersWhoBookmarked { get; set; }
+    
+    public virtual ICollection<Folder>? Folders { get; set; }
 }

@@ -42,10 +42,5 @@ public class JobValidator : AbstractValidator<Job>
         RuleFor(x => x.Advantages)
             .ForEach(x => x.Length(1, 50)
                 .WhitelistPolicy(new WhitelistPolicy().Letters().Digits().Spaces()));
-        
-        RuleFor(x => x.Addresses)
-            .ForEach(x => x.Length(1, 100)
-                .WhitelistPolicy(new WhitelistPolicy().Letters().Digits().Spaces()));
-
     }
 }

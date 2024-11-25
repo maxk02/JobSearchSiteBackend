@@ -1,6 +1,8 @@
-﻿using Domain.Entities.Jobs;
+﻿using Domain.Entities.Countries;
+using Domain.Entities.Jobs;
 using Domain.Shared.Entities;
-using Shared.Results;
+using Shared.Result;
+using Shared.Result.FluentValidation;
 
 namespace Domain.Entities.ContractTypes;
 
@@ -8,19 +10,22 @@ public class ContractType : BaseEntity
 {
     public static ContractTypeValidator Validator { get; } = new();
     
-    public static Result<ContractType> Create(string name)
+    public static Result<ContractType> Create(long countryId, string name)
     {
-        var contractType = new ContractType(name);
+        var contractType = new ContractType(countryId, name);
 
         var validationResult = Validator.Validate(contractType);
 
-        return validationResult.IsValid ? Result.Success(contractType) : Result.Failure<ContractType>(validationResult.Errors);
+        return validationResult.IsValid ? contractType : Result<ContractType>.Invalid(validationResult.AsErrors());
     }
 
-    private ContractType(string name)
+    private ContractType(long countryId, string name)
     {
+        CountryId = countryId;
         Name = name;
     }
+    
+    public long CountryId { get; private set; }
     
     public string Name { get; private set; }
     public Result SetName(string newValue)
@@ -32,11 +37,12 @@ public class ContractType : BaseEntity
         if (!validationResult.IsValid)
         {
             Name = oldValue;
-            return Result.Failure(validationResult.Errors);
+            return Result.Invalid(validationResult.AsErrors());
         }
 
         return Result.Success();
     }
     
-    public virtual IList<Job>? Jobs { get; set; }
+    public virtual Country? Country { get; set; }
+    public virtual ICollection<Job>? Jobs { get; set; }
 }

@@ -10,8 +10,6 @@ public class CategoryValidator : AbstractValidator<Category>
     {
         RuleFor(x => x.ParentId).GreaterThanOrEqualTo(1);
         
-        RuleFor(x => x.Level).InclusiveBetween(1, 15);
-        
         RuleFor(x => x.Name).Length(1, 30)
             .WhitelistPolicy(new WhitelistPolicy().Letters().Digits().Spaces().Symbols().Punctuation());
     }

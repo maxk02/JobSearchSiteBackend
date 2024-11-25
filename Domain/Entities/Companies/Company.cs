@@ -1,30 +1,37 @@
-﻿using Domain.Entities.Jobs;
-using Domain.Entities.Tags;
+﻿using Domain.Entities.Countries;
+using Domain.Entities.Folders;
+using Domain.Entities.Jobs;
+using Domain.Entities.UserCompanyCompanyPermissions;
 using Domain.Entities.Users;
 using Domain.Shared.Entities;
-using Shared.Results;
+using Domain.Shared.Entities.Interfaces;
+using Shared.Result;
+using Shared.Result.FluentValidation;
 
 namespace Domain.Entities.Companies;
 
-public class Company : BaseEntity, IHideableEntity
+public class Company : BaseEntity, IPublicOrPrivateEntity
 {
     public static CompanyValidator Validator { get; } = new();
     
-    public static Result<Company> Create(string name, string? description, bool isHidden)
+    public static Result<Company> Create(string name, string? description, bool isPublic, long countryId)
     {
-        var company = new Company(name, description, isHidden);
+        var company = new Company(name, description, isPublic, countryId);
 
         var validationResult = Validator.Validate(company);
 
-        return validationResult.IsValid ? Result.Success(company) : Result.Failure<Company>(validationResult.Errors);
+        return validationResult.IsValid ? company : Result<Company>.Invalid(validationResult.AsErrors());
     }
     
-    private Company(string name, string? description, bool isHidden)
+    private Company(string name, string? description, bool isPublic, long countryId)
     {
+        CountryId = countryId;
         Name = name;
         Description = description;
-        IsHidden = isHidden;
+        IsPublic = isPublic;
     }
+    
+    public long CountryId { get; private set; }
     
     public string Name { get; private set; }
     public Result SetName(string newValue)
@@ -36,7 +43,7 @@ public class Company : BaseEntity, IHideableEntity
         if (!validationResult.IsValid)
         {
             Name = oldValue;
-            return Result.Failure(validationResult.Errors);
+            return Result.Invalid(validationResult.AsErrors());
         }
 
         return Result.Success();
@@ -52,27 +59,29 @@ public class Company : BaseEntity, IHideableEntity
         if (!validationResult.IsValid)
         {
             Description = oldValue;
-            return Result.Failure(validationResult.Errors);
+            return Result.Invalid(validationResult.AsErrors());
         }
 
         return Result.Success();
     }
     
-    public bool IsHidden { get; private set; }
-    public Result MakeHidden()
+    public bool IsPublic { get; private set; }
+    public Result MakePublic()
     {
-        IsHidden = true;
+        IsPublic = true;
         return Result.Success();
     }
-    public Result MakeVisible()
+    public Result MakePrivate()
     {
-        IsHidden = false;
+        IsPublic = false;
         return Result.Success();
     }
-
-    public virtual IList<Tag>? Tags { get; set; }
-    public virtual IList<Job>? Jobs { get; set; }
     
-    public virtual IList<UserCompanyBookmark>? UserCompanyBookmarks { get; set; }
-    public virtual IList<UserCompanyPermissionSet>? UserCompanyPermissionSets { get; set; }
+    public virtual Country? Country { get; set; }
+
+    public virtual ICollection<Folder>? Folders { get; set; }
+    public virtual ICollection<Job>? Jobs { get; set; }
+    
+    public virtual ICollection<User>? UsersWhoBookmarked { get; set; }
+    public virtual ICollection<UserCompanyCompanyPermission>? UserCompanyCompanyPermissions { get; set; }
 }

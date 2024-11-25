@@ -1,4 +1,5 @@
-﻿using Shared.Results;
+﻿using Shared.Result;
+using Shared.Result.FluentValidation;
 
 namespace Domain.Shared.ValueEntities;
 
@@ -13,9 +14,7 @@ public class SalaryRecord
 
         var validationResult = Validator.Validate(salaryRecord);
 
-        return validationResult.IsValid
-            ? Result.Success(salaryRecord)
-            : Result.Failure<SalaryRecord>(validationResult.Errors);
+        return validationResult.IsValid ? salaryRecord : Result<SalaryRecord>.Invalid(validationResult.AsErrors());
     }
     
     private SalaryRecord(decimal? minimum, decimal? maximum,

@@ -1,4 +1,5 @@
-﻿using Shared.Results;
+﻿using Shared.Result;
+using Shared.Result.FluentValidation;
 
 namespace Domain.Shared.ValueEntities;
 
@@ -13,9 +14,7 @@ public class EmploymentTypeRecord
 
         var validationResult = Validator.Validate(record);
 
-        return validationResult.IsValid
-            ? Result.Success(record)
-            : Result.Failure<EmploymentTypeRecord>(validationResult.Errors);
+        return validationResult.IsValid ? record : Result<EmploymentTypeRecord>.Invalid(validationResult.AsErrors());
     }
     
     private EmploymentTypeRecord(bool isPartTime, bool isFullTime, bool isOnSite,
