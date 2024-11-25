@@ -1,5 +1,5 @@
 ﻿using Application.Services.Search.Common;
-using Domain.Entities.Users.ValueEntities;
+using Domain.Entities.Cvs.ValueEntities;
 
 namespace Application.Services.Search.Application;
 

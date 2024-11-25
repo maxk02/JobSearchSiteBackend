@@ -1,11 +1,9 @@
 ﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
-namespace Infrastructure.Identity;
+namespace Infrastructure.Auth.AspNetCoreIdentity;
 
 public class MyIdentityDbContext : IdentityDbContext<MyIdentityUser>
 {
-    public MyIdentityDbContext(DbContextOptions<MyIdentityDbContext> options)
-    {
-    }
+    public MyIdentityDbContext(DbContextOptions<MyIdentityDbContext> options) : base(options) { }
 }
