@@ -9,6 +9,7 @@ using Domain.Entities.JobApplications;
 using Domain.Entities.Jobs;
 using Domain.Entities.Locations;
 using Domain.Entities.PersonalFiles;
+using Domain.Entities.UserCompanyCompanyPermissions;
 using Domain.Entities.Users;
 using Microsoft.EntityFrameworkCore;
 

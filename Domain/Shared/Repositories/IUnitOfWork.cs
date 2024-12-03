@@ -1,6 +1,8 @@
 ﻿namespace Domain.Shared.Repositories;
 
-public interface IUnitOfWork
+public interface IUnitOfWork : IDisposable
 {
-    public Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
+    public Task BeginAsync(CancellationToken cancellationToken = default);
+    public Task RollbackAsync(CancellationToken cancellationToken = default);
+    public Task CommitAsync(CancellationToken cancellationToken = default);
 }

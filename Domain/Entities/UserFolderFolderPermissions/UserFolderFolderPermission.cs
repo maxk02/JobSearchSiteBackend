@@ -9,9 +9,9 @@ namespace Domain.Entities.UserFolderFolderPermissions;
 
 public class UserFolderFolderPermission : BaseEntity
 {
-    public UserFolderFolderPermissionValidator Validator { get; } = new();
+    public static UserFolderFolderPermissionValidator Validator { get; } = new();
 
-    public Result<UserFolderFolderPermission> Create(long userId, long folderId, long folderPermissionId)
+    public static Result<UserFolderFolderPermission> Create(long userId, long folderId, long folderPermissionId)
     {
         var uffPermission = new UserFolderFolderPermission(userId, folderId, folderPermissionId);
 

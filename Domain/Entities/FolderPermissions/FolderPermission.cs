@@ -5,7 +5,7 @@ namespace Domain.Entities.FolderPermissions;
 
 public class FolderPermission : Permission
 {
-    public static class SeededValues
+    public static class Values
     {
         public static readonly FolderPermission HasFullAccess =
             new FolderPermission(1, Guid.Parse("0edebed0-89ec-4339-835e-83c8cfdc833c"), nameof(HasFullAccess), "");

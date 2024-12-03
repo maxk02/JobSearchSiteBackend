@@ -9,9 +9,9 @@ namespace Domain.Entities.UserCompanyCompanyPermissions;
 
 public class UserCompanyCompanyPermission : BaseEntity
 {
-    public UserCompanyCompanyPermissionValidator Validator { get; } = new();
+    public static UserCompanyCompanyPermissionValidator Validator { get; } = new();
 
-    public Result<UserCompanyCompanyPermission> Create(long userId, long companyId, long companyPermissionId)
+    public static Result<UserCompanyCompanyPermission> Create(long userId, long companyId, long companyPermissionId)
     {
         var uccPermission = new UserCompanyCompanyPermission(userId, companyId, companyPermissionId);
 

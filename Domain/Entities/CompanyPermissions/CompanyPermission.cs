@@ -5,7 +5,7 @@ namespace Domain.Entities.CompanyPermissions;
 
 public class CompanyPermission : Permission
 {
-    public static class SeededValues
+    public static class Values
     {
         public static readonly CompanyPermission HasFullAccess =
             new CompanyPermission(1, Guid.Parse("3bce9d01-3779-4e8c-8c77-9cff21ec3f14"), nameof(HasFullAccess), "");

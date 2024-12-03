@@ -4,7 +4,7 @@ namespace Domain.Shared.Specifications;
 
 public record OrderBySpecification<T>(Expression<Func<T, object>> Expression, bool Ascending = true);
 
-public class SingleResultSpecificationBase<T>
+public class SingleResultSpecification<T>
 {
     public Expression<Func<T, bool>>? Criteria { get; set; }
     public List<Expression<Func<T, object>>> Includes { get; set; } = [];

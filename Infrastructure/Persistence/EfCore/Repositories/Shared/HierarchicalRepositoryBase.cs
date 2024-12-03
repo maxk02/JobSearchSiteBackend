@@ -1,20 +1,19 @@
-﻿using Domain.Shared.Entities.Interfaces;
+﻿using Domain.Shared.Entities;
+using Domain.Shared.Entities.Interfaces;
 using Domain.Shared.Repositories;
 using Infrastructure.Persistence.EfCore.Context;
 using Microsoft.EntityFrameworkCore;
 
-namespace Infrastructure.Persistence.EfCore;
+namespace Infrastructure.Persistence.EfCore.Repositories.Shared;
 
-public class EfCoreHierarchicalDataRepository<T> : IHierarchicalRepository<T> where T : class, IHierarchicalEntity<T>
+public class HierarchicalRepositoryBase<T> : RepositoryBase<T>, IHierarchicalRepository<T>
+    where T : BaseEntity, IHierarchicalEntity<T>
 {
-    protected readonly MyEfCoreDataContext DataDbContext;
-
-    public EfCoreHierarchicalDataRepository(MyEfCoreDataContext dataDbContext)
+    public HierarchicalRepositoryBase(MyEfCoreDataContext dataDbContext) : base(dataDbContext)
     {
-        DataDbContext = dataDbContext;
     }
-    
-    public async Task<bool> IsParentOfAsync(long parentId, long childId, CancellationToken cancellationToken = default)
+
+    public async Task<bool> AreAncestorAndDescendantAsync(long ancestorId, long descendantId, CancellationToken cancellationToken)
     {
         var tableName = DataDbContext.Model
             .FindEntityType(typeof(T))?
@@ -37,10 +36,10 @@ public class EfCoreHierarchicalDataRepository<T> : IHierarchicalRepository<T> wh
             FROM RecursiveHierarchy
             WHERE Id = {{1}};
         ";
-        
+
         var result = await DataDbContext
             .Set<T>() //todo
-            .FromSqlRaw(sql, parentId, childId)
+            .FromSqlRaw(sql, ancestorId, descendantId)
             .AsNoTracking()
             .ToListAsync(cancellationToken);
 
