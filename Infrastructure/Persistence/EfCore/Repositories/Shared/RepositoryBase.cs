@@ -1,5 +1,5 @@
-﻿using Domain.Shared.Entities;
-using Domain.Shared.Repositories;
+﻿using Domain._Shared.Entities;
+using Domain._Shared.Repositories;
 using Infrastructure.Persistence.EfCore.Context;
 
 namespace Infrastructure.Persistence.EfCore.Repositories.Shared;

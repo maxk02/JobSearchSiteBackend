@@ -1,4 +1,4 @@
-﻿using Domain.Shared.Repositories;
+﻿using Domain._Shared.Repositories;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
 

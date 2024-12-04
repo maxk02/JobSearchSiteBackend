@@ -1,4 +1,4 @@
-﻿using Application.Services.Email;
+﻿using Domain._Shared.Services.Email;
 using SendGrid;
 using SendGrid.Helpers.Mail;
 

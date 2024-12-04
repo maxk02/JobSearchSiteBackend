@@ -1,6 +1,5 @@
 ﻿using System.Text;
-using Application.Common.Exceptions;
-using Application.Services.Email;
+using Domain._Shared.Services.Email;
 using Infrastructure.Auth.AspNetCoreIdentity;
 using Infrastructure.Email;
 using Infrastructure.Email.SendGrid;
@@ -9,6 +8,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Exception = System.Exception;
 
 namespace Infrastructure;
 
@@ -45,7 +45,7 @@ public static class ServiceExtensions
             var sendGridApiKey = configuration["SendGrid:ApiKey"];
             var senderEmail = configuration["SendGrid:SenderEmail"];
             if (sendGridApiKey == null || senderEmail == null)
-                throw new AppSettingsNullException();
+                throw new Exception();
 
             return new SendGridEmailSenderService(sendGridApiKey, senderEmail);
         });

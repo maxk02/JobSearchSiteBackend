@@ -1,4 +1,4 @@
-﻿using Domain.Entities.Jobs;
+﻿using Domain.Jobs;
 using Infrastructure.Persistence.EfCore.Context.EntityConfigs.Shared;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;

@@ -1,4 +1,4 @@
-﻿using Domain.Entities.Categories;
+﻿using Domain.Categories;
 using Infrastructure.Persistence.EfCore.Context.EntityConfigs.Shared;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;

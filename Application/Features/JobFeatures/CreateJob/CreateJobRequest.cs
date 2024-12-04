@@ -1,4 +1,4 @@
-﻿using Domain.Shared.ValueEntities;
+﻿using Domain._Shared.ValueEntities;
 using MediatR;
 
 namespace Application.Features.JobFeatures.CreateJob;

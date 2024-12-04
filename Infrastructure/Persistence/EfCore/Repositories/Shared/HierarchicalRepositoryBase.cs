@@ -1,6 +1,6 @@
-﻿using Domain.Shared.Entities;
-using Domain.Shared.Entities.Interfaces;
-using Domain.Shared.Repositories;
+﻿using Domain._Shared.Entities;
+using Domain._Shared.Entities.Interfaces;
+using Domain._Shared.Repositories;
 using Infrastructure.Persistence.EfCore.Context;
 using Microsoft.EntityFrameworkCore;
 

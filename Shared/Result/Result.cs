@@ -44,6 +44,17 @@ namespace Shared.Result
         public IEnumerable<string> Errors { get; protected set; } = [];
         [JsonInclude]
         public IEnumerable<ValidationError> ValidationErrors { get; protected set; } = [];
+        
+        public static Result<T> WithMetadataFromResult<TSource>(Result<TSource> sourceResult, T? newValue = default) 
+            => new()
+        {
+            Value = newValue,
+            Status = sourceResult.Status,
+            Errors = sourceResult.Errors,
+            SuccessMessage = sourceResult.SuccessMessage,
+            CorrelationId = sourceResult.CorrelationId,
+            ValidationErrors = sourceResult.ValidationErrors,
+        };
 
         /// <summary>
         /// Converts PagedInfo into a PagedResult<typeparamref name="T"/>

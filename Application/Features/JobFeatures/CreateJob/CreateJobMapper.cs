@@ -1,7 +1,5 @@
-﻿using Application.Common.Exceptions;
-using AutoMapper;
-using Domain.Entities;
-using Domain.Entities.Jobs;
+﻿using AutoMapper;
+using Domain.Jobs;
 
 namespace Application.Features.JobFeatures.CreateJob;
 

@@ -1,5 +1,5 @@
-﻿using Application.Services.Auth;
-using Domain.Shared.Enums;
+﻿using Domain._Shared.Enums;
+using Domain._Shared.Services.Auth;
 using Microsoft.AspNetCore.Identity;
 using Shared.Result;
 

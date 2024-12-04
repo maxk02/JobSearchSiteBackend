@@ -1,5 +1,5 @@
 ﻿using System.Security.Claims;
-using Application.Services.Auth;
+using Domain._Shared.Services.Auth;
 using Microsoft.AspNetCore.Http;
 using Shared.Result;
 
