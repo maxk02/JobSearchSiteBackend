@@ -1,5 +1,4 @@
 ﻿using Domain._Shared.Entities;
-using Domain.Entities.Users;
 using Domain.JobApplications;
 using Domain.Users;
 using Shared.Result;

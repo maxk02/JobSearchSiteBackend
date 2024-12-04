@@ -3,7 +3,6 @@ using Domain._Shared.Entities.Interfaces;
 using Domain._Shared.ValueEntities;
 using Domain.Companies;
 using Domain.Cvs;
-using Domain.Entities.Users;
 using Domain.JobApplications;
 using Domain.Jobs;
 using Domain.PersonalFiles;

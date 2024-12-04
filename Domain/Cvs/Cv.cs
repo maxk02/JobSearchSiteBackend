@@ -3,7 +3,6 @@ using Domain._Shared.Entities.Interfaces;
 using Domain._Shared.ValueEntities;
 using Domain.Categories;
 using Domain.Cvs.ValueEntities;
-using Domain.Entities.Users;
 using Domain.Locations;
 using Domain.Users;
 using Shared.Result;

@@ -1,8 +1,7 @@
-﻿using Shared.Result;
-
-namespace Domain._Shared.Services.Auth;
+﻿namespace Domain._Shared.Services.Auth;
 
 public interface ICurrentAccountService
 {
-    public Result<UserClaimsDto> GetUserClaims();
+    public string? GetId();
+    public List<string> GetRoles();
 }

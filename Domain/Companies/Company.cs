@@ -1,8 +1,6 @@
 ﻿using Domain._Shared.Entities;
 using Domain._Shared.Entities.Interfaces;
 using Domain.Countries;
-using Domain.Entities.Companies;
-using Domain.Entities.Users;
 using Domain.Folders;
 using Domain.Jobs;
 using Domain.UserCompanyCompanyPermissions;

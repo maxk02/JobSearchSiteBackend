@@ -1,9 +1,8 @@
-﻿using Domain.Companies;
-using FluentValidation;
+﻿using FluentValidation;
 using Shared.FluentValidationAddons;
 using Shared.FluentValidationAddons.StringFiltering;
 
-namespace Domain.Entities.Companies;
+namespace Domain.Companies;
 
 public class CompanyValidator : AbstractValidator<Company>
 {

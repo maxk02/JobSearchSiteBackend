@@ -4,7 +4,6 @@ using Domain._Shared.ValueEntities;
 using Domain.Categories;
 using Domain.Companies;
 using Domain.ContractTypes;
-using Domain.Entities.Users;
 using Domain.Folders;
 using Domain.JobApplications;
 using Domain.Locations;

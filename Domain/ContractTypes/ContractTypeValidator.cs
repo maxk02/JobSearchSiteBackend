@@ -1,9 +1,8 @@
-﻿using Domain.ContractTypes;
-using FluentValidation;
+﻿using FluentValidation;
 using Shared.FluentValidationAddons;
 using Shared.FluentValidationAddons.StringFiltering;
 
-namespace Domain.Entities.ContractTypes;
+namespace Domain.ContractTypes;
 
 public class ContractTypeValidator : AbstractValidator<ContractType>
 {

@@ -1,6 +1,5 @@
 ﻿using Domain._Shared.Entities;
 using Domain.Countries;
-using Domain.Entities.ContractTypes;
 using Domain.Jobs;
 using Shared.Result;
 using Shared.Result.FluentValidation;

@@ -1,7 +1,6 @@
 ﻿using Domain._Shared.Entities;
 using Domain.Companies;
 using Domain.CompanyPermissions;
-using Domain.Entities.Users;
 using Domain.Users;
 using Shared.Result;
 using Shared.Result.FluentValidation;

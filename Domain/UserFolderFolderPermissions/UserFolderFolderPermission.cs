@@ -1,5 +1,4 @@
 ﻿using Domain._Shared.Entities;
-using Domain.Entities.Users;
 using Domain.FolderPermissions;
 using Domain.Folders;
 using Domain.Users;
