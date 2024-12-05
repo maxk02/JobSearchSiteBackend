@@ -9,6 +9,8 @@ public class UserValidator : AbstractValidator<User>
 {
     public UserValidator()
     {
+        RuleFor(user => user.AccountId).NotEmpty();
+        
         RuleFor(x => x.FirstName).Length(1, 40)
             .WhitelistPolicy(new WhitelistPolicy().Letters());
         

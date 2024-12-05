@@ -2,9 +2,25 @@
 {
     public class Result : Result<object>
     {
-        public Result() { }
+        public Result()
+        {
+            Value = null;
+        }
 
-        protected internal Result(ResultStatus status) : base(status) { }
+        protected internal Result(ResultStatus status) : base(status)
+        {
+            Value = null;
+        }
+
+        public static Result WithMetadataFromResult<TSource>(Result<TSource> sourceResult)
+            => new()
+            {
+                Status = sourceResult.Status,
+                Errors = sourceResult.Errors,
+                SuccessMessage = sourceResult.SuccessMessage,
+                CorrelationId = sourceResult.CorrelationId,
+                ValidationErrors = sourceResult.ValidationErrors,
+            };
 
         /// <summary>
         /// Represents a successful operation without return type
@@ -18,7 +34,7 @@
         /// <param name="successMessage">Sets the SuccessMessage property</param>
         /// <returns>A Result</returns>
         public static Result SuccessWithMessage(string successMessage) => new() { SuccessMessage = successMessage };
-        
+
         /// <summary>
         /// Represents a successful operation and accepts a values as the result of the operation
         /// </summary>
@@ -58,7 +74,12 @@
         {
             return Result<T>.Created(value, location);
         }
-        
+
+        public new static Result Error(IEnumerable<string> errorMessages) => new(ResultStatus.Error)
+        {
+            Errors = errorMessages,
+        };
+
         /// <summary>
         /// Represents an error that occurred during the execution of the service.
         /// Error messages may be provided and will be exposed via the Errors property.
@@ -77,7 +98,8 @@
         /// </summary>
         /// <param name="errorMessage"></param>
         /// <returns>A Result</returns>
-        public new static Result Error(string errorMessage) => new(ResultStatus.Error) { Errors = new[] { errorMessage } };
+        public new static Result Error(string errorMessage) =>
+            new(ResultStatus.Error) { Errors = new[] { errorMessage } };
 
         /// <summary>
         /// Represents the validation error that prevents the underlying service from completing.
@@ -115,7 +137,8 @@
         /// </summary>
         /// <param name="errorMessages">A list of string error messages.</param>
         /// <returns>A Result</returns>
-        public new static Result NotFound(params string[] errorMessages) => new(ResultStatus.NotFound) { Errors = errorMessages };
+        public new static Result NotFound(params string[] errorMessages) =>
+            new(ResultStatus.NotFound) { Errors = errorMessages };
 
         /// <summary>
         /// The parameters to the call were correct, but the user does not have permission to perform some action.
@@ -130,7 +153,8 @@
         /// </summary>
         /// <param name="errorMessages">A list of string error messages.</param> 
         /// <returns>A Result</returns>
-        public new static Result Forbidden(params string[] errorMessages) => new(ResultStatus.Forbidden) { Errors = errorMessages };
+        public new static Result Forbidden(params string[] errorMessages) =>
+            new(ResultStatus.Forbidden) { Errors = errorMessages };
 
         /// <summary>
         /// This is similar to Forbidden, but should be used when the user has not authenticated or has attempted to authenticate but failed.
@@ -145,7 +169,8 @@
         /// </summary>
         /// <param name="errorMessages">A list of string error messages.</param>  
         /// <returns>A Result</returns>
-        public new static Result Unauthorized(params string[] errorMessages) => new(ResultStatus.Unauthorized) { Errors = errorMessages };
+        public new static Result Unauthorized(params string[] errorMessages) =>
+            new(ResultStatus.Unauthorized) { Errors = errorMessages };
 
         /// <summary>
         /// Represents a situation where a service is in conflict due to the current state of a resource,
@@ -163,7 +188,8 @@
         /// </summary>
         /// <param name="errorMessages">A list of string error messages.</param>
         /// <returns>A Result</returns>
-        public new static Result Conflict(params string[] errorMessages) => new(ResultStatus.Conflict) { Errors = errorMessages };
+        public new static Result Conflict(params string[] errorMessages) =>
+            new(ResultStatus.Conflict) { Errors = errorMessages };
 
         /// <summary>
         /// Represents a situation where a service is unavailable, such as when the underlying data store is unavailable.
@@ -172,7 +198,8 @@
         /// </summary>
         /// <param name="errorMessages">A list of string error messages</param>
         /// <returns></returns>
-        public new static Result Unavailable(params string[] errorMessages) => new(ResultStatus.Unavailable) { Errors = errorMessages };
+        public new static Result Unavailable(params string[] errorMessages) =>
+            new(ResultStatus.Unavailable) { Errors = errorMessages };
 
         /// <summary>
         /// Represents a critical error that occurred during the execution of the service.
@@ -181,7 +208,8 @@
         /// </summary>
         /// <param name="errorMessages">A list of string error messages.</param>
         /// <returns>A Result</returns>
-        public new static Result CriticalError(params string[] errorMessages) => new(ResultStatus.CriticalError) { Errors = errorMessages };
+        public new static Result CriticalError(params string[] errorMessages) =>
+            new(ResultStatus.CriticalError) { Errors = errorMessages };
 
         /// <summary>
         /// Represents a situation where the server has successfully fulfilled the request, but there is no content to send back in the response body.

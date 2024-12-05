@@ -7,51 +7,44 @@ using Microsoft.IdentityModel.Tokens;
 
 namespace Infrastructure.Auth;
 
-public class JwtTokenGenerationService : ITokenGenerationService
+public class JwtTokenGenerationService(IConfiguration configuration) : ITokenGenerationService
 {
-    private readonly IConfiguration _configuration;
-
-    public JwtTokenGenerationService(IConfiguration configuration)
+    public string Generate(UserClaimsDto userClaims)
     {
-        _configuration = configuration;
-    }
-    
-    public string? Generate(long userId, ICollection<string> roles)
-    {
-        var secretKeyString = _configuration["Jwt:Key"];
-        if (secretKeyString is null)
+        var jwtSettings = configuration.GetSection("JwtSettings");
+        
+        var secretKey = jwtSettings["Secret"];
+        if (secretKey is null)
             throw new NotImplementedException();
 
-        var issuerString = _configuration["Jwt:Issuer"];
-        if (issuerString is null)
+        var issuer = jwtSettings["Issuer"];
+        if (issuer is null)
             throw new NotImplementedException();
 
-        var audienceString = _configuration["Jwt:Audience"];
-        if (audienceString is null)
+        var audience = jwtSettings["Audience"];
+        if (audience is null)
             throw new NotImplementedException();
         
-        if (_configuration["Jwt:DurationDays"] is null)
+        var expirationMinutesParsed = int.TryParse(jwtSettings["ExpirationMinutes"], out int expirationMinutes);
+        if (!expirationMinutesParsed)
             throw new NotImplementedException();
         
-        var durationParsedSuccessfully = int.TryParse(_configuration["Jwt:DurationDays"], out int durationDays);
-        if (!durationParsedSuccessfully)
-            throw new NotImplementedException();
+        List<Claim> claims = [
+            new(JwtRegisteredClaimNames.Sub, userClaims.Id),
+            new(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
+        ];
+        claims.AddRange(userClaims.Roles.Select(role => new Claim(ClaimTypes.Role, role)));
         
-        List<Claim> claims = [new Claim(ClaimTypes.NameIdentifier, userId.ToString())];
-        //
-        claims.AddRange(roles.Select(role => new Claim(ClaimTypes.Role, role)));
-        //
-        
-        var userKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKeyString));
-        var credentials = new SigningCredentials(userKey, SecurityAlgorithms.HmacSha256);
+        var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey));
+        var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
 
-        var token = new JwtSecurityToken(
-            issuerString,
-            audienceString,
-            claims,
-            expires: DateTime.Now.AddDays(durationDays),
+        var tokenDescriptor = new JwtSecurityToken(
+            issuer: issuer,
+            audience : audience,
+            claims : claims,
+            expires: DateTime.Now.AddMinutes(expirationMinutes),
             signingCredentials: credentials);
 
-        return new JwtSecurityTokenHandler().WriteToken(token);
+        return new JwtSecurityTokenHandler().WriteToken(tokenDescriptor);
     }
 }

@@ -15,7 +15,8 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="_Account\" />
+      <Folder Include="_Account\DeleteAccount\" />
+      <Folder Include="_Account\LogIntoAccount\" />
     </ItemGroup>
 
 </Project>

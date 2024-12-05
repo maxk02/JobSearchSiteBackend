@@ -4,7 +4,9 @@ namespace Shared.Result
 {
     public class Result<T> : IResult<T>
     {
-        protected Result() { }
+        protected Result()
+        {
+        }
 
         public Result(T value) => Value = value;
 
@@ -14,7 +16,7 @@ namespace Shared.Result
 
         public static implicit operator T?(Result<T> result) => result.Value;
         public static implicit operator Result<T>(T value) => new Result<T>(value);
-        
+
         public static implicit operator Result<T>(Result result) => new()
         {
             Status = result.Status,
@@ -23,38 +25,41 @@ namespace Shared.Result
             CorrelationId = result.CorrelationId,
             ValidationErrors = result.ValidationErrors,
         };
-        
-        [JsonInclude]
-        public T? Value { get; init; }
 
-        [JsonIgnore]
-        public Type ValueType => typeof(T);
-        [JsonInclude]
-        public ResultStatus Status { get; protected set; } = ResultStatus.Ok;
+        [JsonInclude] public T? Value { get; init; }
+
+        [JsonIgnore] public Type ValueType => typeof(T);
+        [JsonInclude] public ResultStatus Status { get; protected set; } = ResultStatus.Ok;
 
         public bool IsSuccess => Status is ResultStatus.Ok or ResultStatus.NoContent or ResultStatus.Created;
 
-        [JsonInclude]
-        public string SuccessMessage { get; protected set; } = string.Empty;
-        [JsonInclude]
-        public string CorrelationId { get; protected set; } = string.Empty;
-        [JsonInclude]
-        public string Location { get; protected set; } = string.Empty;
-        [JsonInclude]
-        public IEnumerable<string> Errors { get; protected set; } = [];
-        [JsonInclude]
-        public IEnumerable<ValidationError> ValidationErrors { get; protected set; } = [];
-        
-        public static Result<T> WithMetadataFromResult<TSource>(Result<TSource> sourceResult, T? newValue = default) 
+        [JsonInclude] public string SuccessMessage { get; protected set; } = string.Empty;
+        [JsonInclude] public string CorrelationId { get; protected set; } = string.Empty;
+        [JsonInclude] public string Location { get; protected set; } = string.Empty;
+        [JsonInclude] public IEnumerable<string> Errors { get; protected set; } = [];
+        [JsonInclude] public IEnumerable<ValidationError> ValidationErrors { get; protected set; } = [];
+
+        public static Result<T> WithMetadataFromResult<TSource>(Result<TSource> sourceResult, T? newValue = default)
             => new()
-        {
-            Value = newValue,
-            Status = sourceResult.Status,
-            Errors = sourceResult.Errors,
-            SuccessMessage = sourceResult.SuccessMessage,
-            CorrelationId = sourceResult.CorrelationId,
-            ValidationErrors = sourceResult.ValidationErrors,
-        };
+            {
+                Value = newValue,
+                Status = sourceResult.Status,
+                Errors = sourceResult.Errors,
+                SuccessMessage = sourceResult.SuccessMessage,
+                CorrelationId = sourceResult.CorrelationId,
+                ValidationErrors = sourceResult.ValidationErrors,
+            };
+
+        public static Result<T> WithMetadataFromResult(Result sourceResult, T? newValue = default)
+            => new()
+            {
+                Value = newValue,
+                Status = sourceResult.Status,
+                Errors = sourceResult.Errors,
+                SuccessMessage = sourceResult.SuccessMessage,
+                CorrelationId = sourceResult.CorrelationId,
+                ValidationErrors = sourceResult.ValidationErrors,
+            };
 
         /// <summary>
         /// Converts PagedInfo into a PagedResult<typeparamref name="T"/>
@@ -106,7 +111,8 @@ namespace Shared.Result
         /// <param name="value">The value of the resource created.</param>
         /// <param name="location">The URL indicating where the newly created resource can be accessed.</param>
         /// <returns>A Result<typeparamref name="T"/> with status Created.</returns>
-        public static Result<T> Created(T value, string location) => new(ResultStatus.Created) { Value = value, Location = location };
+        public static Result<T> Created(T value, string location) =>
+            new(ResultStatus.Created) { Value = value, Location = location };
 
         /// <summary>
         /// Represents an error that occurred during the execution of the service.
@@ -114,7 +120,13 @@ namespace Shared.Result
         /// </summary>
         /// <param name="errorMessage"></param>
         /// <returns></returns>
-        public static Result<T> Error(string errorMessage) => new(ResultStatus.Error) { Errors = new[] { errorMessage } };
+        public static Result<T> Error(string errorMessage) =>
+            new(ResultStatus.Error) { Errors = new[] { errorMessage } };
+
+        public static Result<T> Error(IEnumerable<string> errorMessages) => new(ResultStatus.Error)
+        {
+            Errors = errorMessages,
+        };
 
         /// <summary>
         /// Represents an error that occurred during the execution of the service.
@@ -143,7 +155,7 @@ namespace Shared.Result
         /// <returns>A Result<typeparamref name="T"/></returns>
         public static Result<T> Invalid(params ValidationError[] validationErrors) =>
             new(ResultStatus.Invalid)
-            { ValidationErrors = new List<ValidationError>(validationErrors) };
+                { ValidationErrors = new List<ValidationError>(validationErrors) };
 
         /// <summary>
         /// Represents validation errors that prevent the underlying service from completing.
@@ -165,7 +177,8 @@ namespace Shared.Result
         /// </summary>
         /// <param name="errorMessages">A list of string error messages.</param>
         /// <returns>A Result<typeparamref name="T"/></returns>
-        public static Result<T> NotFound(params string[] errorMessages) => new(ResultStatus.NotFound) { Errors = errorMessages };
+        public static Result<T> NotFound(params string[] errorMessages) =>
+            new(ResultStatus.NotFound) { Errors = errorMessages };
 
         /// <summary>
         /// The parameters to the call were correct, but the user does not have permission to perform some action.
@@ -180,7 +193,8 @@ namespace Shared.Result
         /// </summary>
         /// <param name="errorMessages">A list of string error messages.</param> 
         /// <returns>A Result<typeparamref name="T"/></returns>
-        public static Result<T> Forbidden(params string[] errorMessages) => new(ResultStatus.Forbidden) { Errors = errorMessages };
+        public static Result<T> Forbidden(params string[] errorMessages) =>
+            new(ResultStatus.Forbidden) { Errors = errorMessages };
 
         /// <summary>
         /// This is similar to Forbidden, but should be used when the user has not authenticated or has attempted to authenticate but failed.
@@ -195,7 +209,8 @@ namespace Shared.Result
         /// </summary>
         /// <param name="errorMessages">A list of string error messages.</param>  
         /// <returns>A Result<typeparamref name="T"/></returns>
-        public static Result<T> Unauthorized(params string[] errorMessages) => new(ResultStatus.Unauthorized) { Errors = errorMessages };
+        public static Result<T> Unauthorized(params string[] errorMessages) =>
+            new(ResultStatus.Unauthorized) { Errors = errorMessages };
 
         /// <summary>
         /// Represents a situation where a service is in conflict due to the current state of a resource,
@@ -213,7 +228,8 @@ namespace Shared.Result
         /// </summary>
         /// <param name="errorMessages">A list of string error messages.</param>
         /// <returns>A Result<typeparamref name="T"/></returns>
-        public static Result<T> Conflict(params string[] errorMessages) => new(ResultStatus.Conflict) { Errors = errorMessages };
+        public static Result<T> Conflict(params string[] errorMessages) =>
+            new(ResultStatus.Conflict) { Errors = errorMessages };
 
         /// <summary>
         /// Represents a critical error that occurred during the execution of the service.
@@ -222,7 +238,8 @@ namespace Shared.Result
         /// </summary>
         /// <param name="errorMessages">A list of string error messages.</param>
         /// <returns>A Result<typeparamref name="T"/></returns>
-        public static Result<T> CriticalError(params string[] errorMessages) => new(ResultStatus.CriticalError) { Errors = errorMessages };
+        public static Result<T> CriticalError(params string[] errorMessages) =>
+            new(ResultStatus.CriticalError) { Errors = errorMessages };
 
         /// <summary>
         /// Represents a situation where a service is unavailable, such as when the underlying data store is unavailable.
@@ -231,7 +248,8 @@ namespace Shared.Result
         /// </summary>
         /// <param name="errorMessages">A list of string error messages</param>
         /// <returns></returns>
-        public static Result<T> Unavailable(params string[] errorMessages) => new(ResultStatus.Unavailable) { Errors = errorMessages };
+        public static Result<T> Unavailable(params string[] errorMessages) =>
+            new(ResultStatus.Unavailable) { Errors = errorMessages };
 
         /// <summary>
         /// Represents a situation where the server has successfully fulfilled the request, but there is no content to send back in the response body.

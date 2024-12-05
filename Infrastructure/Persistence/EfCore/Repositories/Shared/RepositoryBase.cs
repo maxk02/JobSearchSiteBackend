@@ -22,6 +22,7 @@ public class RepositoryBase<T> : IRepository<T>
     public async Task<T> AddAsync(T entity, CancellationToken cancellationToken = default)
     {
         await DataDbContext.Set<T>().AddAsync(entity, cancellationToken: cancellationToken);
+        await DataDbContext.SaveChangesAsync(cancellationToken);
 
         return entity;
     }
@@ -29,31 +30,32 @@ public class RepositoryBase<T> : IRepository<T>
     public async Task<IEnumerable<T>> AddRangeAsync(ICollection<T> entities, CancellationToken cancellationToken = default)
     {
         await DataDbContext.Set<T>().AddRangeAsync(entities, cancellationToken: cancellationToken);
-
+        await DataDbContext.SaveChangesAsync(cancellationToken);
+        
         return entities;
     }
 
-    public async Task UpdateAsync(T entity)
+    public async Task UpdateAsync(T entity, CancellationToken cancellationToken = default)
     {
         DataDbContext.Set<T>().Update(entity);
-        await DataDbContext.SaveChangesAsync();
+        await DataDbContext.SaveChangesAsync(cancellationToken);
     }
 
-    public async Task UpdateRangeAsync(ICollection<T> entities)
+    public async Task UpdateRangeAsync(ICollection<T> entities, CancellationToken cancellationToken = default)
     {
         DataDbContext.Set<T>().UpdateRange(entities);
-        await DataDbContext.SaveChangesAsync();
+        await DataDbContext.SaveChangesAsync(cancellationToken);
     }
 
-    public async Task RemoveAsync(T entity)
+    public async Task RemoveAsync(T entity, CancellationToken cancellationToken = default)
     {
         DataDbContext.Set<T>().Remove(entity);
-        await DataDbContext.SaveChangesAsync();
+        await DataDbContext.SaveChangesAsync(cancellationToken);
     }
 
-    public async Task RemoveRangeAsync(ICollection<T> entities)
+    public async Task RemoveRangeAsync(ICollection<T> entities, CancellationToken cancellationToken = default)
     {
         DataDbContext.Set<T>().RemoveRange(entities);
-        await DataDbContext.SaveChangesAsync();
+        await DataDbContext.SaveChangesAsync(cancellationToken);
     }
 }

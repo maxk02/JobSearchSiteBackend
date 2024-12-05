@@ -5,13 +5,26 @@ namespace Domain._Shared.Services.Auth;
 
 public interface IAccountService
 {
-    Task<Result<UserClaimsDto>> SignInWithEmail(string email, string password);
-    Task<Result<UserClaimsDto>> Register(string email, string password);
-    Task<Result> Delete(string id);
-    Task<Result> ChangeRole(string id, RoleValues newRoleValue);
-    Task<Result> ChangePassword(string id, string oldPassword, string newPassword);
-    Task<Result<string>> GenerateEmailConfirmationToken(string id);
-    Task<Result<string>> GeneratePasswordResetToken(string userId);
-    Task<Result> ConfirmEmail(string id, string emailConfirmationToken);
-    Task<Result> ResetPassword(string id, string passwordResetToken, string newPassword);
+    public Task<Result<UserClaimsDto>> SignInWithEmailAsync(string email, string password,
+        CancellationToken cancellationToken = default);
+    public Task<Result<UserClaimsDto>> RegisterAsync(string email, string password,
+        CancellationToken cancellationToken = default);
+    public Task<Result> DeleteAsync(string id,
+        CancellationToken cancellationToken = default);
+    public Task<Result> AddToRoleAsync(string userId, RoleValues roleToAdd,
+        CancellationToken cancellationToken = default);
+    public Task<Result> RemoveFromRoleAsync(string userId, RoleValues roleToRemove,
+        CancellationToken cancellationToken = default);
+    public Task<Result> RemoveFromAllRolesAsync(string userId,
+        CancellationToken cancellationToken = default);
+    public Task<Result> ChangePasswordAsync(string id, string oldPassword, string newPassword,
+        CancellationToken cancellationToken = default);
+    public Task<Result<string>> GenerateEmailConfirmationTokenAsync(string id,
+        CancellationToken cancellationToken = default);
+    public Task<Result<string>> GeneratePasswordResetTokenAsync(string id,
+        CancellationToken cancellationToken = default);
+    public Task<Result> ConfirmEmailAsync(string id, string emailConfirmationToken,
+        CancellationToken cancellationToken = default);
+    public Task<Result> ResetPasswordAsync(string id, string passwordResetToken, string newPassword,
+        CancellationToken cancellationToken = default);
 }

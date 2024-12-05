@@ -17,19 +17,20 @@ public class User : BaseEntity, IPublicOrPrivateEntity
 {
     public static UserValidator Validator { get; } = new();
 
-    public static Result<User> Create(string firstName, string? middleName, string lastName,
+    public static Result<User> Create(string accountId, string firstName, string? middleName, string lastName,
         DateOnly? dateOfBirth, string email, Phone? phone, string? bio)
     {
-        var user = new User(firstName, middleName, lastName, dateOfBirth, email, phone, bio);
+        var user = new User(accountId, firstName, middleName, lastName, dateOfBirth, email, phone, bio);
 
         var validationResult = Validator.Validate(user);
 
         return validationResult.IsValid ? user : Result<User>.Invalid(validationResult.AsErrors());
     }
 
-    private User(string firstName, string? middleName, string lastName,
+    private User(string accountId, string firstName, string? middleName, string lastName,
         DateOnly? dateOfBirth, string email, Phone? phone, string? bio)
     {
+        AccountId = accountId;
         FirstName = firstName;
         MiddleName = middleName;
         LastName = lastName;
@@ -38,6 +39,8 @@ public class User : BaseEntity, IPublicOrPrivateEntity
         Phone = phone;
         Bio = bio;
     }
+    
+    public string AccountId { get; private set; }
 
     public string FirstName { get; private set; }
 

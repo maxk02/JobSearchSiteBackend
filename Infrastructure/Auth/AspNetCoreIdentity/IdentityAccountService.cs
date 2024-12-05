@@ -5,118 +5,145 @@ using Shared.Result;
 
 namespace Infrastructure.Auth.AspNetCoreIdentity;
 
-public class IdentityAccountService : IAccountService
+public sealed class IdentityAccountService(UserManager<MyIdentityUser> userManager) : IAccountService
 {
-    private readonly UserManager<MyIdentityUser> _userManager;
-
-    public IdentityAccountService(UserManager<MyIdentityUser> userManager)
+    public async Task<Result<UserClaimsDto>> SignInWithEmailAsync(string email, string password,
+        CancellationToken cancellationToken = default)
     {
-        _userManager = userManager;
+        var user = await userManager.FindByEmailAsync(email);
+
+        if (user is null)
+            return Result.NotFound();
+
+        var isPasswordCorrect = await userManager.CheckPasswordAsync(user, password);
+
+        if (!isPasswordCorrect)
+            return Result.Unauthorized();
+        
+        var roles = await userManager.GetRolesAsync(user);
+        
+        return new UserClaimsDto(user.Id, roles);
+
+    }
+
+    public async Task<Result<UserClaimsDto>> RegisterAsync(string email, string password,
+        CancellationToken cancellationToken = default)
+    {
+        var userFromDb = await userManager.FindByEmailAsync(email);
+
+        if (userFromDb is not null)
+            return Result.Conflict("User already registered.");
+        
+        var user = new MyIdentityUser { Email = email };
+        var aspNetIdentityResult = await userManager.CreateAsync(user, password);
+
+        return aspNetIdentityResult.Succeeded ? new UserClaimsDto(user.Id, []) : Result.Error();
+    }
+
+    public async Task<Result> DeleteAsync(string id, CancellationToken cancellationToken = default)
+    {
+        var user = await userManager.FindByIdAsync(id);
+        if (user is null)
+            return Result.NotFound();
+        
+        var aspNetIdentityResult = await userManager.DeleteAsync(user);
+        
+        return aspNetIdentityResult.Succeeded ? Result.Success() : Result.Error();
     }
     
-    public async Task<Result<UserClaimsDto>> SignInWithEmail(string email, string password)
+    public async Task<Result> AddToRoleAsync(string userId, RoleValues roleToAdd,
+        CancellationToken cancellationToken = default)
     {
-        var user = await _userManager.FindByEmailAsync(email);
-
-        if (user is null)
+        var user = await userManager.FindByIdAsync(userId);
+        if (user == null)
             return Result.NotFound();
 
-        bool isPasswordCorrect = await _userManager.CheckPasswordAsync(user, password);
+        var aspNetIdentityResult = await userManager.AddToRoleAsync(user, roleToAdd.ToString());
         
-        if (isPasswordCorrect)
-        {
-            var roles = await _userManager.GetRolesAsync(user);
-            return new UserClaimsDto(user.Id, roles);
-        }
-        
-        return Result.Unauthorized();
+        return aspNetIdentityResult.Succeeded ? Result.Success() : Result.Error();
     }
-
-    public async Task<Result<UserClaimsDto>> Register(string email, string password)
+    
+    public async Task<Result> RemoveFromRoleAsync(string userId, RoleValues roleToRemove,
+        CancellationToken cancellationToken = default)
     {
-        var user = new MyIdentityUser { Email = email };
-        var result = await _userManager.CreateAsync(user, password);
-        
-        return result.Succeeded ? new UserClaimsDto(user.Id, []) : Result.Error();
-    }
-
-    public async Task<Result> Delete(string id)
-    {
-        var user = await _userManager.FindByIdAsync(id);
-        if (user is null)
-            return Result.NotFound();
-        
-        var result = await _userManager.DeleteAsync(user);
-        
-        return result.Succeeded ? Result.Success() : Result.Error();
-    }
-
-    public async Task<Result> ChangeRole(string id, RoleValues newRoleValue)
-    {
-        var user = await _userManager.FindByIdAsync(id);
+        var user = await userManager.FindByIdAsync(userId);
         if (user == null)
             return Result.NotFound();
         
-        var userRoles = await _userManager.GetRolesAsync(user);
-        var removeResult = await _userManager.RemoveFromRolesAsync(user, userRoles);
-        if (!removeResult.Succeeded)
-            return Result.Error();
-
-        var addResult = await _userManager.AddToRoleAsync(user, newRoleValue.ToString());
+        var aspNetIdentityResult = await userManager.RemoveFromRoleAsync(user, roleToRemove.ToString());
         
-        return addResult.Succeeded ? Result.Success() : Result.Error();
+        return aspNetIdentityResult.Succeeded ? Result.Success() : Result.Error();
     }
     
-    public async Task<Result> ChangePassword(string id, string oldPassword, string newPassword)
+    public async Task<Result> RemoveFromAllRolesAsync(string userId,
+        CancellationToken cancellationToken = default)
     {
-        var user = await _userManager.FindByIdAsync(id);
+        var user = await userManager.FindByIdAsync(userId);
+        if (user == null)
+            return Result.NotFound();
+        
+        var userRoles = await userManager.GetRolesAsync(user);
+        
+        var aspNetIdentityResult = await userManager.RemoveFromRolesAsync(user, userRoles);
+        
+        return aspNetIdentityResult.Succeeded ? Result.Success() : Result.Error();
+    }
+    
+    public async Task<Result> ChangePasswordAsync(string id, string oldPassword, string newPassword,
+        CancellationToken cancellationToken = default)
+    {
+        var user = await userManager.FindByIdAsync(id);
         if (user is null)
             return Result.NotFound();
 
-        var result = await _userManager.ChangePasswordAsync(user, oldPassword, newPassword);
+        var aspNetIdentityResult = await userManager.ChangePasswordAsync(user, oldPassword, newPassword);
         
-        return result.Succeeded ? Result.Success() : Result.Error();
+        return aspNetIdentityResult.Succeeded ? Result.Success() : Result.Error();
     }
 
-    public async Task<Result<string>> GenerateEmailConfirmationToken(string id)
+    public async Task<Result<string>> GenerateEmailConfirmationTokenAsync(string id,
+        CancellationToken cancellationToken = default)
     {
-        var user = await _userManager.FindByIdAsync(id);
+        var user = await userManager.FindByIdAsync(id);
         if (user is null)
             return Result.NotFound();
         
-        var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+        var token = await userManager.GenerateEmailConfirmationTokenAsync(user);
         return token;
     }
 
-    public async Task<Result> ConfirmEmail(string id, string emailConfirmationToken)
+    public async Task<Result> ConfirmEmailAsync(string id, string emailConfirmationToken,
+        CancellationToken cancellationToken = default)
     {
-        var user = await _userManager.FindByIdAsync(id);
+        var user = await userManager.FindByIdAsync(id);
         if (user is null)
             return Result.NotFound();
 
-        var result = await _userManager.ConfirmEmailAsync(user, emailConfirmationToken);
+        var aspNetIdentityResult = await userManager.ConfirmEmailAsync(user, emailConfirmationToken);
         
-        return result.Succeeded ? Result.Success() : Result.Error();
+        return aspNetIdentityResult.Succeeded ? Result.Success() : Result.Error();
     }
 
-    public async Task<Result<string>> GeneratePasswordResetToken(string userId)
+    public async Task<Result<string>> GeneratePasswordResetTokenAsync(string id,
+        CancellationToken cancellationToken = default)
     {
-        var user = await _userManager.FindByIdAsync(userId);
+        var user = await userManager.FindByIdAsync(id);
         if (user is null)
             return Result.NotFound();
         
-        var token = await _userManager.GeneratePasswordResetTokenAsync(user);
+        var token = await userManager.GeneratePasswordResetTokenAsync(user);
         return token;
     }
     
-    public async Task<Result> ResetPassword(string id, string passwordResetToken, string newPassword)
+    public async Task<Result> ResetPasswordAsync(string id, string passwordResetToken, string newPassword,
+        CancellationToken cancellationToken = default)
     {
-        var user = await _userManager.FindByIdAsync(id);
+        var user = await userManager.FindByIdAsync(id);
         if (user is null)
             return Result.NotFound();
 
-        var result = await _userManager.ResetPasswordAsync(user, passwordResetToken, newPassword);
+        var aspNetIdentityResult = await userManager.ResetPasswordAsync(user, passwordResetToken, newPassword);
 
-        return result.Succeeded ? Result.Success() : Result.Error();
+        return aspNetIdentityResult.Succeeded ? Result.Success() : Result.Error();
     }
 }

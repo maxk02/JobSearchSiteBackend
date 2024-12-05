@@ -8,9 +8,12 @@ public class CreateUserHandler(IUserRepository userRepository, ICurrentAccountSe
     public async Task<Result<CreateUserResponse>> Handle(CreateUserRequest request,
         CancellationToken cancellationToken = default)
     {
+        var currentAccountId = currentAccountService.GetId();
+
+        if (currentAccountId is null || currentAccountId != request.AccountId)
+            return Result.Forbidden();
         
-        
-        var createUserResult = User.Create(request.FirstName, request.MiddleName, request.LastName,
+        var createUserResult = User.Create(request.AccountId, request.FirstName, request.MiddleName, request.LastName,
             request.DateOfBirth, request.Email, request.Phone, request.Bio);
 
         if (createUserResult.Value is null) return Result<CreateUserResponse>.WithMetadataFromResult(createUserResult);
