@@ -14,9 +14,4 @@
       <PackageReference Include="FluentValidation" Version="11.10.0" />
     </ItemGroup>
 
-    <ItemGroup>
-      <Folder Include="_Account\DeleteAccount\" />
-      <Folder Include="_Account\LogIntoAccount\" />
-    </ItemGroup>
-
 </Project>

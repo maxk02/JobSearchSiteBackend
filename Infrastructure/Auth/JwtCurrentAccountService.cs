@@ -1,6 +1,8 @@
-﻿using System.Security.Claims;
+﻿using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
 using Domain._Shared.Services.Auth;
 using Microsoft.AspNetCore.Http;
+
 
 namespace Infrastructure.Auth;
 
@@ -15,9 +17,16 @@ public class JwtCurrentAccountService : ICurrentAccountService
 
     public string? GetId()
     {
-        string? userIdString = _httpContextAccessor.HttpContext?.User.FindFirstValue(ClaimTypes.NameIdentifier);
+        string? userIdString = _httpContextAccessor.HttpContext?.User.FindFirstValue(JwtRegisteredClaimNames.Sub);
 
         return string.IsNullOrEmpty(userIdString) ? null : userIdString;
+    }
+    
+    public string? GetEmail()
+    {
+        string? emailString = _httpContextAccessor.HttpContext?.User.FindFirstValue(JwtRegisteredClaimNames.Email);
+
+        return string.IsNullOrEmpty(emailString) ? null : emailString;
     }
 
     public List<string> GetRoles()

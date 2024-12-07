@@ -29,7 +29,7 @@ public class UpdateUserHandler(IUserRepository userRepository, ICurrentAccountSe
             request.Bio ?? existingUserObject.Bio
             );
 
-        if (updateUserResult.Value is null) return Result.WithMetadataFromResult(updateUserResult);
+        if (updateUserResult.Value is null) return Result.WithMetadataFrom(updateUserResult);
             
         await userRepository.UpdateAsync(updateUserResult.Value, cancellationToken);
         

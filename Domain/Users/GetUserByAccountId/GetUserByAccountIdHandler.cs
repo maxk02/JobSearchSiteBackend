@@ -9,11 +9,11 @@ public class GetUserByAccountIdHandler(IUserRepository userRepository, ICurrentA
         CancellationToken cancellationToken = default)
     {
         if (currentAccountService.GetId() is null)
-            return Result.Unauthorized();
+            return Result<GetUserByAccountIdResponse>.Unauthorized();
         
         var user = await userRepository.GetByAccountIdAsync(request.AccountId, cancellationToken);
 
-        if (user == null) return Result.NotFound();
+        if (user == null) return Result<GetUserByAccountIdResponse>.NotFound();
 
         return new GetUserByAccountIdResponse(user.FirstName, user.MiddleName, user.LastName,
             user.DateOfBirth, user.Email, user.Phone, user.Bio);

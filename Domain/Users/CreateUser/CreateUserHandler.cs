@@ -11,12 +11,12 @@ public class CreateUserHandler(IUserRepository userRepository, ICurrentAccountSe
         var currentAccountId = currentAccountService.GetId();
 
         if (currentAccountId is null || currentAccountId != request.AccountId)
-            return Result.Forbidden();
+            return Result<CreateUserResponse>.Forbidden();
         
         var createUserResult = User.Create(request.AccountId, request.FirstName, request.MiddleName, request.LastName,
             request.DateOfBirth, request.Email, request.Phone, request.Bio);
 
-        if (createUserResult.Value is null) return Result<CreateUserResponse>.WithMetadataFromResult(createUserResult);
+        if (createUserResult.Value is null) return Result<CreateUserResponse>.WithMetadataFrom(createUserResult);
             
         var newUser = await userRepository.AddAsync(createUserResult.Value, cancellationToken);
         

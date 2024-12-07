@@ -1,8 +1,9 @@
-﻿using Domain._Shared.Services.Email;
+﻿using Domain._Shared.Services.EmailSender;
 using SendGrid;
 using SendGrid.Helpers.Mail;
+using Shared.Result;
 
-namespace Infrastructure.Email.SendGrid;
+namespace Infrastructure.EmailSender.SendGrid;
 
 public class SendGridEmailSenderService : IEmailSenderService
 {
@@ -15,7 +16,8 @@ public class SendGridEmailSenderService : IEmailSenderService
         _senderEmail = senderEmail;
     }
     
-    public async Task SendEmailConfirmationMessage(string email, string confirmationLink)
+    public async Task<Result> SendEmailConfirmationMessageAsync(string email, string confirmationLink,
+        CancellationToken cancellationToken = default)
     {
         var client = new SendGridClient(_sendGridApiKey);
         var msg = new SendGridMessage
@@ -27,15 +29,18 @@ public class SendGridEmailSenderService : IEmailSenderService
                           $" aktywacji konta:<br><a href='{confirmationLink}'>link</a>"
         };
         msg.AddTo(new EmailAddress(email));
-        var response = await client.SendEmailAsync(msg);
+        var response = await client.SendEmailAsync(msg, cancellationToken);
         if (response.StatusCode != System.Net.HttpStatusCode.OK && response.StatusCode != System.Net.HttpStatusCode.Accepted)
         {
-            // throw new Exception($"Failed to send email message. Status code: {response.StatusCode}");
+            return Result.Error();
             // log
         }
+        
+        return Result.Success();
     }
 
-    public async Task SendPasswordResetMessage(string email, string resetLink)
+    public async Task<Result> SendPasswordResetMessageAsync(string email, string resetLink,
+        CancellationToken cancellationToken = default)
     {
         var client = new SendGridClient(_sendGridApiKey);
         var msg = new SendGridMessage
@@ -48,11 +53,14 @@ public class SendGridEmailSenderService : IEmailSenderService
                           $"<br><br>Link: <a href='{resetLink}'>link</a>"
         };
         msg.AddTo(new EmailAddress(email));
-        var response = await client.SendEmailAsync(msg);
+        var response = await client.SendEmailAsync(msg, cancellationToken);
         if (response.StatusCode != System.Net.HttpStatusCode.OK && response.StatusCode != System.Net.HttpStatusCode.Accepted)
         {
+            return Result.Error();
             // throw new Exception($"Failed to send email message. Status code: {response.StatusCode}");
             // log
         }
+        
+        return Result.Success();
     }
 }

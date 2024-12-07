@@ -1,12 +1,10 @@
 ﻿namespace Shared.Result
 {
-    public interface IResult<T>
+    public interface IResult
     {
         ResultStatus Status { get; }
         IEnumerable<string> Errors { get; }
         IEnumerable<ValidationError> ValidationErrors { get; }
-        Type ValueType { get; }
-        T? Value { get; }
         string Location { get; }
     }
 }

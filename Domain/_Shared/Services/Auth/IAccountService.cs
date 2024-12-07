@@ -5,9 +5,9 @@ namespace Domain._Shared.Services.Auth;
 
 public interface IAccountService
 {
-    public Task<Result<UserClaimsDto>> SignInWithEmailAsync(string email, string password,
+    public Task<Result<AccountData>> SignInWithEmailAsync(string email, string password,
         CancellationToken cancellationToken = default);
-    public Task<Result<UserClaimsDto>> RegisterAsync(string email, string password,
+    public Task<Result<AccountData>> RegisterAsync(string email, string password,
         CancellationToken cancellationToken = default);
     public Task<Result> DeleteAsync(string id,
         CancellationToken cancellationToken = default);
@@ -19,12 +19,12 @@ public interface IAccountService
         CancellationToken cancellationToken = default);
     public Task<Result> ChangePasswordAsync(string id, string oldPassword, string newPassword,
         CancellationToken cancellationToken = default);
-    public Task<Result<string>> GenerateEmailConfirmationTokenAsync(string id,
+    public Task<Result<string>> GenerateEmailConfirmationTokenByEmailAsync(string email,
         CancellationToken cancellationToken = default);
-    public Task<Result<string>> GeneratePasswordResetTokenAsync(string id,
+    public Task<Result<string>> GeneratePasswordResetTokenByEmailAsync(string email,
         CancellationToken cancellationToken = default);
-    public Task<Result> ConfirmEmailAsync(string id, string emailConfirmationToken,
+    public Task<Result> ConfirmEmailAsync(string emailConfirmationToken,
         CancellationToken cancellationToken = default);
-    public Task<Result> ResetPasswordAsync(string id, string passwordResetToken, string newPassword,
+    public Task<Result> ResetPasswordAsync(string passwordResetToken, string newPassword,
         CancellationToken cancellationToken = default);
 }

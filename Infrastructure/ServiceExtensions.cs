@@ -1,14 +1,11 @@
-﻿using System.Text;
-using Domain._Shared.Services.Email;
+﻿using Domain._Shared.Services.EmailSender;
 using Infrastructure.Auth.AspNetCoreIdentity;
-using Infrastructure.Email;
-using Infrastructure.Email.SendGrid;
+using Infrastructure.EmailSender.SendGrid;
 using Infrastructure.Persistence.EfCore.Context;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Exception = System.Exception;
 
 namespace Infrastructure;
 

@@ -7,9 +7,9 @@ using Microsoft.IdentityModel.Tokens;
 
 namespace Infrastructure.Auth;
 
-public class JwtTokenGenerationService(IConfiguration configuration) : ITokenGenerationService
+public class JwtAccountTokenGenerationService(IConfiguration configuration) : IAccountTokenGenerationService
 {
-    public string Generate(UserClaimsDto userClaims)
+    public string Generate(AccountData accountData)
     {
         var jwtSettings = configuration.GetSection("JwtSettings");
         
@@ -30,10 +30,11 @@ public class JwtTokenGenerationService(IConfiguration configuration) : ITokenGen
             throw new NotImplementedException();
         
         List<Claim> claims = [
-            new(JwtRegisteredClaimNames.Sub, userClaims.Id),
-            new(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
+            new(JwtRegisteredClaimNames.Sub, accountData.Id),
+            new(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+            new(JwtRegisteredClaimNames.Email, accountData.Email)
         ];
-        claims.AddRange(userClaims.Roles.Select(role => new Claim(ClaimTypes.Role, role)));
+        claims.AddRange(accountData.Roles.Select(role => new Claim(ClaimTypes.Role, role)));
         
         var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey));
         var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);

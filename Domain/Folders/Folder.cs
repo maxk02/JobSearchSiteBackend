@@ -18,7 +18,7 @@ public class Folder : BaseEntity, IHierarchicalEntity<Folder>
 
         var validationResult = Validator.Validate(folder);
 
-        return validationResult.IsValid ? folder : Result.Invalid();
+        return validationResult.IsValid ? folder : Result<Folder>.Invalid();
     }
     
     private Folder(long? companyId, long? parentId, string name, string? description)

@@ -1,26 +1,31 @@
-﻿namespace Shared.Result
+﻿using System.Text.Json.Serialization;
+
+namespace Shared.Result
 {
-    public class Result : Result<object>
+    public class Result : IResult
     {
-        public Result()
-        {
-            Value = null;
-        }
+        public Result() { }
 
-        protected internal Result(ResultStatus status) : base(status)
-        {
-            Value = null;
-        }
+        protected Result(ResultStatus status) => Status = status;
 
-        public static Result WithMetadataFromResult<TSource>(Result<TSource> sourceResult)
-            => new()
-            {
-                Status = sourceResult.Status,
-                Errors = sourceResult.Errors,
-                SuccessMessage = sourceResult.SuccessMessage,
-                CorrelationId = sourceResult.CorrelationId,
-                ValidationErrors = sourceResult.ValidationErrors,
-            };
+        public static Result WithMetadataFrom<T>(Result<T> result) => new()
+        {
+            Status = result.Status,
+            Errors = result.Errors,
+            SuccessMessage = result.SuccessMessage,
+            CorrelationId = result.CorrelationId,
+            ValidationErrors = result.ValidationErrors,
+        };
+        
+        [JsonInclude] public ResultStatus Status { get; protected set; } = ResultStatus.Ok;
+
+        public bool IsSuccess => Status is ResultStatus.Ok or ResultStatus.NoContent or ResultStatus.Created;
+
+        [JsonInclude] public string SuccessMessage { get; protected set; } = string.Empty;
+        [JsonInclude] public string CorrelationId { get; protected set; } = string.Empty;
+        [JsonInclude] public string Location { get; protected set; } = string.Empty;
+        [JsonInclude] public IEnumerable<string> Errors { get; protected set; } = [];
+        [JsonInclude] public IEnumerable<ValidationError> ValidationErrors { get; protected set; } = [];
 
         /// <summary>
         /// Represents a successful operation without return type
@@ -35,47 +40,7 @@
         /// <returns>A Result</returns>
         public static Result SuccessWithMessage(string successMessage) => new() { SuccessMessage = successMessage };
 
-        /// <summary>
-        /// Represents a successful operation and accepts a values as the result of the operation
-        /// </summary>
-        /// <param name="value">Sets the Value property</param>
-        /// <returns>A Result<typeparamref name="T"/></returns>
-        public static Result<T> Success<T>(T value) => new(value);
-
-        /// <summary>
-        /// Represents a successful operation and accepts a values as the result of the operation
-        /// Sets the SuccessMessage property to the provided value
-        /// </summary>
-        /// <param name="value">Sets the Value property</param>
-        /// <param name="successMessage">Sets the SuccessMessage property</param>
-        /// <returns>A Result<typeparamref name="T"/></returns>
-        public static Result<T> Success<T>(T value, string successMessage) => new(value, successMessage);
-
-        /// <summary>
-        /// Represents a successful operation that resulted in the creation of a new resource.
-        /// Accepts a value as the result of the operation.
-        /// </summary>		
-        /// <param name="value">Sets the Value property</param>
-        /// <returns>A Result<typeparamref name="T"/></returns>
-        public static Result<T> Created<T>(T value)
-        {
-            return Result<T>.Created(value);
-        }
-
-        /// <summary>
-        /// Represents a successful operation that resulted in the creation of a new resource.
-        /// Accepts a value as the result of the operation.
-        /// Accepts a location for the new resource.
-        /// </summary>		
-        /// <param name="value">Sets the Value property</param>
-        /// <param name="location">The location of the newly created resource</param>
-        /// <returns>A Result<typeparamref name="T"/></returns>
-        public static Result<T> Created<T>(T value, string location)
-        {
-            return Result<T>.Created(value, location);
-        }
-
-        public new static Result Error(IEnumerable<string> errorMessages) => new(ResultStatus.Error)
+        public static Result Error(IEnumerable<string> errorMessages) => new(ResultStatus.Error)
         {
             Errors = errorMessages,
         };
@@ -86,7 +51,7 @@
         /// </summary>
         /// <param name="error">An optional instance of ErrorList with list of string error messages and CorrelationId.</param>
         /// <returns>A Result</returns>
-        public new static Result Error(ErrorList? error = null) => new(ResultStatus.Error)
+        public static Result Error(ErrorList? error = null) => new(ResultStatus.Error)
         {
             CorrelationId = error?.CorrelationId ?? string.Empty,
             Errors = error?.ErrorMessages ?? []
@@ -98,15 +63,15 @@
         /// </summary>
         /// <param name="errorMessage"></param>
         /// <returns>A Result</returns>
-        public new static Result Error(string errorMessage) =>
-            new(ResultStatus.Error) { Errors = new[] { errorMessage } };
+        public static Result Error(string errorMessage) =>
+            new(ResultStatus.Error) { Errors = [errorMessage] };
 
         /// <summary>
         /// Represents the validation error that prevents the underlying service from completing.
         /// </summary>
         /// <param name="validationError">The validation error encountered</param>
         /// <returns>A Result</returns>
-        public new static Result Invalid(ValidationError validationError)
+        public static Result Invalid(ValidationError validationError)
             => new(ResultStatus.Invalid) { ValidationErrors = [validationError] };
 
         /// <summary>
@@ -114,7 +79,7 @@
         /// </summary>
         /// <param name="validationErrors">A list of validation errors encountered</param>
         /// <returns>A Result</returns>
-        public new static Result Invalid(params ValidationError[] validationErrors)
+        public static Result Invalid(params ValidationError[] validationErrors)
             => new(ResultStatus.Invalid) { ValidationErrors = new List<ValidationError>(validationErrors) };
 
         /// <summary>
@@ -122,14 +87,14 @@
         /// </summary>
         /// <param name="validationErrors">A list of validation errors encountered</param>
         /// <returns>A Result</returns>
-        public new static Result Invalid(IEnumerable<ValidationError> validationErrors)
+        public static Result Invalid(IEnumerable<ValidationError> validationErrors)
             => new(ResultStatus.Invalid) { ValidationErrors = validationErrors };
 
         /// <summary>
         /// Represents the situation where a service was unable to find a requested resource.
         /// </summary>
         /// <returns>A Result</returns>
-        public new static Result NotFound() => new Result(ResultStatus.NotFound);
+        public static Result NotFound() => new Result(ResultStatus.NotFound);
 
         /// <summary>
         /// Represents the situation where a service was unable to find a requested resource.
@@ -137,7 +102,7 @@
         /// </summary>
         /// <param name="errorMessages">A list of string error messages.</param>
         /// <returns>A Result</returns>
-        public new static Result NotFound(params string[] errorMessages) =>
+        public static Result NotFound(params string[] errorMessages) =>
             new(ResultStatus.NotFound) { Errors = errorMessages };
 
         /// <summary>
@@ -145,7 +110,7 @@
         /// See also HTTP 403 Forbidden: https://en.wikipedia.org/wiki/List_of_HTTP_status_codes#4xx_client_errors
         /// </summary>
         /// <returns>A Result</returns>
-        public new static Result Forbidden() => new(ResultStatus.Forbidden);
+        public static Result Forbidden() => new(ResultStatus.Forbidden);
 
         /// <summary>
         /// The parameters to the call were correct, but the user does not have permission to perform some action.
@@ -153,7 +118,7 @@
         /// </summary>
         /// <param name="errorMessages">A list of string error messages.</param> 
         /// <returns>A Result</returns>
-        public new static Result Forbidden(params string[] errorMessages) =>
+        public static Result Forbidden(params string[] errorMessages) =>
             new(ResultStatus.Forbidden) { Errors = errorMessages };
 
         /// <summary>
@@ -161,7 +126,7 @@
         /// See also HTTP 401 Unauthorized: https://en.wikipedia.org/wiki/List_of_HTTP_status_codes#4xx_client_errors
         /// </summary>
         /// <returns>A Result</returns>
-        public new static Result Unauthorized() => new(ResultStatus.Unauthorized);
+        public static Result Unauthorized() => new(ResultStatus.Unauthorized);
 
         /// <summary>
         /// This is similar to Forbidden, but should be used when the user has not authenticated or has attempted to authenticate but failed.
@@ -169,7 +134,7 @@
         /// </summary>
         /// <param name="errorMessages">A list of string error messages.</param>  
         /// <returns>A Result</returns>
-        public new static Result Unauthorized(params string[] errorMessages) =>
+        public static Result Unauthorized(params string[] errorMessages) =>
             new(ResultStatus.Unauthorized) { Errors = errorMessages };
 
         /// <summary>
@@ -178,7 +143,7 @@
         /// See also HTTP 409 Conflict: https://en.wikipedia.org/wiki/List_of_HTTP_status_codes#4xx_client_errors
         /// </summary>
         /// <returns>A Result</returns>
-        public new static Result Conflict() => new(ResultStatus.Conflict);
+        public static Result Conflict() => new(ResultStatus.Conflict);
 
         /// <summary>
         /// Represents a situation where a service is in conflict due to the current state of a resource,
@@ -188,7 +153,7 @@
         /// </summary>
         /// <param name="errorMessages">A list of string error messages.</param>
         /// <returns>A Result</returns>
-        public new static Result Conflict(params string[] errorMessages) =>
+        public static Result Conflict(params string[] errorMessages) =>
             new(ResultStatus.Conflict) { Errors = errorMessages };
 
         /// <summary>
@@ -198,7 +163,7 @@
         /// </summary>
         /// <param name="errorMessages">A list of string error messages</param>
         /// <returns></returns>
-        public new static Result Unavailable(params string[] errorMessages) =>
+        public static Result Unavailable(params string[] errorMessages) =>
             new(ResultStatus.Unavailable) { Errors = errorMessages };
 
         /// <summary>
@@ -208,13 +173,13 @@
         /// </summary>
         /// <param name="errorMessages">A list of string error messages.</param>
         /// <returns>A Result</returns>
-        public new static Result CriticalError(params string[] errorMessages) =>
+        public static Result CriticalError(params string[] errorMessages) =>
             new(ResultStatus.CriticalError) { Errors = errorMessages };
 
         /// <summary>
         /// Represents a situation where the server has successfully fulfilled the request, but there is no content to send back in the response body.
         /// </summary>
         /// <returns>A Result object</returns>
-        public new static Result NoContent() => new(ResultStatus.NoContent);
+        public static Result NoContent() => new(ResultStatus.NoContent);
     }
 }
