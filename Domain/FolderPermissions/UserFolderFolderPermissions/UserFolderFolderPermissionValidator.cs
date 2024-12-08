@@ -1,6 +1,6 @@
 ﻿using FluentValidation;
 
-namespace Domain.UserFolderFolderPermissions;
+namespace Domain.FolderPermissions.UserFolderFolderPermissions;
 
 public class UserFolderFolderPermissionValidator : AbstractValidator<UserFolderFolderPermission>
 {

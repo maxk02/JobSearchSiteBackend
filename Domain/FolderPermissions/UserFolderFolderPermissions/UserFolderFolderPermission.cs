@@ -1,11 +1,10 @@
 ﻿using Domain._Shared.Entities;
-using Domain.FolderPermissions;
 using Domain.Folders;
 using Domain.Users;
 using Shared.Result;
 using Shared.Result.FluentValidation;
 
-namespace Domain.UserFolderFolderPermissions;
+namespace Domain.FolderPermissions.UserFolderFolderPermissions;
 
 public class UserFolderFolderPermission : BaseEntity
 {

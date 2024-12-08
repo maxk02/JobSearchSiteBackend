@@ -1,6 +1,6 @@
 ﻿using FluentValidation;
 
-namespace Domain.UserCompanyCompanyPermissions;
+namespace Domain.CompanyPermissions.UserCompanyCompanyPermissions;
 
 public class UserCompanyCompanyPermissionValidator : AbstractValidator<UserCompanyCompanyPermission>
 {

@@ -1,35 +1,34 @@
 ﻿using FluentValidation;
 using FluentValidation.Results;
 
-namespace Shared.Result.FluentValidation
+namespace Shared.Result.FluentValidation;
+
+public static class FluentValidationResultExtensions
 {
-    public static class FluentValidationResultExtensions
+    public static List<ValidationError> AsErrors(this ValidationResult valResult)
     {
-        public static List<ValidationError> AsErrors(this ValidationResult valResult)
+        var resultErrors = new List<ValidationError>();
+
+        foreach (var valFailure in valResult.Errors)
         {
-            var resultErrors = new List<ValidationError>();
-
-            foreach (var valFailure in valResult.Errors)
-            {
-                resultErrors.Add(new ValidationError(
-                    valFailure.PropertyName,
-                    valFailure.ErrorMessage,
-                    valFailure.ErrorCode,
-                    FromSeverity(valFailure.Severity)));
-            }
-
-            return resultErrors;
+            resultErrors.Add(new ValidationError(
+                valFailure.PropertyName,
+                valFailure.ErrorMessage,
+                valFailure.ErrorCode,
+                FromSeverity(valFailure.Severity)));
         }
 
-        public static ValidationSeverity FromSeverity(Severity severity)
+        return resultErrors;
+    }
+
+    public static ValidationSeverity FromSeverity(Severity severity)
+    {
+        switch (severity)
         {
-            switch (severity)
-            {
-                case Severity.Error: return ValidationSeverity.Error;
-                case Severity.Warning: return ValidationSeverity.Warning;
-                case Severity.Info: return ValidationSeverity.Info;
-                default: throw new ArgumentOutOfRangeException(nameof(severity), "Unexpected Severity");
-            }
+            case Severity.Error: return ValidationSeverity.Error;
+            case Severity.Warning: return ValidationSeverity.Warning;
+            case Severity.Info: return ValidationSeverity.Info;
+            default: throw new ArgumentOutOfRangeException(nameof(severity), "Unexpected Severity");
         }
     }
 }

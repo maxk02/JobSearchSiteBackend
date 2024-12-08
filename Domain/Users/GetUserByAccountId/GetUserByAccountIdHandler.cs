@@ -13,7 +13,7 @@ public class GetUserByAccountIdHandler(IUserRepository userRepository, ICurrentA
         
         var user = await userRepository.GetByAccountIdAsync(request.AccountId, cancellationToken);
 
-        if (user == null) return Result<GetUserByAccountIdResponse>.NotFound();
+        if (user is null) return Result<GetUserByAccountIdResponse>.NotFound();
 
         return new GetUserByAccountIdResponse(user.FirstName, user.MiddleName, user.LastName,
             user.DateOfBirth, user.Email, user.Phone, user.Bio);

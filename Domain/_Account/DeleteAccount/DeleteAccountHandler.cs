@@ -15,7 +15,11 @@ public class DeleteAccountHandler(IAccountService accountService, IUserRepositor
             return deletionResult;
         }
         
-        await userRepository.RemoveByAccountIdAsync(request.Id, CancellationToken.None);
+        var userToRemove = await userRepository.GetByAccountIdAsync(request.Id, CancellationToken.None);
+        if (userToRemove == null)
+            return Result.Error();
+        await userRepository.RemoveAsync(userToRemove, CancellationToken.None);
+        
 
         return deletionResult;
     }

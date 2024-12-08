@@ -1,17 +1,16 @@
-﻿namespace Shared.Result
+﻿namespace Shared.Result;
+
+public enum ResultStatus
 {
-    public enum ResultStatus
-    {
-        Ok,
-        Created,
-        Error,
-        Forbidden,
-        Unauthorized,
-        Invalid,
-        NotFound,
-        NoContent,
-        Conflict,
-        CriticalError,
-        Unavailable
-    }
+    Ok,
+    Created,
+    Error,
+    Forbidden,
+    Unauthorized,
+    Invalid,
+    NotFound,
+    NoContent,
+    Conflict,
+    CriticalError,
+    Unavailable
 }

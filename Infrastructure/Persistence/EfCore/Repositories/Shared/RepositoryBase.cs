@@ -1,11 +1,11 @@
 ﻿using Domain._Shared.Entities;
 using Domain._Shared.Repositories;
 using Infrastructure.Persistence.EfCore.Context;
+using Shared.Result;
 
 namespace Infrastructure.Persistence.EfCore.Repositories.Shared;
 
-public class RepositoryBase<T> : IRepository<T>
-    where T : BaseEntity
+public class RepositoryBase<T> : IRepository<T> where T : BaseEntity
 {
     protected readonly MyEfCoreDataContext DataDbContext;
 
@@ -16,46 +16,97 @@ public class RepositoryBase<T> : IRepository<T>
     
     public async Task<T?> GetByIdAsync(long id, CancellationToken cancellationToken = default)
     {
-        return await DataDbContext.Set<T>().FindAsync([id], cancellationToken: cancellationToken);
+        try
+        {
+            var value = await DataDbContext.Set<T>().FindAsync([id], cancellationToken: cancellationToken);
+        
+            return value ?? Result<T>.NotFound();
+        }
+        catch (Exception e)
+        {
+            throw;
+        }
     }
 
     public async Task<T> AddAsync(T entity, CancellationToken cancellationToken = default)
     {
-        await DataDbContext.Set<T>().AddAsync(entity, cancellationToken: cancellationToken);
-        await DataDbContext.SaveChangesAsync(cancellationToken);
+        try
+        {
+            await DataDbContext.Set<T>().AddAsync(entity, cancellationToken: cancellationToken);
+            await DataDbContext.SaveChangesAsync(cancellationToken);
 
-        return entity;
+            return entity;
+        }
+        catch (Exception e)
+        {
+            throw;
+        }
     }
 
-    public async Task<IEnumerable<T>> AddRangeAsync(ICollection<T> entities, CancellationToken cancellationToken = default)
+    public async Task<ICollection<T>> AddRangeAsync(ICollection<T> entities, CancellationToken cancellationToken = default)
     {
-        await DataDbContext.Set<T>().AddRangeAsync(entities, cancellationToken: cancellationToken);
-        await DataDbContext.SaveChangesAsync(cancellationToken);
-        
-        return entities;
+        try
+        {
+            await DataDbContext.Set<T>().AddRangeAsync(entities, cancellationToken: cancellationToken);
+            await DataDbContext.SaveChangesAsync(cancellationToken);
+
+            return entities;
+        }
+        catch (Exception e)
+        {
+            throw;
+        }
     }
 
     public async Task UpdateAsync(T entity, CancellationToken cancellationToken = default)
     {
-        DataDbContext.Set<T>().Update(entity);
-        await DataDbContext.SaveChangesAsync(cancellationToken);
+        try
+        {
+            DataDbContext.Set<T>().Update(entity);
+            await DataDbContext.SaveChangesAsync(cancellationToken);
+        }
+        catch (Exception e)
+        {
+            throw;
+        }
     }
 
     public async Task UpdateRangeAsync(ICollection<T> entities, CancellationToken cancellationToken = default)
     {
-        DataDbContext.Set<T>().UpdateRange(entities);
-        await DataDbContext.SaveChangesAsync(cancellationToken);
+        try
+        {
+            DataDbContext.Set<T>().UpdateRange(entities);
+            await DataDbContext.SaveChangesAsync(cancellationToken);
+        }
+        catch (Exception e)
+        {
+            throw;
+        }
     }
 
     public async Task RemoveAsync(T entity, CancellationToken cancellationToken = default)
     {
-        DataDbContext.Set<T>().Remove(entity);
-        await DataDbContext.SaveChangesAsync(cancellationToken);
+        try
+        {
+            DataDbContext.Set<T>().Remove(entity);
+            await DataDbContext.SaveChangesAsync(cancellationToken);
+        }
+        catch (Exception e)
+        {
+            throw;
+        }
     }
 
     public async Task RemoveRangeAsync(ICollection<T> entities, CancellationToken cancellationToken = default)
     {
-        DataDbContext.Set<T>().RemoveRange(entities);
-        await DataDbContext.SaveChangesAsync(cancellationToken);
+        try
+        {
+            DataDbContext.Set<T>().RemoveRange(entities);
+            await DataDbContext.SaveChangesAsync(cancellationToken);
+        }
+        catch (Exception e)
+        {
+            throw;
+        }
     }
 }

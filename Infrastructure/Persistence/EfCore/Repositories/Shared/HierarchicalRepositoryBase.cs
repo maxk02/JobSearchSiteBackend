@@ -3,6 +3,7 @@ using Domain._Shared.Entities.Interfaces;
 using Domain._Shared.Repositories;
 using Infrastructure.Persistence.EfCore.Context;
 using Microsoft.EntityFrameworkCore;
+using Shared.Result;
 
 namespace Infrastructure.Persistence.EfCore.Repositories.Shared;
 
@@ -20,9 +21,13 @@ public class HierarchicalRepositoryBase<T> : RepositoryBase<T>, IHierarchicalRep
             .GetTableName();
 
         if (string.IsNullOrEmpty(tableName))
-            throw new NullReferenceException();
+        {
+            throw new Exception($"The table name {tableName} could not be found.");
+        }
 
-        var sql = $@"
+        try
+        {
+            var sql = $@"
             WITH RecursiveHierarchy AS (
                 SELECT *
                 FROM {tableName}
@@ -37,12 +42,17 @@ public class HierarchicalRepositoryBase<T> : RepositoryBase<T>, IHierarchicalRep
             WHERE Id = {{1}};
         ";
 
-        var result = await DataDbContext
-            .Set<T>() //todo
-            .FromSqlRaw(sql, ancestorId, descendantId)
-            .AsNoTracking()
-            .ToListAsync(cancellationToken);
+            var result = await DataDbContext
+                .Set<T>() //todo
+                .FromSqlRaw(sql, ancestorId, descendantId)
+                .AsNoTracking()
+                .ToListAsync(cancellationToken);
 
-        return result.Any();
+            return result.Any();
+        }
+        catch (Exception e)
+        {
+            throw;
+        }
     }
 }

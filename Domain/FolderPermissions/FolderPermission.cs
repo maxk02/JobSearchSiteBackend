@@ -1,5 +1,5 @@
 ﻿using Domain._Shared.Entities;
-using Domain.UserFolderFolderPermissions;
+using Domain.FolderPermissions.UserFolderFolderPermissions;
 
 namespace Domain.FolderPermissions;
 

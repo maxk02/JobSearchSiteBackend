@@ -1,9 +1,8 @@
-﻿namespace Shared.Result
+﻿namespace Shared.Result;
+
+public enum ValidationSeverity
 {
-    public enum ValidationSeverity
-    {
-        Error,
-        Warning,
-        Info
-    }
+    Error,
+    Warning,
+    Info
 }

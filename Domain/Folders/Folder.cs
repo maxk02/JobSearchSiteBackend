@@ -1,8 +1,8 @@
 ﻿using Domain._Shared.Entities;
 using Domain._Shared.Entities.Interfaces;
 using Domain.Companies;
+using Domain.FolderPermissions.UserFolderFolderPermissions;
 using Domain.Jobs;
-using Domain.UserFolderFolderPermissions;
 using Shared.Result;
 using Shared.Result.FluentValidation;
 

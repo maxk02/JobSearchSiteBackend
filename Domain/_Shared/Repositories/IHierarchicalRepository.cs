@@ -5,5 +5,6 @@ namespace Domain._Shared.Repositories;
 
 public interface IHierarchicalRepository<T> : IRepository<T> where T : BaseEntity, IHierarchicalEntity<T>
 {
-    public Task<bool> AreAncestorAndDescendantAsync(long ancestorId, long descendantId, CancellationToken cancellationToken);
+    public Task<bool> AreAncestorAndDescendantAsync(long ancestorId, long descendantId,
+        CancellationToken cancellationToken);
 }

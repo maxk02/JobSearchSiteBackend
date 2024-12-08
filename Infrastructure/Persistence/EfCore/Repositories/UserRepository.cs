@@ -14,21 +14,16 @@ public class UserRepository : RepositoryBase<User>, IUserRepository
 
     public async Task<User?> GetByAccountIdAsync(string accountId, CancellationToken cancellationToken = default)
     {
-        var user = await DataDbContext.Users
-            .FirstOrDefaultAsync(x => x.AccountId == accountId, cancellationToken);
+        try
+        {
+            var user = await DataDbContext.Users
+                .FirstOrDefaultAsync(x => x.AccountId == accountId, cancellationToken);
 
-        return user;
-    }
-    
-    public async Task RemoveByAccountIdAsync(string accountId, CancellationToken cancellationToken = default)
-    {
-        var user = await DataDbContext.Users
-            .FirstOrDefaultAsync(x => x.AccountId == accountId, cancellationToken);
-
-        if (user is null)
-            throw new NotImplementedException();
-        
-        DataDbContext.Users.Remove(user);
-        await DataDbContext.SaveChangesAsync(cancellationToken);
+            return user;
+        }
+        catch (Exception e)
+        {
+            throw;
+        }
     }
 }

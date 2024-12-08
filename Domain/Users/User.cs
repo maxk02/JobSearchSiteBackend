@@ -2,12 +2,12 @@
 using Domain._Shared.Entities.Interfaces;
 using Domain._Shared.ValueEntities;
 using Domain.Companies;
+using Domain.CompanyPermissions.UserCompanyCompanyPermissions;
 using Domain.Cvs;
+using Domain.FolderPermissions.UserFolderFolderPermissions;
 using Domain.JobApplications;
 using Domain.Jobs;
 using Domain.PersonalFiles;
-using Domain.UserCompanyCompanyPermissions;
-using Domain.UserFolderFolderPermissions;
 using Shared.Result;
 using Shared.Result.FluentValidation;
 
@@ -179,9 +179,10 @@ public class User : BaseEntity, IPublicOrPrivateEntity
 
     
     public virtual ICollection<PersonalFile>? PersonalFiles { get; set; }
-    public virtual ICollection<JobApplication>? JobApplications { get; set; }
     public virtual ICollection<Cv>? Cvs { get; set; }
-
+    
+    
+    public virtual ICollection<JobApplication>? JobApplications { get; set; }
     public virtual ICollection<Job>? BookmarkedJobs { get; set; }
     public virtual ICollection<Company>? BookmarkedCompanies { get; set; }
 

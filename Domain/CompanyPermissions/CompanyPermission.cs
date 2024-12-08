@@ -1,5 +1,5 @@
 ﻿using Domain._Shared.Entities;
-using Domain.UserCompanyCompanyPermissions;
+using Domain.CompanyPermissions.UserCompanyCompanyPermissions;
 
 namespace Domain.CompanyPermissions;
 
