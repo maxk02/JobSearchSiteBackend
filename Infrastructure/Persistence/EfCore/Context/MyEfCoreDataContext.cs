@@ -9,7 +9,7 @@ using Domain.JobApplications;
 using Domain.Jobs;
 using Domain.Locations;
 using Domain.PersonalFiles;
-using Domain.Users;
+using Domain.UserProfiles;
 using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.Persistence.EfCore.Context;
@@ -28,7 +28,7 @@ public class MyEfCoreDataContext : DbContext
     public DbSet<Folder> Folders { get; set; }
     public DbSet<CompanyPermission> CompanyPermissions { get; set; }
     public DbSet<FolderPermission> FolderPermissions { get; set; }
-    public DbSet<User> Users { get; set; }
+    public DbSet<UserProfile> Users { get; set; }
 
 
     public MyEfCoreDataContext(DbContextOptions<MyEfCoreDataContext> options) : base(options)

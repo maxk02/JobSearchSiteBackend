@@ -1,6 +1,6 @@
 ﻿using Domain._Shared.Entities;
 using Domain.JobApplications;
-using Domain.Users;
+using Domain.UserProfiles;
 using Shared.Result;
 using Shared.Result.FluentValidation;
 
@@ -49,6 +49,6 @@ public class PersonalFile : BaseEntity
     
     public long Size { get; private set; }
     
-    public virtual User? User { get; set; }
+    public virtual UserProfile? User { get; set; }
     public virtual ICollection<JobApplication>? JobApplications { get; set; }
 }

@@ -6,7 +6,7 @@ using Shared.Result;
 
 namespace Infrastructure.Auth.AspNetCoreIdentity;
 
-public sealed class IdentityAccountService(UserManager<MyIdentityUser> userManager) : IAccountService
+public class IdentityAccountService(UserManager<MyIdentityUser> userManager) : IAccountService
 {
     public async Task<Result<AccountData>> SignInWithEmailAsync(string email, string password,
         CancellationToken cancellationToken = default)
@@ -40,9 +40,9 @@ public sealed class IdentityAccountService(UserManager<MyIdentityUser> userManag
         return aspNetIdentityResult.Succeeded ? new AccountData(user.Id, email, []) : Result<AccountData>.Error();
     }
 
-    public async Task<Result> DeleteAsync(string id, CancellationToken cancellationToken = default)
+    public async Task<Result> DeleteAsync(long userId, CancellationToken cancellationToken = default)
     {
-        var user = await userManager.FindByIdAsync(id);
+        var user = await userManager.FindByIdAsync(userId.ToString());
         if (user is null)
             return Result.NotFound();
 
@@ -51,10 +51,10 @@ public sealed class IdentityAccountService(UserManager<MyIdentityUser> userManag
         return aspNetIdentityResult.Succeeded ? Result.Success() : Result.Error();
     }
 
-    public async Task<Result> AddToRoleAsync(string userId, RoleValues roleToAdd,
+    public async Task<Result> AddToRoleAsync(long userId, RoleValues roleToAdd,
         CancellationToken cancellationToken = default)
     {
-        var user = await userManager.FindByIdAsync(userId);
+        var user = await userManager.FindByIdAsync(userId.ToString());
         if (user == null)
             return Result.NotFound();
 
@@ -63,10 +63,10 @@ public sealed class IdentityAccountService(UserManager<MyIdentityUser> userManag
         return aspNetIdentityResult.Succeeded ? Result.Success() : Result.Error();
     }
 
-    public async Task<Result> RemoveFromRoleAsync(string userId, RoleValues roleToRemove,
+    public async Task<Result> RemoveFromRoleAsync(long userId, RoleValues roleToRemove,
         CancellationToken cancellationToken = default)
     {
-        var user = await userManager.FindByIdAsync(userId);
+        var user = await userManager.FindByIdAsync(userId.ToString());
         if (user == null)
             return Result.NotFound();
 
@@ -75,10 +75,10 @@ public sealed class IdentityAccountService(UserManager<MyIdentityUser> userManag
         return aspNetIdentityResult.Succeeded ? Result.Success() : Result.Error();
     }
 
-    public async Task<Result> RemoveFromAllRolesAsync(string userId,
+    public async Task<Result> RemoveFromAllRolesAsync(long userId,
         CancellationToken cancellationToken = default)
     {
-        var user = await userManager.FindByIdAsync(userId);
+        var user = await userManager.FindByIdAsync(userId.ToString());
         if (user == null)
             return Result.NotFound();
 
@@ -89,10 +89,10 @@ public sealed class IdentityAccountService(UserManager<MyIdentityUser> userManag
         return aspNetIdentityResult.Succeeded ? Result.Success() : Result.Error();
     }
 
-    public async Task<Result> ChangePasswordAsync(string id, string oldPassword, string newPassword,
+    public async Task<Result> ChangePasswordAsync(long userId, string oldPassword, string newPassword,
         CancellationToken cancellationToken = default)
     {
-        var user = await userManager.FindByIdAsync(id);
+        var user = await userManager.FindByIdAsync(userId.ToString());
         if (user is null)
             return Result.NotFound();
 

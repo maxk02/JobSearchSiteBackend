@@ -1,13 +1,19 @@
 ﻿using Domain._Shared.Services.Auth;
-using Domain.Users;
+using Domain.UserProfiles;
 using Shared.Result;
 
 namespace Domain._Account.DeleteAccount;
 
-public class DeleteAccountHandler(IAccountService accountService, IUserRepository userRepository)
+public class DeleteAccountHandler(IAccountService accountService, IUserProfileRepository userProfileRepository,
+    ICurrentAccountService currentAccountService)
 {
     public async Task<Result> Handle(DeleteAccountRequest request, CancellationToken cancellationToken = default)
     {
+        var currentAccountId = currentAccountService.GetId();
+
+        if (currentAccountId is null)
+            return Result.Unauthorized();
+        
         var deletionResult = await accountService.DeleteAsync(request.Id, cancellationToken);
         
         if (!deletionResult.IsSuccess)
@@ -15,11 +21,11 @@ public class DeleteAccountHandler(IAccountService accountService, IUserRepositor
             return deletionResult;
         }
         
-        var userToRemove = await userRepository.GetByAccountIdAsync(request.Id, CancellationToken.None);
-        if (userToRemove == null)
-            return Result.Error();
-        await userRepository.RemoveAsync(userToRemove, CancellationToken.None);
-        
+        var userToRemove = await userProfileRepository.GetByIdAsync(request.Id, CancellationToken.None);
+        if (userToRemove is not null)
+        {
+            await userProfileRepository.RemoveAsync(userToRemove, CancellationToken.None);
+        }
 
         return deletionResult;
     }

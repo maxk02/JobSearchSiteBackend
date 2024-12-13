@@ -4,7 +4,7 @@ using Domain._Shared.ValueEntities;
 using Domain.Categories;
 using Domain.Cvs.ValueEntities;
 using Domain.Locations;
-using Domain.Users;
+using Domain.UserProfiles;
 using Shared.Result;
 using Shared.Result.FluentValidation;
 
@@ -144,7 +144,7 @@ public class Cv : BaseEntity, IPublicOrPrivateEntity
         return Result.Success();
     }
     
-    public virtual User? User { get; set; }
+    public virtual UserProfile? User { get; set; }
     public virtual ICollection<Location>? Locations { get; set; }
     public virtual ICollection<Category>? Categories { get; set; }
 

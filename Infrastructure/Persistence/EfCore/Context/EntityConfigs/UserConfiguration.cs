@@ -1,13 +1,13 @@
-﻿using Domain.Users;
+﻿using Domain.UserProfiles;
 using Infrastructure.Persistence.EfCore.Context.EntityConfigs.Shared;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Infrastructure.Persistence.EfCore.Context.EntityConfigs;
 
-public class UserConfiguration : MyBaseEntityConfiguration<User>
+public class UserConfiguration : MyBaseEntityConfiguration<UserProfile>
 {
-    public override void Configure(EntityTypeBuilder<User> builder)
+    public override void Configure(EntityTypeBuilder<UserProfile> builder)
     {
         base.Configure(builder);
         
@@ -38,10 +38,12 @@ public class UserConfiguration : MyBaseEntityConfiguration<User>
         
         builder
             .HasMany(user => user.BookmarkedJobs)
-            .WithMany(job => job.UsersWhoBookmarked);
+            .WithMany(job => job.UsersWhoBookmarked)
+            .UsingEntity(junctionEntityBuilder => junctionEntityBuilder.ToTable("JobBookmarks"));
         
         builder
             .HasMany(user => user.BookmarkedCompanies)
-            .WithMany(company => company.UsersWhoBookmarked);
+            .WithMany(company => company.UsersWhoBookmarked)
+            .UsingEntity(junctionEntityBuilder => junctionEntityBuilder.ToTable("CompanyBookmarks"));
     }
 }

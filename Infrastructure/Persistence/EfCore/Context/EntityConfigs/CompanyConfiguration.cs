@@ -33,6 +33,7 @@ public class CompanyConfiguration : MyBaseEntityConfiguration<Company>
 
         builder
             .HasMany(company => company.UsersWhoBookmarked)
-            .WithMany(user => user.BookmarkedCompanies);
+            .WithMany(user => user.BookmarkedCompanies)
+            .UsingEntity(junctionEntityBuilder => junctionEntityBuilder.ToTable("CompanyBookmarks"));
     }
 }

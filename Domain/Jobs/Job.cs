@@ -7,7 +7,7 @@ using Domain.ContractTypes;
 using Domain.Folders;
 using Domain.JobApplications;
 using Domain.Locations;
-using Domain.Users;
+using Domain.UserProfiles;
 using Shared.Result;
 using Shared.Result.FluentValidation;
 
@@ -212,7 +212,7 @@ public class Job : BaseEntity, IPublicOrPrivateEntity
     public virtual ICollection<ContractType>? ContractTypes { get; set; }
     public virtual ICollection<Location>? Locations { get; set; }
     
-    public virtual ICollection<User>? UsersWhoBookmarked { get; set; }
+    public virtual ICollection<UserProfile>? UsersWhoBookmarked { get; set; }
     
     public virtual ICollection<Folder>? Folders { get; set; }
 }

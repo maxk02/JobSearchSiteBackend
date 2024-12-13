@@ -16,8 +16,8 @@
 
     <ItemGroup>
       <Folder Include="Companies\AddCompany\" />
-      <Folder Include="Companies\GetBookmarkedCompaniesForUser\" />
       <Folder Include="Companies\GetCompanyById\" />
+      <Folder Include="Companies\GetJobs\" />
       <Folder Include="Companies\RemoveCompany\" />
       <Folder Include="Companies\SearchCompanies\" />
       <Folder Include="CompanyPermissions\UpdateCompanyPermissionsForUser\" />
@@ -30,18 +30,13 @@
       <Folder Include="JobApplications\RemoveJobApplication\" />
       <Folder Include="JobApplications\UpdatePersonalFilesInApplication\" />
       <Folder Include="Jobs\AddJob\" />
-      <Folder Include="Jobs\GetBookmarkedJobsForUser\" />
       <Folder Include="Jobs\GetJobById\" />
-      <Folder Include="Jobs\GetJobsForCompany\" />
       <Folder Include="Jobs\RemoveJob\" />
-      <Folder Include="Jobs\SearchJobs\" />
+      <Folder Include="Jobs\GetJobs\" />
       <Folder Include="PersonalFiles\AddPersonalFile\" />
       <Folder Include="PersonalFiles\RemovePersonalFile\" />
       <Folder Include="PersonalFiles\UpdatePersonalFile\" />
-      <Folder Include="Users\AddCompanyBookmark\" />
-      <Folder Include="Users\AddJobBookmark\" />
-      <Folder Include="Users\RemoveCompanyBookmark\" />
-      <Folder Include="Users\RemoveJobBookmark\" />
+      <Folder Include="UserProfiles\UseCases\GetBookmarkedJobs\" />
     </ItemGroup>
 
 </Project>

@@ -10,10 +10,10 @@ public class ChangePasswordHandler(IAccountService accountService, ICurrentAccou
         var currentUserId = currentAccountService.GetId();
 
         if (currentUserId is null)
-            return Result.Error();
+            return Result.Unauthorized();
         
         var changePasswordResult = await accountService
-            .ChangePasswordAsync(currentUserId, request.OldPassword, request.NewPassword, cancellationToken);
+            .ChangePasswordAsync(currentUserId.Value, request.OldPassword, request.NewPassword, cancellationToken);
         
         return changePasswordResult;
     }

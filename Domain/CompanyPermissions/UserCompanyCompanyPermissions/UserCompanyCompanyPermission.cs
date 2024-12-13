@@ -1,6 +1,6 @@
 ﻿using Domain._Shared.Entities;
 using Domain.Companies;
-using Domain.Users;
+using Domain.UserProfiles;
 using Shared.Result;
 using Shared.Result.FluentValidation;
 
@@ -32,7 +32,7 @@ public class UserCompanyCompanyPermission : BaseEntity
     public long CompanyId { get; private set; }
     public long PermissionId { get; private set; }
 
-    public virtual User? User { get; set; }
+    public virtual UserProfile? User { get; set; }
     public virtual Company? Company { get; set; }
     public virtual CompanyPermission? CompanyPermission { get; set; }
 }

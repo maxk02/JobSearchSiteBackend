@@ -30,7 +30,7 @@ public class JwtAccountTokenGenerationService(IConfiguration configuration) : IA
             throw new NotImplementedException();
         
         List<Claim> claims = [
-            new(JwtRegisteredClaimNames.Sub, accountData.Id),
+            new(JwtRegisteredClaimNames.Sub, accountData.Id.ToString()),
             new(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
             new(JwtRegisteredClaimNames.Email, accountData.Email)
         ];

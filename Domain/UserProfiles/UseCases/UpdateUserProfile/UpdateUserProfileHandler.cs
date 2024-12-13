@@ -1,25 +1,27 @@
 ﻿using Domain._Shared.Services.Auth;
 using Shared.Result;
 
-namespace Domain.Users.UpdateUser;
+namespace Domain.UserProfiles.UseCases.UpdateUserProfile;
 
-public class UpdateUserHandler(IUserRepository userRepository, ICurrentAccountService currentAccountService)
+public class UpdateUserProfileHandler(IUserProfileRepository userProfileRepository, ICurrentAccountService currentAccountService)
 {
-    public async Task<Result> Handle(UpdateUserRequest request,
+    public async Task<Result> Handle(UpdateUserProfileRequest request,
         CancellationToken cancellationToken = default)
     {
         var currentAccountId = currentAccountService.GetId();
 
-        if (currentAccountId is null || currentAccountId != request.AccountId)
-            return Result.Unauthorized();
+        if (currentAccountId is null) return Result.Unauthorized();
         
-        var existingUserObject = await userRepository.GetByAccountIdAsync(currentAccountId, cancellationToken);
+        if (currentAccountId != request.Id) return Result.Forbidden();
+        
+        
+        var existingUserObject = await userProfileRepository.GetByIdAsync(currentAccountId.Value, cancellationToken);
         
         if (existingUserObject is null)
-            return Result.NotFound();
+            return Result.Error();
         
-        var updateUserResult = User.Create(
-            request.AccountId,
+        var updateUserResult = UserProfile.Create(
+            request.Id,
             request.FirstName ?? existingUserObject.FirstName,
             request.MiddleName ?? existingUserObject.MiddleName,
             request.LastName ?? existingUserObject.LastName,
@@ -31,7 +33,7 @@ public class UpdateUserHandler(IUserRepository userRepository, ICurrentAccountSe
 
         if (updateUserResult.Value is null) return Result.WithMetadataFrom(updateUserResult);
             
-        await userRepository.UpdateAsync(updateUserResult.Value, cancellationToken);
+        await userProfileRepository.UpdateAsync(updateUserResult.Value, cancellationToken);
         
         return Result.Success();
     }

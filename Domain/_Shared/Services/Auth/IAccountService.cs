@@ -9,15 +9,15 @@ public interface IAccountService
         CancellationToken cancellationToken = default);
     public Task<Result<AccountData>> RegisterAsync(string email, string password,
         CancellationToken cancellationToken = default);
-    public Task<Result> DeleteAsync(string id,
+    public Task<Result> DeleteAsync(long userId,
         CancellationToken cancellationToken = default);
-    public Task<Result> AddToRoleAsync(string userId, RoleValues roleToAdd,
+    public Task<Result> AddToRoleAsync(long userId, RoleValues roleToAdd,
         CancellationToken cancellationToken = default);
-    public Task<Result> RemoveFromRoleAsync(string userId, RoleValues roleToRemove,
+    public Task<Result> RemoveFromRoleAsync(long userId, RoleValues roleToRemove,
         CancellationToken cancellationToken = default);
-    public Task<Result> RemoveFromAllRolesAsync(string userId,
+    public Task<Result> RemoveFromAllRolesAsync(long userId,
         CancellationToken cancellationToken = default);
-    public Task<Result> ChangePasswordAsync(string id, string oldPassword, string newPassword,
+    public Task<Result> ChangePasswordAsync(long userId, string oldPassword, string newPassword,
         CancellationToken cancellationToken = default);
     public Task<Result<string>> GenerateEmailConfirmationTokenByEmailAsync(string email,
         CancellationToken cancellationToken = default);

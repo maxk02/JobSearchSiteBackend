@@ -4,7 +4,7 @@ using Domain.CompanyPermissions.UserCompanyCompanyPermissions;
 using Domain.Countries;
 using Domain.Folders;
 using Domain.Jobs;
-using Domain.Users;
+using Domain.UserProfiles;
 using Shared.Result;
 using Shared.Result.FluentValidation;
 
@@ -82,6 +82,6 @@ public class Company : BaseEntity, IPublicOrPrivateEntity
     public virtual ICollection<Folder>? Folders { get; set; }
     public virtual ICollection<Job>? Jobs { get; set; }
     
-    public virtual ICollection<User>? UsersWhoBookmarked { get; set; }
+    public virtual ICollection<UserProfile>? UsersWhoBookmarked { get; set; }
     public virtual ICollection<UserCompanyCompanyPermission>? UserCompanyCompanyPermissions { get; set; }
 }

@@ -2,7 +2,7 @@
 
 public interface ICurrentAccountService
 {
-    public string? GetId();
+    public long? GetId();
     public string? GetEmail();
-    public List<string> GetRoles();
+    public List<string>? GetRoles();
 }

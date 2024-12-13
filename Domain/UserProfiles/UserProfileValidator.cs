@@ -3,13 +3,13 @@ using FluentValidation;
 using Shared.FluentValidationAddons;
 using Shared.FluentValidationAddons.StringFiltering;
 
-namespace Domain.Users;
+namespace Domain.UserProfiles;
 
-public class UserValidator : AbstractValidator<User>
+public class UserProfileValidator : AbstractValidator<UserProfile>
 {
-    public UserValidator()
+    public UserProfileValidator()
     {
-        RuleFor(user => user.AccountId).NotEmpty();
+        RuleFor(x => x.Id).GreaterThanOrEqualTo(1);
         
         RuleFor(x => x.FirstName).Length(1, 40)
             .WhitelistPolicy(new WhitelistPolicy().Letters());

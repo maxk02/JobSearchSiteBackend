@@ -11,26 +11,26 @@ using Domain.PersonalFiles;
 using Shared.Result;
 using Shared.Result.FluentValidation;
 
-namespace Domain.Users;
+namespace Domain.UserProfiles;
 
-public class User : BaseEntity, IPublicOrPrivateEntity
+public class UserProfile : BaseEntity, IPublicOrPrivateEntity
 {
-    public static UserValidator Validator { get; } = new();
+    public static UserProfileValidator ProfileValidator { get; } = new();
 
-    public static Result<User> Create(string accountId, string firstName, string? middleName, string lastName,
+    public static Result<UserProfile> Create(long accountId, string firstName, string? middleName, string lastName,
         DateOnly? dateOfBirth, string email, Phone? phone, string? bio)
     {
-        var user = new User(accountId, firstName, middleName, lastName, dateOfBirth, email, phone, bio);
+        var user = new UserProfile(accountId, firstName, middleName, lastName, dateOfBirth, email, phone, bio);
 
-        var validationResult = Validator.Validate(user);
+        var validationResult = ProfileValidator.Validate(user);
 
-        return validationResult.IsValid ? user : Result<User>.Invalid(validationResult.AsErrors());
+        return validationResult.IsValid ? user : Result<UserProfile>.Invalid(validationResult.AsErrors());
     }
 
-    private User(string accountId, string firstName, string? middleName, string lastName,
+    private UserProfile(long accountId, string firstName, string? middleName, string lastName,
         DateOnly? dateOfBirth, string email, Phone? phone, string? bio)
     {
-        AccountId = accountId;
+        Id = accountId;
         FirstName = firstName;
         MiddleName = middleName;
         LastName = lastName;
@@ -39,8 +39,6 @@ public class User : BaseEntity, IPublicOrPrivateEntity
         Phone = phone;
         Bio = bio;
     }
-    
-    public string AccountId { get; private set; }
 
     public string FirstName { get; private set; }
 
@@ -49,7 +47,7 @@ public class User : BaseEntity, IPublicOrPrivateEntity
         var oldValue = FirstName;
         FirstName = newValue;
 
-        var validationResult = Validator.Validate(this);
+        var validationResult = ProfileValidator.Validate(this);
         if (!validationResult.IsValid)
         {
             FirstName = oldValue;
@@ -66,7 +64,7 @@ public class User : BaseEntity, IPublicOrPrivateEntity
         var oldValue = MiddleName;
         MiddleName = newValue;
 
-        var validationResult = Validator.Validate(this);
+        var validationResult = ProfileValidator.Validate(this);
         if (!validationResult.IsValid)
         {
             MiddleName = oldValue;
@@ -83,7 +81,7 @@ public class User : BaseEntity, IPublicOrPrivateEntity
         var oldValue = LastName;
         LastName = newValue;
 
-        var validationResult = Validator.Validate(this);
+        var validationResult = ProfileValidator.Validate(this);
         if (!validationResult.IsValid)
         {
             LastName = oldValue;
@@ -100,7 +98,7 @@ public class User : BaseEntity, IPublicOrPrivateEntity
         var oldValue = DateOfBirth;
         DateOfBirth = newValue;
 
-        var validationResult = Validator.Validate(this);
+        var validationResult = ProfileValidator.Validate(this);
         if (!validationResult.IsValid)
         {
             DateOfBirth = oldValue;
@@ -117,7 +115,7 @@ public class User : BaseEntity, IPublicOrPrivateEntity
         var oldValue = Email;
         Email = newValue;
 
-        var validationResult = Validator.Validate(this);
+        var validationResult = ProfileValidator.Validate(this);
         if (!validationResult.IsValid)
         {
             Email = oldValue;
@@ -134,7 +132,7 @@ public class User : BaseEntity, IPublicOrPrivateEntity
         var oldValue = Phone;
         Phone = newValue;
 
-        var validationResult = Validator.Validate(this);
+        var validationResult = ProfileValidator.Validate(this);
         if (!validationResult.IsValid)
         {
             Phone = oldValue;
@@ -151,7 +149,7 @@ public class User : BaseEntity, IPublicOrPrivateEntity
         var oldValue = Bio;
         Bio = newValue;
 
-        var validationResult = Validator.Validate(this);
+        var validationResult = ProfileValidator.Validate(this);
         if (!validationResult.IsValid)
         {
             Bio = oldValue;

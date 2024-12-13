@@ -1,39 +1,35 @@
 ﻿using System.IdentityModel.Tokens.Jwt;
+using System.Security.Authentication;
 using System.Security.Claims;
 using Domain._Shared.Services.Auth;
 using Microsoft.AspNetCore.Http;
 
-
 namespace Infrastructure.Auth;
 
-public class JwtCurrentAccountService : ICurrentAccountService
+public class JwtCurrentAccountService(IHttpContextAccessor httpContextAccessor) : ICurrentAccountService
 {
-    private readonly IHttpContextAccessor _httpContextAccessor;
-
-    public JwtCurrentAccountService(IHttpContextAccessor httpContextAccessor)
+    public long? GetId()
     {
-        _httpContextAccessor = httpContextAccessor;
+        string? userIdString = httpContextAccessor.HttpContext?.User.FindFirstValue(JwtRegisteredClaimNames.Sub);
+
+        if (string.IsNullOrEmpty(userIdString))
+            return null;
+
+        return long.TryParse(userIdString, out long userId) ? userId : null;
     }
 
-    public string? GetId()
-    {
-        string? userIdString = _httpContextAccessor.HttpContext?.User.FindFirstValue(JwtRegisteredClaimNames.Sub);
-
-        return string.IsNullOrEmpty(userIdString) ? null : userIdString;
-    }
-    
     public string? GetEmail()
     {
-        string? emailString = _httpContextAccessor.HttpContext?.User.FindFirstValue(JwtRegisteredClaimNames.Email);
+        string? emailString = httpContextAccessor.HttpContext?.User.FindFirstValue(JwtRegisteredClaimNames.Email);
 
         return string.IsNullOrEmpty(emailString) ? null : emailString;
     }
 
-    public List<string> GetRoles()
+    public List<string>? GetRoles()
     {
-        List<string> roles = _httpContextAccessor.HttpContext?.User.FindAll(ClaimTypes.Role)
-            .Select(claim => claim.Value).ToList() ?? [];
-        
+        var roles = httpContextAccessor.HttpContext?.User.FindAll(ClaimTypes.Role)
+            .Select(claim => claim.Value).ToList();
+
         return roles;
     }
 }

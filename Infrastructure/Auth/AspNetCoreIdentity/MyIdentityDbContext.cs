@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.Auth.AspNetCoreIdentity;
 
-public class MyIdentityDbContext : IdentityDbContext<MyIdentityUser>
+public class MyIdentityDbContext : IdentityDbContext<MyIdentityUser, MyIdentityRole, long>
 {
     public MyIdentityDbContext(DbContextOptions<MyIdentityDbContext> options) : base(options) { }
 }

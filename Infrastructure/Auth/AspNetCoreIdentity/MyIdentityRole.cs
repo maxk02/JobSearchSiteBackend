@@ -2,4 +2,4 @@
 
 namespace Infrastructure.Auth.AspNetCoreIdentity;
 
-public class MyIdentityUser : IdentityUser<long>;
+public class MyIdentityRole : IdentityRole<long>;

@@ -40,7 +40,8 @@ public class JobConfiguration : MyBaseEntityConfiguration<Job>
 
         builder
             .HasMany(job => job.UsersWhoBookmarked)
-            .WithMany(user => user.BookmarkedJobs);
+            .WithMany(user => user.BookmarkedJobs)
+            .UsingEntity(junctionEntityBuilder => junctionEntityBuilder.ToTable("JobBookmarks"));
         
         builder.OwnsOne(job => job.SalaryRecord,
             ownedNavigationBuilder => ownedNavigationBuilder.ToJson());

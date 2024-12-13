@@ -2,7 +2,7 @@
 using Domain._Shared.Entities.Interfaces;
 using Domain.Countries;
 using Domain.Jobs;
-using Domain.Users;
+using Domain.UserProfiles;
 using Shared.Result;
 using Shared.Result.FluentValidation;
 
@@ -85,6 +85,6 @@ public class Location : BaseEntity, IHierarchicalEntity<Location>
     public virtual Country? Country { get; set; }
     public virtual Location? Parent { get; set; }
     public virtual ICollection<Location>? Children { get; set; }
-    public virtual ICollection<User>? Users { get; set; }
+    public virtual ICollection<UserProfile>? Users { get; set; }
     public virtual ICollection<Job>? Jobs { get; set; }
 }

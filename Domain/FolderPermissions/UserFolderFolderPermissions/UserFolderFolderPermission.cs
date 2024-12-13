@@ -1,6 +1,6 @@
 ﻿using Domain._Shared.Entities;
 using Domain.Folders;
-using Domain.Users;
+using Domain.UserProfiles;
 using Shared.Result;
 using Shared.Result.FluentValidation;
 
@@ -32,7 +32,7 @@ public class UserFolderFolderPermission : BaseEntity
     public long FolderId { get; private set; }
     public long PermissionId { get; private set; }
     
-    public virtual User? User { get; set; }
+    public virtual UserProfile? User { get; set; }
     public virtual Folder? Folder { get; set; }
     public virtual FolderPermission? FolderPermission { get; set; }
 }
