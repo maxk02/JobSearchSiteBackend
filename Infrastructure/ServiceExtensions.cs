@@ -1,4 +1,4 @@
-﻿using Domain._Shared.Services.EmailSender;
+﻿using Core._Shared.Services.EmailSender;
 using Infrastructure.Auth.AspNetCoreIdentity;
 using Infrastructure.EmailSender.SendGrid;
 using Infrastructure.Persistence.EfCore.Context;

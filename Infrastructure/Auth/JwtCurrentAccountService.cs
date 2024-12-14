@@ -1,7 +1,7 @@
 ﻿using System.IdentityModel.Tokens.Jwt;
 using System.Security.Authentication;
 using System.Security.Claims;
-using Domain._Shared.Services.Auth;
+using Core._Shared.Services.Auth;
 using Microsoft.AspNetCore.Http;
 
 namespace Infrastructure.Auth;

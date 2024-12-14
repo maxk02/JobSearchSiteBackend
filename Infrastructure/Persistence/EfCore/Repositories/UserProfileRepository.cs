@@ -1,6 +1,6 @@
-﻿using Domain.Companies;
-using Domain.Jobs;
-using Domain.UserProfiles;
+﻿using Core.Companies;
+using Core.Jobs;
+using Core.UserProfiles;
 using Infrastructure.Persistence.EfCore.Context;
 using Infrastructure.Persistence.EfCore.Repositories.Shared;
 using Microsoft.EntityFrameworkCore;

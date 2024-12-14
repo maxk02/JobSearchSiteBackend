@@ -1,4 +1,4 @@
-﻿using Domain.PersonalFiles;
+﻿using Core.PersonalFiles;
 using Infrastructure.Persistence.EfCore.Context.EntityConfigs.Shared;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;

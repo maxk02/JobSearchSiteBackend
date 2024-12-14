@@ -1,4 +1,4 @@
-﻿using Domain._Shared.Services.EmailSender;
+﻿using Core._Shared.Services.EmailSender;
 using SendGrid;
 using SendGrid.Helpers.Mail;
 using Shared.Result;

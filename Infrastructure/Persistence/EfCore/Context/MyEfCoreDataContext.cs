@@ -1,15 +1,15 @@
-﻿using Domain.Categories;
-using Domain.Companies;
-using Domain.CompanyPermissions;
-using Domain.ContractTypes;
-using Domain.Countries;
-using Domain.FolderPermissions;
-using Domain.Folders;
-using Domain.JobApplications;
-using Domain.Jobs;
-using Domain.Locations;
-using Domain.PersonalFiles;
-using Domain.UserProfiles;
+﻿using Core.Categories;
+using Core.Companies;
+using Core.CompanyPermissions;
+using Core.ContractTypes;
+using Core.Countries;
+using Core.FolderPermissions;
+using Core.Folders;
+using Core.JobApplications;
+using Core.Jobs;
+using Core.Locations;
+using Core.PersonalFiles;
+using Core.UserProfiles;
 using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.Persistence.EfCore.Context;

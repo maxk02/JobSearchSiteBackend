@@ -1,4 +1,4 @@
-﻿using Domain.Countries;
+﻿using Core.Countries;
 using Infrastructure.Persistence.EfCore.Context.EntityConfigs.Shared;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
