@@ -1,4 +1,4 @@
-﻿using Core._Shared.Entities;
+﻿using Core.Domains._Shared.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 

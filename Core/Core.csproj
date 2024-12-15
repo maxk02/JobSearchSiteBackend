@@ -15,28 +15,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="Companies\AddCompany\" />
-      <Folder Include="Companies\GetCompanyById\" />
-      <Folder Include="Companies\GetJobs\" />
-      <Folder Include="Companies\RemoveCompany\" />
-      <Folder Include="Companies\SearchCompanies\" />
-      <Folder Include="CompanyPermissions\UpdateCompanyPermissionsForUser\" />
-      <Folder Include="Cvs\AddCv\" />
-      <Folder Include="Cvs\RemoveCv\" />
-      <Folder Include="FolderPermissions\UpdateFolderPermissionsForUser\" />
-      <Folder Include="Folders\AddFolder\" />
-      <Folder Include="Folders\RemoveFolder\" />
-      <Folder Include="JobApplications\AddJobApplication\" />
-      <Folder Include="JobApplications\RemoveJobApplication\" />
-      <Folder Include="JobApplications\UpdatePersonalFilesInApplication\" />
-      <Folder Include="Jobs\AddJob\" />
-      <Folder Include="Jobs\GetJobById\" />
-      <Folder Include="Jobs\RemoveJob\" />
-      <Folder Include="Jobs\GetJobs\" />
-      <Folder Include="PersonalFiles\AddPersonalFile\" />
-      <Folder Include="PersonalFiles\RemovePersonalFile\" />
-      <Folder Include="PersonalFiles\UpdatePersonalFile\" />
-      <Folder Include="UserProfiles\UseCases\GetBookmarkedJobs\" />
+      <Folder Include="Domains\" />
     </ItemGroup>
 
 </Project>

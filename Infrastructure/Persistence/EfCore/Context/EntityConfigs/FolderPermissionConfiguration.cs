@@ -1,4 +1,4 @@
-﻿using Core.FolderPermissions;
+﻿using Core.Domains.FolderPermissions;
 using Infrastructure.Persistence.EfCore.Context.EntityConfigs.Shared;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;

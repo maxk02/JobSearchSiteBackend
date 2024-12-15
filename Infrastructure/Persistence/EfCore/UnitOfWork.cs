@@ -1,4 +1,4 @@
-﻿using Core._Shared.Repositories;
+﻿using Core.Domains._Shared.UnitOfWork;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
 

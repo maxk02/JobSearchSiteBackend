@@ -1,4 +1,4 @@
-﻿using Core.JobApplications;
+﻿using Core.Domains.JobApplications;
 using Infrastructure.Persistence.EfCore.Context.EntityConfigs.Shared;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;

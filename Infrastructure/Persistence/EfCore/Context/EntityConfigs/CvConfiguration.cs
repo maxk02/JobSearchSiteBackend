@@ -1,4 +1,4 @@
-﻿using Core.Cvs;
+﻿using Core.Domains.Cvs;
 using Infrastructure.Persistence.EfCore.Context.EntityConfigs.Shared;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;

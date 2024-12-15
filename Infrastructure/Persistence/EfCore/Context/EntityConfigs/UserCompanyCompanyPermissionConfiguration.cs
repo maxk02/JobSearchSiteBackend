@@ -1,4 +1,4 @@
-﻿using Core.CompanyPermissions.UserCompanyCompanyPermissions;
+﻿using Core.Domains.CompanyPermissions.UserCompanyCompanyPermissions;
 using Infrastructure.Persistence.EfCore.Context.EntityConfigs.Shared;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;

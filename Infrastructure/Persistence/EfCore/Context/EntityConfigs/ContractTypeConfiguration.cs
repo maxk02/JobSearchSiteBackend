@@ -1,4 +1,4 @@
-﻿using Core.ContractTypes;
+﻿using Core.Domains.ContractTypes;
 using Infrastructure.Persistence.EfCore.Context.EntityConfigs.Shared;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
