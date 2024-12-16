@@ -1,3 +1,3 @@
-﻿namespace Core.Domains.Accounts.ConfirmEmail;
+﻿namespace Core.Domains.Accounts.UseCases.ConfirmEmail;
 
 public record ConfirmEmailRequest(string Token);

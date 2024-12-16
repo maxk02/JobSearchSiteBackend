@@ -1,3 +1,3 @@
-﻿namespace Core.Domains.Accounts.SendPasswordResetLinkByEmail;
+﻿namespace Core.Domains.Accounts.UseCases.SendPasswordResetLinkByEmail;
 
 public record SendPasswordResetLinkByEmailRequest(string Email);

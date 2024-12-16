@@ -1,3 +1,3 @@
-﻿namespace Core.Domains.Accounts.DeleteAccount;
+﻿namespace Core.Domains.Accounts.UseCases.DeleteAccount;
 
 public record DeleteAccountRequest(long Id);

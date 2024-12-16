@@ -1,11 +1,11 @@
-﻿using Core.Domains.Accounts.ChangePassword;
-using Core.Domains.Accounts.ConfirmEmail;
-using Core.Domains.Accounts.CreateAccount;
-using Core.Domains.Accounts.DeleteAccount;
-using Core.Domains.Accounts.ResetPassword;
-using Core.Domains.Accounts.SendEmailConfirmationLink;
-using Core.Domains.Accounts.SendPasswordResetLinkByEmail;
-using Core.Domains.Accounts.SignInWithEmail;
+﻿using Core.Domains.Accounts.UseCases.ChangePassword;
+using Core.Domains.Accounts.UseCases.ConfirmEmail;
+using Core.Domains.Accounts.UseCases.CreateAccount;
+using Core.Domains.Accounts.UseCases.DeleteAccount;
+using Core.Domains.Accounts.UseCases.ResetPassword;
+using Core.Domains.Accounts.UseCases.SendEmailConfirmationLink;
+using Core.Domains.Accounts.UseCases.SendPasswordResetLinkByEmail;
+using Core.Domains.Accounts.UseCases.SignInWithEmail;
 using Shared.Result;
 
 namespace Core.Domains.Accounts;

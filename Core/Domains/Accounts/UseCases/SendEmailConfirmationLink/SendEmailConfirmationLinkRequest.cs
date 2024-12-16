@@ -1,3 +1,3 @@
-﻿namespace Core.Domains.Accounts.SendEmailConfirmationLink;
+﻿namespace Core.Domains.Accounts.UseCases.SendEmailConfirmationLink;
 
 public record SendEmailConfirmationLinkRequest(string Email);
