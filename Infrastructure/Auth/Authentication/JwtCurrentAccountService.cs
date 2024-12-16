@@ -1,6 +1,7 @@
 ﻿using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using Core.Services.Auth.Authentication;
+using Core.Services.Auth.Authentication.Exceptions;
 using Microsoft.AspNetCore.Http;
 
 namespace Infrastructure.Auth.Authentication;
@@ -17,11 +18,23 @@ public class JwtCurrentAccountService(IHttpContextAccessor httpContextAccessor) 
         return long.TryParse(userIdString, out long userId) ? userId : null;
     }
 
+    public long GetIdOrThrow()
+    {
+        var id = GetId();
+        return id ?? throw new CurrentAccountDataNotAvailableException();
+    }
+
     public string? GetEmail()
     {
         string? emailString = httpContextAccessor.HttpContext?.User.FindFirstValue(JwtRegisteredClaimNames.Email);
 
         return string.IsNullOrEmpty(emailString) ? null : emailString;
+    }
+    
+    public string GetEmailOrThrow()
+    {
+        var email = GetEmail();
+        return email ?? throw new CurrentAccountDataNotAvailableException();
     }
 
     public List<string>? GetRoles()
@@ -30,5 +43,23 @@ public class JwtCurrentAccountService(IHttpContextAccessor httpContextAccessor) 
             .Select(claim => claim.Value).ToList();
 
         return roles;
+    }
+
+    public List<string> GetRolesOrThrow()
+    {
+        var roles = GetRoles();
+        return roles ?? throw new CurrentAccountDataNotAvailableException();
+    }
+
+    public bool IsLoggedIn()
+    {
+        return httpContextAccessor.HttpContext?.User.Identity?.IsAuthenticated ?? false;
+    }
+
+    public void ThrowIfNotLoggedIn()
+    {
+        var isLoggedIn = IsLoggedIn();
+        if (!isLoggedIn)
+            throw new CurrentAccountDataNotAvailableException();
     }
 }

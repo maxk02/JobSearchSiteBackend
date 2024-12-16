@@ -7,7 +7,7 @@ using Shared.Result;
 
 namespace Infrastructure.Auth.AccountStorage.AspNetCoreIdentity;
 
-public class IdentityAccountService(UserManager<MyIdentityUser> userManager) : IAccountService
+public class IdentityAccountStorageService(UserManager<MyIdentityUser> userManager) : IAccountStorageService
 {
     public async Task<Result<AccountData>> SignInWithEmailAsync(string email, string password,
         CancellationToken cancellationToken = default)
