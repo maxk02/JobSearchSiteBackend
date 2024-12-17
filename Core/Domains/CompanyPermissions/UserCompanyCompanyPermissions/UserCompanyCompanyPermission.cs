@@ -21,7 +21,7 @@ public class UserCompanyCompanyPermission : BaseEntity
             : Result<UserCompanyCompanyPermission>.Invalid(validationResult.AsErrors());
     }
 
-    private UserCompanyCompanyPermission(long userId, long companyId, long permissionId)
+    public UserCompanyCompanyPermission(long userId, long companyId, long permissionId)
     {
         UserId = userId;
         CompanyId = companyId;

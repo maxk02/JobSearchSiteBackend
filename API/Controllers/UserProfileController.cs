@@ -9,9 +9,9 @@ namespace API.Controllers;
 [Route("api/user-profiles")]
 public class UserProfileController(IUserProfileRepository userProfileRepository) : ControllerBase
 {
-    [HttpGet("{Id}")]
+    [HttpGet("{id:long:min(1)}")]
     [Authorize]
-    public async Task<ActionResult<GetUserProfileByIdResponse>> GetUserProfileById(GetUserProfileByIdRequest request, 
+    public async Task<ActionResult<GetUserProfileByIdResponse>> GetUserProfileById(long id, 
         CancellationToken cancellationToken = default)
     {
         // var result = await new GetUserProfileByIdHandler().Handle(request, cancellationToken);

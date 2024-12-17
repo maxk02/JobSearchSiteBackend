@@ -16,6 +16,9 @@
 
     <ItemGroup>
       <Folder Include="Domains\" />
+      <Folder Include="Domains\Companies\UseCases\GetJobs\" />
+      <Folder Include="Domains\Companies\UseCases\RemoveCompany\" />
+      <Folder Include="Domains\Companies\UseCases\SearchCompanies\" />
     </ItemGroup>
 
 </Project>
