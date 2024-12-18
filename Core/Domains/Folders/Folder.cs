@@ -12,7 +12,7 @@ public class Folder : BaseEntity, IHierarchicalEntity<Folder>
 {
     public static FolderValidator Validator { get; } = new();
 
-    public Result<Folder> Create(long? companyId, long? parentId, string name, string? description)
+    public static Result<Folder> Create(long? companyId, long? parentId, string? name, string? description)
     {
         var folder = new Folder(companyId, parentId, name, description);
 
@@ -21,7 +21,7 @@ public class Folder : BaseEntity, IHierarchicalEntity<Folder>
         return validationResult.IsValid ? folder : Result<Folder>.Invalid();
     }
     
-    private Folder(long? companyId, long? parentId, string name, string? description)
+    private Folder(long? companyId, long? parentId, string? name, string? description)
     {
         CompanyId = companyId;
         ParentId = parentId;
@@ -33,7 +33,7 @@ public class Folder : BaseEntity, IHierarchicalEntity<Folder>
     
     public long? ParentId { get; private set; }
 
-    public string Name { get; private set; }
+    public string? Name { get; private set; }
 
     public Result SetName(string newValue)
     {

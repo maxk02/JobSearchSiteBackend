@@ -4,12 +4,10 @@ public abstract class BaseEntity
 {
     protected BaseEntity() {}
 
-    protected BaseEntity(long id, Guid guidIdentifier)
+    protected BaseEntity(long id)
     {
         Id = id;
-        GuidIdentifier = guidIdentifier;
     }
 
     public long Id { get; protected set; }
-    public Guid GuidIdentifier { get; protected set; } = Guid.NewGuid();
 }

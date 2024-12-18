@@ -10,9 +10,5 @@ public class MyBaseEntityConfiguration<T> : IEntityTypeConfiguration<T> where T 
     {
         builder
             .HasKey(entity => entity.Id);
-
-        builder
-            .HasIndex(entity => entity.GuidIdentifier)
-            .IsUnique();
     }
 }

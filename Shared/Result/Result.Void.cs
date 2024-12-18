@@ -20,6 +20,7 @@ public class Result : IResult
     [JsonInclude] public ResultStatus Status { get; protected set; } = ResultStatus.Ok;
 
     public bool IsSuccess => Status is ResultStatus.Ok or ResultStatus.NoContent or ResultStatus.Created;
+    public bool IsFailure => !IsSuccess;
 
     [JsonInclude] public string SuccessMessage { get; protected set; } = string.Empty;
     [JsonInclude] public string CorrelationId { get; protected set; } = string.Empty;

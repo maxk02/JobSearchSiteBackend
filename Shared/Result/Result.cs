@@ -1,4 +1,5 @@
-﻿using System.Text.Json.Serialization;
+﻿using System.Diagnostics.CodeAnalysis;
+using System.Text.Json.Serialization;
 
 namespace Shared.Result;
 
@@ -30,6 +31,9 @@ public class Result<T> : Result, IResult<T>
         CorrelationId = result.CorrelationId,
         ValidationErrors = result.ValidationErrors,
     };
+
+    [MemberNotNullWhen(true, nameof(Value))] public new bool IsSuccess => base.IsSuccess;
+    [MemberNotNullWhen(false, nameof(Value))] public new bool IsFailure => base.IsFailure;
 
     [JsonInclude] public T? Value { get; init; }
 

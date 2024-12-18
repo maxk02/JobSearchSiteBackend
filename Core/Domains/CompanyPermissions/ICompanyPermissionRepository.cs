@@ -2,5 +2,6 @@
 
 public interface ICompanyPermissionRepository
 {
-    public Task UpdatePermissionsForUserAsync(long userId, ICollection<CompanyPermission> permissions);
+    public Task UpdatePermissionsForUserAsync(long userId, long companyId,
+        ICollection<long> newPermissionIds, CancellationToken cancellationToken = default);
 }
