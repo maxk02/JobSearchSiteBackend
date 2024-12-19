@@ -14,17 +14,18 @@ public class Company : BaseEntity, IPublicOrPrivateEntity
 {
     public static CompanyValidator Validator { get; } = new();
     
-    public static Result<Company> Create(string name, string? description, bool isPublic, long countryId)
+    public static Result<Company> Create(string name, string? description, bool isPublic, long countryId, long id = 0)
     {
-        var company = new Company(name, description, isPublic, countryId);
+        var company = new Company(name, description, isPublic, countryId, id);
 
         var validationResult = Validator.Validate(company);
 
         return validationResult.IsValid ? company : Result<Company>.Invalid(validationResult.AsErrors());
     }
     
-    private Company(string name, string? description, bool isPublic, long countryId)
+    private Company(string name, string? description, bool isPublic, long countryId, long id = 0)
     {
+        Id = id;
         CountryId = countryId;
         Name = name;
         Description = description;

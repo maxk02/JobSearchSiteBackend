@@ -1,6 +1,7 @@
 ﻿using Core.Domains._Shared.Entities;
 using Core.Domains._Shared.Repositories;
 using Infrastructure.Persistence.EfCore.Context;
+using Microsoft.EntityFrameworkCore;
 using Shared.Result;
 
 namespace Infrastructure.Persistence.EfCore.Repositories.Shared;
@@ -14,13 +15,25 @@ public class RepositoryBase<T> : IRepository<T> where T : BaseEntity
         DataDbContext = dataDbContext;
     }
     
+    public async Task<bool> ExistsWithIdAsync(long id, CancellationToken cancellationToken = default)
+    {
+        try
+        {
+            return await DataDbContext.Set<T>().AnyAsync(x => x.Id == id, cancellationToken);
+        }
+        catch (Exception e)
+        {
+            throw;
+        }
+    }
+    
     public async Task<T?> GetByIdAsync(long id, CancellationToken cancellationToken = default)
     {
         try
         {
             var value = await DataDbContext.Set<T>().FindAsync([id], cancellationToken: cancellationToken);
         
-            return value ?? Result<T>.NotFound();
+            return value;
         }
         catch (Exception e)
         {
