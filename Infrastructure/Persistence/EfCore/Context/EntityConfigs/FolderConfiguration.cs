@@ -22,11 +22,6 @@ public class FolderConfiguration : MyBaseEntityConfiguration<Folder>
             .OnDelete(DeleteBehavior.Restrict);
 
         builder
-            .HasMany(folder => folder.Children)
-            .WithOne(folder => folder.Parent)
-            .OnDelete(DeleteBehavior.Restrict);
-
-        builder
             .HasMany(folder => folder.Jobs)
             .WithMany(job => job.Folders);
     }

@@ -68,9 +68,9 @@ public class CompanyService(
         if (companyWithPermissionIdsDto.Company is null)
             return Result.NotFound("Requested company does not exist.");
         
-        if (!companyWithPermissionIdsDto.PermissionIds.Contains(CompanyPermission.HasFullAccess.Id))
+        if (!companyWithPermissionIdsDto.PermissionIds.Contains(CompanyPermission.IsOwner.Id))
         {
-            return Result.Forbidden("Insufficient permissions for requested company.");
+            return Result.Forbidden("Insufficient permissions for company deletion.");
         }
 
         await companyRepository.RemoveAsync(companyWithPermissionIdsDto.Company, cancellationToken);
@@ -90,7 +90,7 @@ public class CompanyService(
         
         if (!companyWithPermissionIdsDto.PermissionIds.Contains(CompanyPermission.CanEditProfile.Id))
         {
-            return Result.Forbidden("Insufficient permissions for requested company.");
+            return Result.Forbidden("Insufficient permissions for company update.");
         }
 
         var updatedCompanyResult = Company.Create(

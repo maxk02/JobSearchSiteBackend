@@ -9,8 +9,8 @@ public class CompanyPermission : BaseEntity, IPermissionEntity
 {
     public static readonly ImmutableArray<CompanyPermission> AllValues =
     [
-        new CompanyPermission(1, nameof(HasFullAccess)),
-        new CompanyPermission(2, nameof(CanManagePeopleAndAssignPermissions)),
+        new CompanyPermission(1, nameof(IsOwner)),
+        new CompanyPermission(2, nameof(IsAdmin)),
         new CompanyPermission(3, nameof(CanEditStats)),
         new CompanyPermission(4, nameof(CanReadStats)),
         new CompanyPermission(5, nameof(CanEditProfile)),
@@ -19,9 +19,9 @@ public class CompanyPermission : BaseEntity, IPermissionEntity
     
     public static readonly ImmutableArray<long> AllIds = [..AllValues.Select(permission => permission.Id)];
     
-    public static readonly CompanyPermission HasFullAccess = AllValues.First(permission => permission.Name == nameof(HasFullAccess));
+    public static readonly CompanyPermission IsOwner = AllValues.First(permission => permission.Name == nameof(IsOwner));
 
-    public static readonly CompanyPermission CanManagePeopleAndAssignPermissions = AllValues.First(permission => permission.Name == nameof(CanManagePeopleAndAssignPermissions));
+    public static readonly CompanyPermission IsAdmin = AllValues.First(permission => permission.Name == nameof(IsAdmin));
 
     public static readonly CompanyPermission CanEditStats = AllValues.First(permission => permission.Name == nameof(CanEditStats));
 

@@ -1,0 +1,3 @@
+﻿namespace Core.Domains.CompanyPermissions.UseCases.UpdateCompanyPermissionIdsForUser;
+
+public record UpdateCompanyPermissionIdsForUserRequest(long UserId, long CompanyId, ICollection<long> CompanyPermissionIds);
