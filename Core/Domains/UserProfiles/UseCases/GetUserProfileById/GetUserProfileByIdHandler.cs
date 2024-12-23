@@ -16,6 +16,6 @@ public class GetUserProfileByIdHandler(IUserProfileRepository userProfileReposit
         if (request.Id != currentAccountId && !user.IsPublic) return Result<GetUserProfileByIdResponse>.Forbidden();
 
         return new GetUserProfileByIdResponse(user.FirstName, user.MiddleName, user.LastName,
-            user.DateOfBirth, user.Email, user.Phone, user.Bio);
+            user.DateOfBirth, user.Email, user.Phone);
     }
 }

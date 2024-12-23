@@ -1,7 +1,7 @@
 ﻿using Core.Domains._Shared.Entities;
 using Core.Domains._Shared.Entities.Interfaces;
-using Core.Domains.Cvs;
 using Core.Domains.Jobs;
+using Core.Domains.UserProfiles;
 using Shared.Result;
 using Shared.Result.FluentValidation;
 

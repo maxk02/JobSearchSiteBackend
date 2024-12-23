@@ -17,7 +17,7 @@ public class AddUserProfileHandler(IUserProfileRepository userProfileRepository,
             return Result<AddUserProfileResponse>.Forbidden();
         
         var createUserResult = UserProfile.Create(request.AccountId, request.FirstName, request.MiddleName,
-            request.LastName, request.DateOfBirth, request.Email, request.Phone, request.Bio);
+            request.LastName, request.DateOfBirth, request.Email, request.Phone);
         if (createUserResult.Value is null)
             return Result<AddUserProfileResponse>.WithMetadataFrom(createUserResult);
         

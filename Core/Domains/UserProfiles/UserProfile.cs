@@ -3,7 +3,6 @@ using Core.Domains._Shared.Entities.Interfaces;
 using Core.Domains._Shared.ValueEntities;
 using Core.Domains.Companies;
 using Core.Domains.CompanyPermissions.UserCompanyCompanyPermissions;
-using Core.Domains.Cvs;
 using Core.Domains.FolderPermissions.UserFolderFolderPermissions;
 using Core.Domains.JobApplications;
 using Core.Domains.Jobs;
@@ -18,9 +17,9 @@ public class UserProfile : BaseEntity, IPublicOrPrivateEntity
     public static UserProfileValidator ProfileValidator { get; } = new();
 
     public static Result<UserProfile> Create(long accountId, string firstName, string? middleName, string lastName,
-        DateOnly? dateOfBirth, string email, Phone? phone, string? bio)
+        DateOnly? dateOfBirth, string email, Phone? phone)
     {
-        var user = new UserProfile(accountId, firstName, middleName, lastName, dateOfBirth, email, phone, bio);
+        var user = new UserProfile(accountId, firstName, middleName, lastName, dateOfBirth, email, phone);
 
         var validationResult = ProfileValidator.Validate(user);
 
@@ -28,7 +27,7 @@ public class UserProfile : BaseEntity, IPublicOrPrivateEntity
     }
 
     private UserProfile(long accountId, string firstName, string? middleName, string lastName,
-        DateOnly? dateOfBirth, string email, Phone? phone, string? bio)
+        DateOnly? dateOfBirth, string email, Phone? phone)
     {
         Id = accountId;
         FirstName = firstName;
@@ -37,7 +36,6 @@ public class UserProfile : BaseEntity, IPublicOrPrivateEntity
         DateOfBirth = dateOfBirth;
         Email = email;
         Phone = phone;
-        Bio = bio;
     }
 
     public string FirstName { get; private set; }
@@ -136,23 +134,6 @@ public class UserProfile : BaseEntity, IPublicOrPrivateEntity
         if (!validationResult.IsValid)
         {
             Phone = oldValue;
-            return Result.Invalid(validationResult.AsErrors());
-        }
-
-        return Result.Success();
-    }
-
-    public string? Bio { get; private set; }
-
-    public Result SetBio(string? newValue)
-    {
-        var oldValue = Bio;
-        Bio = newValue;
-
-        var validationResult = ProfileValidator.Validate(this);
-        if (!validationResult.IsValid)
-        {
-            Bio = oldValue;
             return Result.Invalid(validationResult.AsErrors());
         }
 

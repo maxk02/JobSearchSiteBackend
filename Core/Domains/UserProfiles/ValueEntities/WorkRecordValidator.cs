@@ -2,7 +2,7 @@
 using Shared.FluentValidationAddons;
 using Shared.FluentValidationAddons.StringFiltering;
 
-namespace Core.Domains.Cvs.ValueEntities;
+namespace Core.Domains.UserProfiles.ValueEntities;
 
 public class WorkRecordValidator : AbstractValidator<WorkRecord>
 {

@@ -1,10 +1,10 @@
 ﻿using Core.Domains._Shared.ValueEntities;
-using Core.Domains.Cvs.ValueEntities;
+using Core.Domains.UserProfiles.ValueEntities;
 using FluentValidation;
 using Shared.FluentValidationAddons;
 using Shared.FluentValidationAddons.StringFiltering;
 
-namespace Core.Domains.Cvs;
+namespace Core.Domains.UserProfiles;
 
 public class CvValidator : AbstractValidator<Cv>
 {

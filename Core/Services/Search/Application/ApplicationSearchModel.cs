@@ -1,4 +1,4 @@
-﻿using Core.Domains.Cvs.ValueEntities;
+﻿using Core.Domains.UserProfiles.ValueEntities;
 using Core.Services.Search.Common;
 
 namespace Core.Services.Search.Application;

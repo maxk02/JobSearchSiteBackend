@@ -16,14 +16,7 @@ public class LocationConfiguration : MyBaseEntityConfiguration<Location>
             .WithMany(country => country.Locations);
 
         builder
-            .HasOne(location => location.Parent)
-            .WithMany(location => location.Children)
-            .OnDelete(DeleteBehavior.Restrict);
-
-        builder
-            .HasMany(location => location.Children)
-            .WithOne(location => location.Parent)
-            .OnDelete(DeleteBehavior.Restrict);
+            .OwnsMany(location => location.Subdivisions, ownedNavigationBuilder => ownedNavigationBuilder.ToJson());
 
         builder
             .HasMany(location => location.Jobs)

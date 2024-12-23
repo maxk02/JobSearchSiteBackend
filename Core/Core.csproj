@@ -17,6 +17,7 @@
     <ItemGroup>
       <Folder Include="Domains\" />
       <Folder Include="Domains\Companies\UseCases\DeleteCompany\" />
+      <Folder Include="Domains\JobApplications\UseCases\DeleteApplication\" />
     </ItemGroup>
 
 </Project>

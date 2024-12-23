@@ -27,8 +27,7 @@ public class UpdateUserProfileHandler(IUserProfileRepository userProfileReposito
             request.LastName ?? existingUserObject.LastName,
             request.DateOfBirth ?? existingUserObject.DateOfBirth,
             request.Email ?? existingUserObject.Email,
-            request.Phone ?? existingUserObject.Phone,
-            request.Bio ?? existingUserObject.Bio
+            request.Phone ?? existingUserObject.Phone
             );
 
         if (updateUserResult.Value is null) return Result.WithMetadataFrom(updateUserResult);

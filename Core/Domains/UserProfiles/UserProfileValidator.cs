@@ -30,8 +30,5 @@ public class UserProfileValidator : AbstractValidator<UserProfile>
         {
             RuleFor(x => x.Phone!).SetValidator(new PhoneValidator());
         });
-
-        RuleFor(x => x.Bio).Length(1, 100)
-            .WhitelistPolicy(new WhitelistPolicy().Letters().Digits().Spaces().Symbols());
     }
 }
