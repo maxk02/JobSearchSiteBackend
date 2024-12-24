@@ -1,0 +1,6 @@
+﻿using Shared.Result;
+using Core.Domains._Shared.UseCaseStructure;
+
+namespace Core.Domains.PersonalFiles.UseCases.UploadFile;
+
+public record UploadFileRequest(byte[] FileContent, string FileName, string ContentType) : IRequest<Result>;

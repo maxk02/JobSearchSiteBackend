@@ -1,8 +1,9 @@
-﻿using Core.Domains.PersonalFiles.RepositoryDtos;
+﻿using Core.Domains._Shared.Repositories;
+using Core.Domains.PersonalFiles.RepositoryDtos;
 
 namespace Core.Domains.PersonalFiles;
 
-public interface IPersonalFileRepository
+public interface IPersonalFileRepository : IRepository<PersonalFile>
 {
     public Task<ICollection<FileIdWithOwnerId>> GetFileIdsWithOwnerIdsAsync(ICollection<long> personalFileIds,
         CancellationToken cancellationToken = default);
