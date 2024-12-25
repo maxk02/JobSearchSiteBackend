@@ -3,9 +3,8 @@ using Core.Domains._Shared.Entities.Interfaces;
 using Core.Domains._Shared.Repositories;
 using Infrastructure.Persistence.EfCore.Context;
 using Microsoft.EntityFrameworkCore;
-using Shared.Result;
 
-namespace Infrastructure.Persistence.EfCore.Repositories.Shared;
+namespace Infrastructure.Persistence.EfCore.Repositories._Shared;
 
 public class HierarchicalRepositoryBase<T> : RepositoryBase<T>, IHierarchicalRepository<T>
     where T : BaseEntity, IHierarchicalEntity<T>

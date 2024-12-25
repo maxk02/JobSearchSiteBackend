@@ -3,4 +3,4 @@ using Core.Domains._Shared.UseCaseStructure;
 
 namespace Core.Domains.PersonalFiles.UseCases.UploadFile;
 
-public record UploadFileRequest(byte[] FileContent, string FileName, string ContentType) : IRequest<Result>;
+public record UploadFileRequest(Stream FileStream, string FileName, string ContentType) : IRequest<Result>;

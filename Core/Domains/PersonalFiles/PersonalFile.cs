@@ -10,7 +10,7 @@ public class PersonalFile : BaseEntity
 {
     public static PersonalFileValidator Validator { get; set; } = new();
 
-    public static Result<PersonalFile> Create(long userId, string name, string extension, int size)
+    public static Result<PersonalFile> Create(long userId, string name, string extension, long size)
     {
         var fileInfo = new PersonalFile(userId, name, extension, size);
 
@@ -19,7 +19,7 @@ public class PersonalFile : BaseEntity
         return validationResult.IsValid ? fileInfo : Result<PersonalFile>.Invalid(validationResult.AsErrors());
     }
     
-    private PersonalFile(long userId, string name, string extension, int size)
+    private PersonalFile(long userId, string name, string extension, long size)
     {
         UserId = userId;
         Name = name;

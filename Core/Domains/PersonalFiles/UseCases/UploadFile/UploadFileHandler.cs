@@ -5,23 +5,26 @@ using Shared.Result;
 
 namespace Core.Domains.PersonalFiles.UseCases.UploadFile;
 
-public class UploadFileHandler(ICurrentAccountService currentAccountService,
+public class UploadFileHandler(
+    ICurrentAccountService currentAccountService,
     IFileStorageService fileStorageService,
     IPersonalFileRepository personalFileRepository) : IRequestHandler<UploadFileRequest, Result>
 {
     public async Task<Result> Handle(UploadFileRequest request, CancellationToken cancellationToken = default)
     {
         var currentUserId = currentAccountService.GetIdOrThrow();
-        
+
         var creationResult = PersonalFile.Create(currentUserId, request.FileName,
-            request.ContentType, request.FileContent.Length);
+            request.ContentType, request.FileStream.Length);
         if (creationResult.IsFailure)
             return Result.WithMetadataFrom(creationResult);
+        var newFile = creationResult.Value;
         
-        await fileStorageService.UploadFileAsync(request.FileContent, request.FileName, request.ContentType, cancellationToken);
+        await fileStorageService.UploadFileAsync(request.FileStream, request.FileName,
+            request.ContentType, cancellationToken);
 
-        await personalFileRepository.AddAsync(creationResult.Value, cancellationToken);
-        
+        await personalFileRepository.AddAsync(newFile, cancellationToken);
+
         return Result.Success();
     }
 }

@@ -2,7 +2,7 @@
 using Core.Domains.Jobs;
 using Core.Domains.UserProfiles;
 using Infrastructure.Persistence.EfCore.Context;
-using Infrastructure.Persistence.EfCore.Repositories.Shared;
+using Infrastructure.Persistence.EfCore.Repositories._Shared;
 using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.Persistence.EfCore.Repositories;

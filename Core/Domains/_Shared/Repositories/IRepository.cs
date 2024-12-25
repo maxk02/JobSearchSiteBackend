@@ -11,5 +11,8 @@ public interface IRepository<T> where T : BaseEntity
     public Task UpdateAsync(T entity, CancellationToken cancellationToken = default);
     public Task UpdateRangeAsync(ICollection<T> entities, CancellationToken cancellationToken = default);
     public Task RemoveAsync(T entity, CancellationToken cancellationToken = default);
+    public Task RemoveByIdAsync(long id, CancellationToken cancellationToken = default);
     public Task RemoveRangeAsync(ICollection<T> entities, CancellationToken cancellationToken = default);
+    public Task RemoveRangeByIdsAsync(ICollection<long> ids, CancellationToken cancellationToken = default);
+
 }

@@ -2,9 +2,8 @@
 using Core.Domains._Shared.Repositories;
 using Infrastructure.Persistence.EfCore.Context;
 using Microsoft.EntityFrameworkCore;
-using Shared.Result;
 
-namespace Infrastructure.Persistence.EfCore.Repositories.Shared;
+namespace Infrastructure.Persistence.EfCore.Repositories._Shared;
 
 public class RepositoryBase<T> : IRepository<T> where T : BaseEntity
 {
@@ -110,12 +109,36 @@ public class RepositoryBase<T> : IRepository<T> where T : BaseEntity
         }
     }
 
+    public async Task RemoveByIdAsync(long id, CancellationToken cancellationToken = default)
+    {
+        try
+        {
+            await DataDbContext.Set<T>().Where(x => x.Id == id).ExecuteDeleteAsync(cancellationToken);
+        }
+        catch (Exception e)
+        {
+            throw;
+        }
+    }
+
     public async Task RemoveRangeAsync(ICollection<T> entities, CancellationToken cancellationToken = default)
     {
         try
         {
             DataDbContext.Set<T>().RemoveRange(entities);
             await DataDbContext.SaveChangesAsync(cancellationToken);
+        }
+        catch (Exception e)
+        {
+            throw;
+        }
+    }
+    
+    public async Task RemoveRangeByIdsAsync(ICollection<long> ids, CancellationToken cancellationToken = default)
+    {
+        try
+        {
+            await DataDbContext.Set<T>().Where(x => ids.Contains(x.Id)).ExecuteDeleteAsync(cancellationToken);
         }
         catch (Exception e)
         {
