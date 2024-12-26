@@ -49,7 +49,7 @@ public class CompanyService(
         //adding root folder to company
         var createdFolder = await folderRepository.AddAsync(rootFolderCreationResult.Value, cancellationToken);
         //adding full permission set to user
-        await folderPermissionRepository.UpdatePermissionsForUserAsync(currentUserId, createdFolder.Id,
+        await folderPermissionRepository.UpdatePermissionIdsForUserAsync(currentUserId, createdFolder.Id,
             FolderPermission.AllIds, cancellationToken);
 
         // committing transaction

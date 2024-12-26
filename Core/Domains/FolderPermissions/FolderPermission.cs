@@ -9,8 +9,8 @@ public class FolderPermission : BaseEntity, IPermissionEntity
 {
     public static readonly ImmutableArray<FolderPermission> AllValues =
     [
-        new FolderPermission(1, nameof(HasFullAccess)),
-        new FolderPermission(2, nameof(CanManagePeopleAndAssignPermissions)),
+        new FolderPermission(1, nameof(IsOwner)),
+        new FolderPermission(2, nameof(IsAdmin)),
         new FolderPermission(3, nameof(CanEditStats)),
         new FolderPermission(4, nameof(CanReadStats)),
         new FolderPermission(5, nameof(CanEditInfo)),
@@ -21,9 +21,9 @@ public class FolderPermission : BaseEntity, IPermissionEntity
 
     public static readonly ImmutableArray<long> AllIds = [..AllValues.Select(permission => permission.Id)];
 
-    public static readonly FolderPermission HasFullAccess = AllValues.First(permission => permission.Name == nameof(HasFullAccess));
+    public static readonly FolderPermission IsOwner = AllValues.First(permission => permission.Name == nameof(IsOwner));
 
-    public static readonly FolderPermission CanManagePeopleAndAssignPermissions = AllValues.First(permission => permission.Name == nameof(CanManagePeopleAndAssignPermissions));
+    public static readonly FolderPermission IsAdmin = AllValues.First(permission => permission.Name == nameof(IsAdmin));
 
     public static readonly FolderPermission CanEditStats = AllValues.First(permission => permission.Name == nameof(CanEditStats));
 
