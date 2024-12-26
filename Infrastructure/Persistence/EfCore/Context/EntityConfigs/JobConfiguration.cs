@@ -17,12 +17,12 @@ public class JobConfiguration : MyBaseEntityConfiguration<Job>
             .OnDelete(DeleteBehavior.Restrict);
 
         builder
-            .HasMany(job => job.Folders)
-            .WithMany(folder => folder.Jobs);
+            .HasMany(job => job.JobFolders)
+            .WithMany(jobFolder => jobFolder.Jobs);
 
         builder
             .HasMany(job => job.JobContractTypes)
-            .WithMany(contractType => contractType.Jobs);
+            .WithMany(jobContractType => jobContractType.Jobs);
 
         builder
             .HasOne(job => job.Category)

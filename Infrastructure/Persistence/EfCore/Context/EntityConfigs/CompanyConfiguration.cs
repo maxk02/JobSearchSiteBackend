@@ -13,12 +13,12 @@ public class CompanyConfiguration : MyBaseEntityConfiguration<Company>
         
         builder
             .HasMany(company => company.JobFolders)
-            .WithOne(folder => folder.Company)
+            .WithOne(jobFolder => jobFolder.Company)
             .OnDelete(DeleteBehavior.Restrict);
 
         builder
             .HasMany(company => company.UserCompanyPermissions)
-            .WithOne(userCompanyCompanyPermission => userCompanyCompanyPermission.Company)
+            .WithOne(userCompanyPermission => userCompanyPermission.Company)
             .OnDelete(DeleteBehavior.Restrict);
 
         builder

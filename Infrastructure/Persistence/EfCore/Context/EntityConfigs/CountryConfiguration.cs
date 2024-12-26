@@ -12,8 +12,8 @@ public class CountryConfiguration : MyBaseEntityConfiguration<Country>
         base.Configure(builder);
         
         builder
-            .HasMany(country => country.ContractTypes)
-            .WithOne(contractType => contractType.Country)
+            .HasMany(country => country.JobContractTypes)
+            .WithOne(jobContractType => jobContractType.Country)
             .OnDelete(DeleteBehavior.Restrict);
 
         builder

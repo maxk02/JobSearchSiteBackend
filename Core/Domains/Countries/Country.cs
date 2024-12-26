@@ -21,7 +21,7 @@ public class Country : BaseEntity
     
     public string Code { get; private set; }
     
-    public virtual ICollection<JobContractType>? ContractTypes { get; set; }
+    public virtual ICollection<JobContractType>? JobContractTypes { get; set; }
     public virtual ICollection<Location>? Locations { get; set; }
     public virtual ICollection<Company>? Companies { get; set; }
 }

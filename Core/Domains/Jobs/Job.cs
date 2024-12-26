@@ -214,5 +214,5 @@ public class Job : BaseEntity, IPublicOrPrivateEntity
     
     public virtual ICollection<UserProfile>? UsersWhoBookmarked { get; set; }
     
-    public virtual ICollection<JobFolder>? Folders { get; set; }
+    public virtual ICollection<JobFolder>? JobFolders { get; set; }
 }

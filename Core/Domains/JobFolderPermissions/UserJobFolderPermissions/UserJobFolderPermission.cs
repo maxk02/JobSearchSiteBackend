@@ -33,6 +33,6 @@ public class UserJobFolderPermission : BaseEntity
     public long PermissionId { get; private set; }
     
     public virtual UserProfile? User { get; set; }
-    public virtual JobFolder? Folder { get; set; }
-    public virtual JobFolderPermission? FolderPermission { get; set; }
+    public virtual JobFolder? JobFolder { get; set; }
+    public virtual JobFolderPermission? JobFolderPermission { get; set; }
 }
