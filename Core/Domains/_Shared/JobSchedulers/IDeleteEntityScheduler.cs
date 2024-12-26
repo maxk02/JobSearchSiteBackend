@@ -4,5 +4,5 @@ namespace Core.Domains._Shared.JobSchedulers;
 
 public interface IDeleteEntityScheduler<TEntity> where TEntity : BaseEntity
 {
-    public Task ScheduleDeletionAsync(long entityId);
+    public Task ScheduleAsync(long entityId);
 }

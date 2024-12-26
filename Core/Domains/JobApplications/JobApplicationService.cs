@@ -13,7 +13,7 @@ namespace Core.Domains.JobApplications;
 public class JobApplicationService(ICurrentAccountService currentAccountService,
     IUnitOfWork unitOfWork,
     IJobApplicationRepository jobApplicationRepository,
-    IPersonalFileRepository personalFileRepository) : IJobApplicationService
+    IRepository<PersonalFile> personalFileRepository) : IJobApplicationService
 {
     public async Task<Result<long>> AddApplicationAsync(AddApplicationRequest request, CancellationToken cancellationToken = default)
     {
@@ -27,10 +27,9 @@ public class JobApplicationService(ICurrentAccountService currentAccountService,
             return Result<long>.WithMetadataFrom(creationResult);
         var jobApplication = creationResult.Value;
 
-        var fileIdsWithOwnerIds = await personalFileRepository
-            .GetFileIdsWithOwnerIdsAsync(request.PersonalFileIds, cancellationToken);
-        if (!request.PersonalFileIds.All(fileIdsWithOwnerIds.Select(x => x.FileId).Contains) ||
-            fileIdsWithOwnerIds.Any(x => x.OwnerId != currentUserId))
+        var personalFiles = await personalFileRepository.GetByIdsAsync(request.PersonalFileIds, cancellationToken);
+        if (!request.PersonalFileIds.All(personalFiles.Select(x => x.Id).Contains) ||
+            personalFiles.Any(x => x.UserId != currentUserId))
         {
             return Result<long>.Error();
         }
@@ -55,12 +54,11 @@ public class JobApplicationService(ICurrentAccountService currentAccountService,
         if (jobApplication.UserId != currentUserId)
             return Result.Forbidden();
 
-        var fileIdsWithOwnerIds = await personalFileRepository
-            .GetFileIdsWithOwnerIdsAsync(request.PersonalFileIds, cancellationToken);
-        if (!request.PersonalFileIds.All(fileIdsWithOwnerIds.Select(x => x.FileId).Contains) ||
-            fileIdsWithOwnerIds.Any(x => x.OwnerId != currentUserId))
+        var personalFiles = await personalFileRepository.GetByIdsAsync(request.PersonalFileIds, cancellationToken);
+        if (!request.PersonalFileIds.All(personalFiles.Select(x => x.Id).Contains) ||
+            personalFiles.Any(x => x.UserId != currentUserId))
         {
-            return Result.Error();
+            return Result<long>.Error();
         }
 
         await unitOfWork.BeginAsync(cancellationToken);

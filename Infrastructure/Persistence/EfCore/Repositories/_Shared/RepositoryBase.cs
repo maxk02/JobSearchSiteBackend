@@ -13,7 +13,7 @@ public class RepositoryBase<T> : IRepository<T> where T : BaseEntity
     {
         DataDbContext = dataDbContext;
     }
-    
+
     public async Task<bool> ExistsWithIdAsync(long id, CancellationToken cancellationToken = default)
     {
         try
@@ -25,16 +25,31 @@ public class RepositoryBase<T> : IRepository<T> where T : BaseEntity
             throw;
         }
     }
-    
+
     public async Task<T?> GetByIdAsync(long id, CancellationToken cancellationToken = default)
     {
         try
         {
             var value = await DataDbContext.Set<T>().FindAsync([id], cancellationToken: cancellationToken);
-        
+
             return value;
         }
         catch (Exception e)
+        {
+            throw;
+        }
+    }
+
+    public async Task<ICollection<T>> GetByIdsAsync(ICollection<long> ids,
+        CancellationToken cancellationToken = default)
+    {
+        try
+        {
+            var value = await DataDbContext.Set<T>().Where(x => ids.Contains(x.Id)).ToListAsync(cancellationToken);
+
+            return value;
+        }
+        catch
         {
             throw;
         }
@@ -55,7 +70,8 @@ public class RepositoryBase<T> : IRepository<T> where T : BaseEntity
         }
     }
 
-    public async Task<ICollection<T>> AddRangeAsync(ICollection<T> entities, CancellationToken cancellationToken = default)
+    public async Task<ICollection<T>> AddRangeAsync(ICollection<T> entities,
+        CancellationToken cancellationToken = default)
     {
         try
         {
@@ -133,7 +149,7 @@ public class RepositoryBase<T> : IRepository<T> where T : BaseEntity
             throw;
         }
     }
-    
+
     public async Task RemoveRangeByIdsAsync(ICollection<long> ids, CancellationToken cancellationToken = default)
     {
         try

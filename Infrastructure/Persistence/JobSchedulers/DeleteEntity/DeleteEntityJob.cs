@@ -4,7 +4,7 @@ using Quartz;
 
 namespace Infrastructure.Persistence.JobSchedulers.DeleteEntity;
 
-public class EntityDeletionJob<TEntity>(IRepository<TEntity> repository) : IJob where TEntity : BaseEntity
+public class DeleteEntityJob<TEntity>(IRepository<TEntity> repository) : IJob where TEntity : BaseEntity
 {
     public async Task Execute(IJobExecutionContext context)
     {

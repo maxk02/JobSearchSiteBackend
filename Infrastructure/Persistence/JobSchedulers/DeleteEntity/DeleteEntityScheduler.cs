@@ -6,10 +6,10 @@ namespace Infrastructure.Persistence.JobSchedulers.DeleteEntity;
 
 public class DeleteEntityScheduler<TEntity>(IScheduler scheduler) : IDeleteEntityScheduler<TEntity> where TEntity : BaseEntity
 {
-    public async Task ScheduleDeletionAsync(long entityId)
+    public async Task ScheduleAsync(long entityId)
     {
-        var job = JobBuilder.Create<EntityDeletionJob<TEntity>>()
-            .WithIdentity($"DeleteJob_{entityId}")
+        var job = JobBuilder.Create<DeleteEntityJob<TEntity>>()
+            .WithIdentity($"DeleteEntityJob_{entityId}")
             .UsingJobData("EntityId", entityId.ToString())
             .Build();
 

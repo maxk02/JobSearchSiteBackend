@@ -6,6 +6,7 @@ public interface IRepository<T> where T : BaseEntity
 {
     public Task<bool> ExistsWithIdAsync(long id, CancellationToken cancellationToken = default);
     public Task<T?> GetByIdAsync(long id, CancellationToken cancellationToken = default);
+    public Task<ICollection<T>> GetByIdsAsync(ICollection<long> ids, CancellationToken cancellationToken = default);
     public Task<T> AddAsync(T entity, CancellationToken cancellationToken = default);
     public Task<ICollection<T>> AddRangeAsync(ICollection<T> entities, CancellationToken cancellationToken = default);
     public Task UpdateAsync(T entity, CancellationToken cancellationToken = default);

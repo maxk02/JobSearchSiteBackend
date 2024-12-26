@@ -1,4 +1,5 @@
 ﻿using Core.Domains._Shared.Entities;
+using Core.Domains._Shared.Entities.Interfaces;
 using Core.Domains.JobApplications;
 using Core.Domains.UserProfiles;
 using Shared.Result;
@@ -6,7 +7,7 @@ using Shared.Result.FluentValidation;
 
 namespace Core.Domains.PersonalFiles;
 
-public class PersonalFile : BaseEntity
+public class PersonalFile : BaseEntity, IEntityWithGuid
 {
     public static PersonalFileValidator Validator { get; set; } = new();
 
@@ -26,6 +27,8 @@ public class PersonalFile : BaseEntity
         Extension = extension;
         Size = size;
     }
+    
+    public Guid GuidIdentifier { get; } = Guid.NewGuid();
     
     public long UserId { get; private set; }
     
