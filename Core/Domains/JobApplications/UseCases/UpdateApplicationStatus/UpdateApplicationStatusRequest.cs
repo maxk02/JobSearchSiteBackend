@@ -1,3 +1,6 @@
-﻿namespace Core.Domains.JobApplications.UseCases.UpdateApplicationStatus;
+﻿using Core.Domains._Shared.UseCaseStructure;
+using Shared.Result;
 
-public record UpdateApplicationStatusRequest(long ApplicationId, string Status);
+namespace Core.Domains.JobApplications.UseCases.UpdateApplicationStatus;
+
+public record UpdateApplicationStatusRequest(long ApplicationId, string Status) : IRequest<Result>;
