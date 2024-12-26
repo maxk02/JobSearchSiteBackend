@@ -5,5 +5,5 @@ namespace Core.Domains.Categories;
 
 public interface ICategoryRepository
 {
-    public Task<Result<IEnumerable<GetAllCategoriesResponse>>> GetAllCategoriesAsResponseDtoAsync();
+    public Task<ICollection<Category>> GetAllAsync();
 }
