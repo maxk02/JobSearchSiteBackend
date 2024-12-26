@@ -1,3 +1,6 @@
-﻿namespace Core.Domains.UserProfiles.UseCases.RemoveCompanyBookmark;
+﻿using Core.Domains._Shared.UseCaseStructure;
+using Shared.Result;
 
-public record RemoveCompanyBookmarkRequest(long UserId, long CompanyId);
+namespace Core.Domains.UserProfiles.UseCases.RemoveCompanyBookmark;
+
+public record RemoveCompanyBookmarkRequest(long UserId, long CompanyId) : IRequest<Result>;

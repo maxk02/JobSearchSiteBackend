@@ -1,9 +1,11 @@
-﻿using Core.Services.Auth.Authentication;
+﻿using Core.Domains._Shared.UseCaseStructure;
+using Core.Services.Auth.Authentication;
 using Shared.Result;
 
 namespace Core.Domains.UserProfiles.UseCases.RemoveJobBookmark;
 
-public class RemoveJobBookmarkHandler(ICurrentAccountService currentAccountService, IUserProfileRepository userProfileRepository)
+public class RemoveJobBookmarkHandler(ICurrentAccountService currentAccountService,
+    IUserProfileRepository userProfileRepository) : IRequestHandler<RemoveJobBookmarkRequest, Result>
 {
     public async Task<Result> Handle(RemoveJobBookmarkRequest request, CancellationToken cancellationToken = default)
     {

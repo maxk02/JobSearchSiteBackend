@@ -1,9 +1,11 @@
-﻿using Core.Services.Auth.Authentication;
+﻿using Core.Domains._Shared.UseCaseStructure;
+using Core.Services.Auth.Authentication;
 using Shared.Result;
 
 namespace Core.Domains.UserProfiles.UseCases.GetUserProfileById;
 
-public class GetUserProfileByIdHandler(IUserProfileRepository userProfileRepository, ICurrentAccountService currentAccountService)
+public class GetUserProfileByIdHandler(IUserProfileRepository userProfileRepository,
+    ICurrentAccountService currentAccountService) : IRequestHandler<GetUserProfileByIdRequest, Result<GetUserProfileByIdResponse>>
 {
     public async Task<Result<GetUserProfileByIdResponse>> Handle(GetUserProfileByIdRequest request,
         CancellationToken cancellationToken = default)

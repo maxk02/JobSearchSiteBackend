@@ -1,9 +1,11 @@
-﻿using Core.Services.Auth.Authentication;
+﻿using Core.Domains._Shared.UseCaseStructure;
+using Core.Services.Auth.Authentication;
 using Shared.Result;
 
 namespace Core.Domains.UserProfiles.UseCases.AddJobBookmark;
 
-public class AddJobBookmarkHandler(ICurrentAccountService currentAccountService, IUserProfileRepository userProfileRepository)
+public class AddJobBookmarkHandler(ICurrentAccountService currentAccountService,
+    IUserProfileRepository userProfileRepository) : IRequestHandler<AddJobBookmarkRequest, Result>
 {
     public async Task<Result> Handle(AddJobBookmarkRequest request, CancellationToken cancellationToken = default)
     {

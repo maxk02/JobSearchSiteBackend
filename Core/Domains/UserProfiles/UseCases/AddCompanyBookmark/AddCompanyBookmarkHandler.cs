@@ -1,9 +1,11 @@
-﻿using Core.Services.Auth.Authentication;
+﻿using Core.Domains._Shared.UseCaseStructure;
+using Core.Services.Auth.Authentication;
 using Shared.Result;
 
 namespace Core.Domains.UserProfiles.UseCases.AddCompanyBookmark;
 
-public class AddCompanyBookmarkHandler(IUserProfileRepository userProfileRepository, ICurrentAccountService currentAccountService)
+public class AddCompanyBookmarkHandler(IUserProfileRepository userProfileRepository,
+    ICurrentAccountService currentAccountService) : IRequestHandler<AddCompanyBookmarkRequest, Result>
 {
     public async Task<Result> Handle(AddCompanyBookmarkRequest request, CancellationToken cancellationToken = default)
     {

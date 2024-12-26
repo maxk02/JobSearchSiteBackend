@@ -1,9 +1,11 @@
-﻿using Core.Services.Auth.Authentication;
+﻿using Core.Domains._Shared.UseCaseStructure;
+using Core.Services.Auth.Authentication;
 using Shared.Result;
 
 namespace Core.Domains.UserProfiles.UseCases.RemoveCompanyBookmark;
 
-public class RemoveCompanyBookmarkHandler(IUserProfileRepository userProfileRepository, ICurrentAccountService currentAccountService)
+public class RemoveCompanyBookmarkHandler(IUserProfileRepository userProfileRepository,
+    ICurrentAccountService currentAccountService) : IRequestHandler<RemoveCompanyBookmarkRequest, Result>
 {
     public async Task<Result> Handle(RemoveCompanyBookmarkRequest request, CancellationToken cancellationToken = default)
     {

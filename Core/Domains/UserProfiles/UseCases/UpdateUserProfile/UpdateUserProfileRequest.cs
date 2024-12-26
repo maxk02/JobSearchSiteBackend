@@ -1,6 +1,8 @@
-﻿using Core.Domains._Shared.ValueEntities;
+﻿using Core.Domains._Shared.UseCaseStructure;
+using Core.Domains._Shared.ValueEntities;
+using Shared.Result;
 
 namespace Core.Domains.UserProfiles.UseCases.UpdateUserProfile;
 
 public record UpdateUserProfileRequest(long Id, string? FirstName, string? MiddleName, string? LastName,
-    DateOnly? DateOfBirth, string? Email, Phone? Phone);
+    DateOnly? DateOfBirth, string? Email, Phone? Phone) : IRequest<Result>;

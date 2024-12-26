@@ -1,3 +1,6 @@
-﻿namespace Core.Domains.UserProfiles.UseCases.GetUserProfileById;
+﻿using Core.Domains._Shared.UseCaseStructure;
+using Shared.Result;
 
-public record GetUserProfileByIdRequest(long Id);
+namespace Core.Domains.UserProfiles.UseCases.GetUserProfileById;
+
+public record GetUserProfileByIdRequest(long Id) : IRequest<Result<GetUserProfileByIdResponse>>;

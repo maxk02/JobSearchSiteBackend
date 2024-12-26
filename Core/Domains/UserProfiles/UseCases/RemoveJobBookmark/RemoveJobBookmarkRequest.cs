@@ -1,3 +1,6 @@
-﻿namespace Core.Domains.UserProfiles.UseCases.RemoveJobBookmark;
+﻿using Core.Domains._Shared.UseCaseStructure;
+using Shared.Result;
 
-public record RemoveJobBookmarkRequest(long UserId, long JobId);
+namespace Core.Domains.UserProfiles.UseCases.RemoveJobBookmark;
+
+public record RemoveJobBookmarkRequest(long UserId, long JobId) : IRequest<Result>;

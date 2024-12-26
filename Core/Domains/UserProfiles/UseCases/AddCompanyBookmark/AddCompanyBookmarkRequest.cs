@@ -1,3 +1,6 @@
-﻿namespace Core.Domains.UserProfiles.UseCases.AddCompanyBookmark;
+﻿using Core.Domains._Shared.UseCaseStructure;
+using Shared.Result;
 
-public record AddCompanyBookmarkRequest(long UserId, long CompanyId);
+namespace Core.Domains.UserProfiles.UseCases.AddCompanyBookmark;
+
+public record AddCompanyBookmarkRequest(long UserId, long CompanyId) : IRequest<Result>;

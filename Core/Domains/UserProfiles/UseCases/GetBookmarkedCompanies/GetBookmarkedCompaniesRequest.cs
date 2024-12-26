@@ -1,3 +1,6 @@
-﻿namespace Core.Domains.UserProfiles.UseCases.GetBookmarkedCompanies;
+﻿using Core.Domains._Shared.UseCaseStructure;
+using Shared.Result;
 
-public record GetBookmarkedCompaniesRequest(long UserId);
+namespace Core.Domains.UserProfiles.UseCases.GetBookmarkedCompanies;
+
+public record GetBookmarkedCompaniesRequest(long UserId) : IRequest<Result<ICollection<GetBookmarkedCompaniesResponse>>>;
