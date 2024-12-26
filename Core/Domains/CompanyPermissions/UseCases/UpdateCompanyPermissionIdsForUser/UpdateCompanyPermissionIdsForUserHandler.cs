@@ -1,36 +1,16 @@
-﻿using Core.Domains.CompanyPermissions.UseCases.GetCompanyPermissionIdsForUser;
-using Core.Domains.CompanyPermissions.UseCases.UpdateCompanyPermissionIdsForUser;
+﻿using Core.Domains._Shared.UseCaseStructure;
 using Core.Services.Auth.Authentication;
 using Shared.Result;
 using Shared.Result.FluentValidation;
 
-namespace Core.Domains.CompanyPermissions;
+namespace Core.Domains.CompanyPermissions.UseCases.UpdateCompanyPermissionIdsForUser;
 
-public class CompanyPermissionService(ICurrentAccountService currentAccountService,
-    ICompanyPermissionRepository companyPermissionRepository) : ICompanyPermissionService
+public class UpdateCompanyPermissionIdsForUserHandler(
+    ICurrentAccountService currentAccountService,
+    ICompanyPermissionRepository companyPermissionRepository) 
+    : IRequestHandler<UpdateCompanyPermissionIdsForUserRequest, Result>
 {
-    public async Task<Result<ICollection<long>>> GetCompanyPermissionIdsForUserAsync(GetCompanyPermissionIdsForUserRequest request,
-        CancellationToken cancellationToken = default)
-    {
-        var currentUserId = currentAccountService.GetIdOrThrow();
-
-        if (currentUserId != request.UserId)
-        {
-            var isAdmin = await companyPermissionRepository.HasPermissionIdAsync(currentUserId,
-                request.CompanyId, CompanyPermission.IsAdmin.Id, cancellationToken);
-            
-            if (!isAdmin) 
-                return Result<ICollection<long>>.Forbidden();
-        }
-        
-        var permissions = await companyPermissionRepository
-            .GetPermissionIdsForUserAsync(request.UserId, request.CompanyId, cancellationToken);
-
-        return Result<ICollection<long>>.Success(permissions);
-    }
-    
-    public async Task<Result> UpdateCompanyPermissionIdsForUserAsync(UpdateCompanyPermissionIdsForUserRequest request,
-        CancellationToken cancellationToken = default)
+    public async Task<Result> Handle(UpdateCompanyPermissionIdsForUserRequest request, CancellationToken cancellationToken = default)
     {
         var currentUserId = currentAccountService.GetIdOrThrow();
 

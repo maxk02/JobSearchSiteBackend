@@ -1,3 +1,6 @@
-﻿namespace Core.Domains.CompanyPermissions.UseCases.GetCompanyPermissionIdsForUser;
+﻿using Core.Domains._Shared.UseCaseStructure;
+using Shared.Result;
 
-public record GetCompanyPermissionIdsForUserRequest(long UserId, long CompanyId);
+namespace Core.Domains.CompanyPermissions.UseCases.GetCompanyPermissionIdsForUser;
+
+public record GetCompanyPermissionIdsForUserRequest(long UserId, long CompanyId) : IRequest<Result<ICollection<long>>>;
