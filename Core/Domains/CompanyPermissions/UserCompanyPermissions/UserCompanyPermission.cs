@@ -4,24 +4,24 @@ using Core.Domains.UserProfiles;
 using Shared.Result;
 using Shared.Result.FluentValidation;
 
-namespace Core.Domains.CompanyPermissions.UserCompanyCompanyPermissions;
+namespace Core.Domains.CompanyPermissions.UserCompanyPermissions;
 
-public class UserCompanyCompanyPermission : BaseEntity
+public class UserCompanyPermission : BaseEntity
 {
-    public static UserCompanyCompanyPermissionValidator Validator { get; } = new();
+    public static UserCompanyPermissionValidator Validator { get; } = new();
 
-    public static Result<UserCompanyCompanyPermission> Create(long userId, long companyId, long companyPermissionId)
+    public static Result<UserCompanyPermission> Create(long userId, long companyId, long companyPermissionId)
     {
-        var uccPermission = new UserCompanyCompanyPermission(userId, companyId, companyPermissionId);
+        var uccPermission = new UserCompanyPermission(userId, companyId, companyPermissionId);
 
         var validationResult = Validator.Validate(uccPermission);
 
         return validationResult.IsValid
             ? uccPermission
-            : Result<UserCompanyCompanyPermission>.Invalid(validationResult.AsErrors());
+            : Result<UserCompanyPermission>.Invalid(validationResult.AsErrors());
     }
 
-    public UserCompanyCompanyPermission(long userId, long companyId, long permissionId)
+    public UserCompanyPermission(long userId, long companyId, long permissionId)
     {
         UserId = userId;
         CompanyId = companyId;

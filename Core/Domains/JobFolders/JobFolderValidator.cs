@@ -2,11 +2,11 @@
 using Shared.FluentValidationAddons;
 using Shared.FluentValidationAddons.StringFiltering;
 
-namespace Core.Domains.Folders;
+namespace Core.Domains.JobFolders;
 
-public class FolderValidator : AbstractValidator<Folder>
+public class JobFolderValidator : AbstractValidator<JobFolder>
 {
-    public FolderValidator()
+    public JobFolderValidator()
     {
         RuleFor(x => x.CompanyId).GreaterThanOrEqualTo(1);
         RuleFor(x => x.ParentId).GreaterThanOrEqualTo(1);

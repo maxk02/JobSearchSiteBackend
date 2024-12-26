@@ -2,11 +2,11 @@
 using Shared.FluentValidationAddons;
 using Shared.FluentValidationAddons.StringFiltering;
 
-namespace Core.Domains.ContractTypes;
+namespace Core.Domains.JobContractTypes;
 
-public class ContractTypeValidator : AbstractValidator<ContractType>
+public class JobContractTypeValidator : AbstractValidator<JobContractType>
 {
-    public ContractTypeValidator()
+    public JobContractTypeValidator()
     {
         RuleFor(x => x.Name).Length(1, 50)
             .WhitelistPolicy(new WhitelistPolicy().Letters().Digits().Spaces().Symbols().Punctuation());

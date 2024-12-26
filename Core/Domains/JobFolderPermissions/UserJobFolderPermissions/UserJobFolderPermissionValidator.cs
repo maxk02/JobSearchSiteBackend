@@ -1,10 +1,10 @@
 ﻿using FluentValidation;
 
-namespace Core.Domains.FolderPermissions.UserFolderFolderPermissions;
+namespace Core.Domains.JobFolderPermissions.UserJobFolderPermissions;
 
-public class UserFolderFolderPermissionValidator : AbstractValidator<UserFolderFolderPermission>
+public class UserJobFolderPermissionValidator : AbstractValidator<UserJobFolderPermission>
 {
-    public UserFolderFolderPermissionValidator()
+    public UserJobFolderPermissionValidator()
     {
         RuleFor(x => x.FolderId).GreaterThanOrEqualTo(1);
         RuleFor(x => x.UserId).GreaterThanOrEqualTo(1);

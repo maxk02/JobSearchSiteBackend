@@ -1,13 +1,13 @@
-﻿using Core.Domains.CompanyPermissions.UserCompanyCompanyPermissions;
+﻿using Core.Domains.CompanyPermissions.UserCompanyPermissions;
 using Infrastructure.Persistence.EfCore.Context.EntityConfigs.Shared;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Infrastructure.Persistence.EfCore.Context.EntityConfigs;
 
-public class UserCompanyCompanyPermissionConfiguration : MyBaseEntityConfiguration<UserCompanyCompanyPermission>
+public class UserCompanyCompanyPermissionConfiguration : MyBaseEntityConfiguration<UserCompanyPermission>
 {
-    public override void Configure(EntityTypeBuilder<UserCompanyCompanyPermission> builder)
+    public override void Configure(EntityTypeBuilder<UserCompanyPermission> builder)
     {
         base.Configure(builder);
 
@@ -18,12 +18,12 @@ public class UserCompanyCompanyPermissionConfiguration : MyBaseEntityConfigurati
 
         builder
             .HasOne(userCompanyCompanyPermission => userCompanyCompanyPermission.Company)
-            .WithMany(company => company.UserCompanyCompanyPermissions)
+            .WithMany(company => company.UserCompanyPermissions)
             .OnDelete(DeleteBehavior.Restrict);
 
         builder
             .HasOne(userCompanyCompanyPermission => userCompanyCompanyPermission.CompanyPermission)
-            .WithMany(companyPermission => companyPermission.UserCompanyCompanyPermissions)
+            .WithMany(companyPermission => companyPermission.UserCompanyPermissions)
             .OnDelete(DeleteBehavior.Restrict);
     }
 }

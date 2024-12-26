@@ -3,9 +3,9 @@ using Core.Domains._Shared.Entities.Interfaces;
 using Core.Domains._Shared.ValueEntities;
 using Core.Domains.Categories;
 using Core.Domains.Companies;
-using Core.Domains.ContractTypes;
-using Core.Domains.Folders;
 using Core.Domains.JobApplications;
+using Core.Domains.JobContractTypes;
+using Core.Domains.JobFolders;
 using Core.Domains.Locations;
 using Core.Domains.UserProfiles;
 using Shared.Result;
@@ -209,10 +209,10 @@ public class Job : BaseEntity, IPublicOrPrivateEntity
     public virtual Company? Company { get; set; }
     public virtual Category? Category { get; set; }
     public virtual ICollection<JobApplication>? JobApplications { get; set; }
-    public virtual ICollection<ContractType>? ContractTypes { get; set; }
+    public virtual ICollection<JobContractType>? JobContractTypes { get; set; }
     public virtual ICollection<Location>? Locations { get; set; }
     
     public virtual ICollection<UserProfile>? UsersWhoBookmarked { get; set; }
     
-    public virtual ICollection<Folder>? Folders { get; set; }
+    public virtual ICollection<JobFolder>? Folders { get; set; }
 }

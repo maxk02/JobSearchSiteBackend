@@ -1,19 +1,19 @@
-﻿using Core.Domains.Folders;
+﻿using Core.Domains.JobFolders;
 using Infrastructure.Persistence.EfCore.Context.EntityConfigs.Shared;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Infrastructure.Persistence.EfCore.Context.EntityConfigs;
 
-public class FolderConfiguration : MyBaseEntityConfiguration<Folder>
+public class FolderConfiguration : MyBaseEntityConfiguration<JobFolder>
 {
-    public override void Configure(EntityTypeBuilder<Folder> builder)
+    public override void Configure(EntityTypeBuilder<JobFolder> builder)
     {
         base.Configure(builder);
 
         builder
             .HasOne(folder => folder.Company)
-            .WithMany(company => company.Folders)
+            .WithMany(company => company.JobFolders)
             .OnDelete(DeleteBehavior.Restrict);
 
         builder

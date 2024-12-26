@@ -4,22 +4,22 @@ using Core.Domains.Jobs;
 using Shared.Result;
 using Shared.Result.FluentValidation;
 
-namespace Core.Domains.ContractTypes;
+namespace Core.Domains.JobContractTypes;
 
-public class ContractType : BaseEntity
+public class JobContractType : BaseEntity
 {
-    public static ContractTypeValidator Validator { get; } = new();
+    public static JobContractTypeValidator Validator { get; } = new();
     
-    public static Result<ContractType> Create(long countryId, string name)
+    public static Result<JobContractType> Create(long countryId, string name)
     {
-        var contractType = new ContractType(countryId, name);
+        var contractType = new JobContractType(countryId, name);
 
         var validationResult = Validator.Validate(contractType);
 
-        return validationResult.IsValid ? contractType : Result<ContractType>.Invalid(validationResult.AsErrors());
+        return validationResult.IsValid ? contractType : Result<JobContractType>.Invalid(validationResult.AsErrors());
     }
 
-    private ContractType(long countryId, string name)
+    private JobContractType(long countryId, string name)
     {
         CountryId = countryId;
         Name = name;

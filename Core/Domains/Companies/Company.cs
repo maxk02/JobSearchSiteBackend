@@ -1,8 +1,8 @@
 ﻿using Core.Domains._Shared.Entities;
 using Core.Domains._Shared.Entities.Interfaces;
-using Core.Domains.CompanyPermissions.UserCompanyCompanyPermissions;
+using Core.Domains.CompanyPermissions.UserCompanyPermissions;
 using Core.Domains.Countries;
-using Core.Domains.Folders;
+using Core.Domains.JobFolders;
 using Core.Domains.Jobs;
 using Core.Domains.UserProfiles;
 using Shared.Result;
@@ -80,9 +80,9 @@ public class Company : BaseEntity, IPublicOrPrivateEntity
     
     public virtual Country? Country { get; set; }
 
-    public virtual ICollection<Folder>? Folders { get; set; }
+    public virtual ICollection<JobFolder>? JobFolders { get; set; }
     public virtual ICollection<Job>? Jobs { get; set; }
     
     public virtual ICollection<UserProfile>? UsersWhoBookmarked { get; set; }
-    public virtual ICollection<UserCompanyCompanyPermission>? UserCompanyCompanyPermissions { get; set; }
+    public virtual ICollection<UserCompanyPermission>? UserCompanyPermissions { get; set; }
 }

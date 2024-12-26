@@ -12,7 +12,7 @@ public class CompanyPermissionConfiguration : MyBaseEntityConfiguration<CompanyP
         base.Configure(builder);
         
         builder
-            .HasMany(companyPermission => companyPermission.UserCompanyCompanyPermissions)
+            .HasMany(companyPermission => companyPermission.UserCompanyPermissions)
             .WithOne(userCompanyCompanyPermission => userCompanyCompanyPermission.CompanyPermission)
             .OnDelete(DeleteBehavior.Restrict);
     }

@@ -1,27 +1,27 @@
 ﻿using Core.Domains._Shared.Entities;
 using Core.Domains._Shared.Entities.Interfaces;
 using Core.Domains.Companies;
-using Core.Domains.FolderPermissions.UserFolderFolderPermissions;
+using Core.Domains.JobFolderPermissions.UserJobFolderPermissions;
 using Core.Domains.Jobs;
 using Shared.Result;
 using Shared.Result.FluentValidation;
 
-namespace Core.Domains.Folders;
+namespace Core.Domains.JobFolders;
 
-public class Folder : BaseEntity, IHierarchicalEntity<Folder>
+public class JobFolder : BaseEntity, IHierarchicalEntity<JobFolder>
 {
-    public static FolderValidator Validator { get; } = new();
+    public static JobFolderValidator Validator { get; } = new();
 
-    public static Result<Folder> Create(long? companyId, long? parentId, string? name, string? description)
+    public static Result<JobFolder> Create(long? companyId, long? parentId, string? name, string? description)
     {
-        var folder = new Folder(companyId, parentId, name, description);
+        var folder = new JobFolder(companyId, parentId, name, description);
 
         var validationResult = Validator.Validate(folder);
 
-        return validationResult.IsValid ? folder : Result<Folder>.Invalid();
+        return validationResult.IsValid ? folder : Result<JobFolder>.Invalid();
     }
     
-    private Folder(long? companyId, long? parentId, string? name, string? description)
+    private JobFolder(long? companyId, long? parentId, string? name, string? description)
     {
         CompanyId = companyId;
         ParentId = parentId;
@@ -68,8 +68,8 @@ public class Folder : BaseEntity, IHierarchicalEntity<Folder>
     
     
     public virtual Company? Company { get; set; }
-    public virtual Folder? Parent { get; set; }
-    public virtual ICollection<Folder>? Children { get; set; }
+    public virtual JobFolder? Parent { get; set; }
+    public virtual ICollection<JobFolder>? Children { get; set; }
     public virtual ICollection<Job>? Jobs { get; set; }
-    public virtual ICollection<UserFolderFolderPermission>? UserFolderFolderPermissions { get; set; }
+    public virtual ICollection<UserJobFolderPermission>? UserJobFolderPermissions { get; set; }
 }

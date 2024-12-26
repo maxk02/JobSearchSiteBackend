@@ -2,9 +2,9 @@
 using Core.Domains._Shared.Entities.Interfaces;
 using Core.Domains._Shared.ValueEntities;
 using Core.Domains.Companies;
-using Core.Domains.CompanyPermissions.UserCompanyCompanyPermissions;
-using Core.Domains.FolderPermissions.UserFolderFolderPermissions;
+using Core.Domains.CompanyPermissions.UserCompanyPermissions;
 using Core.Domains.JobApplications;
+using Core.Domains.JobFolderPermissions.UserJobFolderPermissions;
 using Core.Domains.Jobs;
 using Core.Domains.PersonalFiles;
 using Shared.Result;
@@ -165,6 +165,6 @@ public class UserProfile : BaseEntity, IPublicOrPrivateEntity
     public virtual ICollection<Job>? BookmarkedJobs { get; set; }
     public virtual ICollection<Company>? BookmarkedCompanies { get; set; }
 
-    public virtual ICollection<UserCompanyCompanyPermission>? UserCompanyCompanyPermissions { get; set; }
-    public virtual ICollection<UserFolderFolderPermission>? UserFolderFolderPermissions { get; set; }
+    public virtual ICollection<UserCompanyPermission>? UserCompanyCompanyPermissions { get; set; }
+    public virtual ICollection<UserJobFolderPermission>? UserFolderFolderPermissions { get; set; }
 }

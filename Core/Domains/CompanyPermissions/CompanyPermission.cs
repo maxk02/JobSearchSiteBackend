@@ -1,7 +1,7 @@
 ﻿using System.Collections.Immutable;
 using Core.Domains._Shared.Entities;
 using Core.Domains._Shared.Entities.Interfaces;
-using Core.Domains.CompanyPermissions.UserCompanyCompanyPermissions;
+using Core.Domains.CompanyPermissions.UserCompanyPermissions;
 
 namespace Core.Domains.CompanyPermissions;
 
@@ -39,5 +39,5 @@ public class CompanyPermission : BaseEntity, IPermissionEntity
         Name = name;
     }
     
-    public virtual ICollection<UserCompanyCompanyPermission>? UserCompanyCompanyPermissions { get; set; }
+    public virtual ICollection<UserCompanyPermission>? UserCompanyPermissions { get; set; }
 }

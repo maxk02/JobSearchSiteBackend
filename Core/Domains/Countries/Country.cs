@@ -1,6 +1,6 @@
 ﻿using Core.Domains._Shared.Entities;
 using Core.Domains.Companies;
-using Core.Domains.ContractTypes;
+using Core.Domains.JobContractTypes;
 using Core.Domains.Locations;
 
 namespace Core.Domains.Countries;
@@ -21,7 +21,7 @@ public class Country : BaseEntity
     
     public string Code { get; private set; }
     
-    public virtual ICollection<ContractType>? ContractTypes { get; set; }
+    public virtual ICollection<JobContractType>? ContractTypes { get; set; }
     public virtual ICollection<Location>? Locations { get; set; }
     public virtual ICollection<Company>? Companies { get; set; }
 }

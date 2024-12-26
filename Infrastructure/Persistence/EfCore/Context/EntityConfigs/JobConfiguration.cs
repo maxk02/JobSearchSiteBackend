@@ -21,7 +21,7 @@ public class JobConfiguration : MyBaseEntityConfiguration<Job>
             .WithMany(folder => folder.Jobs);
 
         builder
-            .HasMany(job => job.ContractTypes)
+            .HasMany(job => job.JobContractTypes)
             .WithMany(contractType => contractType.Jobs);
 
         builder
