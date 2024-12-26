@@ -1,3 +1,6 @@
-﻿namespace Core.Domains.Accounts.UseCases.ResetPassword;
+﻿using Core.Domains._Shared.UseCaseStructure;
+using Shared.Result;
 
-public record ResetPasswordRequest(string Token, string NewPassword);
+namespace Core.Domains.Accounts.UseCases.ResetPassword;
+
+public record ResetPasswordRequest(string Token, string NewPassword) : IRequest<Result>;

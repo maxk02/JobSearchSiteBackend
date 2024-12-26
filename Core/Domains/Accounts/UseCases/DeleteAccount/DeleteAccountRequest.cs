@@ -1,3 +1,6 @@
-﻿namespace Core.Domains.Accounts.UseCases.DeleteAccount;
+﻿using Core.Domains._Shared.UseCaseStructure;
+using Shared.Result;
 
-public record DeleteAccountRequest(long Id);
+namespace Core.Domains.Accounts.UseCases.DeleteAccount;
+
+public record DeleteAccountRequest(long Id) : IRequest<Result>;

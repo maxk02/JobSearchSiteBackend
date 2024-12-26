@@ -1,3 +1,6 @@
-﻿namespace Core.Domains.Accounts.UseCases.SendEmailConfirmationLink;
+﻿using Core.Domains._Shared.UseCaseStructure;
+using Shared.Result;
 
-public record SendEmailConfirmationLinkRequest(string Email);
+namespace Core.Domains.Accounts.UseCases.SendEmailConfirmationLink;
+
+public record SendEmailConfirmationLinkRequest(string Email) : IRequest<Result>;

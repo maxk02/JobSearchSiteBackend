@@ -1,3 +1,6 @@
-﻿namespace Core.Domains.Accounts.UseCases.ChangePassword;
+﻿using Core.Domains._Shared.UseCaseStructure;
+using Shared.Result;
 
-public record ChangePasswordRequest(string OldPassword, string NewPassword);
+namespace Core.Domains.Accounts.UseCases.ChangePassword;
+
+public record ChangePasswordRequest(string OldPassword, string NewPassword) : IRequest<Result>;

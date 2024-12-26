@@ -1,3 +1,6 @@
-﻿namespace Core.Domains.Accounts.UseCases.SendPasswordResetLinkByEmail;
+﻿using Core.Domains._Shared.UseCaseStructure;
+using Shared.Result;
 
-public record SendPasswordResetLinkByEmailRequest(string Email);
+namespace Core.Domains.Accounts.UseCases.SendPasswordResetLinkByEmail;
+
+public record SendPasswordResetLinkByEmailRequest(string Email) : IRequest<Result>;

@@ -1,3 +1,6 @@
-﻿namespace Core.Domains.Accounts.UseCases.SignInWithEmail;
+﻿using Core.Domains._Shared.UseCaseStructure;
+using Shared.Result;
 
-public record SignInWithEmailRequest(string Email, string Password);
+namespace Core.Domains.Accounts.UseCases.SignInWithEmail;
+
+public record SignInWithEmailRequest(string Email, string Password) : IRequest<Result<SignInWithEmailResponse>>;

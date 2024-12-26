@@ -1,3 +1,6 @@
-﻿namespace Core.Domains.Accounts.UseCases.CreateAccount;
+﻿using Core.Domains._Shared.UseCaseStructure;
+using Shared.Result;
 
-public record CreateAccountRequest(string Email, string Password);
+namespace Core.Domains.Accounts.UseCases.CreateAccount;
+
+public record CreateAccountRequest(string Email, string Password) : IRequest<Result<CreateAccountResponse>>;
