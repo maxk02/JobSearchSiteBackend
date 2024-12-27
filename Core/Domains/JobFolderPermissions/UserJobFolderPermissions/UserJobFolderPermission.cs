@@ -6,7 +6,7 @@ using Shared.Result.FluentValidation;
 
 namespace Core.Domains.JobFolderPermissions.UserJobFolderPermissions;
 
-public class UserJobFolderPermission : BaseEntity
+public class UserJobFolderPermission : EntityBase
 {
     public static UserJobFolderPermissionValidator Validator { get; } = new();
 

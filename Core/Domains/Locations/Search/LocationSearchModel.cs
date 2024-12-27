@@ -1,8 +1,8 @@
-﻿using Core.Services.Search.Common;
+﻿using Core.Domains._Shared.Search;
 
-namespace Core.Services.Search.Location;
+namespace Core.Domains.Locations.Search;
 
-public class LocationSearchModel : BaseSearchModel
+public class LocationSearchModel : SearchModelBase
 {
     public int CountryId { get; set; }
     public string Name { get; set; } = "";

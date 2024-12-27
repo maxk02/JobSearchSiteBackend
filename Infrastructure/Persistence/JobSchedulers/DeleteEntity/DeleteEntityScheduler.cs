@@ -4,7 +4,7 @@ using Quartz;
 
 namespace Infrastructure.Persistence.JobSchedulers.DeleteEntity;
 
-public class DeleteEntityScheduler<TEntity>(IScheduler scheduler) : IDeleteEntityScheduler<TEntity> where TEntity : BaseEntity
+public class DeleteEntityScheduler<TEntity>(IScheduler scheduler) : IDeleteEntityScheduler<TEntity> where TEntity : EntityBase
 {
     public async Task ScheduleAsync(long entityId)
     {

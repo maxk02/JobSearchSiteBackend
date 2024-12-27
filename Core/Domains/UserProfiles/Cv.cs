@@ -9,7 +9,7 @@ using Shared.Result.FluentValidation;
 
 namespace Core.Domains.UserProfiles;
 
-public class Cv : BaseEntity, IPublicOrPrivateEntity
+public class Cv : EntityBase, IPublicOrPrivateEntity
 {
     public static CvValidator Validator { get; } = new();
     

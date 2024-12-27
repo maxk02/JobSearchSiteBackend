@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore;
 namespace Infrastructure.Persistence.EfCore.Repositories._Shared;
 
 public class HierarchicalRepositoryBase<T> : RepositoryBase<T>, IHierarchicalRepository<T>
-    where T : BaseEntity, IHierarchicalEntity<T>
+    where T : EntityBase, IHierarchicalEntity<T>
 {
     public HierarchicalRepositoryBase(MyEfCoreDataContext dataDbContext) : base(dataDbContext)
     {

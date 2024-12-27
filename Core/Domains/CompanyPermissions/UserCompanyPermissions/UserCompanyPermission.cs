@@ -6,7 +6,7 @@ using Shared.Result.FluentValidation;
 
 namespace Core.Domains.CompanyPermissions.UserCompanyPermissions;
 
-public class UserCompanyPermission : BaseEntity
+public class UserCompanyPermission : EntityBase
 {
     public static UserCompanyPermissionValidator Validator { get; } = new();
 

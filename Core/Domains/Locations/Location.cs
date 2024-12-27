@@ -8,7 +8,7 @@ using Shared.Result.FluentValidation;
 
 namespace Core.Domains.Locations;
 
-public class Location : BaseEntity
+public class Location : EntityBase
 {
     public Location(long countryId, string name, ICollection<string> subdivisions, string? description, string? code)
     {

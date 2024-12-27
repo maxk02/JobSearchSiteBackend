@@ -5,7 +5,7 @@ using Core.Domains.JobFolderPermissions.UserJobFolderPermissions;
 
 namespace Core.Domains.JobFolderPermissions;
 
-public class JobFolderPermission : BaseEntity, IPermissionEntity
+public class JobFolderPermission : EntityBase, IPermissionEntity
 {
     public static readonly ImmutableArray<JobFolderPermission> AllValues =
     [

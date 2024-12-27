@@ -6,7 +6,7 @@ using Shared.Result.FluentValidation;
 
 namespace Core.Domains.JobContractTypes;
 
-public class JobContractType : BaseEntity
+public class JobContractType : EntityBase
 {
     public static JobContractTypeValidator Validator { get; } = new();
     

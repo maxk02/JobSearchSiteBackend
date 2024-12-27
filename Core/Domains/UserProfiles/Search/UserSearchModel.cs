@@ -1,10 +1,10 @@
-﻿using Core.Domains._Shared.ValueEntities;
+﻿using Core.Domains._Shared.Search;
+using Core.Domains._Shared.ValueEntities;
 using Core.Domains.UserProfiles.ValueEntities;
-using Core.Services.Search.Common;
 
-namespace Core.Services.Search.User;
+namespace Core.Domains.UserProfiles.Search;
 
-public class UserSearchModel : BaseSearchModel
+public class UserSearchModel : SearchModelBase
 {
     public IList<EducationRecord> EducationRecordList { get; set; } = [];
     public IList<WorkRecord> WorkRecordList { get; set; } = [];

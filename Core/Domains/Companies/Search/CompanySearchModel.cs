@@ -1,8 +1,8 @@
-﻿using Core.Services.Search.Common;
+﻿using Core.Domains._Shared.Search;
 
-namespace Core.Services.Search.Company;
+namespace Core.Domains.Companies.Search;
 
-public class CompanySearchModel : BaseSearchModel
+public class CompanySearchModel : SearchModelBase
 {
     public IList<int> CountryIds { get; set; } = [];
     public string Name { get; set; } = "";

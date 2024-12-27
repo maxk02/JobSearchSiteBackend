@@ -10,7 +10,7 @@ using Shared.Result.FluentValidation;
 
 namespace Core.Domains.Companies;
 
-public class Company : BaseEntity, IPublicOrPrivateEntity
+public class Company : EntityBase, IPublicOrPrivateEntity
 {
     public static CompanyValidator Validator { get; } = new();
     

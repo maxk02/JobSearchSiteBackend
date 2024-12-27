@@ -1,9 +1,9 @@
-﻿using Core.Domains.UserProfiles.ValueEntities;
-using Core.Services.Search.Common;
+﻿using Core.Domains._Shared.Search;
+using Core.Domains.UserProfiles.ValueEntities;
 
-namespace Core.Services.Search.Application;
+namespace Core.Domains.JobApplications.Search;
 
-public class ApplicationSearchModel : BaseSearchModel
+public class ApplicationSearchModel : SearchModelBase
 {
     public int JobId { get; set; }
     public IList<EducationRecord> EducationList { get; set; } = [];

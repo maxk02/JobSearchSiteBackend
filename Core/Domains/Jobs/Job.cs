@@ -13,7 +13,7 @@ using Shared.Result.FluentValidation;
 
 namespace Core.Domains.Jobs;
 
-public class Job : BaseEntity, IPublicOrPrivateEntity
+public class Job : EntityBase, IPublicOrPrivateEntity
 {
     public static JobValidator Validator { get; } = new();
 

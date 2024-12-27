@@ -1,8 +1,8 @@
-﻿using Core.Services.Search.Common;
+﻿using Core.Domains._Shared.Search;
 
-namespace Core.Services.Search.Job;
+namespace Core.Domains.Jobs.Search;
 
-public class JobSearchModel : BaseSearchModel
+public class JobSearchModel : SearchModelBase
 {
     public int CompanyId { get; set; }
     public string Title { get; set; } = "";

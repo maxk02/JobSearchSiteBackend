@@ -7,7 +7,7 @@ using Shared.Result.FluentValidation;
 
 namespace Core.Domains.Categories;
 
-public class Category : BaseEntity, IHierarchicalEntity<Category>
+public class Category : EntityBase, IHierarchicalEntity<Category>
 {
     public static CategoryValidator Validator { get; } = new();
     

@@ -8,7 +8,7 @@ using Shared.Result.FluentValidation;
 
 namespace Core.Domains.JobFolders;
 
-public class JobFolder : BaseEntity, IHierarchicalEntity<JobFolder>
+public class JobFolder : EntityBase, IHierarchicalEntity<JobFolder>
 {
     public static JobFolderValidator Validator { get; } = new();
 

@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.Persistence.EfCore.Repositories._Shared;
 
-public class RepositoryBase<T> : IRepository<T> where T : BaseEntity
+public class RepositoryBase<T> : IRepository<T> where T : EntityBase
 {
     protected readonly MyEfCoreDataContext DataDbContext;
 

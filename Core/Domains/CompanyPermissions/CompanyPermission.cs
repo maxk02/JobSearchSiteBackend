@@ -5,7 +5,7 @@ using Core.Domains.CompanyPermissions.UserCompanyPermissions;
 
 namespace Core.Domains.CompanyPermissions;
 
-public class CompanyPermission : BaseEntity, IPermissionEntity
+public class CompanyPermission : EntityBase, IPermissionEntity
 {
     public static readonly ImmutableArray<CompanyPermission> AllValues =
     [

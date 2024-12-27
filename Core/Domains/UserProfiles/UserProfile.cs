@@ -12,7 +12,7 @@ using Shared.Result.FluentValidation;
 
 namespace Core.Domains.UserProfiles;
 
-public class UserProfile : BaseEntity, IPublicOrPrivateEntity
+public class UserProfile : EntityBase, IPublicOrPrivateEntity
 {
     public static UserProfileValidator ProfileValidator { get; } = new();
 

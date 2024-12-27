@@ -8,7 +8,7 @@ using Shared.Result.FluentValidation;
 
 namespace Core.Domains.JobApplications;
 
-public class JobApplication : BaseEntity
+public class JobApplication : EntityBase
 {
     public static JobApplicationValidator Validator { get; } = new();
     

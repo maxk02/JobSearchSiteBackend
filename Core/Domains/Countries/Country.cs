@@ -5,7 +5,7 @@ using Core.Domains.Locations;
 
 namespace Core.Domains.Countries;
 
-public class Country : BaseEntity
+public class Country : EntityBase
 {
     public static class SeededValues
     {

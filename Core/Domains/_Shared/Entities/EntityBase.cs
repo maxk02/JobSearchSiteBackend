@@ -1,10 +1,10 @@
 ﻿namespace Core.Domains._Shared.Entities;
 
-public abstract class BaseEntity
+public abstract class EntityBase
 {
-    protected BaseEntity() {}
+    protected EntityBase() {}
 
-    protected BaseEntity(long id)
+    protected EntityBase(long id)
     {
         Id = id;
     }

@@ -7,7 +7,7 @@ using Shared.Result.FluentValidation;
 
 namespace Core.Domains.PersonalFiles;
 
-public class PersonalFile : BaseEntity, IEntityWithGuid
+public class PersonalFile : EntityBase, IEntityWithGuid
 {
     public static PersonalFileValidator Validator { get; set; } = new();
 
