@@ -2,8 +2,8 @@
 
 public interface ISearchRepository<T> where T : SearchModelBase
 {
-    Task AddAsync(T searchModel);
-    Task UpdateAsync(T searchModel);
-    Task DeleteAsync(long id);
-    Task<ICollection<long>> Search(string query);
+    public Task AddAsync(T searchModel);
+    public Task UpdateAsync(T searchModel);
+    public Task DeleteAsync(long id);
+    public Task<ICollection<long>> SearchAllAsync(string query);
 }

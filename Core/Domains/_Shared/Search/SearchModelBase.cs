@@ -1,6 +1,6 @@
 ﻿namespace Core.Domains._Shared.Search;
 
-public class SearchModelBase
+public abstract class SearchModelBase
 {
     public long Id { get; set; }
 }

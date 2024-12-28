@@ -38,9 +38,9 @@ public class Job : EntityBase, IPublicOrPrivateEntity
         Title = title;
         Description = description;
         DateTimeExpiringUtc = dateTimeExpiringUtc;
-        _responsibilities = responsibilities.ToList();
-        _requirements = requirements.ToList();
-        _advantages = advantages.ToList();
+        Responsibilities = responsibilities.ToList();
+        Requirements = requirements.ToList();
+        Advantages = advantages.ToList();
         SalaryRecord = salaryRecord;
         EmploymentTypeRecord = employmentTypeRecord;
     }
@@ -142,57 +142,12 @@ public class Job : EntityBase, IPublicOrPrivateEntity
 
         return Result.Success();
     }
-
-    private List<string> _responsibilities;
-    public IReadOnlyCollection<string> Responsibilities => _responsibilities.AsReadOnly();
-    public Result SetResponsibilities(ICollection<string> newValues)
-    {
-        var oldValues = _responsibilities;
-        _responsibilities = newValues.ToList();
-        
-        var validationResult = Validator.Validate(this);
-        if (!validationResult.IsValid)
-        {
-            _responsibilities = oldValues;
-            return Result.Invalid(validationResult.AsErrors());
-        }
-
-        return Result.Success();
-    }
     
-    private List<string> _requirements;
-    public IReadOnlyCollection<string> Requirements => _requirements.AsReadOnly();
-    public Result SetRequirements(ICollection<string> newValues)
-    {
-        var oldValues = _requirements;
-        _requirements = newValues.ToList();
-        
-        var validationResult = Validator.Validate(this);
-        if (!validationResult.IsValid)
-        {
-            _requirements = oldValues;
-            return Result.Invalid(validationResult.AsErrors());
-        }
-
-        return Result.Success();
-    }
+    public IReadOnlyCollection<string> Responsibilities { get; private set; }
     
-    private List<string> _advantages;
-    public IReadOnlyCollection<string> Advantages => _advantages.AsReadOnly();
-    public Result SetAdvantages(ICollection<string> newValues)
-    {
-        var oldValues = _advantages;
-        _advantages = newValues.ToList();
-        
-        var validationResult = Validator.Validate(this);
-        if (!validationResult.IsValid)
-        {
-            _advantages = oldValues;
-            return Result.Invalid(validationResult.AsErrors());
-        }
-
-        return Result.Success();
-    }
+    public IReadOnlyCollection<string> Requirements { get; private set; }
+    
+    public IReadOnlyCollection<string> Advantages { get; private set; }
     
     public bool IsPublic { get; private set; }
     public Result MakePublic()

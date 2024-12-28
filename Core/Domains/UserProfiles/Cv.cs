@@ -30,104 +30,22 @@ public class Cv : EntityBase, IPublicOrPrivateEntity
         UserId = userId;
         SalaryRecord = salaryRecord;
         EmploymentTypeRecord = employmentTypeRecord;
-        _educationRecords = educationRecords.ToList();
-        _workRecords = workRecords.ToList();
-        _skills = skills.ToList();
+        EducationRecords = educationRecords.ToList();
+        WorkRecords = workRecords.ToList();
+        Skills = skills.ToList();
     }
     
     public long UserId { get; private set; }
     
     public SalaryRecord? SalaryRecord { get; private set; }
 
-    public Result SetSalaryRecord(SalaryRecord? newValue)
-    {
-        var oldValue = SalaryRecord;
-        SalaryRecord = newValue;
-
-        var validationResult = Validator.Validate(this);
-        if (!validationResult.IsValid)
-        {
-            SalaryRecord = oldValue;
-            return Result.Invalid(validationResult.AsErrors());
-        }
-
-        return Result.Success();
-    }
-
-
     public EmploymentTypeRecord? EmploymentTypeRecord { get; private set; }
-
-    public Result SetEmploymentTypeRecord(EmploymentTypeRecord? newValue)
-    {
-        var oldValue = EmploymentTypeRecord;
-        EmploymentTypeRecord = newValue;
-
-        var validationResult = Validator.Validate(this);
-        if (!validationResult.IsValid)
-        {
-            EmploymentTypeRecord = oldValue;
-            return Result.Invalid(validationResult.AsErrors());
-        }
-
-        return Result.Success();
-    }
-
-
-    private List<EducationRecord> _educationRecords;
-    public IReadOnlyCollection<EducationRecord> EducationRecords => _educationRecords.AsReadOnly();
-
-    public Result SetEducationRecords(ICollection<EducationRecord> newValues)
-    {
-        var oldValues = _educationRecords;
-        _educationRecords = newValues.ToList();
-
-        var validationResult = Validator.Validate(this);
-        if (!validationResult.IsValid)
-        {
-            _educationRecords = oldValues;
-            return Result.Invalid(validationResult.AsErrors());
-        }
-
-        return Result.Success();
-    }
-
-
-    private List<WorkRecord> _workRecords;
-    public IReadOnlyCollection<WorkRecord> WorkRecords => _workRecords.AsReadOnly();
-
-    public Result SetWorkRecords(ICollection<WorkRecord> newValues)
-    {
-        var oldValues = _workRecords;
-        _workRecords = newValues.ToList();
-
-        var validationResult = Validator.Validate(this);
-        if (!validationResult.IsValid)
-        {
-            _workRecords = oldValues;
-            return Result.Invalid(validationResult.AsErrors());
-        }
-
-        return Result.Success();
-    }
-
-
-    private List<string> _skills;
-    public IReadOnlyCollection<string> Skills => _skills.AsReadOnly();
-
-    public Result SetSkills(ICollection<string> newValues)
-    {
-        var oldValues = _skills;
-        _skills = newValues.ToList();
-
-        var validationResult = Validator.Validate(this);
-        if (!validationResult.IsValid)
-        {
-            _skills = oldValues;
-            return Result.Invalid(validationResult.AsErrors());
-        }
-
-        return Result.Success();
-    }
+    
+    public IReadOnlyCollection<EducationRecord> EducationRecords { get; private set; }
+    
+    public IReadOnlyCollection<WorkRecord> WorkRecords { get; private set; }
+    
+    public IReadOnlyCollection<string> Skills { get; private set; }
     
     public bool IsPublic { get; private set; }
     

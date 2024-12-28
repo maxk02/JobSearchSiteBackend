@@ -4,10 +4,11 @@ namespace Core.Domains.Jobs.Search;
 
 public class JobSearchModel : SearchModelBase
 {
-    public int CompanyId { get; set; }
-    public string Title { get; set; } = "";
-    public string Description { get; set; } = "";
-    public IList<string> Responsibilities { get; set; } = [];
-    public IList<string> Requirements { get; set; } = [];
-    public IList<string> Benefits { get; set; } = [];
+    public long CompanyId { get; set; }
+    public long CategoryId { get; set; }
+    public required string Title { get; set; }
+    public required string Description { get; set; }
+    public ICollection<string> Responsibilities { get; set; } = [];
+    public ICollection<string> Requirements { get; set; } = [];
+    public ICollection<string> Advantages { get; set; } = [];
 }
