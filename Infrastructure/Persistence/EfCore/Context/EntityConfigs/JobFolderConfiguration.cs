@@ -16,10 +16,10 @@ public class JobFolderConfiguration : MyBaseEntityConfiguration<JobFolder>
             .WithMany(company => company.JobFolders)
             .OnDelete(DeleteBehavior.Restrict);
 
-        builder
-            .HasOne(jobFolder => jobFolder.Parent)
-            .WithMany(jobFolder => jobFolder.Children)
-            .OnDelete(DeleteBehavior.Restrict);
+        // builder
+        //     .HasOne(jobFolder => jobFolder.Parent)
+        //     .WithMany(jobFolder => jobFolder.Children)
+        //     .OnDelete(DeleteBehavior.Restrict);
 
         builder
             .HasMany(jobFolder => jobFolder.Jobs)

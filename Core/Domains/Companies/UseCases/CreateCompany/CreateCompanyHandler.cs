@@ -39,7 +39,7 @@ public class CreateCompanyHandler(
             CompanyPermission.AllIds, cancellationToken);
 
         //creating folder and checking result
-        var rootFolderCreationResult = JobFolder.Create(createdCompany.Id, null, null, null);
+        var rootFolderCreationResult = JobFolder.Create(createdCompany.Id, null, null);
 
         if (rootFolderCreationResult.IsFailure)
             return Result<CreateCompanyResponse>.Error();

@@ -11,6 +11,8 @@ public class GetAllCategoriesHandler(ICategoryRepository categoryRepository)
     {
         var categories = await categoryRepository.GetAllAsync();
 
-        return categories.Select(x => new GetAllCategoriesResponse(x.Id, x.Name, x.ParentId)).ToList();
+        throw new NotImplementedException();
+        
+        // return categories.Select(x => new GetAllCategoriesResponse(x.Id, x.Name, x.ParentId)).ToList();
     }
 }

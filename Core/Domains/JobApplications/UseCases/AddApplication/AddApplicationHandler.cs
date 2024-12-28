@@ -1,6 +1,7 @@
 ﻿using Core.Domains._Shared.Repositories;
 using Core.Domains._Shared.UnitOfWork;
 using Core.Domains._Shared.UseCaseStructure;
+using Core.Domains.Cvs.Search;
 using Core.Domains.JobApplications.Values;
 using Core.Domains.PersonalFiles;
 using Core.Services.Auth.Authentication;
@@ -12,7 +13,8 @@ public class AddApplicationHandler(
     ICurrentAccountService currentAccountService,
     IRepository<PersonalFile> personalFileRepository,
     IUnitOfWork unitOfWork,
-    IJobApplicationRepository jobApplicationRepository)
+    IJobApplicationRepository jobApplicationRepository,
+    ICvSearchRepository cvSearchRepository)
     : IRequestHandler<AddApplicationRequest, Result<AddApplicationResponse>>
 {
     public async Task<Result<AddApplicationResponse>> Handle(AddApplicationRequest request,
@@ -40,6 +42,15 @@ public class AddApplicationHandler(
         await jobApplicationRepository.AddAttachedFileIdsAsync(jobApplication.Id, request.PersonalFileIds,
             cancellationToken);
         await unitOfWork.CommitAsync(cancellationToken);
+
+        try
+        {
+            await cvSearchRepository.AddAppliedToJobIdAsync(jobApplication.UserId, jobApplication.JobId);
+        }
+        catch
+        {
+            
+        }
 
         return Result<AddApplicationResponse>.Success(new AddApplicationResponse(jobApplication.Id));
     }

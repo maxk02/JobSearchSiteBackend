@@ -9,7 +9,7 @@ public class JobFolderValidator : AbstractValidator<JobFolder>
     public JobFolderValidator()
     {
         RuleFor(x => x.CompanyId).GreaterThanOrEqualTo(1);
-        RuleFor(x => x.ParentId).GreaterThanOrEqualTo(1);
+        // RuleFor(x => x.ParentId).GreaterThanOrEqualTo(1);
         
         RuleFor(x => x.Name).Length(1, 50)
             .WhitelistPolicy(new WhitelistPolicy().Letters().Digits().Spaces().Symbols().Punctuation());

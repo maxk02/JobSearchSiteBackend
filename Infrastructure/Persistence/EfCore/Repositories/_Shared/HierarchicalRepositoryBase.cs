@@ -6,52 +6,82 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.Persistence.EfCore.Repositories._Shared;
 
-public class HierarchicalRepositoryBase<T> : RepositoryBase<T>, IHierarchicalRepository<T>
+public class HierarchicalRepositoryBase<T> : IHierarchicalRepository<T>
     where T : EntityBase, IHierarchicalEntity<T>
 {
-    public HierarchicalRepositoryBase(MyEfCoreDataContext dataDbContext) : base(dataDbContext)
+    protected readonly MyEfCoreDataContext DataDbContext;
+
+    public HierarchicalRepositoryBase(MyEfCoreDataContext dataDbContext)
     {
+        DataDbContext = dataDbContext;
     }
 
-    public async Task<bool> AreAncestorAndDescendantAsync(long ancestorId, long descendantId, CancellationToken cancellationToken)
+    public async Task AddAsync(long parentId, T entity, CancellationToken cancellationToken = default)
     {
-        var tableName = DataDbContext.Model
-            .FindEntityType(typeof(T))?
-            .GetTableName();
+        using var transaction = await DataDbContext.Database.BeginTransactionAsync(cancellationToken);
 
-        if (string.IsNullOrEmpty(tableName))
+        // Add the new node
+        DataDbContext.Set<T>().Add(entity);
+        await DataDbContext.SaveChangesAsync(cancellationToken);
+
+        // Add Closure relationships
+        var parentClosures = await DataDbContext.Set<Closure<T>>()
+            .Where(c => c.DescendantId == parentId)
+            .ToListAsync(cancellationToken);
+
+        var newClosures = parentClosures.Select(parentClosure => new Closure<T>
+            (parentClosure.AncestorId, entity.Id, parentClosure.Depth + 1)
+        ).ToList();
+
+        // Add self-relationship for the new node
+        newClosures.Add(new Closure<T>(entity.Id, entity.Id, 0));
+
+        DataDbContext.Set<Closure<T>>().AddRange(newClosures);
+        await DataDbContext.SaveChangesAsync(cancellationToken);
+
+        await transaction.CommitAsync(cancellationToken);
+    }
+
+    public async Task RemoveAsync(T entity, CancellationToken cancellationToken = default)
+    {
+        DataDbContext.Set<T>().Remove(entity);
+        await DataDbContext.SaveChangesAsync(cancellationToken);
+    }
+
+    public async Task UpdateAsync(T entity, CancellationToken cancellationToken = default)
+    {
+        DataDbContext.Set<T>().Update(entity);
+        await DataDbContext.SaveChangesAsync(cancellationToken);
+    }
+
+    public async Task<ICollection<T>> GetDescendantsAsync(long id, int? depth = null,
+        CancellationToken cancellationToken = default)
+    {
+        var query = DataDbContext.Set<Closure<T>>()
+            .Include(c => c.Descendant)
+            .Where(c => c.AncestorId == id);
+
+        if (depth.HasValue)
         {
-            throw new Exception($"The table name {tableName} could not be found.");
+            query = query.Where(c => c.Depth <= depth.Value);
         }
 
-        try
-        {
-            var sql = $@"
-            WITH RecursiveHierarchy AS (
-                SELECT *
-                FROM {tableName}
-                WHERE Id = {{0}}
-                UNION ALL
-                SELECT *
-                FROM {tableName} e
-                INNER JOIN RecursiveHierarchy rh ON e.ParentId = rh.Id
-            )
-            SELECT *
-            FROM RecursiveHierarchy
-            WHERE Id = {{1}};
-        ";
+        return await query.Select(c => c.Descendant!).ToListAsync(cancellationToken);
+    }
 
-            var result = await DataDbContext
-                .Set<T>() //todo
-                .FromSqlRaw(sql, ancestorId, descendantId)
-                .AsNoTracking()
-                .ToListAsync(cancellationToken);
+    public async Task<ICollection<T>> GetAncestorsAsync(long id, CancellationToken cancellationToken = default)
+    {
+        return await DataDbContext.Set<Closure<T>>()
+            .Include(c => c.Ancestor)
+            .Where(c => c.DescendantId == id && c.Depth > 0)
+            .Select(c => c.Ancestor!)
+            .ToListAsync(cancellationToken);
+    }
 
-            return result.Any();
-        }
-        catch (Exception e)
-        {
-            throw;
-        }
+    public async Task<bool> AreAncestorAndDescendantAsync(long ancestorId, long descendantId,
+        CancellationToken cancellationToken = default)
+    {
+        return await DataDbContext.Set<Closure<T>>()
+            .AnyAsync(c => c.AncestorId == ancestorId && c.DescendantId == descendantId, cancellationToken);
     }
 }

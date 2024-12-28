@@ -4,7 +4,7 @@ using FluentValidation;
 using Shared.FluentValidationAddons;
 using Shared.FluentValidationAddons.StringFiltering;
 
-namespace Core.Domains.UserProfiles;
+namespace Core.Domains.Cvs;
 
 public class CvValidator : AbstractValidator<Cv>
 {

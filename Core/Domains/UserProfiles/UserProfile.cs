@@ -3,6 +3,7 @@ using Core.Domains._Shared.Entities.Interfaces;
 using Core.Domains._Shared.ValueEntities;
 using Core.Domains.Companies;
 using Core.Domains.CompanyPermissions.UserCompanyPermissions;
+using Core.Domains.Cvs;
 using Core.Domains.JobApplications;
 using Core.Domains.JobFolderPermissions.UserJobFolderPermissions;
 using Core.Domains.Jobs;

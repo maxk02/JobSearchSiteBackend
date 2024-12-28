@@ -11,10 +11,10 @@ public class CategoryConfiguration : MyBaseEntityConfiguration<Category>
     {
         base.Configure(builder);
         
-        builder
-            .HasMany(category => category.Children)
-            .WithOne(childCategory => childCategory.Parent)
-            .OnDelete(DeleteBehavior.Restrict);
+        // builder
+        //     .HasMany(category => category.Children)
+        //     .WithOne(childCategory => childCategory.Parent)
+        //     .OnDelete(DeleteBehavior.Restrict);
         
         builder
             .HasMany(category => category.Cvs)

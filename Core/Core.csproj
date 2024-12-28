@@ -14,4 +14,9 @@
       <PackageReference Include="FluentValidation" Version="11.10.0" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Folder Include="Domains\Cvs\UseCases\AddCv\" />
+      <Folder Include="Domains\Cvs\UseCases\DeleteCv\" />
+    </ItemGroup>
+
 </Project>

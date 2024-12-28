@@ -3,7 +3,7 @@ using Core.Domains._Shared.ValueEntities;
 using Core.Domains.UserProfiles.ValueEntities;
 using Shared.Result;
 
-namespace Core.Domains.UserProfiles.UseCases.UpdateCv;
+namespace Core.Domains.Cvs.UseCases.UpdateCv;
 
 public record UpdateCvRequest(SalaryRecord? SalaryRecord, EmploymentTypeRecord? EmploymentTypeRecord,
     ICollection<EducationRecord>? EducationRecords, ICollection<WorkRecord>? WorkRecords,

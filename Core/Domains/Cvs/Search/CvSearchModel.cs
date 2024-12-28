@@ -2,11 +2,13 @@
 using Core.Domains._Shared.ValueEntities;
 using Core.Domains.UserProfiles.ValueEntities;
 
-namespace Core.Domains.UserProfiles.Search;
+namespace Core.Domains.Cvs.Search;
 
 public class CvSearchModel : SearchModelBase
 {
-    public SalaryRecord? SalaryRecord { get; private set; }
+    public required long UserId { get; set; }
+    
+    public SalaryRecord? SalaryRecord { get; set; }
 
     public EmploymentTypeRecord? EmploymentTypeRecord { get; set; }
 

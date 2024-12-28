@@ -12,26 +12,42 @@ public class JobFolder : EntityBase, IHierarchicalEntity<JobFolder>
 {
     public static JobFolderValidator Validator { get; } = new();
 
-    public static Result<JobFolder> Create(long? companyId, long? parentId, string? name, string? description)
+    // public static Result<JobFolder> Create(long? companyId, long? parentId, string? name, string? description)
+    // {
+    //     var folder = new JobFolder(companyId, parentId, name, description);
+    //
+    //     var validationResult = Validator.Validate(folder);
+    //
+    //     return validationResult.IsValid ? folder : Result<JobFolder>.Invalid();
+    // }
+    
+    public static Result<JobFolder> Create(long? companyId, string? name, string? description)
     {
-        var folder = new JobFolder(companyId, parentId, name, description);
+        var folder = new JobFolder(companyId, name, description);
 
         var validationResult = Validator.Validate(folder);
 
         return validationResult.IsValid ? folder : Result<JobFolder>.Invalid();
     }
     
-    private JobFolder(long? companyId, long? parentId, string? name, string? description)
+    // private JobFolder(long? companyId, long? parentId, string? name, string? description)
+    // {
+    //     CompanyId = companyId;
+    //     ParentId = parentId;
+    //     Name = name;
+    //     Description = description;
+    // }
+    
+    private JobFolder(long? companyId, string? name, string? description)
     {
         CompanyId = companyId;
-        ParentId = parentId;
         Name = name;
         Description = description;
     }
     
     public long? CompanyId { get; private set; }
     
-    public long? ParentId { get; private set; }
+    // public long? ParentId { get; private set; }
 
     public string? Name { get; private set; }
 
@@ -68,8 +84,13 @@ public class JobFolder : EntityBase, IHierarchicalEntity<JobFolder>
     
     
     public virtual Company? Company { get; set; }
-    public virtual JobFolder? Parent { get; set; }
-    public virtual ICollection<JobFolder>? Children { get; set; }
+    
+    // public virtual JobFolder? Parent { get; set; }
+    // public virtual ICollection<JobFolder>? Children { get; set; }
+    
+    public ICollection<Closure<JobFolder>>? Ancestors { get; set; }
+    public ICollection<Closure<JobFolder>>? Descendants { get; set; }
+    
     public virtual ICollection<Job>? Jobs { get; set; }
     public virtual ICollection<UserJobFolderPermission>? UserJobFolderPermissions { get; set; }
 }

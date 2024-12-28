@@ -3,11 +3,12 @@ using Core.Domains._Shared.Entities.Interfaces;
 using Core.Domains._Shared.ValueEntities;
 using Core.Domains.Categories;
 using Core.Domains.Locations;
+using Core.Domains.UserProfiles;
 using Core.Domains.UserProfiles.ValueEntities;
 using Shared.Result;
 using Shared.Result.FluentValidation;
 
-namespace Core.Domains.UserProfiles;
+namespace Core.Domains.Cvs;
 
 public class Cv : EntityBase, IPublicOrPrivateEntity
 {
