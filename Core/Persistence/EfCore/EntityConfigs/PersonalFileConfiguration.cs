@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Infrastructure.Persistence.EfCore.Context.EntityConfigs;
 
-public class PersonalFileConfiguration : MyBaseEntityConfiguration<PersonalFile>
+public class PersonalFileConfiguration : EntityConfigurationBase<PersonalFile>
 {
     public override void Configure(EntityTypeBuilder<PersonalFile> builder)
     {

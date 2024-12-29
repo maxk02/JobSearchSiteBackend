@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Infrastructure.Persistence.EfCore.Context.EntityConfigs.Shared;
 
-public class MyBaseEntityConfiguration<T> : IEntityTypeConfiguration<T> where T : EntityBase
+public class EntityConfigurationBase<T> : IEntityTypeConfiguration<T> where T : EntityBase
 {
     public virtual void Configure(EntityTypeBuilder<T> builder)
     {

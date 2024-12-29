@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Infrastructure.Persistence.EfCore.Context.EntityConfigs;
 
-public class CategoryConfiguration : MyBaseEntityConfiguration<Category>
+public class CategoryConfiguration : EntityConfigurationBase<Category>
 {
     public override void Configure(EntityTypeBuilder<Category> builder)
     {

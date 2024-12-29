@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Infrastructure.Persistence.EfCore.Context.EntityConfigs;
 
-public class CompanyPermissionConfiguration : MyBaseEntityConfiguration<CompanyPermission>
+public class CompanyPermissionConfiguration : EntityConfigurationBase<CompanyPermission>
 {
     public override void Configure(EntityTypeBuilder<CompanyPermission> builder)
     {

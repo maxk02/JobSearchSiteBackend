@@ -1,20 +1,24 @@
 ﻿using Core.Domains._Shared.Entities;
 using Core.Domains._Shared.Repositories;
+using Infrastructure.Persistence.EfCore.Context;
+using Microsoft.EntityFrameworkCore;
 using Quartz;
 
 namespace Infrastructure.Persistence.JobSchedulers.DeleteEntity;
 
-public class DeleteEntityJob<TEntity>(IRepository<TEntity> repository) : IJob where TEntity : EntityBase
+public class DeleteEntityJob<TEntity>(MyEfCoreDataContext dbContext) : IJob where TEntity : EntityBase
 {
-    public async Task Execute(IJobExecutionContext context)
+    public async Task Execute(IJobExecutionContext jobExecutionContext)
     {
-        var entityId = context.MergedJobDataMap.GetLong("EntityId");
+        var entityId = jobExecutionContext.MergedJobDataMap.GetLong("EntityId");
         // var retryCount = context.MergedJobDataMap.GetInt("RetryCount");
 
         try
         {
             // Attempt deletion
-            await repository.RemoveByIdAsync(entityId);
+            var entity = await dbContext.Set<TEntity>().FindAsync(entityId);
+            if (entity != null)
+                dbContext.Set<TEntity>().Remove(entity);
         }
         catch (Exception ex)
         {
@@ -22,7 +26,7 @@ public class DeleteEntityJob<TEntity>(IRepository<TEntity> repository) : IJob wh
                 .StartAt(DateBuilder.FutureDate(1, IntervalUnit.Hour))
                 .Build();
 
-            await context.Scheduler.ScheduleJob(context.JobDetail, trigger);
+            await jobExecutionContext.Scheduler.ScheduleJob(jobExecutionContext.JobDetail, trigger);
             
         }
     }

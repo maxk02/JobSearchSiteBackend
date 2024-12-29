@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Infrastructure.Persistence.EfCore.Context.EntityConfigs;
 
-public class UserConfiguration : MyBaseEntityConfiguration<UserProfile>
+public class UserConfiguration : EntityConfigurationBase<UserProfile>
 {
     public override void Configure(EntityTypeBuilder<UserProfile> builder)
     {

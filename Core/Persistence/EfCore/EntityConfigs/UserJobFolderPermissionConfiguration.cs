@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Infrastructure.Persistence.EfCore.Context.EntityConfigs;
 
-public class UserJobFolderPermissionConfiguration : MyBaseEntityConfiguration<UserJobFolderPermission>
+public class UserJobFolderPermissionConfiguration : EntityConfigurationBase<UserJobFolderPermission>
 {
     public override void Configure(EntityTypeBuilder<UserJobFolderPermission> builder)
     {

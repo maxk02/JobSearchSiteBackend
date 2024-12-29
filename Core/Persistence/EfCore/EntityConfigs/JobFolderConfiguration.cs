@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Infrastructure.Persistence.EfCore.Context.EntityConfigs;
 
-public class JobFolderConfiguration : MyBaseEntityConfiguration<JobFolder>
+public class JobFolderConfiguration : EntityConfigurationBase<JobFolder>
 {
     public override void Configure(EntityTypeBuilder<JobFolder> builder)
     {

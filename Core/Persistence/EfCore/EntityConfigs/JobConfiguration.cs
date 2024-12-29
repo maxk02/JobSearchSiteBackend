@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Infrastructure.Persistence.EfCore.Context.EntityConfigs;
 
-public class JobConfiguration : MyBaseEntityConfiguration<Job>
+public class JobConfiguration : EntityConfigurationBase<Job>
 {
     public override void Configure(EntityTypeBuilder<Job> builder)
     {

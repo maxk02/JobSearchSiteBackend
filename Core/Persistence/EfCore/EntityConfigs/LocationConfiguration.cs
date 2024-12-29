@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Infrastructure.Persistence.EfCore.Context.EntityConfigs;
 
-public class LocationConfiguration : MyBaseEntityConfiguration<Location>
+public class LocationConfiguration : EntityConfigurationBase<Location>
 {
     public override void Configure(EntityTypeBuilder<Location> builder)
     {
