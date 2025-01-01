@@ -166,6 +166,6 @@ public class UserProfile : EntityBase, IPublicOrPrivateEntity
     public virtual ICollection<Job>? BookmarkedJobs { get; set; }
     public virtual ICollection<Company>? BookmarkedCompanies { get; set; }
 
-    public virtual ICollection<UserCompanyPermission>? UserCompanyCompanyPermissions { get; set; }
-    public virtual ICollection<UserJobFolderPermission>? UserFolderFolderPermissions { get; set; }
+    public virtual ICollection<UserCompanyPermission>? UserCompanyPermissions { get; set; }
+    public virtual ICollection<UserJobFolderPermission>? UserFolderPermissions { get; set; }
 }

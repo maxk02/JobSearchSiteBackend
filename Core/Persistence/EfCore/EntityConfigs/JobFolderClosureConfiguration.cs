@@ -3,7 +3,7 @@ using Core.Domains.JobFolders;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace Infrastructure.Persistence.EfCore.Context.EntityConfigs;
+namespace Core.Persistence.EfCore.EntityConfigs;
 
 public class JobFolderClosureConfiguration : IEntityTypeConfiguration<Closure<JobFolder>>
 {

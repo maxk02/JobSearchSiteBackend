@@ -21,7 +21,7 @@ public class UserJobFolderPermission : EntityBase
             : Result<UserJobFolderPermission>.Invalid(validationResult.AsErrors());
     }
     
-    private UserJobFolderPermission(long userId, long folderId, long permissionId)
+    public UserJobFolderPermission(long userId, long folderId, long permissionId)
     {
         UserId = userId;
         FolderId = folderId;

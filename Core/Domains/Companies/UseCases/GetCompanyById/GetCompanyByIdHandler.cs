@@ -1,23 +1,25 @@
 ﻿using Core.Domains._Shared.UseCaseStructure;
 using Core.Domains.CompanyPermissions;
+using Core.Persistence.EfCore;
 using Core.Services.Auth.Authentication;
+using Microsoft.EntityFrameworkCore;
 using Shared.Result;
 
 namespace Core.Domains.Companies.UseCases.GetCompanyById;
 
 public class GetCompanyByIdHandler(
     ICurrentAccountService currentAccountService,
-    ICompanyRepository companyRepository,
-    ICompanyPermissionRepository companyPermissionRepository)
+    MainDataContext context)
     : IRequestHandler<GetCompanyByIdRequest, Result<GetCompanyByIdResponse>>
 {
     public async Task<Result<GetCompanyByIdResponse>> Handle(GetCompanyByIdRequest request,
         CancellationToken cancellationToken = default)
     {
-        var company = await companyRepository.GetByIdAsync(request.Id, cancellationToken);
+        // var company = await companyRepository.GetByIdAsync(request.Id, cancellationToken);
+        var company = await context.Companies.FindAsync([request.Id], cancellationToken);
 
         if (company is null)
-            return Result<GetCompanyByIdResponse>.NotFound("Requested company does not exist.");
+            return Result<GetCompanyByIdResponse>.NotFound();
 
         if (!company.IsPublic)
         {
@@ -25,11 +27,15 @@ public class GetCompanyByIdHandler(
 
             if (currentUserId is null)
                 return Result<GetCompanyByIdResponse>.Forbidden("Requested company profile is private.");
+            
+            var canEditProfile = await context.UserCompanyPermissions
+                .AnyAsync(
+                    ucp => ucp.UserId == currentUserId 
+                    && ucp.CompanyId == company.Id 
+                    && ucp.PermissionId == CompanyPermission.CanEditProfile.Id,
+                    cancellationToken);
 
-            var permissionIds = await companyPermissionRepository.GetPermissionIdsForUserAsync(
-                currentUserId.Value, request.Id, cancellationToken);
-
-            if (!permissionIds.Contains(CompanyPermission.CanEditProfile.Id))
+            if (!canEditProfile)
                 return Result<GetCompanyByIdResponse>.Forbidden("Requested company profile is private.");
         }
 

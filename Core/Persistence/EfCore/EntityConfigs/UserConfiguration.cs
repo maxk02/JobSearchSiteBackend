@@ -1,9 +1,9 @@
 ﻿using Core.Domains.UserProfiles;
-using Infrastructure.Persistence.EfCore.Context.EntityConfigs.Shared;
+using Core.Persistence.EfCore.EntityConfigs.Shared;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace Infrastructure.Persistence.EfCore.Context.EntityConfigs;
+namespace Core.Persistence.EfCore.EntityConfigs;
 
 public class UserConfiguration : EntityConfigurationBase<UserProfile>
 {
@@ -27,12 +27,12 @@ public class UserConfiguration : EntityConfigurationBase<UserProfile>
             .OnDelete(DeleteBehavior.Restrict);
 
         builder
-            .HasMany(user => user.UserFolderFolderPermissions)
+            .HasMany(user => user.UserFolderPermissions)
             .WithOne(userFolderFolderPermission => userFolderFolderPermission.User)
             .OnDelete(DeleteBehavior.Restrict);
 
         builder
-            .HasMany(user => user.UserCompanyCompanyPermissions)
+            .HasMany(user => user.UserCompanyPermissions)
             .WithOne(userCompanyCompanyPermission => userCompanyCompanyPermission.User)
             .OnDelete(DeleteBehavior.Restrict);
         

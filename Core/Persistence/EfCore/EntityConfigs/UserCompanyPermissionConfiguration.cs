@@ -1,9 +1,9 @@
 ﻿using Core.Domains.CompanyPermissions.UserCompanyPermissions;
-using Infrastructure.Persistence.EfCore.Context.EntityConfigs.Shared;
+using Core.Persistence.EfCore.EntityConfigs.Shared;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace Infrastructure.Persistence.EfCore.Context.EntityConfigs;
+namespace Core.Persistence.EfCore.EntityConfigs;
 
 public class UserCompanyPermissionConfiguration : EntityConfigurationBase<UserCompanyPermission>
 {
@@ -13,7 +13,7 @@ public class UserCompanyPermissionConfiguration : EntityConfigurationBase<UserCo
 
         builder
             .HasOne(userCompanyCompanyPermission => userCompanyCompanyPermission.User)
-            .WithMany(user => user.UserCompanyCompanyPermissions)
+            .WithMany(user => user.UserCompanyPermissions)
             .OnDelete(DeleteBehavior.Restrict);
 
         builder

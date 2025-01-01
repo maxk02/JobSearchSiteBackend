@@ -1,9 +1,9 @@
 ﻿using Core.Domains.JobFolders;
-using Infrastructure.Persistence.EfCore.Context.EntityConfigs.Shared;
+using Core.Persistence.EfCore.EntityConfigs.Shared;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace Infrastructure.Persistence.EfCore.Context.EntityConfigs;
+namespace Core.Persistence.EfCore.EntityConfigs;
 
 public class JobFolderConfiguration : EntityConfigurationBase<JobFolder>
 {

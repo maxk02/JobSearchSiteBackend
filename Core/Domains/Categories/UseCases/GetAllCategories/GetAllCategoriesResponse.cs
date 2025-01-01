@@ -1,3 +1,5 @@
-﻿namespace Core.Domains.Categories.UseCases.GetAllCategories;
+﻿using Core.Domains.Categories.Dtos;
 
-public record GetAllCategoriesResponse(long Id, string Name, long? ParentId);
+namespace Core.Domains.Categories.UseCases.GetAllCategories;
+
+public record GetAllCategoriesResponse(ICollection<CategoryWithChildrenListDto> CategoriesWithChildrenList);

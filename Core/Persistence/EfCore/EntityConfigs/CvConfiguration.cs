@@ -1,10 +1,9 @@
 ﻿using Core.Domains.Cvs;
-using Core.Domains.UserProfiles;
-using Infrastructure.Persistence.EfCore.Context.EntityConfigs.Shared;
+using Core.Persistence.EfCore.EntityConfigs.Shared;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace Infrastructure.Persistence.EfCore.Context.EntityConfigs;
+namespace Core.Persistence.EfCore.EntityConfigs;
 
 public class CvConfiguration : EntityConfigurationBase<Cv>
 {

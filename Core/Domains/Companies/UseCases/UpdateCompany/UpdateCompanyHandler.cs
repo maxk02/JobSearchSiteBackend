@@ -1,40 +1,68 @@
-﻿using Core.Domains._Shared.UseCaseStructure;
+﻿using Core.Domains._Shared.Search;
+using Core.Domains._Shared.UseCaseStructure;
+using Core.Domains.Companies.Search;
 using Core.Domains.CompanyPermissions;
+using Core.Persistence.EfCore;
 using Core.Services.Auth.Authentication;
+using Microsoft.EntityFrameworkCore;
 using Shared.Result;
 
 namespace Core.Domains.Companies.UseCases.UpdateCompany;
 
-public class UpdateCompanyHandler(ICurrentAccountService currentAccountService,
-    ICompanyRepository companyRepository) : IRequestHandler<UpdateCompanyRequest, Result>
+public class UpdateCompanyHandler(
+    ICurrentAccountService currentAccountService,
+    ICompanySearchRepository companySearchRepository,
+    ISearchRepositoryJobScheduler<CompanySearchModel> searchRepositoryJobScheduler,
+    MainDataContext context) : IRequestHandler<UpdateCompanyRequest, Result>
 {
     public async Task<Result> Handle(UpdateCompanyRequest request, CancellationToken cancellationToken = default)
     {
         var currentUserId = currentAccountService.GetIdOrThrow();
-
-        var companyWithPermissionIdsDto = await companyRepository.GetCompanyWithPermissionIdsForUser(currentUserId,
-            request.CompanyId, cancellationToken);
-
-        if (companyWithPermissionIdsDto.Company is null)
-            return Result.NotFound("Requested company does not exist.");
         
-        if (!companyWithPermissionIdsDto.PermissionIds.Contains(CompanyPermission.CanEditProfile.Id))
+        var companyWithPermissionIdsQuery =
+            from company in context.Companies
+            join ucp in context.UserCompanyPermissions on company.Id equals ucp.CompanyId into ucpGroup
+            from ucp in ucpGroup.DefaultIfEmpty()
+            where company.Id == request.CompanyId && ucp.UserId == currentUserId
+            group ucp.PermissionId by new { Company = company, UserId = ucp.UserId } into grouped
+            select new { grouped.Key.Company, PermissionIds = grouped.ToList() };
+
+        var companyWithPermissionIds = await companyWithPermissionIdsQuery.SingleOrDefaultAsync(cancellationToken);
+
+        if (companyWithPermissionIds is null)
+            return Result.NotFound();
+        
+        if (!companyWithPermissionIds.PermissionIds.Contains(CompanyPermission.CanEditProfile.Id))
         {
-            return Result.Forbidden("Insufficient permissions for company update.");
+            return Result.Forbidden();
         }
 
         var updatedCompanyResult = Company.Create(
-            request.Name ?? companyWithPermissionIdsDto.Company.Name,
-            request.Description ?? companyWithPermissionIdsDto.Company.Description,
-            request.IsPublic ?? companyWithPermissionIdsDto.Company.IsPublic,
-            companyWithPermissionIdsDto.Company.CountryId,
-            companyWithPermissionIdsDto.Company.Id
+            request.Name ?? companyWithPermissionIds.Company.Name,
+            request.Description ?? companyWithPermissionIds.Company.Description,
+            request.IsPublic ?? companyWithPermissionIds.Company.IsPublic,
+            companyWithPermissionIds.Company.CountryId,
+            companyWithPermissionIds.Company.Id
         );
         
         if (updatedCompanyResult.IsFailure)
             return Result.WithMetadataFrom(updatedCompanyResult);
+        
+        var updatedCompany = updatedCompanyResult.Value;
 
-        await companyRepository.UpdateAsync(updatedCompanyResult.Value, cancellationToken);
+        context.Companies.Update(updatedCompany);
+        await context.SaveChangesAsync(cancellationToken);
+        
+        var companySearchModel = new CompanySearchModel(updatedCompany.Id, updatedCompany.CountryId,
+            updatedCompany.Name, updatedCompany.Description);
+        try
+        {
+            await companySearchRepository.UpdateAsync(companySearchModel);
+        }
+        catch
+        {
+            await searchRepositoryJobScheduler.ScheduleAddAsync(companySearchModel);
+        }
 
         return Result.Success();
     }

@@ -1,10 +1,13 @@
-﻿using Core.Domains.Categories;
+﻿using Core.Domains._Shared.Entities;
+using Core.Domains.Categories;
 using Core.Domains.Companies;
 using Core.Domains.CompanyPermissions;
+using Core.Domains.CompanyPermissions.UserCompanyPermissions;
 using Core.Domains.Countries;
 using Core.Domains.JobApplications;
 using Core.Domains.JobContractTypes;
 using Core.Domains.JobFolderPermissions;
+using Core.Domains.JobFolderPermissions.UserJobFolderPermissions;
 using Core.Domains.JobFolders;
 using Core.Domains.Jobs;
 using Core.Domains.Locations;
@@ -12,12 +15,13 @@ using Core.Domains.PersonalFiles;
 using Core.Domains.UserProfiles;
 using Microsoft.EntityFrameworkCore;
 
-namespace Infrastructure.Persistence.EfCore.Context;
+namespace Core.Persistence.EfCore;
 
-public class MyEfCoreDataContext : DbContext
+public class MainDataContext : DbContext
 {
 #pragma warning disable CS8618
     public DbSet<Category> Categories { get; set; }
+    public DbSet<Closure<Category>> CategoryClosures { get; set; }
     public DbSet<Company> Companies { get; set; }
     public DbSet<JobContractType> ContractTypes { get; set; }
     public DbSet<Country> Countries { get; set; }
@@ -25,13 +29,16 @@ public class MyEfCoreDataContext : DbContext
     public DbSet<JobApplication> JobApplications { get; set; }
     public DbSet<Job> Jobs { get; set; }
     public DbSet<Location> Locations { get; set; }
-    public DbSet<JobFolder> Folders { get; set; }
+    public DbSet<JobFolder> JobFolders { get; set; }
+    public DbSet<Closure<JobFolder>> JobFolderClosures { get; set; }
     public DbSet<CompanyPermission> CompanyPermissions { get; set; }
-    public DbSet<JobFolderPermission> FolderPermissions { get; set; }
+    public DbSet<UserCompanyPermission> UserCompanyPermissions { get; set; }
+    public DbSet<JobFolderPermission> JobFolderPermissions { get; set; }
+    public DbSet<UserJobFolderPermission> UserJobFolderPermissions { get; set; }
     public DbSet<UserProfile> Users { get; set; }
 
 
-    public MyEfCoreDataContext(DbContextOptions<MyEfCoreDataContext> options) : base(options)
+    public MainDataContext(DbContextOptions<MainDataContext> options) : base(options)
     {
     }
 
@@ -44,6 +51,6 @@ public class MyEfCoreDataContext : DbContext
     {
         base.OnModelCreating(modelBuilder);
         
-        modelBuilder.ApplyConfigurationsFromAssembly(typeof(MyEfCoreDataContext).Assembly);
+        modelBuilder.ApplyConfigurationsFromAssembly(typeof(MainDataContext).Assembly);
     }
 }

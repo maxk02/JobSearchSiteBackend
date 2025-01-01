@@ -1,29 +1,52 @@
-﻿using Core.Domains._Shared.UseCaseStructure;
+﻿using Core.Domains._Shared.Search;
+using Core.Domains._Shared.UseCaseStructure;
+using Core.Domains.Companies.Search;
 using Core.Domains.CompanyPermissions;
+using Core.Persistence.EfCore;
 using Core.Services.Auth.Authentication;
+using Microsoft.EntityFrameworkCore;
 using Shared.Result;
 
 namespace Core.Domains.Companies.UseCases.DeleteCompany;
 
-public class DeleteCompanyHandler(ICurrentAccountService currentAccountService,
-    ICompanyRepository companyRepository) : IRequestHandler<DeleteCompanyRequest, Result>
+public class DeleteCompanyHandler(
+    ICurrentAccountService currentAccountService,
+    MainDataContext context,
+    ICompanySearchRepository companySearchRepository,
+    ISearchRepositoryJobScheduler<CompanySearchModel> searchRepositoryJobScheduler)
+    : IRequestHandler<DeleteCompanyRequest, Result>
 {
     public async Task<Result> Handle(DeleteCompanyRequest request, CancellationToken cancellationToken = default)
     {
         var currentUserId = currentAccountService.GetIdOrThrow();
 
-        var companyWithPermissionIdsDto = await companyRepository.GetCompanyWithPermissionIdsForUser(currentUserId,
-            request.Id, cancellationToken);
+        var companyWithPermissionIdsQuery =
+            from company in context.Companies
+            join ucp in context.UserCompanyPermissions on company.Id equals ucp.CompanyId into ucpGroup
+            from ucp in ucpGroup.DefaultIfEmpty()
+            where company.Id == request.CompanyId && ucp.UserId == currentUserId
+            group ucp.PermissionId by new { Company = company, UserId = ucp.UserId } into grouped
+            select new { grouped.Key.Company, PermissionIds = grouped.ToList() };
 
-        if (companyWithPermissionIdsDto.Company is null)
-            return Result.NotFound("Requested company does not exist.");
+        var companyWithPermissionIds = await companyWithPermissionIdsQuery.SingleOrDefaultAsync(cancellationToken);
+        
+        if (companyWithPermissionIds is null)
+            return Result.NotFound();
+        
+        if (!companyWithPermissionIds.PermissionIds.Contains(CompanyPermission.IsOwner.Id))
+            return Result.Forbidden("Insufficient permissions for requested company deletion.");
 
-        if (!companyWithPermissionIdsDto.PermissionIds.Contains(CompanyPermission.IsOwner.Id))
+        context.Companies.Remove(companyWithPermissionIds.Company);
+        await context.SaveChangesAsync(cancellationToken);
+
+        try
         {
-            return Result.Forbidden("Insufficient permissions for company deletion.");
+            await companySearchRepository.DeleteAsync(companyWithPermissionIds.Company.Id, cancellationToken);
         }
-
-        await companyRepository.RemoveAsync(companyWithPermissionIdsDto.Company, cancellationToken);
+        catch
+        {
+            await searchRepositoryJobScheduler.ScheduleDeleteAsync(companyWithPermissionIds.Company.Id);
+        }
 
         return Result.Success();
     }

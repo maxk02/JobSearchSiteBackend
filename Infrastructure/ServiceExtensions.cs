@@ -1,7 +1,7 @@
-﻿using Core.Services.EmailSender;
+﻿using Core.Persistence.EfCore;
+using Core.Services.EmailSender;
 using Infrastructure.Auth.AccountStorage.AspNetCoreIdentity;
 using Infrastructure.EmailSender.SendGrid;
-using Infrastructure.Persistence.EfCore.Context;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -13,7 +13,7 @@ public static class ServiceExtensions
 {
     public static void ConfigureDataPersistence(this IServiceCollection serviceCollection, IConfiguration configuration)
     {
-        serviceCollection.AddDbContext<MyEfCoreDataContext>(options =>
+        serviceCollection.AddDbContext<MainDataContext>(options =>
             options.UseSqlServer(configuration.GetConnectionString("DataDbConnection")));
     }
     

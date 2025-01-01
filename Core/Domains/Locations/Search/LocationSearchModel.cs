@@ -2,11 +2,12 @@
 
 namespace Core.Domains.Locations.Search;
 
-public class LocationSearchModel : SearchModelBase
-{
-    public long CountryId { get; set; }
-    public required string Name { get; set; }
-    public ICollection<string> Subdivisions { get; set; } = [];
-    public string? Description { get; set; }
-    public string? Code { get; set; }
-}
+public record LocationSearchModel
+(
+    long Id,
+    long CountryId,
+    string Name,
+    ICollection<string> Subdivisions,
+    string? Description,
+    string? Code
+) : ISearchModel;

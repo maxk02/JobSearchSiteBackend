@@ -1,9 +1,15 @@
-﻿using Core.Domains._Shared.Repositories;
+﻿using System.Collections.Immutable;
+using Core.Domains._Shared.Repositories;
+using Core.Domains._Shared.Search;
 using Core.Domains._Shared.UnitOfWork;
 using Core.Domains._Shared.UseCaseStructure;
+using Core.Domains.Companies.Search;
 using Core.Domains.CompanyPermissions;
+using Core.Domains.CompanyPermissions.UserCompanyPermissions;
 using Core.Domains.JobFolderPermissions;
+using Core.Domains.JobFolderPermissions.UserJobFolderPermissions;
 using Core.Domains.JobFolders;
+using Core.Persistence.EfCore;
 using Core.Services.Auth.Authentication;
 using Shared.Result;
 
@@ -11,11 +17,10 @@ namespace Core.Domains.Companies.UseCases.CreateCompany;
 
 public class CreateCompanyHandler(
     ICurrentAccountService currentAccountService,
-    ICompanyRepository companyRepository,
-    IRepository<JobFolder> folderRepository,
-    ICompanyPermissionRepository companyPermissionRepository,
-    IJobFolderPermissionRepository jobFolderPermissionRepository,
-    IUnitOfWork unitOfWork) : IRequestHandler<CreateCompanyRequest, Result<CreateCompanyResponse>>
+    ICompanySearchRepository companySearchRepository,
+    ISearchRepositoryJobScheduler<CompanySearchModel> searchRepositoryJobScheduler,
+    MainDataContext context) 
+    : IRequestHandler<CreateCompanyRequest, Result<CreateCompanyResponse>>
 {
     public async Task<Result<CreateCompanyResponse>> Handle(CreateCompanyRequest request,
         CancellationToken cancellationToken = default)
@@ -28,31 +33,54 @@ public class CreateCompanyHandler(
 
         if (companyCreationResult.IsFailure)
             return Result<CreateCompanyResponse>.WithMetadataFrom(companyCreationResult);
+        
+        var company = companyCreationResult.Value;
+        
+        //starting transaction to be able to use SaveChangesAsync multiple times and revert all changes if something fails
+        await using var transaction = await context.Database.BeginTransactionAsync(cancellationToken);
 
-        // starting transaction
-        await unitOfWork.BeginAsync(cancellationToken);
-
-        //adding company
-        var createdCompany = await companyRepository.AddAsync(companyCreationResult.Value, cancellationToken);
+        //adding company and saving early to retrieve generated id
+        await context.Companies.AddAsync(company, cancellationToken);
+        await context.SaveChangesAsync(cancellationToken);
+        
         //adding full permission set to user
-        await companyPermissionRepository.UpdatePermissionIdsForUserAsync(currentUserId, createdCompany.Id,
-            CompanyPermission.AllIds, cancellationToken);
-
+        company.UserCompanyPermissions = CompanyPermission.AllIds
+            .Select(x => new UserCompanyPermission(currentUserId, company.Id, x)).ToList();
+            
+            
         //creating folder and checking result
-        var rootFolderCreationResult = JobFolder.Create(createdCompany.Id, null, null);
+        var rootFolderCreationResult = JobFolder.Create(company.Id, null, null);
 
         if (rootFolderCreationResult.IsFailure)
             return Result<CreateCompanyResponse>.Error();
+        
+        var rootFolder = rootFolderCreationResult.Value;
+        
 
         //adding root folder to company
-        var createdFolder = await folderRepository.AddAsync(rootFolderCreationResult.Value, cancellationToken);
+        await context.JobFolders.AddAsync(rootFolder, cancellationToken);
+        
         //adding full permission set to user
-        await jobFolderPermissionRepository.UpdatePermissionIdsForUserAsync(currentUserId, createdFolder.Id,
-            JobFolderPermission.AllIds, cancellationToken);
+        rootFolder.UserJobFolderPermissions = JobFolderPermission.AllIds
+            .Select(x => new UserJobFolderPermission(currentUserId, rootFolder.Id, x)).ToList();
 
-        // committing transaction
-        await unitOfWork.CommitAsync(cancellationToken);
+        // saving changes
+        await context.SaveChangesAsync(cancellationToken);
+        
+        //committing transaction
+        await transaction.CommitAsync(cancellationToken);
 
-        return new CreateCompanyResponse(createdCompany.Id);
+        
+        var companySearchModel = new CompanySearchModel(company.Id, company.CountryId, company.Name, company.Description);
+        try
+        {
+            await companySearchRepository.AddAsync(companySearchModel);
+        }
+        catch
+        {
+            await searchRepositoryJobScheduler.ScheduleAddAsync(companySearchModel);
+        }
+
+        return new CreateCompanyResponse(company.Id);
     }
 }

@@ -1,9 +1,9 @@
 ﻿using Core.Domains.JobFolderPermissions.UserJobFolderPermissions;
-using Infrastructure.Persistence.EfCore.Context.EntityConfigs.Shared;
+using Core.Persistence.EfCore.EntityConfigs.Shared;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace Infrastructure.Persistence.EfCore.Context.EntityConfigs;
+namespace Core.Persistence.EfCore.EntityConfigs;
 
 public class UserJobFolderPermissionConfiguration : EntityConfigurationBase<UserJobFolderPermission>
 {
@@ -13,7 +13,7 @@ public class UserJobFolderPermissionConfiguration : EntityConfigurationBase<User
 
         builder
             .HasOne(userJobFolderPermission => userJobFolderPermission.User)
-            .WithMany(user => user.UserFolderFolderPermissions)
+            .WithMany(user => user.UserFolderPermissions)
             .OnDelete(DeleteBehavior.Restrict);
 
         builder

@@ -1,12 +1,14 @@
 ﻿using Core.Domains._Shared.UseCaseStructure;
+using Core.Persistence.EfCore;
 using Core.Services.Auth.Authentication;
+using Microsoft.EntityFrameworkCore;
 using Shared.Result;
 
 namespace Core.Domains.CompanyPermissions.UseCases.GetCompanyPermissionIdsForUser;
 
 public class GetCompanyPermissionIdsForUserHandler(
     ICurrentAccountService currentAccountService,
-    ICompanyPermissionRepository companyPermissionRepository)
+    MainDataContext context)
     : IRequestHandler<GetCompanyPermissionIdsForUserRequest, Result<ICollection<long>>>
 {
     public async Task<Result<ICollection<long>>> Handle(GetCompanyPermissionIdsForUserRequest request,
@@ -14,18 +16,25 @@ public class GetCompanyPermissionIdsForUserHandler(
     {
         var currentUserId = currentAccountService.GetIdOrThrow();
 
-        if (currentUserId != request.UserId)
+        var targetUserPermissions = await context.UserCompanyPermissions
+            .Where(ucp => ucp.UserId == currentUserId && ucp.CompanyId == request.CompanyId)
+            .Select(ucp => ucp.Id)
+            .ToListAsync(cancellationToken);
+        
+        if (currentUserId == request.UserId)
         {
-            var isAdmin = await companyPermissionRepository.HasPermissionIdAsync(currentUserId,
-                request.CompanyId, CompanyPermission.IsAdmin.Id, cancellationToken);
-            
-            if (!isAdmin) 
-                return Result<ICollection<long>>.Forbidden();
+            return Result<ICollection<long>>.Success(targetUserPermissions);
         }
         
-        var permissions = await companyPermissionRepository
-            .GetPermissionIdsForUserAsync(request.UserId, request.CompanyId, cancellationToken);
-
-        return Result<ICollection<long>>.Success(permissions);
+        var isCurrentUserAdmin = await context.UserCompanyPermissions.AnyAsync(
+            ucp => ucp.UserId == currentUserId
+                   && ucp.CompanyId == request.CompanyId
+                   && ucp.Id == CompanyPermission.IsAdmin.Id,
+            cancellationToken);
+            
+        if (!isCurrentUserAdmin) 
+            return Result<ICollection<long>>.Forbidden();
+        
+        return Result<ICollection<long>>.Success(targetUserPermissions);
     }
 }

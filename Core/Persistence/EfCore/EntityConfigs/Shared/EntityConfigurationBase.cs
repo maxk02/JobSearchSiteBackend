@@ -2,7 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace Infrastructure.Persistence.EfCore.Context.EntityConfigs.Shared;
+namespace Core.Persistence.EfCore.EntityConfigs.Shared;
 
 public class EntityConfigurationBase<T> : IEntityTypeConfiguration<T> where T : EntityBase
 {

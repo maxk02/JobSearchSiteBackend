@@ -2,9 +2,4 @@
 
 namespace Core.Domains.Companies.Search;
 
-public class CompanySearchModel : SearchModelBase
-{
-    public required long CountryId { get; set; }
-    public required string Name { get; set; }
-    public string? Description { get; set; }
-}
+public record CompanySearchModel(long Id, long CountryId, string Name, string? Description) : ISearchModel;

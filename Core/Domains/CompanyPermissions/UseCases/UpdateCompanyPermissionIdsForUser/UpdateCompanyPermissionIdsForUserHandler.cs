@@ -1,5 +1,8 @@
 ﻿using Core.Domains._Shared.UseCaseStructure;
+using Core.Domains.CompanyPermissions.UserCompanyPermissions;
+using Core.Persistence.EfCore;
 using Core.Services.Auth.Authentication;
+using Microsoft.EntityFrameworkCore;
 using Shared.Result;
 using Shared.Result.FluentValidation;
 
@@ -7,7 +10,7 @@ namespace Core.Domains.CompanyPermissions.UseCases.UpdateCompanyPermissionIdsFor
 
 public class UpdateCompanyPermissionIdsForUserHandler(
     ICurrentAccountService currentAccountService,
-    ICompanyPermissionRepository companyPermissionRepository) 
+    MainDataContext context) 
     : IRequestHandler<UpdateCompanyPermissionIdsForUserRequest, Result>
 {
     public async Task<Result> Handle(UpdateCompanyPermissionIdsForUserRequest request, CancellationToken cancellationToken = default)
@@ -19,23 +22,40 @@ public class UpdateCompanyPermissionIdsForUserHandler(
         if (!validationResult.IsValid)
             return Result.Invalid(validationResult.AsErrors());
         
-        var currentUserPermissions = await companyPermissionRepository
-            .GetPermissionIdsForUserAsync(currentUserId, request.CompanyId, cancellationToken);
+        var company = await context.Companies.FindAsync([request.CompanyId], cancellationToken);
+        if (company is null)
+            return Result.NotFound();
+        
+        var userExists = await context.Users.AnyAsync(u => u.Id == request.UserId, cancellationToken);
+        if (!userExists)
+            return Result.NotFound();
+        
+        var currentUserPermissions = await context.UserCompanyPermissions
+            .Where(ucp => ucp.UserId == currentUserId && ucp.CompanyId == request.CompanyId)
+            .Select(ucp => ucp.Id)
+            .ToListAsync(cancellationToken);
 
         if (!currentUserPermissions.Contains(CompanyPermission.IsAdmin.Id))
-            return Result.Forbidden("Current user is not a company admin.");
+            return Result.Forbidden();
         
-        var targetUserPermissions = await companyPermissionRepository
-            .GetPermissionIdsForUserAsync(request.UserId, request.CompanyId, cancellationToken);
+        var targetUserPermissions = await context.UserCompanyPermissions
+            .Where(ucp => ucp.UserId == request.UserId && ucp.CompanyId == request.CompanyId)
+            .Select(ucp => ucp.Id)
+            .ToListAsync(cancellationToken);
         
-        if (targetUserPermissions.Contains(CompanyPermission.IsOwner.Id) || targetUserPermissions.Contains(CompanyPermission.IsAdmin.Id))
-            return Result.Forbidden("Insufficient permissions for update of permissions of target user.");
+        if (!targetUserPermissions.Contains(CompanyPermission.IsOwner.Id) 
+            && !targetUserPermissions.Contains(CompanyPermission.IsAdmin.Id))
+            return Result.Forbidden();
         
         if (targetUserPermissions.Except(currentUserPermissions).Any())
-            return Result.Forbidden("Insufficient permissions for update of permissions of target user.");
+            return Result.Forbidden();
         
-        await companyPermissionRepository.UpdatePermissionIdsForUserAsync(currentUserId, request.CompanyId,
-            request.CompanyPermissionIds, cancellationToken);
+        company.UserCompanyPermissions = request.CompanyPermissionIds.Select(cpId => 
+            new UserCompanyPermission(request.UserId, request.CompanyId, cpId)).ToList();
+        
+        context.Companies.Update(company);
+        
+        await context.SaveChangesAsync(cancellationToken);
         
         return Result.Success();
     }

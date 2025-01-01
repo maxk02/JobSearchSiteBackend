@@ -3,4 +3,4 @@ using Shared.Result;
 
 namespace Core.Domains.Categories.UseCases.GetAllCategories;
 
-public record GetAllCategoriesRequest() : IRequest<Result<ICollection<GetAllCategoriesResponse>>>;
+public record GetAllCategoriesRequest() : IRequest<Result<GetAllCategoriesResponse>>;
