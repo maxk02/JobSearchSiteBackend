@@ -2,9 +2,9 @@
 using Core.Domains._Shared.Entities.Interfaces;
 using Core.Domains._Shared.ValueEntities;
 using Core.Domains.Categories;
+using Core.Domains.Cvs.ValueEntities;
 using Core.Domains.Locations;
 using Core.Domains.UserProfiles;
-using Core.Domains.UserProfiles.ValueEntities;
 using Shared.Result;
 using Shared.Result.FluentValidation;
 
@@ -14,8 +14,9 @@ public class Cv : EntityBase, IPublicOrPrivateEntity
 {
     public static CvValidator Validator { get; } = new();
     
-    public static Result<Cv> Create(long userId, SalaryRecord salaryRecord, EmploymentTypeRecord employmentTypeRecord,
-        ICollection<EducationRecord> educationRecords, ICollection<WorkRecord> workRecords, ICollection<string> skills)
+    public static Result<Cv> Create(long userId, SalaryRecord? salaryRecord, EmploymentTypeRecord? employmentTypeRecord,
+        ICollection<EducationRecord> educationRecords, ICollection<WorkRecord> workRecords,
+        ICollection<string> skills)
     {
         var cv = new Cv(userId, salaryRecord, employmentTypeRecord, educationRecords, workRecords, skills);
 
@@ -24,16 +25,16 @@ public class Cv : EntityBase, IPublicOrPrivateEntity
         return validationResult.IsValid ? cv : Result<Cv>.Invalid(validationResult.AsErrors());
     }
     
-    private Cv(long userId, SalaryRecord salaryRecord, EmploymentTypeRecord employmentTypeRecord,
+    private Cv(long userId, SalaryRecord? salaryRecord, EmploymentTypeRecord? employmentTypeRecord,
         ICollection<EducationRecord> educationRecords,
         ICollection<WorkRecord> workRecords, ICollection<string> skills)
     {
         UserId = userId;
         SalaryRecord = salaryRecord;
         EmploymentTypeRecord = employmentTypeRecord;
-        EducationRecords = educationRecords.ToList();
-        WorkRecords = workRecords.ToList();
-        Skills = skills.ToList();
+        EducationRecords = [..educationRecords];
+        WorkRecords = [..workRecords];
+        Skills = [..skills];
     }
     
     public long UserId { get; private set; }
@@ -42,11 +43,11 @@ public class Cv : EntityBase, IPublicOrPrivateEntity
 
     public EmploymentTypeRecord? EmploymentTypeRecord { get; private set; }
     
-    public IReadOnlyCollection<EducationRecord> EducationRecords { get; private set; }
+    public IReadOnlyCollection<EducationRecord>? EducationRecords { get; private set; }
     
-    public IReadOnlyCollection<WorkRecord> WorkRecords { get; private set; }
+    public IReadOnlyCollection<WorkRecord>? WorkRecords { get; private set; }
     
-    public IReadOnlyCollection<string> Skills { get; private set; }
+    public IReadOnlyCollection<string>? Skills { get; private set; }
     
     public bool IsPublic { get; private set; }
     

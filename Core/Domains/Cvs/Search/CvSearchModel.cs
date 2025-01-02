@@ -1,6 +1,6 @@
 ﻿using Core.Domains._Shared.Search;
 using Core.Domains._Shared.ValueEntities;
-using Core.Domains.UserProfiles.ValueEntities;
+using Core.Domains.Cvs.ValueEntities;
 
 namespace Core.Domains.Cvs.Search;
 

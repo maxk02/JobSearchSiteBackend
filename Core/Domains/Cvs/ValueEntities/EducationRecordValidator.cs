@@ -2,7 +2,7 @@
 using Shared.FluentValidationAddons;
 using Shared.FluentValidationAddons.StringFiltering;
 
-namespace Core.Domains.UserProfiles.ValueEntities;
+namespace Core.Domains.Cvs.ValueEntities;
 
 public class EducationRecordValidator : AbstractValidator<EducationRecord>
 {

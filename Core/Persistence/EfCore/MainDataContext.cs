@@ -4,6 +4,7 @@ using Core.Domains.Companies;
 using Core.Domains.CompanyPermissions;
 using Core.Domains.CompanyPermissions.UserCompanyPermissions;
 using Core.Domains.Countries;
+using Core.Domains.Cvs;
 using Core.Domains.JobApplications;
 using Core.Domains.JobContractTypes;
 using Core.Domains.JobFolderPermissions;
@@ -21,10 +22,10 @@ public class MainDataContext : DbContext
 {
 #pragma warning disable CS8618
     public DbSet<Category> Categories { get; set; }
-    public DbSet<Closure<Category>> CategoryClosures { get; set; }
     public DbSet<Company> Companies { get; set; }
     public DbSet<JobContractType> ContractTypes { get; set; }
     public DbSet<Country> Countries { get; set; }
+    public DbSet<Cv> Cvs { get; set; }
     public DbSet<PersonalFile> PersonalFiles { get; set; }
     public DbSet<JobApplication> JobApplications { get; set; }
     public DbSet<Job> Jobs { get; set; }

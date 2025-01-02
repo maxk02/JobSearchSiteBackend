@@ -17,9 +17,4 @@
       <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="9.0.0" />
     </ItemGroup>
 
-    <ItemGroup>
-      <Folder Include="Domains\Cvs\UseCases\AddCv\" />
-      <Folder Include="Domains\Cvs\UseCases\DeleteCv\" />
-    </ItemGroup>
-
 </Project>
