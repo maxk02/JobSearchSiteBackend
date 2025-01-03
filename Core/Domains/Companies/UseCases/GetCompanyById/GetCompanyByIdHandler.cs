@@ -15,7 +15,6 @@ public class GetCompanyByIdHandler(
     public async Task<Result<GetCompanyByIdResponse>> Handle(GetCompanyByIdRequest request,
         CancellationToken cancellationToken = default)
     {
-        // var company = await companyRepository.GetByIdAsync(request.Id, cancellationToken);
         var company = await context.Companies.FindAsync([request.Id], cancellationToken);
 
         if (company is null)

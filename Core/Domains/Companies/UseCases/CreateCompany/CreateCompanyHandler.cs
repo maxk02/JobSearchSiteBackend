@@ -11,6 +11,7 @@ using Core.Domains.JobFolderPermissions.UserJobFolderPermissions;
 using Core.Domains.JobFolders;
 using Core.Persistence.EfCore;
 using Core.Services.Auth.Authentication;
+using Core.Services.QueueService;
 using Shared.Result;
 
 namespace Core.Domains.Companies.UseCases.CreateCompany;
@@ -18,7 +19,7 @@ namespace Core.Domains.Companies.UseCases.CreateCompany;
 public class CreateCompanyHandler(
     ICurrentAccountService currentAccountService,
     ICompanySearchRepository companySearchRepository,
-    ISearchRepositoryJobScheduler<CompanySearchModel> searchRepositoryJobScheduler,
+    IBackgroundJobQueueService jobQueueService,
     MainDataContext context) 
     : IRequestHandler<CreateCompanyRequest, Result<CreateCompanyResponse>>
 {
@@ -74,11 +75,12 @@ public class CreateCompanyHandler(
         var companySearchModel = new CompanySearchModel(company.Id, company.CountryId, company.Name, company.Description);
         try
         {
-            await companySearchRepository.AddAsync(companySearchModel);
+            await companySearchRepository.AddAsync(companySearchModel, CancellationToken.None);
         }
         catch
         {
-            await searchRepositoryJobScheduler.ScheduleAddAsync(companySearchModel);
+            await jobQueueService.EnqueueForIndefiniteRetriesAsync<ICompanySearchRepository>(
+                x => x.AddAsync(companySearchModel, CancellationToken.None));
         }
 
         return new CreateCompanyResponse(company.Id);

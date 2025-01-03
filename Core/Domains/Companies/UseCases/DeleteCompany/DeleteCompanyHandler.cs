@@ -4,6 +4,7 @@ using Core.Domains.Companies.Search;
 using Core.Domains.CompanyPermissions;
 using Core.Persistence.EfCore;
 using Core.Services.Auth.Authentication;
+using Core.Services.QueueService;
 using Microsoft.EntityFrameworkCore;
 using Shared.Result;
 
@@ -13,7 +14,7 @@ public class DeleteCompanyHandler(
     ICurrentAccountService currentAccountService,
     MainDataContext context,
     ICompanySearchRepository companySearchRepository,
-    ISearchRepositoryJobScheduler<CompanySearchModel> searchRepositoryJobScheduler)
+    IBackgroundJobQueueService jobQueueService)
     : IRequestHandler<DeleteCompanyRequest, Result>
 {
     public async Task<Result> Handle(DeleteCompanyRequest request, CancellationToken cancellationToken = default)
@@ -39,13 +40,16 @@ public class DeleteCompanyHandler(
         context.Companies.Remove(companyWithPermissionIds.Company);
         await context.SaveChangesAsync(cancellationToken);
 
+        var companyId = companyWithPermissionIds.Company.Id;
+        
         try
         {
-            await companySearchRepository.DeleteAsync(companyWithPermissionIds.Company.Id, cancellationToken);
+            await companySearchRepository.DeleteAsync(companyId, CancellationToken.None);
         }
         catch
         {
-            await searchRepositoryJobScheduler.ScheduleDeleteAsync(companyWithPermissionIds.Company.Id);
+            await jobQueueService.EnqueueForIndefiniteRetriesAsync<ICompanySearchRepository>(
+                x => x.DeleteAsync(companyId, CancellationToken.None));
         }
 
         return Result.Success();

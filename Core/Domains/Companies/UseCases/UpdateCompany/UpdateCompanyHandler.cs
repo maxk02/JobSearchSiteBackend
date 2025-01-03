@@ -4,6 +4,7 @@ using Core.Domains.Companies.Search;
 using Core.Domains.CompanyPermissions;
 using Core.Persistence.EfCore;
 using Core.Services.Auth.Authentication;
+using Core.Services.QueueService;
 using Microsoft.EntityFrameworkCore;
 using Shared.Result;
 
@@ -12,7 +13,7 @@ namespace Core.Domains.Companies.UseCases.UpdateCompany;
 public class UpdateCompanyHandler(
     ICurrentAccountService currentAccountService,
     ICompanySearchRepository companySearchRepository,
-    ISearchRepositoryJobScheduler<CompanySearchModel> searchRepositoryJobScheduler,
+    IBackgroundJobQueueService jobQueueService,
     MainDataContext context) : IRequestHandler<UpdateCompanyRequest, Result>
 {
     public async Task<Result> Handle(UpdateCompanyRequest request, CancellationToken cancellationToken = default)
@@ -53,15 +54,17 @@ public class UpdateCompanyHandler(
         context.Companies.Update(updatedCompany);
         await context.SaveChangesAsync(cancellationToken);
         
+        
         var companySearchModel = new CompanySearchModel(updatedCompany.Id, updatedCompany.CountryId,
             updatedCompany.Name, updatedCompany.Description);
         try
         {
-            await companySearchRepository.UpdateAsync(companySearchModel);
+            await companySearchRepository.UpdateAsync(companySearchModel, CancellationToken.None);
         }
         catch
         {
-            await searchRepositoryJobScheduler.ScheduleAddAsync(companySearchModel);
+            await jobQueueService.EnqueueForIndefiniteRetriesAsync<ICompanySearchRepository>(
+                x => companySearchRepository.UpdateAsync(companySearchModel, CancellationToken.None));
         }
 
         return Result.Success();

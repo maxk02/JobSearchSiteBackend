@@ -1,20 +1,25 @@
 ﻿using Core.Domains._Shared.Repositories;
+using Core.Domains._Shared.Search;
 using Core.Domains._Shared.UnitOfWork;
 using Core.Domains._Shared.UseCaseStructure;
 using Core.Domains.Cvs.Search;
 using Core.Domains.JobApplications.Values;
 using Core.Domains.PersonalFiles;
+using Core.Domains.PersonalFiles.Search;
+using Core.Persistence.EfCore;
 using Core.Services.Auth.Authentication;
+using Core.Services.QueueService;
+using Microsoft.EntityFrameworkCore;
 using Shared.Result;
 
 namespace Core.Domains.JobApplications.UseCases.AddApplication;
 
 public class AddApplicationHandler(
     ICurrentAccountService currentAccountService,
-    IRepository<PersonalFile> personalFileRepository,
-    IUnitOfWork unitOfWork,
-    IJobApplicationRepository jobApplicationRepository,
-    ICvSearchRepository cvSearchRepository)
+    MainDataContext context,
+    ICvSearchRepository cvSearchRepository,
+    IPersonalFileSearchRepository personalFileSearchRepository,
+    IBackgroundJobQueueService jobQueueService)
     : IRequestHandler<AddApplicationRequest, Result<AddApplicationResponse>>
 {
     public async Task<Result<AddApplicationResponse>> Handle(AddApplicationRequest request,
@@ -29,27 +34,44 @@ public class AddApplicationHandler(
         if (creationResult.IsFailure)
             return Result<AddApplicationResponse>.WithMetadataFrom(creationResult);
         var jobApplication = creationResult.Value;
-
-        var personalFiles = await personalFileRepository.GetByIdsAsync(request.PersonalFileIds, cancellationToken);
-        if (!request.PersonalFileIds.All(personalFiles.Select(x => x.Id).Contains) ||
-            personalFiles.Any(x => x.UserId != currentUserId))
+        
+        var requestedPersonalFilesOfUser = await context.PersonalFiles
+            .Where(pf => request.PersonalFileIds.Contains(pf.Id) && pf.UserId == currentUserId)
+            .ToListAsync(cancellationToken);
+        
+        if (!request.PersonalFileIds.All(requestedPersonalFilesOfUser.Select(x => x.Id).Contains))
         {
             return Result<AddApplicationResponse>.Error();
         }
-
-        await unitOfWork.BeginAsync(cancellationToken);
-        jobApplication = await jobApplicationRepository.AddAsync(jobApplication, cancellationToken);
-        await jobApplicationRepository.AddAttachedFileIdsAsync(jobApplication.Id, request.PersonalFileIds,
-            cancellationToken);
-        await unitOfWork.CommitAsync(cancellationToken);
-
+        
+        jobApplication.PersonalFiles = requestedPersonalFilesOfUser;
+        
+        await context.JobApplications.AddAsync(jobApplication, cancellationToken);
+        await context.SaveChangesAsync(cancellationToken);
+        
+        
+        var userId = jobApplication.UserId;
+        var jobId = jobApplication.JobId;
+        
         try
         {
-            await cvSearchRepository.AddAppliedToJobIdAsync(jobApplication.UserId, jobApplication.JobId);
+            await cvSearchRepository.AddAppliedToJobIdAsync(userId, jobId);
         }
         catch
         {
-            
+            await jobQueueService.EnqueueForIndefiniteRetriesAsync(
+                () => cvSearchRepository.AddAppliedToJobIdAsync(userId, jobId),
+                nameof(ICvSearchRepository));
+        }
+
+        try
+        {
+            await personalFileSearchRepository.AddAppliedToJobIdAsync(request.PersonalFileIds, jobId);
+        }
+        catch
+        {
+            await jobQueueService.EnqueueForIndefiniteRetriesAsync<IPersonalFileSearchRepository>(
+                x => x.AddAppliedToJobIdAsync(request.PersonalFileIds, jobId));
         }
 
         return Result<AddApplicationResponse>.Success(new AddApplicationResponse(jobApplication.Id));
