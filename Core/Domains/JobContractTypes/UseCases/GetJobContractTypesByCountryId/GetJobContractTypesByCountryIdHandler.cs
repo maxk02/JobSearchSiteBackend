@@ -1,18 +1,22 @@
 ﻿using Core.Domains._Shared.UseCaseStructure;
+using Core.Domains.JobContractTypes.Dtos;
+using Core.Persistence.EfCore;
+using Microsoft.EntityFrameworkCore;
 using Shared.Result;
 
 namespace Core.Domains.JobContractTypes.UseCases.GetJobContractTypesByCountryId;
 
-public class GetJobContractTypesByCountryIdHandler(IJobContractTypeRepository jobContractTypeRepository)
-    : IRequestHandler<GetJobContractTypesByCountryIdRequest, Result<ICollection<GetJobContractTypesByCountryIdResponse>>>
+public class GetJobContractTypesByCountryIdHandler(MainDataContext context)
+    : IRequestHandler<GetJobContractTypesByCountryIdRequest, Result<GetJobContractTypesByCountryIdResponse>>
 {
-    public async Task<Result<ICollection<GetJobContractTypesByCountryIdResponse>>> Handle(
+    public async Task<Result<GetJobContractTypesByCountryIdResponse>> Handle(
         GetJobContractTypesByCountryIdRequest request, CancellationToken cancellationToken = default)
     {
-        var contractTypes = await jobContractTypeRepository
-            .GetByCountryIdAsync(request.CountryId, cancellationToken);
+        var contractTypes = await context.ContractTypes
+            .Where(jobContractType => jobContractType.CountryId == request.CountryId)
+            .Select(jobContractType => new JobContractTypeIdWithName(jobContractType.Id, jobContractType.Name))
+            .ToListAsync(cancellationToken);
 
-        return Result<ICollection<GetJobContractTypesByCountryIdResponse>>
-            .Success(contractTypes.Select(ct => new GetJobContractTypesByCountryIdResponse(ct.CountryId, ct.Name)).ToList());
+        return new GetJobContractTypesByCountryIdResponse(contractTypes);
     }
 }

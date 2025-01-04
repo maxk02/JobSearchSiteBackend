@@ -1,16 +1,18 @@
 ﻿using Core.Domains._Shared.UseCaseStructure;
+using Core.Domains.JobFolderPermissions.UserJobFolderPermissions;
+using Core.Persistence.EfCore;
 using Core.Services.Auth.Authentication;
+using Microsoft.EntityFrameworkCore;
 using Shared.Result;
 using Shared.Result.FluentValidation;
 
 namespace Core.Domains.JobFolderPermissions.UseCases.UpdateJobFolderPermissionIdsForUser;
 
-public class UpdateJobFolderPermissionsForUserHandler(
-    ICurrentAccountService currentAccountService,
-    IJobFolderPermissionRepository jobFolderPermissionRepository) 
-    : IRequestHandler<UpdateJobFolderPermissionIdsForUserRequest, Result>
+public class UpdateJobFolderPermissionsForUserHandler(ICurrentAccountService currentAccountService,
+    MainDataContext context) : IRequestHandler<UpdateJobFolderPermissionIdsForUserRequest, Result>
 {
-    public async Task<Result> Handle(UpdateJobFolderPermissionIdsForUserRequest request, CancellationToken cancellationToken = default)
+    public async Task<Result> Handle(UpdateJobFolderPermissionIdsForUserRequest request,
+        CancellationToken cancellationToken = default)
     {
         var currentUserId = currentAccountService.GetIdOrThrow();
 
@@ -19,23 +21,28 @@ public class UpdateJobFolderPermissionsForUserHandler(
         if (!validationResult.IsValid)
             return Result.Invalid(validationResult.AsErrors());
         
-        var currentUserPermissions = await jobFolderPermissionRepository
-            .GetPermissionIdsForUserAsync(currentUserId, request.FolderId, cancellationToken);
+        var currentUserPermissionIds = await context.UserJobFolderPermissions
+            .Where(ujfp => ujfp.UserId == currentUserId && ujfp.FolderId == request.FolderId)
+            .Select(ujfp => ujfp.PermissionId)
+            .ToListAsync(cancellationToken);
 
-        if (!currentUserPermissions.Contains(JobFolderPermission.IsAdmin.Id))
+        if (!currentUserPermissionIds.Contains(JobFolderPermission.IsAdmin.Id))
             return Result.Forbidden("Current user is not a folder admin.");
         
-        var targetUserPermissions = await jobFolderPermissionRepository
-            .GetPermissionIdsForUserAsync(request.UserId, request.FolderId, cancellationToken);
+        var targetUserJobFolderPermissions = await context.UserJobFolderPermissions
+            .Where(ujfp => ujfp.UserId == request.UserId && ujfp.FolderId == request.FolderId)
+            .ToListAsync(cancellationToken);
         
-        if (targetUserPermissions.Contains(JobFolderPermission.IsOwner.Id) || targetUserPermissions.Contains(JobFolderPermission.IsAdmin.Id))
+        if (targetUserJobFolderPermissions.Select(ujfp => ujfp.PermissionId).Contains(JobFolderPermission.IsAdmin.Id))
             return Result.Forbidden("Insufficient permissions for update of permissions of target user.");
         
-        if (targetUserPermissions.Except(currentUserPermissions).Any())
+        if (targetUserJobFolderPermissions.Select(ujfp => ujfp.PermissionId).Except(currentUserPermissionIds).Any())
             return Result.Forbidden("Insufficient permissions for update of permissions of target user.");
         
-        await jobFolderPermissionRepository.UpdatePermissionIdsForUserAsync(currentUserId, request.FolderId,
-            request.FolderPermissionIds, cancellationToken);
+        context.UserJobFolderPermissions.RemoveRange(targetUserJobFolderPermissions);
+        context.UserJobFolderPermissions.AddRange(request.FolderPermissionIds
+            .Select(id => new UserJobFolderPermission(request.UserId, request.FolderId, id)));
+        await context.SaveChangesAsync(cancellationToken);
         
         return Result.Success();
     }

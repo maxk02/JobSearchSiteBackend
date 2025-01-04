@@ -1,13 +1,14 @@
 ﻿using Core.Domains._Shared.UseCaseStructure;
+using Core.Domains.CompanyPermissions;
+using Core.Persistence.EfCore;
 using Core.Services.Auth.Authentication;
+using Microsoft.EntityFrameworkCore;
 using Shared.Result;
 
 namespace Core.Domains.JobFolderPermissions.UseCases.GetJobFolderPermissionIdsForUser;
 
-public class GetJobFolderPermissionIdsForUserHandler(
-    ICurrentAccountService currentAccountService,
-    IJobFolderPermissionRepository jobFolderPermissionRepository)
-    : IRequestHandler<GetJobFolderPermissionIdsForUserRequest, Result<ICollection<long>>>
+public class GetJobFolderPermissionIdsForUserHandler(ICurrentAccountService currentAccountService,
+    MainDataContext context) : IRequestHandler<GetJobFolderPermissionIdsForUserRequest, Result<ICollection<long>>>
 {
     public async Task<Result<ICollection<long>>> Handle(GetJobFolderPermissionIdsForUserRequest request,
         CancellationToken cancellationToken = default)
@@ -16,16 +17,21 @@ public class GetJobFolderPermissionIdsForUserHandler(
 
         if (currentUserId != request.UserId)
         {
-            var isAdmin = await jobFolderPermissionRepository.HasPermissionIdAsync(currentUserId,
-                request.FolderId, JobFolderPermission.IsAdmin.Id, cancellationToken);
+            //todo hierarchy
+            var isAdmin = await context.UserJobFolderPermissions
+                .AnyAsync(ujfp => ujfp.UserId == currentUserId 
+                          && ujfp.FolderId == request.FolderId
+                          && ujfp.PermissionId == CompanyPermission.IsAdmin.Id, cancellationToken);
             
             if (!isAdmin) 
                 return Result<ICollection<long>>.Forbidden();
         }
         
-        var permissions = await jobFolderPermissionRepository
-            .GetPermissionIdsForUserAsync(request.UserId, request.FolderId, cancellationToken);
+        var permissionIds = await context.UserJobFolderPermissions
+            .Where(ujfp => ujfp.UserId == request.UserId && ujfp.FolderId == request.FolderId)
+            .Select(ujfp => ujfp.PermissionId)
+            .ToListAsync(cancellationToken);
 
-        return Result<ICollection<long>>.Success(permissions);
+        return Result<ICollection<long>>.Success(permissionIds);
     }
 }

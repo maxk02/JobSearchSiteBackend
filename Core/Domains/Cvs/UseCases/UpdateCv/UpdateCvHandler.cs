@@ -1,13 +1,18 @@
 ﻿using Core.Domains._Shared.UseCaseStructure;
 using Core.Domains.Categories;
+using Core.Domains.Cvs.Search;
+using Core.Domains.Cvs.ValueEntities;
 using Core.Persistence.EfCore;
 using Core.Services.Auth.Authentication;
+using Core.Services.QueueService;
 using Microsoft.EntityFrameworkCore;
 using Shared.Result;
 
 namespace Core.Domains.Cvs.UseCases.UpdateCv;
 
 public class UpdateCvHandler(ICurrentAccountService currentAccountService,
+    ICvSearchRepository cvSearchRepository,
+    IBackgroundJobQueueService jobQueueService,
     MainDataContext context) : IRequestHandler<UpdateCvRequest, Result>
 {
     public async Task<Result> Handle(UpdateCvRequest request, CancellationToken cancellationToken = default)
@@ -31,9 +36,9 @@ public class UpdateCvHandler(ICurrentAccountService currentAccountService,
             cv.UserId,
             request.SalaryRecord ?? cv.SalaryRecord,
             request.EmploymentTypeRecord ?? cv.EmploymentTypeRecord,
-            request.EducationRecords ?? [..cv.EducationRecords],
-            request.WorkRecords ?? [..cv.WorkRecords],
-            request.Skills ?? [..cv.Skills]
+            request.EducationRecords ?? [..cv.EducationRecords ?? []],
+            request.WorkRecords ?? [..cv.WorkRecords ?? []],
+            request.Skills ?? [..cv.Skills ?? []]
             );
         
         if (newCvCreationResult.IsFailure)
@@ -41,15 +46,40 @@ public class UpdateCvHandler(ICurrentAccountService currentAccountService,
         
         var newCv = newCvCreationResult.Value;
 
-        if (request.CategoryIds is not null)
+        if (request.CategoryIds is not null && request.CategoryIds.Any())
         {
-            newCv.Categories = Category.AllValues
-                .Where(c => request.CategoryIds.Contains(c.Id))
-                .ToList();
+            if (request.CategoryIds.Count != request.CategoryIds.Distinct().Count())
+                return Result.Invalid();
+            
+            var categoriesThatNotExist = request.CategoryIds.Except(Category.AllIds);
+            
+            if (categoriesThatNotExist.Any())
+                return Result.Invalid();
+            
+            newCv.Categories = Category.AllValues.Where(c => request.CategoryIds.Contains(c.Id)).ToList();
         }
 
         context.Cvs.Update(newCv);
         await context.SaveChangesAsync(cancellationToken);
+        
+        try
+        {
+            await cvSearchRepository.UpdateAsync(
+                new CvSearchModel(newCv.Id, newCv.UserId, newCv.EducationRecords ?? new List<EducationRecord>(),
+                    newCv.WorkRecords ?? new List<WorkRecord>(),
+                    newCv.Skills ?? new List<string>(), new List<long>()),
+                CancellationToken.None);
+        }
+        catch
+        {
+            await jobQueueService.EnqueueForIndefiniteRetriesAsync<ICvSearchRepository>(
+                x => x.UpdateAsync(
+                    new CvSearchModel(newCv.Id, newCv.UserId, newCv.EducationRecords ?? new List<EducationRecord>(),
+                        newCv.WorkRecords ?? new List<WorkRecord>(),
+                        newCv.Skills ?? new List<string>(), new List<long>()),
+                    CancellationToken.None)
+                );
+        }
 
         return Result.Success();
     }

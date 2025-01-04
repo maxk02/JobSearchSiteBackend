@@ -4,4 +4,4 @@ using Shared.Result;
 namespace Core.Domains.JobContractTypes.UseCases.GetJobContractTypesByCountryId;
 
 public record GetJobContractTypesByCountryIdRequest(long CountryId)
-    : IRequest<Result<ICollection<GetJobContractTypesByCountryIdResponse>>>;
+    : IRequest<Result<GetJobContractTypesByCountryIdResponse>>;

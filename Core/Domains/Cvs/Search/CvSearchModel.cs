@@ -6,10 +6,8 @@ namespace Core.Domains.Cvs.Search;
 
 public record CvSearchModel(
     long Id, long UserId,
-    SalaryRecord? SalaryRecord,
-    EmploymentTypeRecord? EmploymentTypeRecord,
-    ICollection<EducationRecord> EducationRecords,
-    ICollection<WorkRecord> WorkRecords,
-    ICollection<string> Skills,
-    ICollection<long> AppliedToJobIds
+    IReadOnlyCollection<EducationRecord> EducationRecords,
+    IReadOnlyCollection<WorkRecord> WorkRecords,
+    IReadOnlyCollection<string> Skills,
+    IReadOnlyCollection<long> AppliedToJobIds
 ) : ISearchModel;

@@ -1,10 +1,6 @@
-﻿using Core.Domains._Shared.Repositories;
-using Core.Domains._Shared.Search;
-using Core.Domains._Shared.UnitOfWork;
-using Core.Domains._Shared.UseCaseStructure;
+﻿using Core.Domains._Shared.UseCaseStructure;
 using Core.Domains.Cvs.Search;
 using Core.Domains.JobApplications.Values;
-using Core.Domains.PersonalFiles;
 using Core.Domains.PersonalFiles.Search;
 using Core.Persistence.EfCore;
 using Core.Services.Auth.Authentication;
@@ -12,27 +8,27 @@ using Core.Services.QueueService;
 using Microsoft.EntityFrameworkCore;
 using Shared.Result;
 
-namespace Core.Domains.JobApplications.UseCases.AddApplication;
+namespace Core.Domains.JobApplications.UseCases.AddJobApplication;
 
-public class AddApplicationHandler(
+public class AddJobApplicationHandler(
     ICurrentAccountService currentAccountService,
     MainDataContext context,
     ICvSearchRepository cvSearchRepository,
     IPersonalFileSearchRepository personalFileSearchRepository,
     IBackgroundJobQueueService jobQueueService)
-    : IRequestHandler<AddApplicationRequest, Result<AddApplicationResponse>>
+    : IRequestHandler<AddJobApplicationRequest, Result<AddJobApplicationResponse>>
 {
-    public async Task<Result<AddApplicationResponse>> Handle(AddApplicationRequest request,
+    public async Task<Result<AddJobApplicationResponse>> Handle(AddJobApplicationRequest request,
         CancellationToken cancellationToken = default)
     {
         var currentUserId = currentAccountService.GetIdOrThrow();
 
         if (request.UserId != currentUserId)
-            return Result<AddApplicationResponse>.Forbidden();
+            return Result<AddJobApplicationResponse>.Forbidden();
 
         var creationResult = JobApplication.Create(request.UserId, request.JobId, JobApplicationStatuses.Submitted);
         if (creationResult.IsFailure)
-            return Result<AddApplicationResponse>.WithMetadataFrom(creationResult);
+            return Result<AddJobApplicationResponse>.WithMetadataFrom(creationResult);
         var jobApplication = creationResult.Value;
         
         var requestedPersonalFilesOfUser = await context.PersonalFiles
@@ -41,7 +37,7 @@ public class AddApplicationHandler(
         
         if (!request.PersonalFileIds.All(requestedPersonalFilesOfUser.Select(x => x.Id).Contains))
         {
-            return Result<AddApplicationResponse>.Error();
+            return Result<AddJobApplicationResponse>.Error();
         }
         
         jobApplication.PersonalFiles = requestedPersonalFilesOfUser;
@@ -74,6 +70,6 @@ public class AddApplicationHandler(
                 x => x.AddAppliedToJobIdAsync(request.PersonalFileIds, jobId));
         }
 
-        return Result<AddApplicationResponse>.Success(new AddApplicationResponse(jobApplication.Id));
+        return Result<AddJobApplicationResponse>.Success(new AddJobApplicationResponse(jobApplication.Id));
     }
 }

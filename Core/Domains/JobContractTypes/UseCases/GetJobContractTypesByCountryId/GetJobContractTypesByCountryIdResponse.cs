@@ -1,3 +1,5 @@
-﻿namespace Core.Domains.JobContractTypes.UseCases.GetJobContractTypesByCountryId;
+﻿using Core.Domains.JobContractTypes.Dtos;
 
-public record GetJobContractTypesByCountryIdResponse(long CountryId, string Name);
+namespace Core.Domains.JobContractTypes.UseCases.GetJobContractTypesByCountryId;
+
+public record GetJobContractTypesByCountryIdResponse(ICollection<JobContractTypeIdWithName> JobContractTypeIdsWithNames);
