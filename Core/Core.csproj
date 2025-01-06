@@ -20,7 +20,6 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="Authentication\" />
       <Folder Include="Domains\Accounts\UseCases\SignOut\" />
     </ItemGroup>
 

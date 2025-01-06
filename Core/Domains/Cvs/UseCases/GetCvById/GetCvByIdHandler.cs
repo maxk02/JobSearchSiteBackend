@@ -14,13 +14,15 @@ public class GetCvByIdHandler(ICurrentAccountService currentAccountService,
     {
         var currentUserId = currentAccountService.GetIdOrThrow();
         
-        var cv = await context.Cvs
+        var query = context.Cvs
             .Include(cv => cv.SalaryRecord)
             .Include(cv => cv.EmploymentTypeRecord)
             .Include(cv => cv.EducationRecords)
             .Include(cv => cv.WorkRecords)
             .Include(cv => cv.Categories)
-            .FirstOrDefaultAsync(cv => cv.Id == request.CvId, cancellationToken);
+            .Where(cv => cv.Id == request.CvId);
+        
+        var cv = await query.FirstOrDefaultAsync(cancellationToken);
 
         if (cv is null)
             return Result<GetCvByIdResponse>.NotFound();

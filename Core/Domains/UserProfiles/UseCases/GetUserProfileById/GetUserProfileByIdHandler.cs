@@ -14,14 +14,16 @@ public class GetUserProfileByIdHandler(ICurrentAccountService currentAccountServ
     {
         var currentAccountId = currentAccountService.GetId();
         
-        var user = await context.UserProfiles
+        var query = context.UserProfiles
             .Include(u => u.Phone)
-            .FirstOrDefaultAsync(u => u.Id == request.Id, cancellationToken);
+            .Where(u => u.Id == request.Id);
+        
+        var user  = await query.FirstOrDefaultAsync(cancellationToken);
 
         if (user is null)
             return Result<GetUserProfileByIdResponse>.NotFound();
         
-        if (request.Id != currentAccountId && !user.IsPublic)
+        if (request.Id != currentAccountId)
             return Result<GetUserProfileByIdResponse>.Forbidden();
 
         return new GetUserProfileByIdResponse(user.FirstName, user.MiddleName, user.LastName,
