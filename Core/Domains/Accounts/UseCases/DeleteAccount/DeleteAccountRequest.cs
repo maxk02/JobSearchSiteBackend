@@ -3,4 +3,4 @@ using Shared.Result;
 
 namespace Core.Domains.Accounts.UseCases.DeleteAccount;
 
-public record DeleteAccountRequest(long Id, string Token) : IRequest<Result>;
+public record DeleteAccountRequest : IRequest<Result>;

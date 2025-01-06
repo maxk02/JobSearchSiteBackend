@@ -1,19 +1,19 @@
 ﻿using Core.Domains._Shared.UseCaseStructure;
 using Core.Domains.CompanyPermissions;
 using Core.Persistence.EfCore;
-using Core.Services.Auth.Authentication;
+using Core.Services.Auth;
 using Microsoft.EntityFrameworkCore;
 using Shared.Result;
 
 namespace Core.Domains.JobFolderPermissions.UseCases.GetJobFolderPermissionIdsForUser;
 
-public class GetJobFolderPermissionIdsForUserHandler(ICurrentAccountService currentAccountService,
+public class GetJobFolderPermissionIdsForUserHandler(IJwtCurrentAccountService jwtCurrentAccountService,
     MainDataContext context) : IRequestHandler<GetJobFolderPermissionIdsForUserRequest, Result<ICollection<long>>>
 {
     public async Task<Result<ICollection<long>>> Handle(GetJobFolderPermissionIdsForUserRequest request,
         CancellationToken cancellationToken = default)
     {
-        var currentUserId = currentAccountService.GetIdOrThrow();
+        var currentUserId = jwtCurrentAccountService.GetIdOrThrow();
 
         if (currentUserId != request.UserId)
         {

@@ -10,6 +10,6 @@ public class BlacklistedJwtConfiguration : IEntityTypeConfiguration<BlacklistedJ
     {
         builder.ToTable("BlacklistedJwts");
 
-        builder.HasKey(j => j.Jti);
+        builder.HasKey(j => j.TokenId);
     }
 }

@@ -4,7 +4,7 @@ using System.Text;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 
-namespace Core.Services.Auth.Authentication;
+namespace Core.Services.Auth;
 
 public class JwtGenerationService(IConfiguration configuration) : IJwtGenerationService
 {

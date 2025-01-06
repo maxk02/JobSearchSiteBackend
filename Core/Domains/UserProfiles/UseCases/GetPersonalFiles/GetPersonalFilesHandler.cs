@@ -3,21 +3,21 @@ using Core.Domains._Shared.UseCaseStructure;
 using Core.Domains.PersonalFiles;
 using Core.Domains.PersonalFiles.Dtos;
 using Core.Persistence.EfCore;
-using Core.Services.Auth.Authentication;
+using Core.Services.Auth;
 using Microsoft.EntityFrameworkCore;
 using Shared.Result;
 
 namespace Core.Domains.UserProfiles.UseCases.GetPersonalFiles;
 
 public class GetPersonalFilesHandler(
-    ICurrentAccountService currentAccountService,
+    IJwtCurrentAccountService jwtCurrentAccountService,
     MainDataContext context) 
     : IRequestHandler<GetPersonalFilesRequest, Result<GetPersonalFilesResponse>>
 {
     public async Task<Result<GetPersonalFilesResponse>> Handle(GetPersonalFilesRequest request,
         CancellationToken cancellationToken)
     {
-        var currentAccountId = currentAccountService.GetIdOrThrow();
+        var currentAccountId = jwtCurrentAccountService.GetIdOrThrow();
         
         if (currentAccountId != request.UserId)
             return Result<GetPersonalFilesResponse>.Forbidden();

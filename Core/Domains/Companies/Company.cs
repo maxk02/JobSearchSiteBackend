@@ -36,36 +36,8 @@ public class Company : EntityBase
     public long CountryId { get; private set; }
     
     public string Name { get; private set; }
-    public Result SetName(string newValue)
-    {
-        var oldValue = Name;
-        Name = newValue;
-        
-        var validationResult = Validator.Validate(this);
-        if (!validationResult.IsValid)
-        {
-            Name = oldValue;
-            return Result.Invalid(validationResult.AsErrors());
-        }
-
-        return Result.Success();
-    }
     
     public string? Description { get; private set; }
-    public Result SetDescription(string newValue)
-    {
-        var oldValue = Description;
-        Description = newValue;
-        
-        var validationResult = Validator.Validate(this);
-        if (!validationResult.IsValid)
-        {
-            Description = oldValue;
-            return Result.Invalid(validationResult.AsErrors());
-        }
-
-        return Result.Success();
-    }
     
     public bool IsPublic { get; private set; }
     

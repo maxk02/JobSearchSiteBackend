@@ -1,20 +1,20 @@
 ﻿using Core.Domains._Shared.UseCaseStructure;
 using Core.Persistence.EfCore;
-using Core.Services.Auth.Authentication;
+using Core.Services.Auth;
 using Microsoft.EntityFrameworkCore;
 using Shared.Result;
 
 namespace Core.Domains.CompanyPermissions.UseCases.GetCompanyPermissionIdsForUser;
 
 public class GetCompanyPermissionIdsForUserHandler(
-    ICurrentAccountService currentAccountService,
+    IJwtCurrentAccountService jwtCurrentAccountService,
     MainDataContext context)
     : IRequestHandler<GetCompanyPermissionIdsForUserRequest, Result<ICollection<long>>>
 {
     public async Task<Result<ICollection<long>>> Handle(GetCompanyPermissionIdsForUserRequest request,
         CancellationToken cancellationToken = default)
     {
-        var currentUserId = currentAccountService.GetIdOrThrow();
+        var currentUserId = jwtCurrentAccountService.GetIdOrThrow();
 
         var targetUserPermissions = await context.UserCompanyPermissions
             .Where(ucp => ucp.UserId == currentUserId && ucp.CompanyId == request.CompanyId)

@@ -3,21 +3,21 @@ using Core.Domains._Shared.UseCaseStructure;
 using Core.Domains.Companies;
 using Core.Domains.Companies.Dtos;
 using Core.Persistence.EfCore;
-using Core.Services.Auth.Authentication;
+using Core.Services.Auth;
 using Microsoft.EntityFrameworkCore;
 using Shared.Result;
 
 namespace Core.Domains.UserProfiles.UseCases.GetBookmarkedCompanies;
 
 public class GetBookmarkedCompaniesHandler(
-    ICurrentAccountService currentAccountService,
+    IJwtCurrentAccountService jwtCurrentAccountService,
     MainDataContext context) 
     : IRequestHandler<GetBookmarkedCompaniesRequest, Result<GetBookmarkedCompaniesResponse>>
 {
     public async Task<Result<GetBookmarkedCompaniesResponse>> Handle(GetBookmarkedCompaniesRequest request,
         CancellationToken cancellationToken)
     {
-        var currentAccountId = currentAccountService.GetIdOrThrow();
+        var currentAccountId = jwtCurrentAccountService.GetIdOrThrow();
         
         if (currentAccountId != request.UserId)
             return Result<GetBookmarkedCompaniesResponse>.Forbidden();
@@ -35,7 +35,7 @@ public class GetBookmarkedCompaniesHandler(
             .ToListAsync(cancellationToken);
 
         var companyInfocardDtos = bookmarkedCompanies
-            .Select(x => new CompanyInfocardDto(x.Id, x.Name, x.Description, x.CountryId)).ToList();
+            .Select(x => new CompanyInfocardDto(x.Id, x.Name, x.CountryId)).ToList();
 
         var paginationResponse = new PaginationResponse(count, request.PaginationSpec.PageNumber,
             request.PaginationSpec.PageSize);

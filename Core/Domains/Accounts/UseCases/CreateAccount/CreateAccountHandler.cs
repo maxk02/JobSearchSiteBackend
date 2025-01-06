@@ -1,24 +1,32 @@
 ﻿using Core.Domains._Shared.UseCaseStructure;
-using Core.Services.Auth.AccountStorage;
-using Core.Services.Auth.Authentication;
+using Core.Persistence.EfCore.AspNetCoreIdentity;
+using Core.Services.Auth;
+using Microsoft.AspNetCore.Identity;
 using Shared.Result;
 
 namespace Core.Domains.Accounts.UseCases.CreateAccount;
 
-public class CreateAccountHandler(IIdentityService identityService,
+public class CreateAccountHandler(UserManager<MyIdentityUser> userManager,
     IJwtGenerationService jwtGenerationService) 
     : IRequestHandler<CreateAccountRequest, Result<CreateAccountResponse>>
 {
     public async Task<Result<CreateAccountResponse>> Handle(CreateAccountRequest request,
         CancellationToken cancellationToken = default)
     {
-        var accServiceCreationResult = await identityService
-            .RegisterAsync(request.Email, request.Password, cancellationToken);
-        
-        if (accServiceCreationResult.Value is null)
-            return Result<CreateAccountResponse>.WithMetadataFrom(accServiceCreationResult);
+        var userFromDb = await userManager.FindByEmailAsync(request.Email);
 
-        var token = jwtGenerationService.Generate(accServiceCreationResult.Value);
+        if (userFromDb is not null)
+            return Result<CreateAccountResponse>.Conflict("User already registered.");
+
+        var user = new MyIdentityUser { Email = request.Email };
+        var aspNetIdentityResult = await userManager.CreateAsync(user, request.Password);
+
+        if (!aspNetIdentityResult.Succeeded)
+            return Result<CreateAccountResponse>.Error();
+
+        var accountData = new AccountData(user.Id, user.Email, []);
+
+        var token = jwtGenerationService.Generate(accountData);
 
         return new CreateAccountResponse(token);
     }

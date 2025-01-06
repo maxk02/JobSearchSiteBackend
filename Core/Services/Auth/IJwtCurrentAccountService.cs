@@ -1,7 +1,8 @@
-﻿namespace Core.Services.Auth.Authentication;
+﻿namespace Core.Services.Auth;
 
-public interface ICurrentAccountService
+public interface IJwtCurrentAccountService
 {
+    public string GetTokenIdentifierOrThrow(); 
     public long? GetId();
     public long GetIdOrThrow();
     public string? GetEmail();

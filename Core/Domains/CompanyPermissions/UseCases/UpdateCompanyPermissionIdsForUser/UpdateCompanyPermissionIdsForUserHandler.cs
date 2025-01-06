@@ -1,7 +1,7 @@
 ﻿using Core.Domains._Shared.UseCaseStructure;
 using Core.Domains.CompanyPermissions.UserCompanyPermissions;
 using Core.Persistence.EfCore;
-using Core.Services.Auth.Authentication;
+using Core.Services.Auth;
 using Microsoft.EntityFrameworkCore;
 using Shared.Result;
 using Shared.Result.FluentValidation;
@@ -9,13 +9,13 @@ using Shared.Result.FluentValidation;
 namespace Core.Domains.CompanyPermissions.UseCases.UpdateCompanyPermissionIdsForUser;
 
 public class UpdateCompanyPermissionIdsForUserHandler(
-    ICurrentAccountService currentAccountService,
+    IJwtCurrentAccountService jwtCurrentAccountService,
     MainDataContext context) 
     : IRequestHandler<UpdateCompanyPermissionIdsForUserRequest, Result>
 {
     public async Task<Result> Handle(UpdateCompanyPermissionIdsForUserRequest request, CancellationToken cancellationToken = default)
     {
-        var currentUserId = currentAccountService.GetIdOrThrow();
+        var currentUserId = jwtCurrentAccountService.GetIdOrThrow();
 
         var permissionsValidator = new CompanyPermissionIdCollectionValidator();
         var validationResult = permissionsValidator.Validate(request.CompanyPermissionIds);

@@ -2,7 +2,7 @@
 using Core.Domains.Companies.Search;
 using Core.Domains.CompanyPermissions;
 using Core.Persistence.EfCore;
-using Core.Services.Auth.Authentication;
+using Core.Services.Auth;
 using Core.Services.BackgroundJobs;
 using Microsoft.EntityFrameworkCore;
 using Shared.Result;
@@ -10,7 +10,7 @@ using Shared.Result;
 namespace Core.Domains.Companies.UseCases.DeleteCompany;
 
 public class DeleteCompanyHandler(
-    ICurrentAccountService currentAccountService,
+    IJwtCurrentAccountService jwtCurrentAccountService,
     MainDataContext context,
     ICompanySearchRepository companySearchRepository,
     IBackgroundJobService backgroundJobService)
@@ -18,7 +18,7 @@ public class DeleteCompanyHandler(
 {
     public async Task<Result> Handle(DeleteCompanyRequest request, CancellationToken cancellationToken = default)
     {
-        var currentUserId = currentAccountService.GetIdOrThrow();
+        var currentUserId = jwtCurrentAccountService.GetIdOrThrow();
 
         var companyWithPermissionIdsQuery =
             from company in context.Companies

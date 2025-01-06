@@ -1,16 +1,16 @@
 ﻿using Core.Domains._Shared.UseCaseStructure;
 using Core.Persistence.EfCore;
-using Core.Services.Auth.Authentication;
+using Core.Services.Auth;
 using Shared.Result;
 
 namespace Core.Domains.PersonalFiles.UseCases.RenameFile;
 
-public class RenameFileHandler(ICurrentAccountService currentAccountService,
+public class RenameFileHandler(IJwtCurrentAccountService jwtCurrentAccountService,
     MainDataContext context) : IRequestHandler<RenameFileRequest, Result>
 {
     public async Task<Result> Handle(RenameFileRequest request, CancellationToken cancellationToken = default)
     {
-        var currentUserId = currentAccountService.GetIdOrThrow();
+        var currentUserId = jwtCurrentAccountService.GetIdOrThrow();
         
         var personalFile = await context.PersonalFiles.FindAsync([request.FileId], cancellationToken);
 

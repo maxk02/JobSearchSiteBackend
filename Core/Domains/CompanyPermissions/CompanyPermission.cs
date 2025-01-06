@@ -14,7 +14,7 @@ public class CompanyPermission : EntityBase, IPermissionEntity
         new CompanyPermission(3, nameof(CanEditStats)),
         new CompanyPermission(4, nameof(CanReadStats)),
         new CompanyPermission(5, nameof(CanEditProfile)),
-        // new CompanyPermission(6, nameof(CanEditNewsfeed))
+        new CompanyPermission(6, nameof(CanEditNewsfeed))
     ];
     
     public static readonly ImmutableArray<long> AllIds = [..AllValues.Select(permission => permission.Id)];
@@ -29,7 +29,7 @@ public class CompanyPermission : EntityBase, IPermissionEntity
 
     public static readonly CompanyPermission CanEditProfile = AllValues.First(permission => permission.Name == nameof(CanEditProfile));
 
-    // public static readonly CompanyPermission CanEditNewsfeed = AllValues.First(permission => permission.Name == nameof(CanEditNewsfeed));
+    public static readonly CompanyPermission CanEditNewsfeed = AllValues.First(permission => permission.Name == nameof(CanEditNewsfeed));
     
     
     public string Name { get; }

@@ -1,17 +1,17 @@
 ﻿using Core.Domains._Shared.UseCaseStructure;
 using Core.Persistence.EfCore;
-using Core.Services.Auth.Authentication;
+using Core.Services.Auth;
 using Shared.Result;
 
 namespace Core.Domains.JobApplications.UseCases.UpdateJobApplication;
 
-public class UpdateJobApplicationHandler(ICurrentAccountService currentAccountService,
+public class UpdateJobApplicationHandler(IJwtCurrentAccountService jwtCurrentAccountService,
     MainDataContext context) : IRequestHandler<UpdateJobApplicationRequest, Result>
 {
     public async Task<Result> Handle(UpdateJobApplicationRequest request,
         CancellationToken cancellationToken = default)
     {
-        var currentUserId = currentAccountService.GetIdOrThrow();
+        var currentUserId = jwtCurrentAccountService.GetIdOrThrow();
 
         var jobApplication = await context.JobApplications.FindAsync([request.JobApplicationId], cancellationToken);
 

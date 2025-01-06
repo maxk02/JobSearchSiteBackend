@@ -1,20 +1,20 @@
 ﻿using Core.Domains._Shared.UseCaseStructure;
 using Core.Domains.JobFolderPermissions.UserJobFolderPermissions;
 using Core.Persistence.EfCore;
-using Core.Services.Auth.Authentication;
+using Core.Services.Auth;
 using Microsoft.EntityFrameworkCore;
 using Shared.Result;
 using Shared.Result.FluentValidation;
 
 namespace Core.Domains.JobFolderPermissions.UseCases.UpdateJobFolderPermissionIdsForUser;
 
-public class UpdateJobFolderPermissionsForUserHandler(ICurrentAccountService currentAccountService,
+public class UpdateJobFolderPermissionsForUserHandler(IJwtCurrentAccountService jwtCurrentAccountService,
     MainDataContext context) : IRequestHandler<UpdateJobFolderPermissionIdsForUserRequest, Result>
 {
     public async Task<Result> Handle(UpdateJobFolderPermissionIdsForUserRequest request,
         CancellationToken cancellationToken = default)
     {
-        var currentUserId = currentAccountService.GetIdOrThrow();
+        var currentUserId = jwtCurrentAccountService.GetIdOrThrow();
 
         var permissionsValidator = new JobFolderPermissionIdCollectionValidator();
         var validationResult = permissionsValidator.Validate(request.FolderPermissionIds);

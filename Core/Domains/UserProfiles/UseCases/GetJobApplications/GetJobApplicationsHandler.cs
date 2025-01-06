@@ -5,21 +5,21 @@ using Core.Domains.JobApplications.Dtos;
 using Core.Domains.PersonalFiles;
 using Core.Domains.PersonalFiles.Dtos;
 using Core.Persistence.EfCore;
-using Core.Services.Auth.Authentication;
+using Core.Services.Auth;
 using Microsoft.EntityFrameworkCore;
 using Shared.Result;
 
 namespace Core.Domains.UserProfiles.UseCases.GetJobApplications;
 
 public class GetJobApplicationsHandler(
-    ICurrentAccountService currentAccountService,
+    IJwtCurrentAccountService jwtCurrentAccountService,
     MainDataContext context) 
     : IRequestHandler<GetJobApplicationsRequest, Result<GetJobApplicationsResponse>>
 {
     public async Task<Result<GetJobApplicationsResponse>> Handle(GetJobApplicationsRequest request,
         CancellationToken cancellationToken)
     {
-        var currentAccountId = currentAccountService.GetIdOrThrow();
+        var currentAccountId = jwtCurrentAccountService.GetIdOrThrow();
         
         if (currentAccountId != request.UserId)
             return Result<GetJobApplicationsResponse>.Forbidden();

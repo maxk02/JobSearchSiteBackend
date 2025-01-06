@@ -1,4 +1,4 @@
-﻿namespace Core.Services.Auth.Authentication;
+﻿namespace Core.Services.Auth;
 
 public interface IJwtGenerationService
 {

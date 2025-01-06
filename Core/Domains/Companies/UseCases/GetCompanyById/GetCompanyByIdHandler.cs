@@ -1,14 +1,14 @@
 ﻿using Core.Domains._Shared.UseCaseStructure;
 using Core.Domains.CompanyPermissions;
 using Core.Persistence.EfCore;
-using Core.Services.Auth.Authentication;
+using Core.Services.Auth;
 using Microsoft.EntityFrameworkCore;
 using Shared.Result;
 
 namespace Core.Domains.Companies.UseCases.GetCompanyById;
 
 public class GetCompanyByIdHandler(
-    ICurrentAccountService currentAccountService,
+    IJwtCurrentAccountService jwtCurrentAccountService,
     MainDataContext context)
     : IRequestHandler<GetCompanyByIdRequest, Result<GetCompanyByIdResponse>>
 {
@@ -22,7 +22,7 @@ public class GetCompanyByIdHandler(
 
         if (!company.IsPublic)
         {
-            var currentUserId = currentAccountService.GetId();
+            var currentUserId = jwtCurrentAccountService.GetId();
 
             if (currentUserId is null)
                 return Result<GetCompanyByIdResponse>.Forbidden("Requested company profile is private.");

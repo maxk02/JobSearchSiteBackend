@@ -1,17 +1,28 @@
 ﻿using Core.Domains._Shared.UseCaseStructure;
-using Core.Services.Auth.AccountStorage;
+using Core.Persistence.EfCore.AspNetCoreIdentity;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Shared.Result;
 
 namespace Core.Domains.Accounts.UseCases.ConfirmEmail;
 
-public class ConfirmEmailHandler(IIdentityService identityService) 
+public class ConfirmEmailHandler(UserManager<MyIdentityUser> userManager) 
     : IRequestHandler<ConfirmEmailRequest, Result>
 {
     public async Task<Result> Handle(ConfirmEmailRequest request, CancellationToken cancellationToken = default)
     {
-        var confirmEmailResult = await identityService
-            .ConfirmEmailAsync(request.Token, cancellationToken);
+        var user = await userManager.Users
+            .SingleOrDefaultAsync(
+                u => userManager
+                    .VerifyUserTokenAsync(u, TokenOptions.DefaultProvider, "EmailConfirmation", request.Token).Result,
+                cancellationToken
+            );
         
-        return confirmEmailResult;
+        if (user is null)
+            return Result.NotFound();
+
+        var aspNetIdentityResult = await userManager.ConfirmEmailAsync(user, request.Token);
+
+        return aspNetIdentityResult.Succeeded ? Result.Success() : Result.Error();
     }
 }

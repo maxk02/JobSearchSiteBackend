@@ -1,6 +1,6 @@
 ﻿using Core.Domains._Shared.UseCaseStructure;
 using Core.Persistence.EfCore;
-using Core.Services.Auth.Authentication;
+using Core.Services.Auth;
 using Core.Services.BackgroundJobs;
 using Core.Services.FileStorage;
 using Shared.Result;
@@ -8,14 +8,14 @@ using Shared.Result;
 namespace Core.Domains.PersonalFiles.UseCases.DeleteFile;
 
 public class DeleteFileHandler(
-    ICurrentAccountService currentAccountService,
+    IJwtCurrentAccountService jwtCurrentAccountService,
     IFileStorageService fileStorageService,
     IBackgroundJobService backgroundJobService,
     MainDataContext context) : IRequestHandler<DeleteFileRequest, Result>
 {
     public async Task<Result> Handle(DeleteFileRequest request, CancellationToken cancellationToken = default)
     {
-        var currentUserId = currentAccountService.GetIdOrThrow();
+        var currentUserId = jwtCurrentAccountService.GetIdOrThrow();
         
         var personalFile = await context.PersonalFiles.FindAsync([request.FileId], cancellationToken);
 

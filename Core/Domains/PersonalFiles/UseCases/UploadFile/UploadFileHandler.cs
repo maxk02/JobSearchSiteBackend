@@ -1,7 +1,7 @@
 ﻿using Core.Domains._Shared.UseCaseStructure;
 using Core.Domains.PersonalFiles.Search;
 using Core.Persistence.EfCore;
-using Core.Services.Auth.Authentication;
+using Core.Services.Auth;
 using Core.Services.BackgroundJobs;
 using Core.Services.FileStorage;
 using Core.Services.TextExtractor;
@@ -10,7 +10,7 @@ using Shared.Result;
 namespace Core.Domains.PersonalFiles.UseCases.UploadFile;
 
 public class UploadFileHandler(
-    ICurrentAccountService currentAccountService,
+    IJwtCurrentAccountService jwtCurrentAccountService,
     IFileStorageService fileStorageService,
     IBackgroundJobService backgroundJobService,
     ITextExtractor textExtractor,
@@ -19,7 +19,7 @@ public class UploadFileHandler(
 {
     public async Task<Result> Handle(UploadFileRequest request, CancellationToken cancellationToken = default)
     {
-        var currentUserId = currentAccountService.GetIdOrThrow();
+        var currentUserId = jwtCurrentAccountService.GetIdOrThrow();
 
         var creationResult = PersonalFile.Create(currentUserId, request.FileName,
             request.Extension, request.FileStream.Length);

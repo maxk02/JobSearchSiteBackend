@@ -1,18 +1,18 @@
 ﻿using Core.Domains._Shared.UseCaseStructure;
 using Core.Persistence.EfCore;
-using Core.Services.Auth.Authentication;
+using Core.Services.Auth;
 using Microsoft.EntityFrameworkCore;
 using Shared.Result;
 
 namespace Core.Domains.UserProfiles.UseCases.AddCompanyBookmark;
 
 public class AddCompanyBookmarkHandler(
-    ICurrentAccountService currentAccountService,
+    IJwtCurrentAccountService jwtCurrentAccountService,
     MainDataContext context) : IRequestHandler<AddCompanyBookmarkRequest, Result>
 {
     public async Task<Result> Handle(AddCompanyBookmarkRequest request, CancellationToken cancellationToken = default)
     {
-        var currentAccountId = currentAccountService.GetIdOrThrow();
+        var currentAccountId = jwtCurrentAccountService.GetIdOrThrow();
 
         if (currentAccountId != request.UserId)
             return Result.Forbidden();

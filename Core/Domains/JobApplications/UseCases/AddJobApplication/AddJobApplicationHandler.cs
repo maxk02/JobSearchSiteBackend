@@ -3,7 +3,7 @@ using Core.Domains.Cvs.Search;
 using Core.Domains.JobApplications.Values;
 using Core.Domains.PersonalFiles.Search;
 using Core.Persistence.EfCore;
-using Core.Services.Auth.Authentication;
+using Core.Services.Auth;
 using Core.Services.BackgroundJobs;
 using Microsoft.EntityFrameworkCore;
 using Shared.Result;
@@ -11,7 +11,7 @@ using Shared.Result;
 namespace Core.Domains.JobApplications.UseCases.AddJobApplication;
 
 public class AddJobApplicationHandler(
-    ICurrentAccountService currentAccountService,
+    IJwtCurrentAccountService jwtCurrentAccountService,
     MainDataContext context,
     ICvSearchRepository cvSearchRepository,
     IPersonalFileSearchRepository personalFileSearchRepository,
@@ -21,7 +21,7 @@ public class AddJobApplicationHandler(
     public async Task<Result<AddJobApplicationResponse>> Handle(AddJobApplicationRequest request,
         CancellationToken cancellationToken = default)
     {
-        var currentUserId = currentAccountService.GetIdOrThrow();
+        var currentUserId = jwtCurrentAccountService.GetIdOrThrow();
 
         if (request.UserId != currentUserId)
             return Result<AddJobApplicationResponse>.Forbidden();

@@ -1,17 +1,17 @@
 ﻿using Core.Domains._Shared.UseCaseStructure;
 using Core.Persistence.EfCore;
-using Core.Services.Auth.Authentication;
+using Core.Services.Auth;
 using Microsoft.EntityFrameworkCore;
 using Shared.Result;
 
 namespace Core.Domains.UserProfiles.UseCases.RemoveJobBookmark;
 
-public class RemoveJobBookmarkHandler(ICurrentAccountService currentAccountService,
+public class RemoveJobBookmarkHandler(IJwtCurrentAccountService jwtCurrentAccountService,
     MainDataContext context) : IRequestHandler<RemoveJobBookmarkRequest, Result>
 {
     public async Task<Result> Handle(RemoveJobBookmarkRequest request, CancellationToken cancellationToken = default)
     {
-        var currentAccountId = currentAccountService.GetIdOrThrow();
+        var currentAccountId = jwtCurrentAccountService.GetIdOrThrow();
 
         if (currentAccountId != request.UserId)
             return Result.Forbidden();

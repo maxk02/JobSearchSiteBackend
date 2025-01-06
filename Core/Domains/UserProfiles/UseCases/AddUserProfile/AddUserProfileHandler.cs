@@ -1,17 +1,17 @@
 ﻿using Core.Domains._Shared.UseCaseStructure;
 using Core.Persistence.EfCore;
-using Core.Services.Auth.Authentication;
+using Core.Services.Auth;
 using Shared.Result;
 
 namespace Core.Domains.UserProfiles.UseCases.AddUserProfile;
 
-public class AddUserProfileHandler(ICurrentAccountService currentAccountService,
+public class AddUserProfileHandler(IJwtCurrentAccountService jwtCurrentAccountService,
     MainDataContext context) : IRequestHandler<AddUserProfileRequest, Result<AddUserProfileResponse>>
 {
     public async Task<Result<AddUserProfileResponse>> Handle(AddUserProfileRequest request,
         CancellationToken cancellationToken = default)
     {
-        var currentAccountId = currentAccountService.GetIdOrThrow();
+        var currentAccountId = jwtCurrentAccountService.GetIdOrThrow();
         
         if (currentAccountId != request.AccountId)
             return Result<AddUserProfileResponse>.Forbidden();

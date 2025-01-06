@@ -4,5 +4,6 @@ namespace Core.Domains.Companies.Search;
 
 public interface ICompanySearchRepository : ISearchRepository<CompanySearchModel>
 {
-    public Task<IList<long>> SearchByCountryIdAsync(string query, long countryId);
+    public Task<ICollection<long>> SearchByCountryIdAsync(long countryId, string query,
+        CancellationToken cancellationToken = default);
 }

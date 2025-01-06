@@ -1,18 +1,18 @@
 ﻿using Core.Domains._Shared.UseCaseStructure;
 using Core.Persistence.EfCore;
-using Core.Services.Auth.Authentication;
+using Core.Services.Auth;
 using Microsoft.EntityFrameworkCore;
 using Shared.Result;
 
 namespace Core.Domains.Cvs.UseCases.GetCvById;
 
-public class GetCvByIdHandler(ICurrentAccountService currentAccountService,
+public class GetCvByIdHandler(IJwtCurrentAccountService jwtCurrentAccountService,
     MainDataContext context) : IRequestHandler<GetCvByIdRequest, Result<GetCvByIdResponse>>
 {
     public async Task<Result<GetCvByIdResponse>> Handle(GetCvByIdRequest request,
         CancellationToken cancellationToken = default)
     {
-        var currentUserId = currentAccountService.GetIdOrThrow();
+        var currentUserId = jwtCurrentAccountService.GetIdOrThrow();
         
         var query = context.Cvs
             .Include(cv => cv.SalaryRecord)

@@ -2,7 +2,7 @@
 using Core.Domains.Cvs.Search;
 using Core.Domains.PersonalFiles.Search;
 using Core.Persistence.EfCore;
-using Core.Services.Auth.Authentication;
+using Core.Services.Auth;
 using Core.Services.BackgroundJobs;
 using Microsoft.EntityFrameworkCore;
 using Shared.Result;
@@ -10,7 +10,7 @@ using Shared.Result;
 namespace Core.Domains.JobApplications.UseCases.DeleteJobApplication;
 
 public class DeleteJobApplicationHandler(
-    ICurrentAccountService currentAccountService,
+    IJwtCurrentAccountService jwtCurrentAccountService,
     ICvSearchRepository cvSearchRepository,
     IPersonalFileSearchRepository personalFileSearchRepository,
     MainDataContext context,
@@ -18,7 +18,7 @@ public class DeleteJobApplicationHandler(
 {
     public async Task<Result> Handle(DeleteJobApplicationRequest request, CancellationToken cancellationToken = default)
     {
-        var currentUserId = currentAccountService.GetIdOrThrow();
+        var currentUserId = jwtCurrentAccountService.GetIdOrThrow();
 
         var jobApplication = await context.JobApplications
             .Include(ja => ja.PersonalFiles)

@@ -4,5 +4,5 @@ namespace Core.Domains.Locations.Search;
 
 public interface ILocationSearchRepository : ISearchRepository<LocationSearchModel>
 {
-    Task<IList<long>> SearchByCountryId(string query, long countryId);
+    Task<ICollection<long>> SearchByCountryId(long countryId, string query, CancellationToken cancellationToken = default);
 }

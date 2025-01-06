@@ -3,7 +3,7 @@ using Core.Domains.Categories;
 using Core.Domains.Cvs.Search;
 using Core.Domains.Cvs.ValueEntities;
 using Core.Persistence.EfCore;
-using Core.Services.Auth.Authentication;
+using Core.Services.Auth;
 using Core.Services.BackgroundJobs;
 using Microsoft.EntityFrameworkCore;
 using Shared.Result;
@@ -11,14 +11,14 @@ using Shared.Result;
 namespace Core.Domains.Cvs.UseCases.UpdateCv;
 
 public class UpdateCvHandler(
-    ICurrentAccountService currentAccountService,
+    IJwtCurrentAccountService jwtCurrentAccountService,
     ICvSearchRepository cvSearchRepository,
     IBackgroundJobService backgroundJobService,
     MainDataContext context) : IRequestHandler<UpdateCvRequest, Result>
 {
     public async Task<Result> Handle(UpdateCvRequest request, CancellationToken cancellationToken = default)
     {
-        var currentUserId = currentAccountService.GetIdOrThrow();
+        var currentUserId = jwtCurrentAccountService.GetIdOrThrow();
 
         var cv = await context.Cvs
             .Include(cv => cv.SalaryRecord)

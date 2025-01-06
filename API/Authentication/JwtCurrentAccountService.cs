@@ -1,12 +1,22 @@
 ﻿using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
-using Core.Services.Auth.Authentication;
-using Core.Services.Auth.Authentication.Exceptions;
+using Core.Services.Auth;
+using Core.Services.Auth.Exceptions;
 
 namespace API.Authentication;
 
-public class JwtCurrentAccountService(IHttpContextAccessor httpContextAccessor) : ICurrentAccountService
+public class JwtCurrentAccountService(IHttpContextAccessor httpContextAccessor) : IJwtCurrentAccountService
 {
+    public string GetTokenIdentifierOrThrow()
+    {
+        string? tokenIdString = httpContextAccessor.HttpContext?.User.FindFirstValue(JwtRegisteredClaimNames.Jti);
+
+        if (string.IsNullOrEmpty(tokenIdString))
+            throw new CurrentAccountDataNotAvailableException();
+
+        return tokenIdString;
+    }
+
     public long? GetId()
     {
         string? userIdString = httpContextAccessor.HttpContext?.User.FindFirstValue(JwtRegisteredClaimNames.Sub);

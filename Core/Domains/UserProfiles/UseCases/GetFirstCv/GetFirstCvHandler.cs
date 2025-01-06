@@ -6,21 +6,21 @@ using Core.Domains.Cvs.ValueEntities;
 using Core.Domains.PersonalFiles;
 using Core.Domains.PersonalFiles.Dtos;
 using Core.Persistence.EfCore;
-using Core.Services.Auth.Authentication;
+using Core.Services.Auth;
 using Microsoft.EntityFrameworkCore;
 using Shared.Result;
 
 namespace Core.Domains.UserProfiles.UseCases.GetFirstCv;
 
 public class GetFirstCvHandler(
-    ICurrentAccountService currentAccountService,
+    IJwtCurrentAccountService jwtCurrentAccountService,
     MainDataContext context) 
     : IRequestHandler<GetFirstCvRequest, Result<GetFirstCvResponse>>
 {
     public async Task<Result<GetFirstCvResponse>> Handle(GetFirstCvRequest request,
         CancellationToken cancellationToken)
     {
-        var currentAccountId = currentAccountService.GetIdOrThrow();
+        var currentAccountId = jwtCurrentAccountService.GetIdOrThrow();
         
         if (currentAccountId != request.UserId)
             return Result<GetFirstCvResponse>.Forbidden();

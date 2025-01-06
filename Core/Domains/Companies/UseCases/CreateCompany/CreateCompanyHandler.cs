@@ -6,14 +6,14 @@ using Core.Domains.JobFolderPermissions;
 using Core.Domains.JobFolderPermissions.UserJobFolderPermissions;
 using Core.Domains.JobFolders;
 using Core.Persistence.EfCore;
-using Core.Services.Auth.Authentication;
+using Core.Services.Auth;
 using Core.Services.BackgroundJobs;
 using Shared.Result;
 
 namespace Core.Domains.Companies.UseCases.CreateCompany;
 
 public class CreateCompanyHandler(
-    ICurrentAccountService currentAccountService,
+    IJwtCurrentAccountService jwtCurrentAccountService,
     ICompanySearchRepository companySearchRepository,
     IBackgroundJobService backgroundJobService,
     MainDataContext context)
@@ -22,7 +22,7 @@ public class CreateCompanyHandler(
     public async Task<Result<CreateCompanyResponse>> Handle(CreateCompanyRequest request,
         CancellationToken cancellationToken = default)
     {
-        var currentUserId = currentAccountService.GetIdOrThrow();
+        var currentUserId = jwtCurrentAccountService.GetIdOrThrow();
 
         //creating company and checking result
         var companyCreationResult =

@@ -1,3 +1,3 @@
 ﻿namespace Core.Domains.Accounts;
 
-public record BlacklistedJwt(string Jti);
+public record BlacklistedJwt(string TokenId);

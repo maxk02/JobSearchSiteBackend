@@ -3,21 +3,21 @@ using Core.Domains._Shared.UseCaseStructure;
 using Core.Domains.Jobs;
 using Core.Domains.Jobs.Dtos;
 using Core.Persistence.EfCore;
-using Core.Services.Auth.Authentication;
+using Core.Services.Auth;
 using Microsoft.EntityFrameworkCore;
 using Shared.Result;
 
 namespace Core.Domains.UserProfiles.UseCases.GetBookmarkedJobs;
 
 public class GetBookmarkedJobsHandler(
-    ICurrentAccountService currentAccountService,
+    IJwtCurrentAccountService jwtCurrentAccountService,
     MainDataContext context)
     : IRequestHandler<GetBookmarkedJobsRequest, Result<GetBookmarkedJobsResponse>>
 {
     public async Task<Result<GetBookmarkedJobsResponse>> Handle(GetBookmarkedJobsRequest request,
         CancellationToken cancellationToken)
     {
-        var currentAccountId = currentAccountService.GetIdOrThrow();
+        var currentAccountId = jwtCurrentAccountService.GetIdOrThrow();
 
         if (currentAccountId != request.UserId)
             return Result<GetBookmarkedJobsResponse>.Forbidden();

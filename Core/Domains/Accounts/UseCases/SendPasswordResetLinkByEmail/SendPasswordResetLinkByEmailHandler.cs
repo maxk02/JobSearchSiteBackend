@@ -1,22 +1,23 @@
 ﻿using Core.Domains._Shared.UseCaseStructure;
-using Core.Services.Auth.AccountStorage;
+using Core.Persistence.EfCore.AspNetCoreIdentity;
 using Core.Services.EmailSender;
+using Microsoft.AspNetCore.Identity;
 using Shared.Result;
 
 namespace Core.Domains.Accounts.UseCases.SendPasswordResetLinkByEmail;
 
-public class SendPasswordResetLinkByEmailHandler(IIdentityService identityService,
+public class SendPasswordResetLinkByEmailHandler(UserManager<MyIdentityUser> userManager,
     IEmailSenderService emailSenderService) : IRequestHandler<SendPasswordResetLinkByEmailRequest, Result>
 {
     public async Task<Result> Handle(SendPasswordResetLinkByEmailRequest request, CancellationToken cancellationToken = default)
     {
-        var tokenGenerationResult = await identityService
-            .GeneratePasswordResetTokenByEmailAsync(request.Email, cancellationToken);
+        var user = await userManager.FindByEmailAsync(request.Email);
+        if (user is null)
+            return Result.NotFound();
 
-        if (tokenGenerationResult.Value is null)
-            return Result.WithMetadataFrom(tokenGenerationResult);
+        var token = await userManager.GeneratePasswordResetTokenAsync(user);
         
-        var link = "https://example.com/reset-password/" + tokenGenerationResult.Value; //todo
+        var link = "https://example.com/reset-password/" + token; //todo
 
         var emailSendingResult = await emailSenderService
             .SendPasswordResetMessageAsync(request.Email, link, cancellationToken);

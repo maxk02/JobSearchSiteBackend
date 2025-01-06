@@ -1,7 +1,7 @@
 ﻿using Core.Domains._Shared.UseCaseStructure;
 using Core.Domains.PersonalFiles.Search;
 using Core.Persistence.EfCore;
-using Core.Services.Auth.Authentication;
+using Core.Services.Auth;
 using Core.Services.BackgroundJobs;
 using Microsoft.EntityFrameworkCore;
 using Shared.Result;
@@ -9,7 +9,7 @@ using Shared.Result;
 namespace Core.Domains.JobApplications.UseCases.UpdateJobApplicationFiles;
 
 public class UpdateJobApplicationFilesHandler(
-    ICurrentAccountService currentAccountService,
+    IJwtCurrentAccountService jwtCurrentAccountService,
     IPersonalFileSearchRepository personalFileSearchRepository,
     IBackgroundJobService backgroundJobService,
     MainDataContext context) : IRequestHandler<UpdateJobApplicationFilesRequest, Result>
@@ -17,7 +17,7 @@ public class UpdateJobApplicationFilesHandler(
     public async Task<Result> Handle(UpdateJobApplicationFilesRequest request,
         CancellationToken cancellationToken = default)
     {
-        var currentUserId = currentAccountService.GetIdOrThrow();
+        var currentUserId = jwtCurrentAccountService.GetIdOrThrow();
 
         var jobApplication = await context.JobApplications
             .Include(ja => ja.PersonalFiles)
