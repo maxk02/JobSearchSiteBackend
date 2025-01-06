@@ -1,8 +1,8 @@
 ﻿using Core.Domains._Shared.Pagination;
-using Core.Domains.UserProfiles.Dtos;
+using Core.Domains.Companies.Dtos;
 
 namespace Core.Domains.UserProfiles.UseCases.GetBookmarkedCompanies;
 
 public record GetBookmarkedCompaniesResponse(
-    ICollection<CompanyShortDto> CompanyShortDto,
+    ICollection<CompanyInfocardDto> CompanyInfocardDtos,
     PaginationResponse PaginationResponse);
