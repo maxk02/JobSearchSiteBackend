@@ -1,8 +1,4 @@
-﻿using System.Collections.Immutable;
-using Core.Domains._Shared.Repositories;
-using Core.Domains._Shared.Search;
-using Core.Domains._Shared.UnitOfWork;
-using Core.Domains._Shared.UseCaseStructure;
+﻿using Core.Domains._Shared.UseCaseStructure;
 using Core.Domains.Companies.Search;
 using Core.Domains.CompanyPermissions;
 using Core.Domains.CompanyPermissions.UserCompanyPermissions;
@@ -11,7 +7,7 @@ using Core.Domains.JobFolderPermissions.UserJobFolderPermissions;
 using Core.Domains.JobFolders;
 using Core.Persistence.EfCore;
 using Core.Services.Auth.Authentication;
-using Core.Services.QueueService;
+using Core.Services.BackgroundJobService;
 using Shared.Result;
 
 namespace Core.Domains.Companies.UseCases.CreateCompany;
@@ -19,8 +15,8 @@ namespace Core.Domains.Companies.UseCases.CreateCompany;
 public class CreateCompanyHandler(
     ICurrentAccountService currentAccountService,
     ICompanySearchRepository companySearchRepository,
-    IBackgroundJobQueueService jobQueueService,
-    MainDataContext context) 
+    IBackgroundJobService backgroundJobService,
+    MainDataContext context)
     : IRequestHandler<CreateCompanyRequest, Result<CreateCompanyResponse>>
 {
     public async Task<Result<CreateCompanyResponse>> Handle(CreateCompanyRequest request,
@@ -34,9 +30,9 @@ public class CreateCompanyHandler(
 
         if (companyCreationResult.IsFailure)
             return Result<CreateCompanyResponse>.WithMetadataFrom(companyCreationResult);
-        
+
         var company = companyCreationResult.Value;
-        
+
         //starting transaction to be able to use SaveChangesAsync multiple times and revert all changes if something fails
         await using var transaction = await context.Database.BeginTransactionAsync(cancellationToken);
 
@@ -44,44 +40,39 @@ public class CreateCompanyHandler(
         await context.Companies.AddAsync(company, cancellationToken);
         await context.SaveChangesAsync(cancellationToken);
         
+        var companySearchModel =
+            new CompanySearchModel(company.Id, company.CountryId, company.Name, company.Description);
+
         //adding full permission set to user
         company.UserCompanyPermissions = CompanyPermission.AllIds
             .Select(x => new UserCompanyPermission(currentUserId, company.Id, x)).ToList();
-            
-            
+
+
         //creating folder and checking result
         var rootFolderCreationResult = JobFolder.Create(company.Id, null, null);
 
         if (rootFolderCreationResult.IsFailure)
             return Result<CreateCompanyResponse>.Error();
-        
+
         var rootFolder = rootFolderCreationResult.Value;
-        
+
 
         //adding root folder to company
         await context.JobFolders.AddAsync(rootFolder, cancellationToken);
-        
+
         //adding full permission set to user
         rootFolder.UserJobFolderPermissions = JobFolderPermission.AllIds
             .Select(x => new UserJobFolderPermission(currentUserId, rootFolder.Id, x)).ToList();
 
         // saving changes
         await context.SaveChangesAsync(cancellationToken);
-        
+
         //committing transaction
         await transaction.CommitAsync(cancellationToken);
-
         
-        var companySearchModel = new CompanySearchModel(company.Id, company.CountryId, company.Name, company.Description);
-        try
-        {
-            await companySearchRepository.AddAsync(companySearchModel, CancellationToken.None);
-        }
-        catch
-        {
-            await jobQueueService.EnqueueForIndefiniteRetriesAsync<ICompanySearchRepository>(
-                x => x.AddAsync(companySearchModel, CancellationToken.None));
-        }
+        backgroundJobService
+            .Enqueue(() => companySearchRepository.AddAsync(companySearchModel, CancellationToken.None),
+            BackgroundJobQueues.CompanySearch);
 
         return new CreateCompanyResponse(company.Id);
     }

@@ -1,10 +1,9 @@
-﻿using Core.Domains._Shared.Search;
-using Core.Domains._Shared.UseCaseStructure;
+﻿using Core.Domains._Shared.UseCaseStructure;
 using Core.Domains.Companies.Search;
 using Core.Domains.CompanyPermissions;
 using Core.Persistence.EfCore;
 using Core.Services.Auth.Authentication;
-using Core.Services.QueueService;
+using Core.Services.BackgroundJobService;
 using Microsoft.EntityFrameworkCore;
 using Shared.Result;
 
@@ -13,7 +12,7 @@ namespace Core.Domains.Companies.UseCases.UpdateCompany;
 public class UpdateCompanyHandler(
     ICurrentAccountService currentAccountService,
     ICompanySearchRepository companySearchRepository,
-    IBackgroundJobQueueService jobQueueService,
+    IBackgroundJobService backgroundJobService,
     MainDataContext context) : IRequestHandler<UpdateCompanyRequest, Result>
 {
     public async Task<Result> Handle(UpdateCompanyRequest request, CancellationToken cancellationToken = default)
@@ -50,23 +49,17 @@ public class UpdateCompanyHandler(
             return Result.WithMetadataFrom(updatedCompanyResult);
         
         var updatedCompany = updatedCompanyResult.Value;
+        
+        var companySearchModel = new CompanySearchModel(updatedCompany.Id, updatedCompany.CountryId,
+            updatedCompany.Name, updatedCompany.Description);
 
         context.Companies.Update(updatedCompany);
         await context.SaveChangesAsync(cancellationToken);
         
+        backgroundJobService
+            .Enqueue(() => companySearchRepository.UpdateAsync(companySearchModel, CancellationToken.None),
+                BackgroundJobQueues.CompanySearch);
         
-        var companySearchModel = new CompanySearchModel(updatedCompany.Id, updatedCompany.CountryId,
-            updatedCompany.Name, updatedCompany.Description);
-        try
-        {
-            await companySearchRepository.UpdateAsync(companySearchModel, CancellationToken.None);
-        }
-        catch
-        {
-            await jobQueueService.EnqueueForIndefiniteRetriesAsync<ICompanySearchRepository>(
-                x => companySearchRepository.UpdateAsync(companySearchModel, CancellationToken.None));
-        }
-
         return Result.Success();
     }
 }

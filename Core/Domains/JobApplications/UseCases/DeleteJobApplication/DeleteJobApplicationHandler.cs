@@ -3,7 +3,7 @@ using Core.Domains.Cvs.Search;
 using Core.Domains.PersonalFiles.Search;
 using Core.Persistence.EfCore;
 using Core.Services.Auth.Authentication;
-using Core.Services.QueueService;
+using Core.Services.BackgroundJobService;
 using Microsoft.EntityFrameworkCore;
 using Shared.Result;
 
@@ -14,7 +14,7 @@ public class DeleteJobApplicationHandler(
     ICvSearchRepository cvSearchRepository,
     IPersonalFileSearchRepository personalFileSearchRepository,
     MainDataContext context,
-    IBackgroundJobQueueService jobQueueService) : IRequestHandler<DeleteJobApplicationRequest, Result>
+    IBackgroundJobService backgroundJobService) : IRequestHandler<DeleteJobApplicationRequest, Result>
 {
     public async Task<Result> Handle(DeleteJobApplicationRequest request, CancellationToken cancellationToken = default)
     {
@@ -31,32 +31,21 @@ public class DeleteJobApplicationHandler(
         if (jobApplication.UserId != currentUserId)
             return Result.Forbidden();
 
+        var userId = jobApplication.UserId;
+        var jobId = jobApplication.JobId;
+
         var oldPersonalFileIds = jobApplication.PersonalFiles?.Select(x => x.Id).ToList() ?? [];
         context.JobApplications.Remove(jobApplication);
         await context.SaveChangesAsync(cancellationToken);
 
-        var userId = jobApplication.UserId;
-        var jobId = jobApplication.JobId;
-        
-        try
-        {
-            await cvSearchRepository.RemoveAppliedToJobIdAsync(jobApplication.UserId, jobApplication.JobId);
-        }
-        catch
-        {
-            await jobQueueService.EnqueueForIndefiniteRetriesAsync<ICvSearchRepository>(
-                x => x.RemoveAppliedToJobIdAsync(userId, jobId));
-        }
-        
-        try
-        {
-            await personalFileSearchRepository.RemoveAppliedToJobIdAsync(oldPersonalFileIds, jobId);
-        }
-        catch
-        {
-            await jobQueueService.EnqueueForIndefiniteRetriesAsync<IPersonalFileSearchRepository>(
-                x => x.RemoveAppliedToJobIdAsync(oldPersonalFileIds, jobId));
-        }
+        backgroundJobService.Enqueue(
+            () => cvSearchRepository.RemoveAppliedToJobIdAsync(userId, jobId, CancellationToken.None),
+            BackgroundJobQueues.CvSearch);
+
+        backgroundJobService.Enqueue(
+            () => personalFileSearchRepository.RemoveAppliedToJobIdAsync(oldPersonalFileIds, jobId,
+                CancellationToken.None),
+            BackgroundJobQueues.PersonalFileTextExtractionAndSearch);
 
         return Result.Success();
     }

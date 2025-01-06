@@ -2,41 +2,36 @@
 using Core.Domains.Cvs.Search;
 using Core.Persistence.EfCore;
 using Core.Services.Auth.Authentication;
-using Core.Services.QueueService;
+using Core.Services.BackgroundJobService;
 using Shared.Result;
 
 namespace Core.Domains.Cvs.UseCases.DeleteCv;
 
-public class DeleteCvHandler(ICurrentAccountService currentAccountService,
+public class DeleteCvHandler(
+    ICurrentAccountService currentAccountService,
     ICvSearchRepository cvSearchRepository,
-    IBackgroundJobQueueService jobQueueService,
+    IBackgroundJobService backgroundJobService,
     MainDataContext context) : IRequestHandler<DeleteCvRequest, Result>
 {
     public async Task<Result> Handle(DeleteCvRequest request, CancellationToken cancellationToken = default)
     {
         var currentUserId = currentAccountService.GetIdOrThrow();
-        
+
         var cv = await context.Cvs.FindAsync([request.CvId], cancellationToken);
 
         if (cv is null)
             return Result.NotFound();
-        
+
         if (cv.UserId != currentUserId)
             return Result.Forbidden();
 
         context.Cvs.Remove(cv);
         await context.SaveChangesAsync(cancellationToken);
         
-        try
-        {
-            await cvSearchRepository.DeleteAsync(request.CvId, CancellationToken.None);
-        }
-        catch
-        {
-            await jobQueueService.EnqueueForIndefiniteRetriesAsync<ICvSearchRepository>(
-                x => x.DeleteAsync(request.CvId, CancellationToken.None));
-        }
-
+        backgroundJobService.Enqueue(
+            () => cvSearchRepository.DeleteAsync(request.CvId, CancellationToken.None),
+            BackgroundJobQueues.CvSearch);
+        
         return Result.Success();
     }
 }

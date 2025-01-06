@@ -1,9 +1,8 @@
-﻿using Core.Domains._Shared.Repositories;
-using Core.Domains._Shared.UnitOfWork;
-using Core.Domains._Shared.UseCaseStructure;
+﻿using Core.Domains._Shared.UseCaseStructure;
+using Core.Persistence.EfCore;
 using Core.Services.Auth.Authentication;
+using Core.Services.BackgroundJobService;
 using Core.Services.FileStorage;
-using Core.Services.FileStorage.JobSchedulers;
 using Shared.Result;
 
 namespace Core.Domains.PersonalFiles.UseCases.UploadFile;
@@ -11,9 +10,8 @@ namespace Core.Domains.PersonalFiles.UseCases.UploadFile;
 public class UploadFileHandler(
     ICurrentAccountService currentAccountService,
     IFileStorageService fileStorageService,
-    IDeleteFileFromStorageScheduler deleteFileFromStorageScheduler,
-    IUnitOfWork unitOfWork,
-    IRepository<PersonalFile> personalFileRepository) : IRequestHandler<UploadFileRequest, Result>
+    IBackgroundJobService backgroundJobService,
+    MainDataContext context) : IRequestHandler<UploadFileRequest, Result>
 {
     public async Task<Result> Handle(UploadFileRequest request, CancellationToken cancellationToken = default)
     {
@@ -24,28 +22,24 @@ public class UploadFileHandler(
         if (creationResult.IsFailure)
             return Result.WithMetadataFrom(creationResult);
         var newFile = creationResult.Value;
-        
-        await unitOfWork.BeginAsync(cancellationToken);
-        await personalFileRepository.AddAsync(newFile, cancellationToken);
-        
+
+        //starting transaction to be able to use SaveChangesAsync multiple times and revert all changes if something fails
+        await using var transaction = await context.Database.BeginTransactionAsync(cancellationToken);
+        context.PersonalFiles.Add(newFile);
+        await context.SaveChangesAsync(cancellationToken);
+
         await fileStorageService.UploadFileAsync(request.FileStream, newFile.GuidIdentifier,
             newFile.Extension, cancellationToken);
 
         try
         {
-            await unitOfWork.CommitAsync(cancellationToken);
+            await transaction.CommitAsync(cancellationToken);
         }
         catch
         {
-            try
-            {
-                await fileStorageService.DeleteFileAsync(newFile.GuidIdentifier, cancellationToken);
-            }
-            catch
-            {
-                await deleteFileFromStorageScheduler.ScheduleAsync(newFile.GuidIdentifier);
-                throw;
-            }
+            backgroundJobService.Enqueue(
+                () => fileStorageService.DeleteFileAsync(newFile.GuidIdentifier, CancellationToken.None),
+                BackgroundJobQueues.PersonalFileStorage);
             throw;
         }
 

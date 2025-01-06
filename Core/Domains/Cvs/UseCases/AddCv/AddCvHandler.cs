@@ -4,7 +4,7 @@ using Core.Domains.Cvs.Search;
 using Core.Domains.Cvs.ValueEntities;
 using Core.Persistence.EfCore;
 using Core.Services.Auth.Authentication;
-using Core.Services.QueueService;
+using Core.Services.BackgroundJobService;
 using Shared.Result;
 
 namespace Core.Domains.Cvs.UseCases.AddCv;
@@ -12,7 +12,7 @@ namespace Core.Domains.Cvs.UseCases.AddCv;
 public class AddCvHandler(
     ICurrentAccountService currentAccountService,
     ICvSearchRepository cvSearchRepository,
-    IBackgroundJobQueueService jobQueueService,
+    IBackgroundJobService backgroundJobService,
     MainDataContext context) : IRequestHandler<AddCvRequest, Result>
 {
     public async Task<Result> Handle(AddCvRequest request, CancellationToken cancellationToken = default)
@@ -43,28 +43,25 @@ public class AddCvHandler(
                 .ToList();
         }
 
+        //starting transaction to be able to use SaveChangesAsync multiple times and revert all changes if something fails
+        await using var transaction = await context.Database.BeginTransactionAsync(cancellationToken);
+
         context.Cvs.Add(newCv);
         await context.SaveChangesAsync(cancellationToken);
 
-        try
-        {
-            await cvSearchRepository.AddAsync(
-                new CvSearchModel(newCv.Id, newCv.UserId, newCv.EducationRecords ?? new List<EducationRecord>(),
-                    newCv.WorkRecords ?? new List<WorkRecord>(),
-                    newCv.Skills ?? new List<string>(), new List<long>()),
-                CancellationToken.None);
-        }
-        catch
-        {
-            await jobQueueService.EnqueueForIndefiniteRetriesAsync<ICvSearchRepository>(
-                x => x.AddAsync(
-                    new CvSearchModel(newCv.Id, newCv.UserId, newCv.EducationRecords ?? new List<EducationRecord>(),
-                        newCv.WorkRecords ?? new List<WorkRecord>(),
-                        newCv.Skills ?? new List<string>(), new List<long>()),
-                    CancellationToken.None)
-                );
-        }
+        var cvSearchModel = new CvSearchModel(newCv.Id, newCv.UserId,
+            newCv.EducationRecords ?? new List<EducationRecord>(),
+            newCv.WorkRecords ?? new List<WorkRecord>(),
+            newCv.Skills ?? new List<string>(),
+            new List<long>(), new List<long>());
 
+        await transaction.CommitAsync(cancellationToken);
+        
+        backgroundJobService.Enqueue(
+            () => cvSearchRepository.AddAsync(cvSearchModel, CancellationToken.None),
+            BackgroundJobQueues.CvSearch
+        );
+        
         return Result.Success();
     }
 }

@@ -4,7 +4,7 @@ using Core.Domains.JobApplications.Values;
 using Core.Domains.PersonalFiles.Search;
 using Core.Persistence.EfCore;
 using Core.Services.Auth.Authentication;
-using Core.Services.QueueService;
+using Core.Services.BackgroundJobService;
 using Microsoft.EntityFrameworkCore;
 using Shared.Result;
 
@@ -15,7 +15,7 @@ public class AddJobApplicationHandler(
     MainDataContext context,
     ICvSearchRepository cvSearchRepository,
     IPersonalFileSearchRepository personalFileSearchRepository,
-    IBackgroundJobQueueService jobQueueService)
+    IBackgroundJobService jobService)
     : IRequestHandler<AddJobApplicationRequest, Result<AddJobApplicationResponse>>
 {
     public async Task<Result<AddJobApplicationResponse>> Handle(AddJobApplicationRequest request,
@@ -30,45 +30,31 @@ public class AddJobApplicationHandler(
         if (creationResult.IsFailure)
             return Result<AddJobApplicationResponse>.WithMetadataFrom(creationResult);
         var jobApplication = creationResult.Value;
-        
+
         var requestedPersonalFilesOfUser = await context.PersonalFiles
             .Where(pf => request.PersonalFileIds.Contains(pf.Id) && pf.UserId == currentUserId)
             .ToListAsync(cancellationToken);
-        
+
         if (!request.PersonalFileIds.All(requestedPersonalFilesOfUser.Select(x => x.Id).Contains))
         {
             return Result<AddJobApplicationResponse>.Error();
         }
-        
+
         jobApplication.PersonalFiles = requestedPersonalFilesOfUser;
-        
-        await context.JobApplications.AddAsync(jobApplication, cancellationToken);
-        await context.SaveChangesAsync(cancellationToken);
-        
-        
+
         var userId = jobApplication.UserId;
         var jobId = jobApplication.JobId;
-        
-        try
-        {
-            await cvSearchRepository.AddAppliedToJobIdAsync(userId, jobId);
-        }
-        catch
-        {
-            await jobQueueService.EnqueueForIndefiniteRetriesAsync(
-                () => cvSearchRepository.AddAppliedToJobIdAsync(userId, jobId),
-                nameof(ICvSearchRepository));
-        }
 
-        try
-        {
-            await personalFileSearchRepository.AddAppliedToJobIdAsync(request.PersonalFileIds, jobId);
-        }
-        catch
-        {
-            await jobQueueService.EnqueueForIndefiniteRetriesAsync<IPersonalFileSearchRepository>(
-                x => x.AddAppliedToJobIdAsync(request.PersonalFileIds, jobId));
-        }
+        await context.JobApplications.AddAsync(jobApplication, cancellationToken);
+        await context.SaveChangesAsync(cancellationToken);
+
+        jobService.Enqueue(() => cvSearchRepository.AddAppliedToJobIdAsync(userId, jobId, CancellationToken.None),
+            BackgroundJobQueues.CvSearch);
+
+        jobService.Enqueue(
+            () => personalFileSearchRepository.AddAppliedToJobIdAsync(request.PersonalFileIds, jobId,
+                CancellationToken.None),
+            BackgroundJobQueues.PersonalFileTextExtractionAndSearch);
 
         return Result<AddJobApplicationResponse>.Success(new AddJobApplicationResponse(jobApplication.Id));
     }

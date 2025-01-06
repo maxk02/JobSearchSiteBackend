@@ -9,5 +9,6 @@ public record CvSearchModel(
     IReadOnlyCollection<EducationRecord> EducationRecords,
     IReadOnlyCollection<WorkRecord> WorkRecords,
     IReadOnlyCollection<string> Skills,
-    IReadOnlyCollection<long> AppliedToJobIds
+    IReadOnlyCollection<long> JobIdsApplied,
+    IReadOnlyCollection<long> JobIdsUnapplied
 ) : ISearchModel;
