@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Identity;
 
-namespace Infrastructure.Auth.AccountStorage.AspNetCoreIdentity;
+namespace Core.Persistence.EfCore.AspNetCoreIdentity;
 
 public class MyIdentityUser : IdentityUser<long>;

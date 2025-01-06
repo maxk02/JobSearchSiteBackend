@@ -1,3 +1,8 @@
-﻿namespace Core.Domains.UserProfiles.UseCases.GetBookmarkedCompanies;
+﻿using Core.Domains._Shared.Pagination;
+using Core.Domains.UserProfiles.Dtos;
 
-public record GetBookmarkedCompaniesResponse(long Id, string Name, string? Description, long CountryId);
+namespace Core.Domains.UserProfiles.UseCases.GetBookmarkedCompanies;
+
+public record GetBookmarkedCompaniesResponse(
+    ICollection<CompanyShortDto> CompanyShortDto,
+    PaginationResponse PaginationResponse);

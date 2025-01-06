@@ -1,6 +1,5 @@
 ﻿using Core.Persistence.EfCore;
 using Core.Services.EmailSender;
-using Infrastructure.Auth.AccountStorage.AspNetCoreIdentity;
 using Infrastructure.EmailSender.SendGrid;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -17,23 +16,23 @@ public static class ServiceExtensions
             options.UseSqlServer(configuration.GetConnectionString("DataDbConnection")));
     }
     
-    public static void ConfigureAuthenticationPersistence(this IServiceCollection serviceCollection, IConfiguration configuration)
-    {
-        serviceCollection.AddDbContext<MyIdentityDbContext>(options =>
-            options.UseSqlServer(configuration.GetConnectionString("IdentityDbConnection")));
-
-        serviceCollection.AddIdentity<MyIdentityUser, IdentityRole>(options =>
-            {
-                options.Password.RequireDigit = true;
-                options.Password.RequireNonAlphanumeric = false;
-                options.Password.RequireUppercase = true;
-                options.Password.RequireLowercase = true;
-                options.Password.RequiredLength = 8;
-                options.SignIn.RequireConfirmedEmail = true;
-            })
-            .AddEntityFrameworkStores<MyIdentityDbContext>()
-            .AddDefaultTokenProviders();
-    }
+    // public static void ConfigureAuthenticationPersistence(this IServiceCollection serviceCollection, IConfiguration configuration)
+    // {
+    //     serviceCollection.AddDbContext<MyIdentityDbContext>(options =>
+    //         options.UseSqlServer(configuration.GetConnectionString("IdentityDbConnection")));
+    //
+    //     serviceCollection.AddIdentity<MyIdentityUser, IdentityRole>(options =>
+    //         {
+    //             options.Password.RequireDigit = true;
+    //             options.Password.RequireNonAlphanumeric = false;
+    //             options.Password.RequireUppercase = true;
+    //             options.Password.RequireLowercase = true;
+    //             options.Password.RequiredLength = 8;
+    //             options.SignIn.RequireConfirmedEmail = true;
+    //         })
+    //         .AddEntityFrameworkStores<MyIdentityDbContext>()
+    //         .AddDefaultTokenProviders();
+    // }
 
     public static void ConfigureEmailSenderService(this IServiceCollection serviceCollection, IConfiguration configuration)
     {

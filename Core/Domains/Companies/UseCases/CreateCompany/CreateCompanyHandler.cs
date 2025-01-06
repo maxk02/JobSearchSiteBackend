@@ -7,7 +7,7 @@ using Core.Domains.JobFolderPermissions.UserJobFolderPermissions;
 using Core.Domains.JobFolders;
 using Core.Persistence.EfCore;
 using Core.Services.Auth.Authentication;
-using Core.Services.BackgroundJobService;
+using Core.Services.BackgroundJobs;
 using Shared.Result;
 
 namespace Core.Domains.Companies.UseCases.CreateCompany;

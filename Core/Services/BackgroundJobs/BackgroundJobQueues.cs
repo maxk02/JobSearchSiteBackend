@@ -1,8 +1,9 @@
-﻿namespace Core.Services.BackgroundJobService;
+﻿namespace Core.Services.BackgroundJobs;
 
 public static class BackgroundJobQueues
 {
     public static readonly string Default = nameof(Default);
+    public static readonly string DbUserProfile = nameof(DbUserProfile);
     public static readonly string CompanySearch = nameof(CompanySearch);
     public static readonly string CvSearch = nameof(CvSearch);
     public static readonly string JobSearch = nameof(JobSearch);

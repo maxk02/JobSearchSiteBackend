@@ -4,12 +4,12 @@ using Shared.Result;
 
 namespace Core.Domains.Accounts.UseCases.ResetPassword;
 
-public class ResetPasswordHandler(IAccountStorageService accountStorageService)
+public class ResetPasswordHandler(IIdentityService identityService)
     : IRequestHandler<ResetPasswordRequest, Result>
 {
     public async Task<Result> Handle(ResetPasswordRequest request, CancellationToken cancellationToken = default)
     {
-        var passwordResetResult = await accountStorageService
+        var passwordResetResult = await identityService
             .ResetPasswordAsync(request.Token, request.NewPassword, cancellationToken);
         
         return passwordResetResult;

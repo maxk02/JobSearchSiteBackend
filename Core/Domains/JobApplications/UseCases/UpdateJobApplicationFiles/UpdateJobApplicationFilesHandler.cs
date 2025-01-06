@@ -2,7 +2,7 @@
 using Core.Domains.PersonalFiles.Search;
 using Core.Persistence.EfCore;
 using Core.Services.Auth.Authentication;
-using Core.Services.BackgroundJobService;
+using Core.Services.BackgroundJobs;
 using Microsoft.EntityFrameworkCore;
 using Shared.Result;
 

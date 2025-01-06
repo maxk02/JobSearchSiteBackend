@@ -7,7 +7,7 @@ using Shared.Result;
 namespace Core.Domains.Accounts.UseCases.SendEmailConfirmationLink;
 
 public class SendEmailConfirmationLinkHandler(ICurrentAccountService currentAccountService,
-    IAccountStorageService accountStorageService,
+    IIdentityService identityService,
     IEmailSenderService emailSenderService) : IRequestHandler<SendEmailConfirmationLinkRequest, Result>
 {
     public async Task<Result> Handle(SendEmailConfirmationLinkRequest request, CancellationToken cancellationToken = default)
@@ -15,7 +15,7 @@ public class SendEmailConfirmationLinkHandler(ICurrentAccountService currentAcco
         if (currentAccountService.GetEmailOrThrow() != request.Email)
             return Result.Forbidden();
         
-        var tokenGenerationResult = await accountStorageService
+        var tokenGenerationResult = await identityService
             .GenerateEmailConfirmationTokenByEmailAsync(request.Email, cancellationToken);
 
         if (tokenGenerationResult.Value is null)

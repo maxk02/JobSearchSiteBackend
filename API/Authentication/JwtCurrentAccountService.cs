@@ -2,9 +2,8 @@
 using System.Security.Claims;
 using Core.Services.Auth.Authentication;
 using Core.Services.Auth.Authentication.Exceptions;
-using Microsoft.AspNetCore.Http;
 
-namespace Infrastructure.Auth.Authentication;
+namespace API.Authentication;
 
 public class JwtCurrentAccountService(IHttpContextAccessor httpContextAccessor) : ICurrentAccountService
 {

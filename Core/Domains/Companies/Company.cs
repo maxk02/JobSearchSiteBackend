@@ -10,7 +10,7 @@ using Shared.Result.FluentValidation;
 
 namespace Core.Domains.Companies;
 
-public class Company : EntityBase, IPublicOrPrivateEntity
+public class Company : EntityBase
 {
     public static CompanyValidator Validator { get; } = new();
     
@@ -23,6 +23,7 @@ public class Company : EntityBase, IPublicOrPrivateEntity
         return validationResult.IsValid ? company : Result<Company>.Invalid(validationResult.AsErrors());
     }
     
+    //todo id in constructor
     private Company(string name, string? description, bool isPublic, long countryId, long id = 0)
     {
         Id = id;
@@ -67,16 +68,6 @@ public class Company : EntityBase, IPublicOrPrivateEntity
     }
     
     public bool IsPublic { get; private set; }
-    public Result MakePublic()
-    {
-        IsPublic = true;
-        return Result.Success();
-    }
-    public Result MakePrivate()
-    {
-        IsPublic = false;
-        return Result.Success();
-    }
     
     public virtual Country? Country { get; set; }
 

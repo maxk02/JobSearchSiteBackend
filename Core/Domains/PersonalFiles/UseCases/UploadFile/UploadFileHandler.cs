@@ -1,8 +1,10 @@
 ﻿using Core.Domains._Shared.UseCaseStructure;
+using Core.Domains.PersonalFiles.Search;
 using Core.Persistence.EfCore;
 using Core.Services.Auth.Authentication;
-using Core.Services.BackgroundJobService;
+using Core.Services.BackgroundJobs;
 using Core.Services.FileStorage;
+using Core.Services.TextExtractor;
 using Shared.Result;
 
 namespace Core.Domains.PersonalFiles.UseCases.UploadFile;
@@ -11,6 +13,8 @@ public class UploadFileHandler(
     ICurrentAccountService currentAccountService,
     IFileStorageService fileStorageService,
     IBackgroundJobService backgroundJobService,
+    ITextExtractor textExtractor,
+    IPersonalFileSearchRepository personalFileSearchRepository,
     MainDataContext context) : IRequestHandler<UploadFileRequest, Result>
 {
     public async Task<Result> Handle(UploadFileRequest request, CancellationToken cancellationToken = default)
@@ -27,6 +31,8 @@ public class UploadFileHandler(
         await using var transaction = await context.Database.BeginTransactionAsync(cancellationToken);
         context.PersonalFiles.Add(newFile);
         await context.SaveChangesAsync(cancellationToken);
+
+        var fileId = newFile.Id;
 
         await fileStorageService.UploadFileAsync(request.FileStream, newFile.GuidIdentifier,
             newFile.Extension, cancellationToken);

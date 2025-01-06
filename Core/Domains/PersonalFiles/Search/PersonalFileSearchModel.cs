@@ -5,8 +5,8 @@ using Core.Domains.Cvs.ValueEntities;
 namespace Core.Domains.PersonalFiles.Search;
 
 public record PersonalFileSearchModel(
-    long Id, long UserId,
-    string TextContent,
+    long Id,
+    string? TextContent,
     ICollection<long> JobIdsApplied,
     ICollection<long> JobIdsUnapplied
 ) : ISearchModel;

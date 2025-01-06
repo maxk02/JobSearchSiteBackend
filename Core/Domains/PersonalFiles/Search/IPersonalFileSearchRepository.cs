@@ -3,7 +3,7 @@ using Core.Domains.Cvs.Search;
 
 namespace Core.Domains.PersonalFiles.Search;
 
-public interface IPersonalFileSearchRepository : ISearchRepository<CvSearchModel>
+public interface IPersonalFileSearchRepository : ISearchRepository<PersonalFileSearchModel>
 {
     public Task<ICollection<long>> SearchFromAppliedToJobAsync(string query, long jobId, CancellationToken cancellationToken = default);
     public Task AddAppliedToJobIdAsync(ICollection<long> fileIds, long jobId, CancellationToken cancellationToken = default);

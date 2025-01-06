@@ -7,7 +7,7 @@ namespace API.Controllers;
 
 [ApiController]
 [Route("api/user-profiles")]
-public class UserProfileController(IUserProfileRepository userProfileRepository) : ControllerBase
+public class UserProfileController : ControllerBase
 {
     [HttpGet("{id:long:min(1)}")]
     [Authorize]

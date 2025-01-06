@@ -3,7 +3,7 @@ using Shared.Result;
 
 namespace Core.Services.Auth.AccountStorage;
 
-public interface IAccountStorageService
+public interface IIdentityService
 {
     public Task<Result<AccountData>> SignInWithEmailAsync(string email, string password,
         CancellationToken cancellationToken = default);

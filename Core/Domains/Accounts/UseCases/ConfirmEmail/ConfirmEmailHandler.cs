@@ -4,12 +4,12 @@ using Shared.Result;
 
 namespace Core.Domains.Accounts.UseCases.ConfirmEmail;
 
-public class ConfirmEmailHandler(IAccountStorageService accountStorageService) 
+public class ConfirmEmailHandler(IIdentityService identityService) 
     : IRequestHandler<ConfirmEmailRequest, Result>
 {
     public async Task<Result> Handle(ConfirmEmailRequest request, CancellationToken cancellationToken = default)
     {
-        var confirmEmailResult = await accountStorageService
+        var confirmEmailResult = await identityService
             .ConfirmEmailAsync(request.Token, cancellationToken);
         
         return confirmEmailResult;

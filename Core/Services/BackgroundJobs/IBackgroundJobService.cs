@@ -1,6 +1,6 @@
 ﻿using System.Linq.Expressions;
 
-namespace Core.Services.BackgroundJobService;
+namespace Core.Services.BackgroundJobs;
 
 public interface IBackgroundJobService
 {

@@ -26,7 +26,7 @@ public class UpdateCompanyPermissionIdsForUserHandler(
         if (company is null)
             return Result.NotFound();
         
-        var userExists = await context.Users.AnyAsync(u => u.Id == request.UserId, cancellationToken);
+        var userExists = await context.UserProfiles.AnyAsync(u => u.Id == request.UserId, cancellationToken);
         if (!userExists)
             return Result.NotFound();
         

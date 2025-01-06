@@ -1,14 +1,12 @@
 ﻿using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
-using Core.Services.Auth;
-using Core.Services.Auth.Authentication;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 
-namespace Infrastructure.Auth.Authentication;
+namespace Core.Services.Auth.Authentication;
 
-public class JwtAccountTokenGenerationService(IConfiguration configuration) : IAccountTokenGenerationService
+public class JwtGenerationService(IConfiguration configuration) : IJwtGenerationService
 {
     public string Generate(AccountData accountData)
     {

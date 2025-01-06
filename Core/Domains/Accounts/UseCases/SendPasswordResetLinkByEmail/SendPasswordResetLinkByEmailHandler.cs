@@ -5,12 +5,12 @@ using Shared.Result;
 
 namespace Core.Domains.Accounts.UseCases.SendPasswordResetLinkByEmail;
 
-public class SendPasswordResetLinkByEmailHandler(IAccountStorageService accountStorageService,
+public class SendPasswordResetLinkByEmailHandler(IIdentityService identityService,
     IEmailSenderService emailSenderService) : IRequestHandler<SendPasswordResetLinkByEmailRequest, Result>
 {
     public async Task<Result> Handle(SendPasswordResetLinkByEmailRequest request, CancellationToken cancellationToken = default)
     {
-        var tokenGenerationResult = await accountStorageService
+        var tokenGenerationResult = await identityService
             .GeneratePasswordResetTokenByEmailAsync(request.Email, cancellationToken);
 
         if (tokenGenerationResult.Value is null)

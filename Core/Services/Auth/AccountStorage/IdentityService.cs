@@ -1,13 +1,12 @@
 ﻿using Core.Domains._Shared.Enums;
-using Core.Services.Auth;
-using Core.Services.Auth.AccountStorage;
+using Core.Persistence.EfCore.AspNetCoreIdentity;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Shared.Result;
 
-namespace Infrastructure.Auth.AccountStorage.AspNetCoreIdentity;
+namespace Core.Services.Auth.AccountStorage;
 
-public class IdentityAccountStorageService(UserManager<MyIdentityUser> userManager) : IAccountStorageService
+public class IdentityService(UserManager<MyIdentityUser> userManager) : IIdentityService
 {
     public async Task<Result<AccountData>> SignInWithEmailAsync(string email, string password,
         CancellationToken cancellationToken = default)

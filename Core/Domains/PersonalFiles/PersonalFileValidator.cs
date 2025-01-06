@@ -12,7 +12,8 @@ public class PersonalFileValidator : AbstractValidator<PersonalFile>
             .WhitelistPolicy(new WhitelistPolicy().Letters().Digits().Spaces().Symbols().Punctuation());
         
         RuleFor(x => x.Extension).Length(1, 10)
-            .WhitelistPolicy(new WhitelistPolicy().StandardLatinLetters().CustomChars(['_']));
+            .WhitelistPolicy(new WhitelistPolicy().StandardLatinLetters().CustomChars(['_']))
+            .MustExistIn(["pdf", "docx", "doc", "odt"]);
 
         RuleFor(x => x.Size).InclusiveBetween(1, 50000000);
     }

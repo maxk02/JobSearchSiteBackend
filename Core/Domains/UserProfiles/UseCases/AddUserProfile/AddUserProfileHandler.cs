@@ -1,30 +1,31 @@
 ﻿using Core.Domains._Shared.UseCaseStructure;
+using Core.Persistence.EfCore;
 using Core.Services.Auth.Authentication;
 using Shared.Result;
 
 namespace Core.Domains.UserProfiles.UseCases.AddUserProfile;
 
-public class AddUserProfileHandler(IUserProfileRepository userProfileRepository,
-    ICurrentAccountService currentAccountService) : IRequestHandler<AddUserProfileRequest, Result<AddUserProfileResponse>>
+public class AddUserProfileHandler(ICurrentAccountService currentAccountService,
+    MainDataContext context) : IRequestHandler<AddUserProfileRequest, Result<AddUserProfileResponse>>
 {
     public async Task<Result<AddUserProfileResponse>> Handle(AddUserProfileRequest request,
         CancellationToken cancellationToken = default)
     {
-        var currentAccountId = currentAccountService.GetId();
-
-        if (currentAccountId is null)
-            return Result<AddUserProfileResponse>.Unauthorized();
+        var currentAccountId = currentAccountService.GetIdOrThrow();
         
         if (currentAccountId != request.AccountId)
             return Result<AddUserProfileResponse>.Forbidden();
         
         var createUserResult = UserProfile.Create(request.AccountId, request.FirstName, request.MiddleName,
             request.LastName, request.DateOfBirth, request.Email, request.Phone);
-        if (createUserResult.Value is null)
+        if (createUserResult.IsFailure)
             return Result<AddUserProfileResponse>.WithMetadataFrom(createUserResult);
         
-        var addedToDbUser = await userProfileRepository.AddAsync(createUserResult.Value, cancellationToken);
+        var newUser = createUserResult.Value;
         
-        return new AddUserProfileResponse(addedToDbUser.Id);
+        await context.UserProfiles.AddAsync(newUser, cancellationToken);
+        await context.SaveChangesAsync(cancellationToken);
+        
+        return new AddUserProfileResponse(newUser.Id);
     }
 }

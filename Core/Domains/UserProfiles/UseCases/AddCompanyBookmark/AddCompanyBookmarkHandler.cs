@@ -1,23 +1,38 @@
 ﻿using Core.Domains._Shared.UseCaseStructure;
+using Core.Persistence.EfCore;
 using Core.Services.Auth.Authentication;
+using Microsoft.EntityFrameworkCore;
 using Shared.Result;
 
 namespace Core.Domains.UserProfiles.UseCases.AddCompanyBookmark;
 
-public class AddCompanyBookmarkHandler(IUserProfileRepository userProfileRepository,
-    ICurrentAccountService currentAccountService) : IRequestHandler<AddCompanyBookmarkRequest, Result>
+public class AddCompanyBookmarkHandler(
+    ICurrentAccountService currentAccountService,
+    MainDataContext context) : IRequestHandler<AddCompanyBookmarkRequest, Result>
 {
     public async Task<Result> Handle(AddCompanyBookmarkRequest request, CancellationToken cancellationToken = default)
     {
-        var currentAccountId = currentAccountService.GetId();
+        var currentAccountId = currentAccountService.GetIdOrThrow();
 
-        if (currentAccountId is null)
-            return Result.Unauthorized();
-        
         if (currentAccountId != request.UserId)
             return Result.Forbidden();
+
+        var user = await context.UserProfiles
+            .Include(u => u.BookmarkedCompanies)
+            .FirstOrDefaultAsync(u => u.Id == currentAccountId, cancellationToken);
+
+        if (user is null)
+            return Result.Error();
         
-        await userProfileRepository.AddCompanyBookmarkAsync(request.UserId, request.CompanyId, cancellationToken);
+        var company = await context.Companies
+            .FirstOrDefaultAsync(c => c.Id == request.CompanyId, cancellationToken);
+        
+        if (company is null)
+            return Result.Error();
+        
+        user.BookmarkedCompanies?.Add(company);
+        
+        await context.SaveChangesAsync(cancellationToken);
 
         return Result.Success();
     }
