@@ -5,13 +5,13 @@ using Shared.Result;
 
 namespace Core.Domains.JobApplications.UseCases.UpdateJobApplication;
 
-public class UpdateJobApplicationHandler(IJwtCurrentAccountService jwtCurrentAccountService,
+public class UpdateJobApplicationHandler(ICurrentAccountService currentAccountService,
     MainDataContext context) : IRequestHandler<UpdateJobApplicationRequest, Result>
 {
     public async Task<Result> Handle(UpdateJobApplicationRequest request,
         CancellationToken cancellationToken = default)
     {
-        var currentUserId = jwtCurrentAccountService.GetIdOrThrow();
+        var currentUserId = currentAccountService.GetIdOrThrow();
 
         var jobApplication = await context.JobApplications.FindAsync([request.JobApplicationId], cancellationToken);
 

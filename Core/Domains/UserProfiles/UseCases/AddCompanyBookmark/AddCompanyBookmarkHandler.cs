@@ -7,12 +7,12 @@ using Shared.Result;
 namespace Core.Domains.UserProfiles.UseCases.AddCompanyBookmark;
 
 public class AddCompanyBookmarkHandler(
-    IJwtCurrentAccountService jwtCurrentAccountService,
+    ICurrentAccountService currentAccountService,
     MainDataContext context) : IRequestHandler<AddCompanyBookmarkRequest, Result>
 {
     public async Task<Result> Handle(AddCompanyBookmarkRequest request, CancellationToken cancellationToken = default)
     {
-        var currentAccountId = jwtCurrentAccountService.GetIdOrThrow();
+        var currentAccountId = currentAccountService.GetIdOrThrow();
 
         if (currentAccountId != request.UserId)
             return Result.Forbidden();

@@ -11,7 +11,7 @@ using Shared.Result;
 namespace Core.Domains.JobApplications.UseCases.AddJobApplication;
 
 public class AddJobApplicationHandler(
-    IJwtCurrentAccountService jwtCurrentAccountService,
+    ICurrentAccountService currentAccountService,
     MainDataContext context,
     ICvSearchRepository cvSearchRepository,
     IPersonalFileSearchRepository personalFileSearchRepository,
@@ -21,7 +21,7 @@ public class AddJobApplicationHandler(
     public async Task<Result<AddJobApplicationResponse>> Handle(AddJobApplicationRequest request,
         CancellationToken cancellationToken = default)
     {
-        var currentUserId = jwtCurrentAccountService.GetIdOrThrow();
+        var currentUserId = currentAccountService.GetIdOrThrow();
 
         if (request.UserId != currentUserId)
             return Result<AddJobApplicationResponse>.Forbidden();

@@ -8,13 +8,13 @@ using Shared.Result.FluentValidation;
 
 namespace Core.Domains.JobFolderPermissions.UseCases.UpdateJobFolderPermissionIdsForUser;
 
-public class UpdateJobFolderPermissionsForUserHandler(IJwtCurrentAccountService jwtCurrentAccountService,
+public class UpdateJobFolderPermissionsForUserHandler(ICurrentAccountService currentAccountService,
     MainDataContext context) : IRequestHandler<UpdateJobFolderPermissionIdsForUserRequest, Result>
 {
     public async Task<Result> Handle(UpdateJobFolderPermissionIdsForUserRequest request,
         CancellationToken cancellationToken = default)
     {
-        var currentUserId = jwtCurrentAccountService.GetIdOrThrow();
+        var currentUserId = currentAccountService.GetIdOrThrow();
 
         var permissionsValidator = new JobFolderPermissionIdCollectionValidator();
         var validationResult = permissionsValidator.Validate(request.FolderPermissionIds);

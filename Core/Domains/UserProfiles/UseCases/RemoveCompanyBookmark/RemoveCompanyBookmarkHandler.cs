@@ -6,12 +6,12 @@ using Shared.Result;
 
 namespace Core.Domains.UserProfiles.UseCases.RemoveCompanyBookmark;
 
-public class RemoveCompanyBookmarkHandler(IJwtCurrentAccountService jwtCurrentAccountService,
+public class RemoveCompanyBookmarkHandler(ICurrentAccountService currentAccountService,
     MainDataContext context) : IRequestHandler<RemoveCompanyBookmarkRequest, Result>
 {
     public async Task<Result> Handle(RemoveCompanyBookmarkRequest request, CancellationToken cancellationToken = default)
     {
-        var currentAccountId = jwtCurrentAccountService.GetIdOrThrow();
+        var currentAccountId = currentAccountService.GetIdOrThrow();
 
         if (currentAccountId != request.UserId)
             return Result.Forbidden();

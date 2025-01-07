@@ -8,14 +8,14 @@ using Shared.Result;
 namespace Core.Domains.Cvs.UseCases.DeleteCv;
 
 public class DeleteCvHandler(
-    IJwtCurrentAccountService jwtCurrentAccountService,
+    ICurrentAccountService currentAccountService,
     ICvSearchRepository cvSearchRepository,
     IBackgroundJobService backgroundJobService,
     MainDataContext context) : IRequestHandler<DeleteCvRequest, Result>
 {
     public async Task<Result> Handle(DeleteCvRequest request, CancellationToken cancellationToken = default)
     {
-        var currentUserId = jwtCurrentAccountService.GetIdOrThrow();
+        var currentUserId = currentAccountService.GetIdOrThrow();
 
         var cv = await context.Cvs.FindAsync([request.CvId], cancellationToken);
 

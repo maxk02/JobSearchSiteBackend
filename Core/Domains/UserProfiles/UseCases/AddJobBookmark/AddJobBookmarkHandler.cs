@@ -6,12 +6,12 @@ using Shared.Result;
 
 namespace Core.Domains.UserProfiles.UseCases.AddJobBookmark;
 
-public class AddJobBookmarkHandler(IJwtCurrentAccountService jwtCurrentAccountService,
+public class AddJobBookmarkHandler(ICurrentAccountService currentAccountService,
     MainDataContext context) : IRequestHandler<AddJobBookmarkRequest, Result>
 {
     public async Task<Result> Handle(AddJobBookmarkRequest request, CancellationToken cancellationToken = default)
     {
-        var currentAccountId = jwtCurrentAccountService.GetIdOrThrow();
+        var currentAccountId = currentAccountService.GetIdOrThrow();
 
         if (currentAccountId != request.UserId)
             return Result.Forbidden();

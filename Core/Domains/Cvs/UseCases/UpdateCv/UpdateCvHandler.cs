@@ -11,14 +11,14 @@ using Shared.Result;
 namespace Core.Domains.Cvs.UseCases.UpdateCv;
 
 public class UpdateCvHandler(
-    IJwtCurrentAccountService jwtCurrentAccountService,
+    ICurrentAccountService currentAccountService,
     ICvSearchRepository cvSearchRepository,
     IBackgroundJobService backgroundJobService,
     MainDataContext context) : IRequestHandler<UpdateCvRequest, Result>
 {
     public async Task<Result> Handle(UpdateCvRequest request, CancellationToken cancellationToken = default)
     {
-        var currentUserId = jwtCurrentAccountService.GetIdOrThrow();
+        var currentUserId = currentAccountService.GetIdOrThrow();
 
         var cv = await context.Cvs
             .Include(cv => cv.SalaryRecord)

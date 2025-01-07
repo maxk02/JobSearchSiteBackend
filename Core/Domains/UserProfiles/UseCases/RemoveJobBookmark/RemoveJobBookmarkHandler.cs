@@ -6,12 +6,12 @@ using Shared.Result;
 
 namespace Core.Domains.UserProfiles.UseCases.RemoveJobBookmark;
 
-public class RemoveJobBookmarkHandler(IJwtCurrentAccountService jwtCurrentAccountService,
+public class RemoveJobBookmarkHandler(ICurrentAccountService currentAccountService,
     MainDataContext context) : IRequestHandler<RemoveJobBookmarkRequest, Result>
 {
     public async Task<Result> Handle(RemoveJobBookmarkRequest request, CancellationToken cancellationToken = default)
     {
-        var currentAccountId = jwtCurrentAccountService.GetIdOrThrow();
+        var currentAccountId = currentAccountService.GetIdOrThrow();
 
         if (currentAccountId != request.UserId)
             return Result.Forbidden();

@@ -10,14 +10,14 @@ using Shared.Result;
 namespace Core.Domains.UserProfiles.UseCases.GetBookmarkedJobs;
 
 public class GetBookmarkedJobsHandler(
-    IJwtCurrentAccountService jwtCurrentAccountService,
+    ICurrentAccountService currentAccountService,
     MainDataContext context)
     : IRequestHandler<GetBookmarkedJobsRequest, Result<GetBookmarkedJobsResponse>>
 {
     public async Task<Result<GetBookmarkedJobsResponse>> Handle(GetBookmarkedJobsRequest request,
         CancellationToken cancellationToken)
     {
-        var currentAccountId = jwtCurrentAccountService.GetIdOrThrow();
+        var currentAccountId = currentAccountService.GetIdOrThrow();
 
         if (currentAccountId != request.UserId)
             return Result<GetBookmarkedJobsResponse>.Forbidden();

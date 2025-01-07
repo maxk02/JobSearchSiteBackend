@@ -10,7 +10,7 @@ using Shared.Result;
 namespace Core.Domains.Companies.UseCases.DeleteCompany;
 
 public class DeleteCompanyHandler(
-    IJwtCurrentAccountService jwtCurrentAccountService,
+    ICurrentAccountService currentAccountService,
     MainDataContext context,
     ICompanySearchRepository companySearchRepository,
     IBackgroundJobService backgroundJobService)
@@ -18,7 +18,7 @@ public class DeleteCompanyHandler(
 {
     public async Task<Result> Handle(DeleteCompanyRequest request, CancellationToken cancellationToken = default)
     {
-        var currentUserId = jwtCurrentAccountService.GetIdOrThrow();
+        var currentUserId = currentAccountService.GetIdOrThrow();
 
         var companyWithPermissionIdsQuery =
             from company in context.Companies

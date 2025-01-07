@@ -5,13 +5,13 @@ using Shared.Result;
 
 namespace Core.Domains.UserProfiles.UseCases.AddUserProfile;
 
-public class AddUserProfileHandler(IJwtCurrentAccountService jwtCurrentAccountService,
+public class AddUserProfileHandler(ICurrentAccountService currentAccountService,
     MainDataContext context) : IRequestHandler<AddUserProfileRequest, Result<AddUserProfileResponse>>
 {
     public async Task<Result<AddUserProfileResponse>> Handle(AddUserProfileRequest request,
         CancellationToken cancellationToken = default)
     {
-        var currentAccountId = jwtCurrentAccountService.GetIdOrThrow();
+        var currentAccountId = currentAccountService.GetIdOrThrow();
         
         if (currentAccountId != request.AccountId)
             return Result<AddUserProfileResponse>.Forbidden();

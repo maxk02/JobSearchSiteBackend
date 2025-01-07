@@ -7,14 +7,14 @@ using Shared.Result;
 namespace Core.Domains.CompanyPermissions.UseCases.GetCompanyPermissionIdsForUser;
 
 public class GetCompanyPermissionIdsForUserHandler(
-    IJwtCurrentAccountService jwtCurrentAccountService,
+    ICurrentAccountService currentAccountService,
     MainDataContext context)
     : IRequestHandler<GetCompanyPermissionIdsForUserRequest, Result<ICollection<long>>>
 {
     public async Task<Result<ICollection<long>>> Handle(GetCompanyPermissionIdsForUserRequest request,
         CancellationToken cancellationToken = default)
     {
-        var currentUserId = jwtCurrentAccountService.GetIdOrThrow();
+        var currentUserId = currentAccountService.GetIdOrThrow();
 
         var targetUserPermissions = await context.UserCompanyPermissions
             .Where(ucp => ucp.UserId == currentUserId && ucp.CompanyId == request.CompanyId)

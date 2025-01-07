@@ -9,13 +9,13 @@ using Shared.Result.FluentValidation;
 namespace Core.Domains.CompanyPermissions.UseCases.UpdateCompanyPermissionIdsForUser;
 
 public class UpdateCompanyPermissionIdsForUserHandler(
-    IJwtCurrentAccountService jwtCurrentAccountService,
+    ICurrentAccountService currentAccountService,
     MainDataContext context) 
     : IRequestHandler<UpdateCompanyPermissionIdsForUserRequest, Result>
 {
     public async Task<Result> Handle(UpdateCompanyPermissionIdsForUserRequest request, CancellationToken cancellationToken = default)
     {
-        var currentUserId = jwtCurrentAccountService.GetIdOrThrow();
+        var currentUserId = currentAccountService.GetIdOrThrow();
 
         var permissionsValidator = new CompanyPermissionIdCollectionValidator();
         var validationResult = permissionsValidator.Validate(request.CompanyPermissionIds);

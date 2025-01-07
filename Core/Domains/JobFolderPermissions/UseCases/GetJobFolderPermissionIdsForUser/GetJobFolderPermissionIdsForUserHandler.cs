@@ -7,13 +7,13 @@ using Shared.Result;
 
 namespace Core.Domains.JobFolderPermissions.UseCases.GetJobFolderPermissionIdsForUser;
 
-public class GetJobFolderPermissionIdsForUserHandler(IJwtCurrentAccountService jwtCurrentAccountService,
+public class GetJobFolderPermissionIdsForUserHandler(ICurrentAccountService currentAccountService,
     MainDataContext context) : IRequestHandler<GetJobFolderPermissionIdsForUserRequest, Result<ICollection<long>>>
 {
     public async Task<Result<ICollection<long>>> Handle(GetJobFolderPermissionIdsForUserRequest request,
         CancellationToken cancellationToken = default)
     {
-        var currentUserId = jwtCurrentAccountService.GetIdOrThrow();
+        var currentUserId = currentAccountService.GetIdOrThrow();
 
         if (currentUserId != request.UserId)
         {

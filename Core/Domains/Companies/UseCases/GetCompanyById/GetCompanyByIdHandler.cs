@@ -8,7 +8,7 @@ using Shared.Result;
 namespace Core.Domains.Companies.UseCases.GetCompanyById;
 
 public class GetCompanyByIdHandler(
-    IJwtCurrentAccountService jwtCurrentAccountService,
+    ICurrentAccountService currentAccountService,
     MainDataContext context)
     : IRequestHandler<GetCompanyByIdRequest, Result<GetCompanyByIdResponse>>
 {
@@ -22,7 +22,7 @@ public class GetCompanyByIdHandler(
 
         if (!company.IsPublic)
         {
-            var currentUserId = jwtCurrentAccountService.GetId();
+            var currentUserId = currentAccountService.GetId();
 
             if (currentUserId is null)
                 return Result<GetCompanyByIdResponse>.Forbidden("Requested company profile is private.");

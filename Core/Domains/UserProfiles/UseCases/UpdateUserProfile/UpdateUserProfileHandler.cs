@@ -6,13 +6,13 @@ using Shared.Result;
 
 namespace Core.Domains.UserProfiles.UseCases.UpdateUserProfile;
 
-public class UpdateUserProfileHandler(IJwtCurrentAccountService jwtCurrentAccountService,
+public class UpdateUserProfileHandler(ICurrentAccountService currentAccountService,
     MainDataContext context) : IRequestHandler<UpdateUserProfileRequest, Result>
 {
     public async Task<Result> Handle(UpdateUserProfileRequest request,
         CancellationToken cancellationToken = default)
     {
-        var currentAccountId = jwtCurrentAccountService.GetIdOrThrow();
+        var currentAccountId = currentAccountService.GetIdOrThrow();
         
         if (currentAccountId != request.Id) return Result.Forbidden();
         

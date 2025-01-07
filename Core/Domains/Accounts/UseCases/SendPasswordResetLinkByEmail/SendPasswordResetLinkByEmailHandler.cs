@@ -1,5 +1,5 @@
 ﻿using Core.Domains._Shared.UseCaseStructure;
-using Core.Persistence.EfCore.AspNetCoreIdentity;
+using Core.Persistence.EfCore.EntityConfigs.AspNetCoreIdentity;
 using Core.Services.EmailSender;
 using Microsoft.AspNetCore.Identity;
 using Shared.Result;

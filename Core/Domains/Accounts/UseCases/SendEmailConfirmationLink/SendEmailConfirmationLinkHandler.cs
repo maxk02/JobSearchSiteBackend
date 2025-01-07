@@ -1,5 +1,5 @@
 ﻿using Core.Domains._Shared.UseCaseStructure;
-using Core.Persistence.EfCore.AspNetCoreIdentity;
+using Core.Persistence.EfCore.EntityConfigs.AspNetCoreIdentity;
 using Core.Services.Auth;
 using Core.Services.EmailSender;
 using Microsoft.AspNetCore.Identity;
@@ -7,18 +7,21 @@ using Shared.Result;
 
 namespace Core.Domains.Accounts.UseCases.SendEmailConfirmationLink;
 
-public class SendEmailConfirmationLinkHandler(IJwtCurrentAccountService jwtCurrentAccountService,
+public class SendEmailConfirmationLinkHandler(ICurrentAccountService currentAccountService,
     UserManager<MyIdentityUser> userManager,
     IEmailSenderService emailSenderService) : IRequestHandler<SendEmailConfirmationLinkRequest, Result>
 {
     public async Task<Result> Handle(SendEmailConfirmationLinkRequest request, CancellationToken cancellationToken = default)
     {
-        if (jwtCurrentAccountService.GetEmailOrThrow() != request.Email)
-            return Result.Forbidden();
+        var currentUserId = currentAccountService.GetIdOrThrow();
         
-        var user = await userManager.FindByEmailAsync(request.Email);
+        var user = await userManager.FindByIdAsync(currentUserId.ToString());
+        
         if (user is null)
             return Result.NotFound();
+        
+        if (user.Email is null || user.Email != request.Email)
+            return Result.Forbidden();
 
         var token = await userManager.GenerateEmailConfirmationTokenAsync(user);
         

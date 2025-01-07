@@ -13,7 +13,7 @@ using Shared.Result;
 namespace Core.Domains.Companies.UseCases.CreateCompany;
 
 public class CreateCompanyHandler(
-    IJwtCurrentAccountService jwtCurrentAccountService,
+    ICurrentAccountService currentAccountService,
     ICompanySearchRepository companySearchRepository,
     IBackgroundJobService backgroundJobService,
     MainDataContext context)
@@ -22,7 +22,7 @@ public class CreateCompanyHandler(
     public async Task<Result<CreateCompanyResponse>> Handle(CreateCompanyRequest request,
         CancellationToken cancellationToken = default)
     {
-        var currentUserId = jwtCurrentAccountService.GetIdOrThrow();
+        var currentUserId = currentAccountService.GetIdOrThrow();
 
         //creating company and checking result
         var companyCreationResult =

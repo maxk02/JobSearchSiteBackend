@@ -9,7 +9,7 @@ using Shared.Result;
 namespace Core.Domains.JobApplications.UseCases.UpdateJobApplicationFiles;
 
 public class UpdateJobApplicationFilesHandler(
-    IJwtCurrentAccountService jwtCurrentAccountService,
+    ICurrentAccountService currentAccountService,
     IPersonalFileSearchRepository personalFileSearchRepository,
     IBackgroundJobService backgroundJobService,
     MainDataContext context) : IRequestHandler<UpdateJobApplicationFilesRequest, Result>
@@ -17,7 +17,7 @@ public class UpdateJobApplicationFilesHandler(
     public async Task<Result> Handle(UpdateJobApplicationFilesRequest request,
         CancellationToken cancellationToken = default)
     {
-        var currentUserId = jwtCurrentAccountService.GetIdOrThrow();
+        var currentUserId = currentAccountService.GetIdOrThrow();
 
         var jobApplication = await context.JobApplications
             .Include(ja => ja.PersonalFiles)

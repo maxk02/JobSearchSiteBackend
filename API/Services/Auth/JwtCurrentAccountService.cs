@@ -3,9 +3,9 @@ using System.Security.Claims;
 using Core.Services.Auth;
 using Core.Services.Auth.Exceptions;
 
-namespace API.Authentication;
+namespace API.Services.Auth;
 
-public class JwtCurrentAccountService(IHttpContextAccessor httpContextAccessor) : IJwtCurrentAccountService
+public class JwtCurrentAccountService(IHttpContextAccessor httpContextAccessor) : ICurrentAccountService
 {
     public string GetTokenIdentifierOrThrow()
     {

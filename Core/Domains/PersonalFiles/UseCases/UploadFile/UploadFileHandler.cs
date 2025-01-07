@@ -10,7 +10,7 @@ using Shared.Result;
 namespace Core.Domains.PersonalFiles.UseCases.UploadFile;
 
 public class UploadFileHandler(
-    IJwtCurrentAccountService jwtCurrentAccountService,
+    ICurrentAccountService currentAccountService,
     IFileStorageService fileStorageService,
     IBackgroundJobService backgroundJobService,
     ITextExtractor textExtractor,
@@ -19,7 +19,7 @@ public class UploadFileHandler(
 {
     public async Task<Result> Handle(UploadFileRequest request, CancellationToken cancellationToken = default)
     {
-        var currentUserId = jwtCurrentAccountService.GetIdOrThrow();
+        var currentUserId = currentAccountService.GetIdOrThrow();
 
         var creationResult = PersonalFile.Create(currentUserId, request.FileName,
             request.Extension, request.FileStream.Length);

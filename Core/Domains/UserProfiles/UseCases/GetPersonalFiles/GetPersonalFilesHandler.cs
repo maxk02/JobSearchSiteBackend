@@ -10,14 +10,14 @@ using Shared.Result;
 namespace Core.Domains.UserProfiles.UseCases.GetPersonalFiles;
 
 public class GetPersonalFilesHandler(
-    IJwtCurrentAccountService jwtCurrentAccountService,
+    ICurrentAccountService currentAccountService,
     MainDataContext context) 
     : IRequestHandler<GetPersonalFilesRequest, Result<GetPersonalFilesResponse>>
 {
     public async Task<Result<GetPersonalFilesResponse>> Handle(GetPersonalFilesRequest request,
         CancellationToken cancellationToken)
     {
-        var currentAccountId = jwtCurrentAccountService.GetIdOrThrow();
+        var currentAccountId = currentAccountService.GetIdOrThrow();
         
         if (currentAccountId != request.UserId)
             return Result<GetPersonalFilesResponse>.Forbidden();

@@ -1,6 +1,6 @@
 ﻿using Core.Domains._Shared.UseCaseStructure;
 using Core.Persistence.EfCore;
-using Core.Persistence.EfCore.AspNetCoreIdentity;
+using Core.Persistence.EfCore.EntityConfigs.AspNetCoreIdentity;
 using Core.Services.Auth;
 using Microsoft.AspNetCore.Identity;
 using Shared.Result;
@@ -8,14 +8,13 @@ using Shared.Result;
 namespace Core.Domains.Accounts.UseCases.DeleteAccount;
 
 public class DeleteAccountHandler(
-    IJwtCurrentAccountService jwtCurrentAccountService,
+    ICurrentAccountService currentAccountService,
     UserManager<MyIdentityUser> userManager,
     MainDataContext context) : IRequestHandler<DeleteAccountRequest, Result>
 {
     public async Task<Result> Handle(DeleteAccountRequest request, CancellationToken cancellationToken = default)
     {
-        var currentUserId = jwtCurrentAccountService.GetIdOrThrow();
-        var currentUserJwtId = jwtCurrentAccountService.GetTokenIdentifierOrThrow();
+        var currentUserId = currentAccountService.GetIdOrThrow();
         
         var user = await userManager.FindByIdAsync(currentUserId.ToString());
         if (user is null)
@@ -28,16 +27,6 @@ public class DeleteAccountHandler(
         
         if (!aspNetIdentityResult.Succeeded)
             return Result.Error();
-        
-        var userToRemove = await context.UserProfiles.FindAsync([currentUserId], CancellationToken.None);
-        if (userToRemove is not null)
-            context.UserProfiles.Remove(userToRemove);
-
-        var newBlacklistedJwt = new BlacklistedJwt(currentUserJwtId);
-        
-        context.BlacklistedJwts.Add(newBlacklistedJwt);
-        
-        await context.SaveChangesAsync(cancellationToken);
         
         await transaction.CommitAsync(cancellationToken);
         

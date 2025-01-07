@@ -13,14 +13,14 @@ using Shared.Result;
 namespace Core.Domains.UserProfiles.UseCases.GetFirstCv;
 
 public class GetFirstCvHandler(
-    IJwtCurrentAccountService jwtCurrentAccountService,
+    ICurrentAccountService currentAccountService,
     MainDataContext context) 
     : IRequestHandler<GetFirstCvRequest, Result<GetFirstCvResponse>>
 {
     public async Task<Result<GetFirstCvResponse>> Handle(GetFirstCvRequest request,
         CancellationToken cancellationToken)
     {
-        var currentAccountId = jwtCurrentAccountService.GetIdOrThrow();
+        var currentAccountId = currentAccountService.GetIdOrThrow();
         
         if (currentAccountId != request.UserId)
             return Result<GetFirstCvResponse>.Forbidden();

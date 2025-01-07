@@ -8,7 +8,7 @@ namespace Core.Services.Auth;
 
 public class JwtGenerationService(IConfiguration configuration) : IJwtGenerationService
 {
-    public string Generate(AccountData accountData)
+    public string Generate(AccountData accountData, Guid newTokenId)
     {
         var jwtSettings = configuration.GetSection("JwtSettings");
         
@@ -24,14 +24,9 @@ public class JwtGenerationService(IConfiguration configuration) : IJwtGeneration
         if (audience is null)
             throw new NotImplementedException();
         
-        var expirationMinutesParsed = int.TryParse(jwtSettings["ExpirationMinutes"], out int expirationMinutes);
-        if (!expirationMinutesParsed)
-            throw new NotImplementedException();
-        
         List<Claim> claims = [
             new(JwtRegisteredClaimNames.Sub, accountData.Id.ToString()),
-            new(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-            new(JwtRegisteredClaimNames.Email, accountData.Email)
+            new(JwtRegisteredClaimNames.Jti, newTokenId.ToString()),
         ];
         claims.AddRange(accountData.Roles.Select(role => new Claim(ClaimTypes.Role, role)));
         
@@ -42,7 +37,6 @@ public class JwtGenerationService(IConfiguration configuration) : IJwtGeneration
             issuer: issuer,
             audience : audience,
             claims : claims,
-            expires: DateTime.Now.AddMinutes(expirationMinutes),
             signingCredentials: credentials);
 
         return new JwtSecurityTokenHandler().WriteToken(tokenDescriptor);

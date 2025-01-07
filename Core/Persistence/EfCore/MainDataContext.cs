@@ -15,7 +15,7 @@ using Core.Domains.Jobs;
 using Core.Domains.Locations;
 using Core.Domains.PersonalFiles;
 using Core.Domains.UserProfiles;
-using Core.Persistence.EfCore.AspNetCoreIdentity;
+using Core.Persistence.EfCore.EntityConfigs.AspNetCoreIdentity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
@@ -24,7 +24,7 @@ namespace Core.Persistence.EfCore;
 public class MainDataContext : IdentityDbContext<MyIdentityUser, MyIdentityRole, long>
 {
 #pragma warning disable CS8618
-    public DbSet<BlacklistedJwt> BlacklistedJwts { get; set; }
+    
     public DbSet<Category> Categories { get; set; }
     public DbSet<Company> Companies { get; set; }
     public DbSet<JobContractType> ContractTypes { get; set; }
@@ -41,6 +41,7 @@ public class MainDataContext : IdentityDbContext<MyIdentityUser, MyIdentityRole,
     public DbSet<JobFolderPermission> JobFolderPermissions { get; set; }
     public DbSet<UserJobFolderPermission> UserJobFolderPermissions { get; set; }
     public DbSet<UserProfile> UserProfiles { get; set; }
+    public DbSet<UserSession> UserSessions { get; set; }
 
 
     public MainDataContext(DbContextOptions<MainDataContext> options) : base(options)

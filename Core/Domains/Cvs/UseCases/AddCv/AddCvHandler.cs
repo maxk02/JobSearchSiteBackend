@@ -10,14 +10,14 @@ using Shared.Result;
 namespace Core.Domains.Cvs.UseCases.AddCv;
 
 public class AddCvHandler(
-    IJwtCurrentAccountService jwtCurrentAccountService,
+    ICurrentAccountService currentAccountService,
     ICvSearchRepository cvSearchRepository,
     IBackgroundJobService backgroundJobService,
     MainDataContext context) : IRequestHandler<AddCvRequest, Result>
 {
     public async Task<Result> Handle(AddCvRequest request, CancellationToken cancellationToken = default)
     {
-        var currentUserId = jwtCurrentAccountService.GetIdOrThrow();
+        var currentUserId = currentAccountService.GetIdOrThrow();
 
         if (currentUserId != request.UserId)
             return Result.Forbidden();

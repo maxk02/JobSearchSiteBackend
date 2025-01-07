@@ -8,14 +8,14 @@ using Shared.Result;
 namespace Core.Domains.PersonalFiles.UseCases.DeleteFile;
 
 public class DeleteFileHandler(
-    IJwtCurrentAccountService jwtCurrentAccountService,
+    ICurrentAccountService currentAccountService,
     IFileStorageService fileStorageService,
     IBackgroundJobService backgroundJobService,
     MainDataContext context) : IRequestHandler<DeleteFileRequest, Result>
 {
     public async Task<Result> Handle(DeleteFileRequest request, CancellationToken cancellationToken = default)
     {
-        var currentUserId = jwtCurrentAccountService.GetIdOrThrow();
+        var currentUserId = currentAccountService.GetIdOrThrow();
         
         var personalFile = await context.PersonalFiles.FindAsync([request.FileId], cancellationToken);
 

@@ -6,13 +6,13 @@ using Shared.Result;
 
 namespace Core.Domains.Cvs.UseCases.GetCvById;
 
-public class GetCvByIdHandler(IJwtCurrentAccountService jwtCurrentAccountService,
+public class GetCvByIdHandler(ICurrentAccountService currentAccountService,
     MainDataContext context) : IRequestHandler<GetCvByIdRequest, Result<GetCvByIdResponse>>
 {
     public async Task<Result<GetCvByIdResponse>> Handle(GetCvByIdRequest request,
         CancellationToken cancellationToken = default)
     {
-        var currentUserId = jwtCurrentAccountService.GetIdOrThrow();
+        var currentUserId = currentAccountService.GetIdOrThrow();
         
         var query = context.Cvs
             .Include(cv => cv.SalaryRecord)

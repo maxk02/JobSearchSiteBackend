@@ -1,6 +1,7 @@
 ﻿using Core.Domains._Shared.Entities;
 using Core.Domains._Shared.Entities.Interfaces;
 using Core.Domains._Shared.ValueEntities;
+using Core.Domains.Accounts;
 using Core.Domains.Companies;
 using Core.Domains.CompanyPermissions.UserCompanyPermissions;
 using Core.Domains.Cvs;
@@ -15,14 +16,14 @@ namespace Core.Domains.UserProfiles;
 
 public class UserProfile : EntityBase
 {
-    public static UserProfileValidator ProfileValidator { get; } = new();
+    public static UserProfileValidator Validator { get; } = new();
 
     public static Result<UserProfile> Create(long accountId, string firstName, string? middleName, string lastName,
         DateOnly? dateOfBirth, string email, Phone? phone)
     {
         var user = new UserProfile(accountId, firstName, middleName, lastName, dateOfBirth, email, phone);
 
-        var validationResult = ProfileValidator.Validate(user);
+        var validationResult = Validator.Validate(user);
 
         return validationResult.IsValid ? user : Result<UserProfile>.Invalid(validationResult.AsErrors());
     }
@@ -61,4 +62,6 @@ public class UserProfile : EntityBase
 
     public virtual ICollection<UserCompanyPermission>? UserCompanyPermissions { get; set; }
     public virtual ICollection<UserJobFolderPermission>? UserFolderPermissions { get; set; }
+    
+    public virtual ICollection<UserSession>? UserSessions { get; set; }
 }

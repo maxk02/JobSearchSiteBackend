@@ -10,7 +10,7 @@ using Shared.Result;
 namespace Core.Domains.JobApplications.UseCases.DeleteJobApplication;
 
 public class DeleteJobApplicationHandler(
-    IJwtCurrentAccountService jwtCurrentAccountService,
+    ICurrentAccountService currentAccountService,
     ICvSearchRepository cvSearchRepository,
     IPersonalFileSearchRepository personalFileSearchRepository,
     MainDataContext context,
@@ -18,7 +18,7 @@ public class DeleteJobApplicationHandler(
 {
     public async Task<Result> Handle(DeleteJobApplicationRequest request, CancellationToken cancellationToken = default)
     {
-        var currentUserId = jwtCurrentAccountService.GetIdOrThrow();
+        var currentUserId = currentAccountService.GetIdOrThrow();
 
         var jobApplication = await context.JobApplications
             .Include(ja => ja.PersonalFiles)

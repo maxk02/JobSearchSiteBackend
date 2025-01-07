@@ -10,14 +10,14 @@ using Shared.Result;
 namespace Core.Domains.Companies.UseCases.UpdateCompany;
 
 public class UpdateCompanyHandler(
-    IJwtCurrentAccountService jwtCurrentAccountService,
+    ICurrentAccountService currentAccountService,
     ICompanySearchRepository companySearchRepository,
     IBackgroundJobService backgroundJobService,
     MainDataContext context) : IRequestHandler<UpdateCompanyRequest, Result>
 {
     public async Task<Result> Handle(UpdateCompanyRequest request, CancellationToken cancellationToken = default)
     {
-        var currentUserId = jwtCurrentAccountService.GetIdOrThrow();
+        var currentUserId = currentAccountService.GetIdOrThrow();
         
         var companyWithPermissionIdsQuery =
             from company in context.Companies

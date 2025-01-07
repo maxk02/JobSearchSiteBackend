@@ -5,12 +5,12 @@ using Shared.Result;
 
 namespace Core.Domains.PersonalFiles.UseCases.RenameFile;
 
-public class RenameFileHandler(IJwtCurrentAccountService jwtCurrentAccountService,
+public class RenameFileHandler(ICurrentAccountService currentAccountService,
     MainDataContext context) : IRequestHandler<RenameFileRequest, Result>
 {
     public async Task<Result> Handle(RenameFileRequest request, CancellationToken cancellationToken = default)
     {
-        var currentUserId = jwtCurrentAccountService.GetIdOrThrow();
+        var currentUserId = currentAccountService.GetIdOrThrow();
         
         var personalFile = await context.PersonalFiles.FindAsync([request.FileId], cancellationToken);
 
