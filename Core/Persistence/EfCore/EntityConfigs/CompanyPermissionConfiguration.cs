@@ -1,15 +1,14 @@
-﻿using Core.Domains.CompanyPermissions;
-using Core.Persistence.EfCore.EntityConfigs.Shared;
+﻿using Core.Domains.CompanyClaims;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Core.Persistence.EfCore.EntityConfigs;
 
-public class CompanyPermissionConfiguration : EntityConfigurationBase<CompanyPermission>
+public class CompanyPermissionConfiguration : IEntityTypeConfiguration<CompanyClaim>
 {
-    public override void Configure(EntityTypeBuilder<CompanyPermission> builder)
+    public void Configure(EntityTypeBuilder<CompanyClaim> builder)
     {
-        base.Configure(builder);
+        builder.HasKey(cp => cp.Id);
         
         builder
             .HasMany(companyPermission => companyPermission.UserCompanyPermissions)

@@ -1,11 +1,11 @@
-﻿using Core.Domains._Shared.Entities;
+﻿using Core.Domains._Shared.EntityInterfaces;
 using Core.Domains.Companies;
 using Core.Domains.JobContractTypes;
 using Core.Domains.Locations;
 
 namespace Core.Domains.Countries;
 
-public class Country : EntityBase
+public class Country : IEntityWithId
 {
     public static class SeededValues
     {
@@ -14,11 +14,13 @@ public class Country : EntityBase
         public static readonly Country France = new Country(3, "FRA");
     }
     
-    private Country(long id, string code) : base(id)
+    private Country(long id, string code)
     {
+        Id = id;
         Code = code;
     }
     
+    public long Id { get; set; }
     public string Code { get; private set; }
     
     public virtual ICollection<JobContractType>? JobContractTypes { get; set; }

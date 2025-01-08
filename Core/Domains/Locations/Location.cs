@@ -1,5 +1,4 @@
-﻿using Core.Domains._Shared.Entities;
-using Core.Domains._Shared.Entities.Interfaces;
+﻿using Core.Domains._Shared.EntityInterfaces;
 using Core.Domains.Countries;
 using Core.Domains.Jobs;
 using Core.Domains.UserProfiles;
@@ -8,9 +7,9 @@ using Shared.Result.FluentValidation;
 
 namespace Core.Domains.Locations;
 
-public class Location : EntityBase
+public class Location : IEntityWithId
 {
-    public Location(long countryId, string name, ICollection<string> subdivisions, string? description, string? code)
+    private Location(long countryId, string name, ICollection<string> subdivisions, string? description, string? code)
     {
         CountryId = countryId;
         Name = name;
@@ -19,6 +18,7 @@ public class Location : EntityBase
         Code = code;
     }
     
+    public long Id { get; private set; }
     public long CountryId { get; private set; }
     public string Name { get; private set; }
     public ICollection<string> Subdivisions { get; private set; }

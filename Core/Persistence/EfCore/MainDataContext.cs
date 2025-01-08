@@ -1,15 +1,12 @@
-﻿using Core.Domains._Shared.Entities;
-using Core.Domains.Accounts;
+﻿using Core.Domains.Accounts;
 using Core.Domains.Categories;
 using Core.Domains.Companies;
-using Core.Domains.CompanyPermissions;
-using Core.Domains.CompanyPermissions.UserCompanyPermissions;
+using Core.Domains.CompanyClaims;
 using Core.Domains.Countries;
 using Core.Domains.Cvs;
 using Core.Domains.JobApplications;
 using Core.Domains.JobContractTypes;
-using Core.Domains.JobFolderPermissions;
-using Core.Domains.JobFolderPermissions.UserJobFolderPermissions;
+using Core.Domains.JobFolderClaims;
 using Core.Domains.JobFolders;
 using Core.Domains.Jobs;
 using Core.Domains.Locations;
@@ -35,11 +32,11 @@ public class MainDataContext : IdentityDbContext<MyIdentityUser, MyIdentityRole,
     public DbSet<Job> Jobs { get; set; }
     public DbSet<Location> Locations { get; set; }
     public DbSet<JobFolder> JobFolders { get; set; }
-    public DbSet<Closure<JobFolder>> JobFolderClosures { get; set; }
-    public DbSet<CompanyPermission> CompanyPermissions { get; set; }
-    public DbSet<UserCompanyPermission> UserCompanyPermissions { get; set; }
-    public DbSet<JobFolderPermission> JobFolderPermissions { get; set; }
-    public DbSet<UserJobFolderPermission> UserJobFolderPermissions { get; set; }
+    public DbSet<JobFolderClosure> JobFolderClosures { get; set; }
+    public DbSet<CompanyClaim> CompanyClaims { get; set; }
+    public DbSet<UserCompanyClaim> UserCompanyClaims { get; set; }
+    public DbSet<JobFolderClaim> JobFolderClaims { get; set; }
+    public DbSet<UserJobFolderClaim> UserJobFolderClaims { get; set; }
     public DbSet<UserProfile> UserProfiles { get; set; }
     public DbSet<UserSession> UserSessions { get; set; }
 

@@ -33,12 +33,12 @@ public class UserProfileConfiguration : IEntityTypeConfiguration<UserProfile>
             .OnDelete(DeleteBehavior.Restrict);
 
         builder
-            .HasMany(userProfile => userProfile.UserFolderPermissions)
+            .HasMany(userProfile => userProfile.UserJobFolderClaims)
             .WithOne(userProfileFolderPermission => userProfileFolderPermission.User)
             .OnDelete(DeleteBehavior.Restrict);
 
         builder
-            .HasMany(userProfile => userProfile.UserCompanyPermissions)
+            .HasMany(userProfile => userProfile.UserCompanyClaims)
             .WithOne(userProfileCompanyPermission => userProfileCompanyPermission.User)
             .OnDelete(DeleteBehavior.Restrict);
         

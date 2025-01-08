@@ -1,15 +1,14 @@
-﻿using Core.Domains.JobFolderPermissions;
-using Core.Persistence.EfCore.EntityConfigs.Shared;
+﻿using Core.Domains.JobFolderClaims;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Core.Persistence.EfCore.EntityConfigs;
 
-public class JobFolderPermissionConfiguration : EntityConfigurationBase<JobFolderPermission>
+public class JobFolderPermissionConfiguration : IEntityTypeConfiguration<JobFolderClaim>
 {
-    public override void Configure(EntityTypeBuilder<JobFolderPermission> builder)
+    public void Configure(EntityTypeBuilder<JobFolderClaim> builder)
     {
-        base.Configure(builder);
+        builder.HasKey(jobFolderPermission => jobFolderPermission.Id);
 
         builder
             .HasMany(jobFolderPermission => jobFolderPermission.UserJobFolderPermissions)

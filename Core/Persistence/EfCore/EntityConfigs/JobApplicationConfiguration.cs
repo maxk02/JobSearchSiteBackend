@@ -1,15 +1,14 @@
 ﻿using Core.Domains.JobApplications;
-using Core.Persistence.EfCore.EntityConfigs.Shared;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Core.Persistence.EfCore.EntityConfigs;
 
-public class JobApplicationConfiguration : EntityConfigurationBase<JobApplication>
+public class JobApplicationConfiguration : IEntityTypeConfiguration<JobApplication>
 {
-    public override void Configure(EntityTypeBuilder<JobApplication> builder)
+    public void Configure(EntityTypeBuilder<JobApplication> builder)
     {
-        base.Configure(builder);
+        builder.HasKey(jobApplication => jobApplication.Id);
 
         builder
             .HasOne(jobApplication => jobApplication.User)

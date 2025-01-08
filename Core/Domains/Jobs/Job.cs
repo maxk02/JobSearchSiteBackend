@@ -1,5 +1,4 @@
-﻿using Core.Domains._Shared.Entities;
-using Core.Domains._Shared.Entities.Interfaces;
+﻿using Core.Domains._Shared.EntityInterfaces;
 using Core.Domains._Shared.ValueEntities;
 using Core.Domains.Categories;
 using Core.Domains.Companies;
@@ -13,24 +12,9 @@ using Shared.Result.FluentValidation;
 
 namespace Core.Domains.Jobs;
 
-public class Job : EntityBase
+public class Job : IEntityWithId
 {
-    public static JobValidator Validator { get; } = new();
-
-    public static Result<Job> Create(long companyId, long categoryId, string title, string description, bool isPublic,
-        DateTime dateTimePublishedUtc, DateTime dateTimeExpiringUtc, ICollection<string> responsibilities,
-        ICollection<string> requirements, ICollection<string> advantages, SalaryRecord salaryRecord,
-        EmploymentTypeRecord employmentTypeRecord)
-    {
-        var job = new Job(companyId, categoryId, title, description, isPublic, dateTimePublishedUtc, dateTimeExpiringUtc,
-            responsibilities, requirements, advantages, salaryRecord, employmentTypeRecord);
-
-        var validationResult = Validator.Validate(job);
-
-        return validationResult.IsValid ? job : Result<Job>.Invalid(validationResult.AsErrors());
-    }
-
-    private Job(long companyId, long categoryId, string title, string description, bool isPublic, DateTime dateTimePublishedUtc,
+    public Job(long companyId, long categoryId, string title, string description, bool isPublic, DateTime dateTimePublishedUtc,
         DateTime dateTimeExpiringUtc, ICollection<string> responsibilities, ICollection<string> requirements,
         ICollection<string> advantages, SalaryRecord salaryRecord, EmploymentTypeRecord employmentTypeRecord)
     {
@@ -47,26 +31,13 @@ public class Job : EntityBase
         SalaryRecord = salaryRecord;
         EmploymentTypeRecord = employmentTypeRecord;
     }
+    
+    public long Id { get; set; }
 
     public long CompanyId { get; private set; }
 
     public long CategoryId { get; private set; }
-
-    public Result SetCategoryId(long newValue)
-    {
-        long oldValue = CategoryId;
-        CategoryId = newValue;
-
-        var validationResult = Validator.Validate(this);
-        if (!validationResult.IsValid)
-        {
-            CategoryId = oldValue;
-            return Result.Invalid(validationResult.AsErrors());
-        }
-
-        return Result.Success();
-    }
-
+    
     public string Title { get; private set; }
 
     public string Description { get; private set; }

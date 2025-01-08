@@ -1,5 +1,5 @@
 ﻿using Core.Domains._Shared.UseCaseStructure;
-using Core.Domains.CompanyPermissions;
+using Core.Domains.CompanyClaims;
 using Core.Persistence.EfCore;
 using Core.Services.Auth;
 using Microsoft.EntityFrameworkCore;
@@ -27,11 +27,11 @@ public class GetCompanyByIdHandler(
             if (currentUserId is null)
                 return Result<GetCompanyByIdResponse>.Forbidden("Requested company profile is private.");
             
-            var canEditProfile = await context.UserCompanyPermissions
+            var canEditProfile = await context.UserCompanyClaims
                 .AnyAsync(
                     ucp => ucp.UserId == currentUserId 
                     && ucp.CompanyId == company.Id 
-                    && ucp.PermissionId == CompanyPermission.CanEditProfile.Id,
+                    && ucp.PermissionId == CompanyClaim.CanEditProfile.Id,
                     cancellationToken);
 
             if (!canEditProfile)

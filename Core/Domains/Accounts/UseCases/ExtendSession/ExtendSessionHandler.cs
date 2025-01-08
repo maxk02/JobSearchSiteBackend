@@ -22,13 +22,8 @@ public class ExtendSessionHandler(ICurrentAccountService currentAccountService,
         
         var newExpirationTimeUtc = session.ExpiresUtc.AddDays(30);
         
-        var newSessionCreationResult = UserSession.Create(session.TokenId, session.UserId, session.FirstTimeIssuedUtc,
+        var newUserSession = new UserSession(session.TokenId, session.UserId, session.FirstTimeIssuedUtc,
             newExpirationTimeUtc, session.LastDevice, session.LastOs, session.LastClient);
-        
-        if (newSessionCreationResult.IsFailure)
-            return Result<ExtendSessionResponse>.Error();
-
-        var newUserSession = newSessionCreationResult.Value;
         
         context.UserSessions.Add(newUserSession);
         await context.SaveChangesAsync(cancellationToken);

@@ -33,7 +33,7 @@ public class UpdateCvHandler(
         if (cv.UserId != currentUserId)
             return Result.Forbidden();
 
-        var newCvCreationResult = Cv.Create(
+        var newCv = new Cv(
             cv.UserId,
             request.SalaryRecord ?? cv.SalaryRecord,
             request.EmploymentTypeRecord ?? cv.EmploymentTypeRecord,
@@ -41,11 +41,6 @@ public class UpdateCvHandler(
             request.WorkRecords ?? [..cv.WorkRecords ?? []],
             request.Skills ?? [..cv.Skills ?? []]
         );
-
-        if (newCvCreationResult.IsFailure)
-            return newCvCreationResult;
-
-        var newCv = newCvCreationResult.Value;
 
         if (request.CategoryIds is not null && request.CategoryIds.Count != 0)
         {

@@ -1,20 +1,14 @@
 ﻿using Core.Domains.Categories;
-using Core.Persistence.EfCore.EntityConfigs.Shared;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Core.Persistence.EfCore.EntityConfigs;
 
-public class CategoryConfiguration : EntityConfigurationBase<Category>
+public class CategoryConfiguration : IEntityTypeConfiguration<Category>
 {
-    public override void Configure(EntityTypeBuilder<Category> builder)
+    public void Configure(EntityTypeBuilder<Category> builder)
     {
-        base.Configure(builder);
-        
-        // builder
-        //     .HasMany(category => category.Children)
-        //     .WithOne(childCategory => childCategory.Parent)
-        //     .OnDelete(DeleteBehavior.Restrict);
+        builder.HasKey(category => category.Id);
         
         builder
             .HasMany(category => category.Cvs)

@@ -26,10 +26,7 @@ public class AddJobApplicationHandler(
         if (request.UserId != currentUserId)
             return Result<AddJobApplicationResponse>.Forbidden();
 
-        var creationResult = JobApplication.Create(request.UserId, request.JobId, JobApplicationStatuses.Submitted);
-        if (creationResult.IsFailure)
-            return Result<AddJobApplicationResponse>.WithMetadataFrom(creationResult);
-        var jobApplication = creationResult.Value;
+        var jobApplication = new JobApplication(request.UserId, request.JobId, JobApplicationStatuses.Submitted);
 
         var requestedPersonalFilesOfUser = await context.PersonalFiles
             .Where(pf => request.PersonalFileIds.Contains(pf.Id) && pf.UserId == currentUserId)

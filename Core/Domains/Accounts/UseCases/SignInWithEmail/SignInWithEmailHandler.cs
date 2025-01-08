@@ -32,13 +32,8 @@ public class SignInWithEmailHandler(UserManager<MyIdentityUser> userManager,
         
         var token = jwtGenerationService.Generate(accountData, newTokenId);
         
-        var userSessionCreationResult = UserSession.Create(newTokenId.ToString(), user.Id, DateTime.UtcNow,
+        var newUserSession = new UserSession(newTokenId.ToString(), user.Id, DateTime.UtcNow,
             DateTime.UtcNow.Add(TimeSpan.FromDays(30)), request.Device, request.Os, request.Client);
-        
-        if (userSessionCreationResult.IsFailure)
-            return Result<SignInWithEmailResponse>.Error();
-
-        var newUserSession = userSessionCreationResult.Value;
         
         context.UserSessions.Add(newUserSession);
         await context.SaveChangesAsync(cancellationToken);

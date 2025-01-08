@@ -1,12 +1,11 @@
-﻿using Core.Domains._Shared.Entities;
-using Core.Domains._Shared.Entities.Interfaces;
+﻿using Core.Domains._Shared.EntityInterfaces;
 using Core.Domains._Shared.ValueEntities;
 using Core.Domains.Accounts;
 using Core.Domains.Companies;
-using Core.Domains.CompanyPermissions.UserCompanyPermissions;
+using Core.Domains.CompanyClaims;
 using Core.Domains.Cvs;
 using Core.Domains.JobApplications;
-using Core.Domains.JobFolderPermissions.UserJobFolderPermissions;
+using Core.Domains.JobFolderClaims;
 using Core.Domains.Jobs;
 using Core.Domains.PersonalFiles;
 using Shared.Result;
@@ -14,21 +13,9 @@ using Shared.Result.FluentValidation;
 
 namespace Core.Domains.UserProfiles;
 
-public class UserProfile : EntityBase
+public class UserProfile : IEntityWithId
 {
-    public static UserProfileValidator Validator { get; } = new();
-
-    public static Result<UserProfile> Create(long accountId, string firstName, string? middleName, string lastName,
-        DateOnly? dateOfBirth, string email, Phone? phone)
-    {
-        var user = new UserProfile(accountId, firstName, middleName, lastName, dateOfBirth, email, phone);
-
-        var validationResult = Validator.Validate(user);
-
-        return validationResult.IsValid ? user : Result<UserProfile>.Invalid(validationResult.AsErrors());
-    }
-
-    private UserProfile(long accountId, string firstName, string? middleName, string lastName,
+    public UserProfile(long accountId, string firstName, string? middleName, string lastName,
         DateOnly? dateOfBirth, string email, Phone? phone)
     {
         Id = accountId;
@@ -39,6 +26,8 @@ public class UserProfile : EntityBase
         Email = email;
         Phone = phone;
     }
+    
+    public long Id { get; set; }
 
     public string FirstName { get; private set; }
 
@@ -60,8 +49,8 @@ public class UserProfile : EntityBase
     public virtual ICollection<Job>? BookmarkedJobs { get; set; }
     public virtual ICollection<Company>? BookmarkedCompanies { get; set; }
 
-    public virtual ICollection<UserCompanyPermission>? UserCompanyPermissions { get; set; }
-    public virtual ICollection<UserJobFolderPermission>? UserFolderPermissions { get; set; }
+    public virtual ICollection<UserCompanyClaim>? UserCompanyClaims { get; set; }
+    public virtual ICollection<UserJobFolderClaim>? UserJobFolderClaims { get; set; }
     
     public virtual ICollection<UserSession>? UserSessions { get; set; }
 }

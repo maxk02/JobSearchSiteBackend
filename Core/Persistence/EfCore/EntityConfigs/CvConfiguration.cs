@@ -1,15 +1,14 @@
 ﻿using Core.Domains.Cvs;
-using Core.Persistence.EfCore.EntityConfigs.Shared;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Core.Persistence.EfCore.EntityConfigs;
 
-public class CvConfiguration : EntityConfigurationBase<Cv>
+public class CvConfiguration : IEntityTypeConfiguration<Cv>
 {
-    public override void Configure(EntityTypeBuilder<Cv> builder)
+    public void Configure(EntityTypeBuilder<Cv> builder)
     {
-        base.Configure(builder);
+        builder.HasKey(cv => cv.Id);
         
         builder
             .HasOne(cv => cv.User)

@@ -1,6 +1,5 @@
-﻿using Core.Domains._Shared.Entities;
-using Core.Domains._Shared.Entities.Interfaces;
-using Core.Domains.CompanyPermissions.UserCompanyPermissions;
+﻿using Core.Domains._Shared.EntityInterfaces;
+using Core.Domains.CompanyClaims;
 using Core.Domains.Countries;
 using Core.Domains.JobFolders;
 using Core.Domains.Jobs;
@@ -10,28 +9,17 @@ using Shared.Result.FluentValidation;
 
 namespace Core.Domains.Companies;
 
-public class Company : EntityBase
+public class Company : IEntityWithId
 {
-    public static CompanyValidator Validator { get; } = new();
-    
-    public static Result<Company> Create(string name, string? description, bool isPublic, long countryId, long id = 0)
+    public Company(string name, string? description, bool isPublic, long countryId)
     {
-        var company = new Company(name, description, isPublic, countryId, id);
-
-        var validationResult = Validator.Validate(company);
-
-        return validationResult.IsValid ? company : Result<Company>.Invalid(validationResult.AsErrors());
-    }
-    
-    //todo id in constructor
-    private Company(string name, string? description, bool isPublic, long countryId, long id = 0)
-    {
-        Id = id;
         CountryId = countryId;
         Name = name;
         Description = description;
         IsPublic = isPublic;
     }
+    
+    public long Id { get; set; }
     
     public long CountryId { get; private set; }
     
@@ -47,5 +35,5 @@ public class Company : EntityBase
     public virtual ICollection<Job>? Jobs { get; set; }
     
     public virtual ICollection<UserProfile>? UsersWhoBookmarked { get; set; }
-    public virtual ICollection<UserCompanyPermission>? UserCompanyPermissions { get; set; }
+    public virtual ICollection<UserCompanyClaim>? UserCompanyPermissions { get; set; }
 }

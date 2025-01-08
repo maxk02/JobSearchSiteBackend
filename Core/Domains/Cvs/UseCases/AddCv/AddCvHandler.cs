@@ -22,7 +22,7 @@ public class AddCvHandler(
         if (currentUserId != request.UserId)
             return Result.Forbidden();
 
-        var newCvCreationResult = Cv.Create(
+        var newCv = new Cv(
             request.UserId,
             request.SalaryRecord,
             request.EmploymentTypeRecord,
@@ -30,11 +30,6 @@ public class AddCvHandler(
             request.WorkRecords,
             request.Skills
         );
-
-        if (newCvCreationResult.IsFailure)
-            return newCvCreationResult;
-
-        var newCv = newCvCreationResult.Value;
 
         if (request.CategoryIds is not null)
         {

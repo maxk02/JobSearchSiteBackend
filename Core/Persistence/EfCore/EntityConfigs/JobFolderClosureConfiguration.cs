@@ -1,13 +1,12 @@
-﻿using Core.Domains._Shared.Entities;
-using Core.Domains.JobFolders;
+﻿using Core.Domains.JobFolders;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Core.Persistence.EfCore.EntityConfigs;
 
-public class JobFolderClosureConfiguration : IEntityTypeConfiguration<Closure<JobFolder>>
+public class JobFolderClosureConfiguration : IEntityTypeConfiguration<JobFolderClosure>
 {
-    public void Configure(EntityTypeBuilder<Closure<JobFolder>> builder)
+    public void Configure(EntityTypeBuilder<JobFolderClosure> builder)
     {
         builder.HasKey(closure => new { closure.AncestorId, closure.DescendantId });
 

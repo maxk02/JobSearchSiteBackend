@@ -1,6 +1,6 @@
 ﻿using Core.Domains._Shared.UseCaseStructure;
 using Core.Domains.Companies.Search;
-using Core.Domains.CompanyPermissions;
+using Core.Domains.CompanyClaims;
 using Core.Persistence.EfCore;
 using Core.Services.Auth;
 using Core.Services.BackgroundJobs;
@@ -21,7 +21,7 @@ public class UpdateCompanyHandler(
         
         var companyWithPermissionIdsQuery =
             from company in context.Companies
-            join ucp in context.UserCompanyPermissions on company.Id equals ucp.CompanyId into ucpGroup
+            join ucp in context.UserCompanyClaims on company.Id equals ucp.CompanyId into ucpGroup
             from ucp in ucpGroup.DefaultIfEmpty()
             where company.Id == request.CompanyId && ucp.UserId == currentUserId
             group ucp.PermissionId by new { Company = company, UserId = ucp.UserId } into grouped
@@ -32,23 +32,17 @@ public class UpdateCompanyHandler(
         if (companyWithPermissionIds is null)
             return Result.NotFound();
         
-        if (!companyWithPermissionIds.PermissionIds.Contains(CompanyPermission.CanEditProfile.Id))
+        if (!companyWithPermissionIds.PermissionIds.Contains(CompanyClaim.CanEditProfile.Id))
         {
             return Result.Forbidden();
         }
 
-        var updatedCompanyResult = Company.Create(
+        var updatedCompany = new Company(
             request.Name ?? companyWithPermissionIds.Company.Name,
             request.Description ?? companyWithPermissionIds.Company.Description,
             request.IsPublic ?? companyWithPermissionIds.Company.IsPublic,
-            companyWithPermissionIds.Company.CountryId,
-            companyWithPermissionIds.Company.Id
+            companyWithPermissionIds.Company.CountryId
         );
-        
-        if (updatedCompanyResult.IsFailure)
-            return Result.WithMetadataFrom(updatedCompanyResult);
-        
-        var updatedCompany = updatedCompanyResult.Value;
         
         var companySearchModel = new CompanySearchModel(updatedCompany.Id, updatedCompany.CountryId,
             updatedCompany.Name, updatedCompany.Description);

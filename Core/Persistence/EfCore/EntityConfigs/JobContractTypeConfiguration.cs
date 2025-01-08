@@ -1,15 +1,14 @@
 ﻿using Core.Domains.JobContractTypes;
-using Core.Persistence.EfCore.EntityConfigs.Shared;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Core.Persistence.EfCore.EntityConfigs;
 
-public class JobContractTypeConfiguration : EntityConfigurationBase<JobContractType>
+public class JobContractTypeConfiguration : IEntityTypeConfiguration<JobContractType>
 {
-    public override void Configure(EntityTypeBuilder<JobContractType> builder)
+    public void Configure(EntityTypeBuilder<JobContractType> builder)
     {
-        base.Configure(builder);
+        builder.HasKey(jobContractType => jobContractType.Id);
         
         builder
             .HasMany(jobContractType => jobContractType.Jobs)

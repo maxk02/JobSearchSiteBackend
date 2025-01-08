@@ -4,5 +4,5 @@ using Core.Domains.Cvs.ValueEntities;
 namespace Core.Domains.Cvs.UseCases.GetCvById;
 
 public record GetCvByIdResponse(long Id, SalaryRecord? SalaryRecord, EmploymentTypeRecord? EmploymentTypeRecord,
-    IReadOnlyCollection<EducationRecord> EducationRecords, IReadOnlyCollection<WorkRecord> WorkRecords,
-    IReadOnlyCollection<string> Skills, ICollection<long> CategoryIds);
+    ICollection<EducationRecord> EducationRecords, ICollection<WorkRecord> WorkRecords,
+    ICollection<string> Skills, ICollection<long> CategoryIds);

@@ -23,7 +23,7 @@ public class UpdateUserProfileHandler(ICurrentAccountService currentAccountServi
         if (existingUserObject is null)
             return Result.Error();
         
-        var updateUserResult = UserProfile.Create(
+        var updatedUser = new UserProfile(
             request.Id,
             request.FirstName ?? existingUserObject.FirstName,
             request.MiddleName ?? existingUserObject.MiddleName,
@@ -32,11 +32,6 @@ public class UpdateUserProfileHandler(ICurrentAccountService currentAccountServi
             request.Email ?? existingUserObject.Email,
             request.Phone ?? existingUserObject.Phone
             );
-
-        if (updateUserResult.IsFailure)
-            return Result.WithMetadataFrom(updateUserResult);
-        
-        var updatedUser = updateUserResult.Value;
             
         context.UserProfiles.Update(updatedUser);
         await context.SaveChangesAsync(cancellationToken);

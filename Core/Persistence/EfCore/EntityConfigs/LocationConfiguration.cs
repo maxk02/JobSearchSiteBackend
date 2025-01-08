@@ -1,15 +1,14 @@
 ﻿using Core.Domains.Locations;
-using Core.Persistence.EfCore.EntityConfigs.Shared;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Core.Persistence.EfCore.EntityConfigs;
 
-public class LocationConfiguration : EntityConfigurationBase<Location>
+public class LocationConfiguration : IEntityTypeConfiguration<Location>
 {
-    public override void Configure(EntityTypeBuilder<Location> builder)
+    public void Configure(EntityTypeBuilder<Location> builder)
     {
-        base.Configure(builder);
+        builder.HasKey(location => location.Id);
 
         builder
             .HasOne(location => location.Country)

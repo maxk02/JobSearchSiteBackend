@@ -1,15 +1,14 @@
 ﻿using Core.Domains.Countries;
-using Core.Persistence.EfCore.EntityConfigs.Shared;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Core.Persistence.EfCore.EntityConfigs;
 
-public class CountryConfiguration : EntityConfigurationBase<Country>
+public class CountryConfiguration : IEntityTypeConfiguration<Country>
 {
-    public override void Configure(EntityTypeBuilder<Country> builder)
+    public void Configure(EntityTypeBuilder<Country> builder)
     {
-        base.Configure(builder);
+        builder.HasKey(country => country.Id);
         
         builder
             .HasMany(country => country.JobContractTypes)

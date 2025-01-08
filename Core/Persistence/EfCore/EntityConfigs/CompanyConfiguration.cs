@@ -1,15 +1,14 @@
 ﻿using Core.Domains.Companies;
-using Core.Persistence.EfCore.EntityConfigs.Shared;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Core.Persistence.EfCore.EntityConfigs;
 
-public class CompanyConfiguration : EntityConfigurationBase<Company>
+public class CompanyConfiguration : IEntityTypeConfiguration<Company>
 {
-    public override void Configure(EntityTypeBuilder<Company> builder)
+    public void Configure(EntityTypeBuilder<Company> builder)
     {
-        base.Configure(builder);
+        builder.HasKey(company => company.Id);
         
         builder
             .HasMany(company => company.JobFolders)

@@ -16,12 +16,8 @@ public class AddUserProfileHandler(ICurrentAccountService currentAccountService,
         if (currentAccountId != request.AccountId)
             return Result<AddUserProfileResponse>.Forbidden();
         
-        var createUserResult = UserProfile.Create(request.AccountId, request.FirstName, request.MiddleName,
+        var newUser = new UserProfile(request.AccountId, request.FirstName, request.MiddleName,
             request.LastName, request.DateOfBirth, request.Email, request.Phone);
-        if (createUserResult.IsFailure)
-            return Result<AddUserProfileResponse>.WithMetadataFrom(createUserResult);
-        
-        var newUser = createUserResult.Value;
         
         await context.UserProfiles.AddAsync(newUser, cancellationToken);
         await context.SaveChangesAsync(cancellationToken);

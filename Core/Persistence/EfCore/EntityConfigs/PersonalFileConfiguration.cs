@@ -1,15 +1,14 @@
 ﻿using Core.Domains.PersonalFiles;
-using Core.Persistence.EfCore.EntityConfigs.Shared;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Core.Persistence.EfCore.EntityConfigs;
 
-public class PersonalFileConfiguration : EntityConfigurationBase<PersonalFile>
+public class PersonalFileConfiguration : IEntityTypeConfiguration<PersonalFile>
 {
-    public override void Configure(EntityTypeBuilder<PersonalFile> builder)
+    public void Configure(EntityTypeBuilder<PersonalFile> builder)
     {
-        base.Configure(builder);
+        builder.HasKey(personalFile => personalFile.Id);
 
         builder
             .HasOne(personalFile => personalFile.User)

@@ -6,20 +6,7 @@ namespace Core.Domains.Accounts;
 
 public class UserSession
 {
-    public static UserSessionValidator Validator { get; } = new();
-
-    public static Result<UserSession> Create(string tokenId, long userId, DateTime firstTimeIssuedUtc,
-        DateTime expiresUtc, string? lastDevice, string? lastOs, string? lastClient)
-    {
-        var userSession =
-            new UserSession(tokenId, userId, firstTimeIssuedUtc, expiresUtc, lastDevice, lastOs, lastClient);
-        
-        var validationResult = Validator.Validate(userSession);
-        
-        return validationResult.IsValid ? userSession : Result<UserSession>.Invalid(validationResult.AsErrors());
-    }
-
-    private UserSession(string tokenId, long userId, DateTime firstTimeIssuedUtc, DateTime expiresUtc,
+    public UserSession(string tokenId, long userId, DateTime firstTimeIssuedUtc, DateTime expiresUtc,
         string? lastDevice, string? lastOs, string? lastClient)
     {
         TokenId = tokenId;

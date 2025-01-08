@@ -21,12 +21,9 @@ public class UploadFileHandler(
     {
         var currentUserId = currentAccountService.GetIdOrThrow();
 
-        var creationResult = PersonalFile.Create(currentUserId, request.FileName,
+        var newFile = new PersonalFile(currentUserId, request.FileName,
             request.Extension, request.FileStream.Length);
-        if (creationResult.IsFailure)
-            return Result.WithMetadataFrom(creationResult);
-        var newFile = creationResult.Value;
-
+        
         //starting transaction to be able to use SaveChangesAsync multiple times and revert all changes if something fails
         await using var transaction = await context.Database.BeginTransactionAsync(cancellationToken);
         context.PersonalFiles.Add(newFile);
