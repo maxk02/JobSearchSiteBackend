@@ -33,19 +33,6 @@ public class JwtCurrentAccountService(IHttpContextAccessor httpContextAccessor) 
         return id ?? throw new CurrentAccountDataNotAvailableException();
     }
 
-    public string? GetEmail()
-    {
-        string? emailString = httpContextAccessor.HttpContext?.User.FindFirstValue(JwtRegisteredClaimNames.Email);
-
-        return string.IsNullOrEmpty(emailString) ? null : emailString;
-    }
-    
-    public string GetEmailOrThrow()
-    {
-        var email = GetEmail();
-        return email ?? throw new CurrentAccountDataNotAvailableException();
-    }
-
     public List<string>? GetRoles()
     {
         var roles = httpContextAccessor.HttpContext?.User.FindAll(ClaimTypes.Role)

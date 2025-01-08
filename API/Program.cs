@@ -1,3 +1,5 @@
+using API.Middleware.Auth;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -18,6 +20,8 @@ app.UseHttpsRedirection();
 
 app.UseAuthentication();
 app.UseAuthorization();
+
+app.UseMiddleware<CheckUserTokenMiddleware>();
 
 app.MapControllers();
 

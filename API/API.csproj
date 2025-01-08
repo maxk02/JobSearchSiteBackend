@@ -22,7 +22,6 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="Middleware\Auth\" />
       <Folder Include="Services\" />
     </ItemGroup>
 
