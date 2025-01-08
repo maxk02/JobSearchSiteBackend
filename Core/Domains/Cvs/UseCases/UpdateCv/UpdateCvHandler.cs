@@ -32,15 +32,12 @@ public class UpdateCvHandler(
 
         if (cv.UserId != currentUserId)
             return Result.Forbidden();
-
-        var newCv = new Cv(
-            cv.UserId,
-            request.SalaryRecord ?? cv.SalaryRecord,
-            request.EmploymentTypeRecord ?? cv.EmploymentTypeRecord,
-            request.EducationRecords ?? [..cv.EducationRecords ?? []],
-            request.WorkRecords ?? [..cv.WorkRecords ?? []],
-            request.Skills ?? [..cv.Skills ?? []]
-        );
+        
+        if (request.SalaryRecord is not null) cv.SalaryRecord = request.SalaryRecord;
+        if (request.EmploymentTypeRecord is not null) cv.EmploymentTypeRecord = request.EmploymentTypeRecord;
+        if (request.EducationRecords is not null) cv.EducationRecords = request.EducationRecords;
+        if (request.WorkRecords is not null) cv.WorkRecords = request.WorkRecords;
+        if (request.Skills is not null) cv.Skills = request.Skills;
 
         if (request.CategoryIds is not null && request.CategoryIds.Count != 0)
         {
@@ -52,20 +49,20 @@ public class UpdateCvHandler(
             if (categoriesThatNotExist.Any())
                 return Result.Invalid();
 
-            newCv.Categories = Category.AllValues.Where(c => request.CategoryIds.Contains(c.Id)).ToList();
+            cv.Categories = Category.AllValues.Where(c => request.CategoryIds.Contains(c.Id)).ToList();
         }
 
-        var newCvSearchModel = new CvSearchModel(newCv.Id, newCv.UserId,
-            newCv.EducationRecords ?? new List<EducationRecord>(),
-            newCv.WorkRecords ?? new List<WorkRecord>(),
-            newCv.Skills ?? new List<string>(),
-            new List<long>(), new List<long>());
+        var cvSearchModel = new CvSearchModel(cv.Id, cv.UserId,
+            cv.EducationRecords ?? [],
+            cv.WorkRecords ?? [],
+            cv.Skills ?? [],
+            [], []);
 
-        context.Cvs.Update(newCv);
+        context.Cvs.Update(cv);
         await context.SaveChangesAsync(cancellationToken);
         
         backgroundJobService.Enqueue(
-            () => cvSearchRepository.UpdateAsync(newCvSearchModel, CancellationToken.None),
+            () => cvSearchRepository.UpdateAsync(cvSearchModel, CancellationToken.None),
             BackgroundJobQueues.CvSearch
         );
         

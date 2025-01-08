@@ -17,7 +17,7 @@ public class UserCompanyClaimConfiguration : IEntityTypeConfiguration<UserCompan
 
         builder
             .HasOne(userCompanyClaim => userCompanyClaim.Company)
-            .WithMany(company => company.UserCompanyPermissions)
+            .WithMany(company => company.UserCompanyClaims)
             .OnDelete(DeleteBehavior.Restrict);
 
         builder

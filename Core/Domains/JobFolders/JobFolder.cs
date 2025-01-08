@@ -29,5 +29,5 @@ public class JobFolder : IEntityWithId, IHierarchicalEntity<JobFolder, JobFolder
     public ICollection<JobFolderClosure>? Descendants { get; set; }
     
     public virtual ICollection<Job>? Jobs { get; set; }
-    public virtual ICollection<UserJobFolderClaim>? UserJobFolderPermissions { get; set; }
+    public virtual ICollection<UserJobFolderClaim>? UserJobFolderClaims { get; set; }
 }

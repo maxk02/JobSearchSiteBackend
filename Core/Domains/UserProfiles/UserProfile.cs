@@ -8,8 +8,6 @@ using Core.Domains.JobApplications;
 using Core.Domains.JobFolderClaims;
 using Core.Domains.Jobs;
 using Core.Domains.PersonalFiles;
-using Shared.Result;
-using Shared.Result.FluentValidation;
 
 namespace Core.Domains.UserProfiles;
 
@@ -27,19 +25,19 @@ public class UserProfile : IEntityWithId
         Phone = phone;
     }
     
-    public long Id { get; set; }
+    public long Id { get; private set; }
 
-    public string FirstName { get; private set; }
+    public string FirstName { get; set; }
 
-    public string? MiddleName { get; private set; }
+    public string? MiddleName { get; set; }
 
-    public string LastName { get; private set; }
+    public string LastName { get; set; }
     
-    public DateOnly? DateOfBirth { get; private set; }
+    public DateOnly? DateOfBirth { get; set; }
     
-    public string Email { get; private set; }
+    public string Email { get; set; }
     
-    public Phone? Phone { get; private set; }
+    public Phone? Phone { get; set; }
     
     
     public virtual ICollection<PersonalFile>? PersonalFiles { get; set; }

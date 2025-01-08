@@ -19,21 +19,21 @@ public class Company : IEntityWithId
         IsPublic = isPublic;
     }
     
-    public long Id { get; set; }
+    public long Id { get; private set; }
     
     public long CountryId { get; private set; }
     
-    public string Name { get; private set; }
+    public string Name { get; set; }
     
-    public string? Description { get; private set; }
+    public string? Description { get; set; }
     
-    public bool IsPublic { get; private set; }
+    public bool IsPublic { get; set; }
     
-    public virtual Country? Country { get; set; }
+    public Country? Country { get; private set; }
 
-    public virtual ICollection<JobFolder>? JobFolders { get; set; }
-    public virtual ICollection<Job>? Jobs { get; set; }
+    public ICollection<JobFolder>? JobFolders { get; set; }
+    public ICollection<Job>? Jobs { get; set; }
     
-    public virtual ICollection<UserProfile>? UsersWhoBookmarked { get; set; }
-    public virtual ICollection<UserCompanyClaim>? UserCompanyPermissions { get; set; }
+    public ICollection<UserProfile>? UsersWhoBookmarked { get; set; }
+    public ICollection<UserCompanyClaim>? UserCompanyClaims { get; set; }
 }

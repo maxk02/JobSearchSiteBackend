@@ -16,7 +16,7 @@ public class CompanyConfiguration : IEntityTypeConfiguration<Company>
             .OnDelete(DeleteBehavior.Restrict);
 
         builder
-            .HasMany(company => company.UserCompanyPermissions)
+            .HasMany(company => company.UserCompanyClaims)
             .WithOne(userCompanyPermission => userCompanyPermission.Company)
             .OnDelete(DeleteBehavior.Restrict);
 

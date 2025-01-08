@@ -17,7 +17,7 @@ public class UserJobFolderClaimConfiguration : IEntityTypeConfiguration<UserJobF
 
         builder
             .HasOne(userJobFolderClaim => userJobFolderClaim.JobFolder)
-            .WithMany(jobFolder => jobFolder.UserJobFolderPermissions)
+            .WithMany(jobFolder => jobFolder.UserJobFolderClaims)
             .OnDelete(DeleteBehavior.Restrict);
 
         builder

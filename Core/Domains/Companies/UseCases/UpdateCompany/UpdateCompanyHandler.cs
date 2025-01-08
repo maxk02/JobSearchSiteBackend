@@ -20,34 +20,33 @@ public class UpdateCompanyHandler(
         var currentUserId = currentAccountService.GetIdOrThrow();
         
         var companyWithPermissionIdsQuery =
-            from company in context.Companies
-            join ucp in context.UserCompanyClaims on company.Id equals ucp.CompanyId into ucpGroup
-            from ucp in ucpGroup.DefaultIfEmpty()
-            where company.Id == request.CompanyId && ucp.UserId == currentUserId
-            group ucp.PermissionId by new { Company = company, UserId = ucp.UserId } into grouped
+            from dbCompany in context.Companies
+            join dbUcc in context.UserCompanyClaims on dbCompany.Id equals dbUcc.CompanyId into ucpGroup
+            from dbUcc in ucpGroup.DefaultIfEmpty()
+            where dbCompany.Id == request.CompanyId && dbUcc.UserId == currentUserId
+            group dbUcc.PermissionId by new { Company = dbCompany, UserId = dbUcc.UserId } into grouped
             select new { grouped.Key.Company, PermissionIds = grouped.ToList() };
 
-        var companyWithPermissionIds = await companyWithPermissionIdsQuery.SingleOrDefaultAsync(cancellationToken);
+        var companyWithClaimIds = await companyWithPermissionIdsQuery.SingleOrDefaultAsync(cancellationToken);
 
-        if (companyWithPermissionIds is null)
+        if (companyWithClaimIds is null)
             return Result.NotFound();
         
-        if (!companyWithPermissionIds.PermissionIds.Contains(CompanyClaim.CanEditProfile.Id))
+        if (!companyWithClaimIds.PermissionIds.Contains(CompanyClaim.CanEditProfile.Id))
         {
             return Result.Forbidden();
         }
-
-        var updatedCompany = new Company(
-            request.Name ?? companyWithPermissionIds.Company.Name,
-            request.Description ?? companyWithPermissionIds.Company.Description,
-            request.IsPublic ?? companyWithPermissionIds.Company.IsPublic,
-            companyWithPermissionIds.Company.CountryId
-        );
         
-        var companySearchModel = new CompanySearchModel(updatedCompany.Id, updatedCompany.CountryId,
-            updatedCompany.Name, updatedCompany.Description);
+        var company = companyWithClaimIds.Company;
+        
+        if (request.Name is not null) company.Name = request.Name;
+        if (request.Description is not null) company.Description = request.Description;
+        if (request.IsPublic is not null) company.IsPublic = request.IsPublic.Value;
+        
+        var companySearchModel = new CompanySearchModel(company.Id, company.CountryId,
+            company.Name, company.Description);
 
-        context.Companies.Update(updatedCompany);
+        context.Companies.Update(company);
         await context.SaveChangesAsync(cancellationToken);
         
         backgroundJobService

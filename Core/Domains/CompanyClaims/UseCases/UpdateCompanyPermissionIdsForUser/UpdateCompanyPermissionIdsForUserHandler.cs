@@ -29,27 +29,27 @@ public class UpdateCompanyPermissionIdsForUserHandler(
         if (!userExists)
             return Result.NotFound();
         
-        var currentUserPermissions = await context.UserCompanyClaims
+        var currentUserClaims = await context.UserCompanyClaims
             .Where(ucp => ucp.UserId == currentUserId && ucp.CompanyId == request.CompanyId)
             .Select(ucp => ucp.Id)
             .ToListAsync(cancellationToken);
 
-        if (!currentUserPermissions.Contains(CompanyClaim.IsAdmin.Id))
+        if (!currentUserClaims.Contains(CompanyClaim.IsAdmin.Id))
             return Result.Forbidden();
         
-        var targetUserPermissions = await context.UserCompanyClaims
+        var targetUserClaims = await context.UserCompanyClaims
             .Where(ucp => ucp.UserId == request.UserId && ucp.CompanyId == request.CompanyId)
             .Select(ucp => ucp.Id)
             .ToListAsync(cancellationToken);
         
-        if (!targetUserPermissions.Contains(CompanyClaim.IsOwner.Id) 
-            && !targetUserPermissions.Contains(CompanyClaim.IsAdmin.Id))
+        if (!targetUserClaims.Contains(CompanyClaim.IsOwner.Id) 
+            && !targetUserClaims.Contains(CompanyClaim.IsAdmin.Id))
             return Result.Forbidden();
         
-        if (targetUserPermissions.Except(currentUserPermissions).Any())
+        if (targetUserClaims.Except(currentUserClaims).Any())
             return Result.Forbidden();
         
-        company.UserCompanyPermissions = request.CompanyPermissionIds.Select(cpId => 
+        company.UserCompanyClaims = request.CompanyPermissionIds.Select(cpId => 
             new UserCompanyClaim(request.UserId, request.CompanyId, cpId)).ToList();
         
         context.Companies.Update(company);

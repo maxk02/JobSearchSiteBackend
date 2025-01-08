@@ -36,7 +36,7 @@ public class CreateCompanyHandler(
             new CompanySearchModel(company.Id, company.CountryId, company.Name, company.Description);
 
         //adding full permission set to user
-        company.UserCompanyPermissions = CompanyClaim.AllIds
+        company.UserCompanyClaims = CompanyClaim.AllIds
             .Select(x => new UserCompanyClaim(currentUserId, company.Id, x)).ToList();
 
 
@@ -47,7 +47,7 @@ public class CreateCompanyHandler(
         await context.JobFolders.AddAsync(rootFolder, cancellationToken);
 
         //adding full permission set to user
-        rootFolder.UserJobFolderPermissions = JobFolderClaim.AllIds
+        rootFolder.UserJobFolderClaims = JobFolderClaim.AllIds
             .Select(x => new UserJobFolderClaim(currentUserId, rootFolder.Id, x)).ToList();
 
         // saving changes
