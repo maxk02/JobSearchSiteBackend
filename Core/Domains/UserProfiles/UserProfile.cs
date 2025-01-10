@@ -40,15 +40,15 @@ public class UserProfile : IEntityWithId
     public Phone? Phone { get; set; }
     
     
-    public virtual ICollection<PersonalFile>? PersonalFiles { get; set; }
-    public virtual ICollection<Cv>? Cvs { get; set; }
+    public ICollection<PersonalFile>? PersonalFiles { get; set; }
+    public ICollection<Cv>? Cvs { get; set; }
     
-    public virtual ICollection<JobApplication>? JobApplications { get; set; }
-    public virtual ICollection<Job>? BookmarkedJobs { get; set; }
-    public virtual ICollection<Company>? BookmarkedCompanies { get; set; }
+    public ICollection<JobApplication>? JobApplications { get; set; }
+    public ICollection<Job>? BookmarkedJobs { get; set; }
+    public ICollection<Company>? BookmarkedCompanies { get; set; }
 
-    public virtual ICollection<UserCompanyClaim>? UserCompanyClaims { get; set; }
-    public virtual ICollection<UserJobFolderClaim>? UserJobFolderClaims { get; set; }
+    public ICollection<UserCompanyClaim>? UserCompanyClaims { get; set; }
+    public ICollection<UserJobFolderClaim>? UserJobFolderClaims { get; set; }
     
-    public virtual ICollection<UserSession>? UserSessions { get; set; }
+    public ICollection<UserSession>? UserSessions { get; set; }
 }

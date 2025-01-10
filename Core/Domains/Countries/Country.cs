@@ -23,7 +23,7 @@ public class Country : IEntityWithId
     public long Id { get; set; }
     public string Code { get; private set; }
     
-    public virtual ICollection<JobContractType>? JobContractTypes { get; set; }
-    public virtual ICollection<Location>? Locations { get; set; }
-    public virtual ICollection<Company>? Companies { get; set; }
+    public ICollection<JobContractType>? JobContractTypes { get; set; }
+    public ICollection<Location>? Locations { get; set; }
+    public ICollection<Company>? Companies { get; set; }
 }

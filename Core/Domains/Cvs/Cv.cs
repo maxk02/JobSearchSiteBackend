@@ -38,7 +38,7 @@ public class Cv : IEntityWithId
     
     public bool IsPublic { get; set; }
     
-    public virtual UserProfile? User { get;  private set; }
-    public virtual ICollection<Location>? Locations { get; set; }
-    public virtual ICollection<Category>? Categories { get; set; }
+    public UserProfile? User { get;  private set; }
+    public ICollection<Location>? Locations { get; set; }
+    public ICollection<Category>? Categories { get; set; }
 }

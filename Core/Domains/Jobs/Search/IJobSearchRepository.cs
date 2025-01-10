@@ -4,5 +4,6 @@ namespace Core.Domains.Jobs.Search;
 
 public interface IJobSearchRepository : ISearchRepository<JobSearchModel>
 {
-    Task<IList<int>> SearchForCompanyId(string query, int companyId);
+    Task<ICollection<long>> SearchByCountryIdAsync(long countryId, string query,
+        CancellationToken cancellationToken = default);
 }

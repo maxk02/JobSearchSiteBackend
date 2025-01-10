@@ -26,7 +26,7 @@ public class Location : IEntityWithId
     public string? Code { get; private set; }
 
     
-    public virtual Country? Country { get; set; }
-    public virtual ICollection<UserProfile>? Users { get; set; }
-    public virtual ICollection<Job>? Jobs { get; set; }
+    public Country? Country { get; set; }
+    public ICollection<UserProfile>? Users { get; set; }
+    public ICollection<Job>? Jobs { get; set; }
 }

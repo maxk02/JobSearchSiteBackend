@@ -11,12 +11,12 @@ public class JobFolderClosureConfiguration : IEntityTypeConfiguration<JobFolderC
         builder.HasKey(closure => new { closure.AncestorId, closure.DescendantId });
 
         builder.HasOne(closure => closure.Ancestor)
-            .WithMany(jobFolder => jobFolder.Descendants)
+            .WithMany(jobFolder => jobFolder.ClosuresWhereThisIsAncestor)
             .HasForeignKey(closure => closure.AncestorId)
             .OnDelete(DeleteBehavior.Restrict);
 
         builder.HasOne(closure => closure.Descendant)
-            .WithMany(jobFolder => jobFolder.Ancestors)
+            .WithMany(jobFolder => jobFolder.ClosuresWhereThisIsDescendant)
             .HasForeignKey(closure => closure.DescendantId)
             .OnDelete(DeleteBehavior.Restrict);
 

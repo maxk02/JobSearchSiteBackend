@@ -21,7 +21,7 @@ public class GetJobFolderPermissionIdsForUserHandler(ICurrentAccountService curr
             var isAdmin = await context.UserJobFolderClaims
                 .AnyAsync(ujfp => ujfp.UserId == currentUserId 
                           && ujfp.FolderId == request.FolderId
-                          && ujfp.PermissionId == CompanyClaim.IsAdmin.Id, cancellationToken);
+                          && ujfp.ClaimId == CompanyClaim.IsAdmin.Id, cancellationToken);
             
             if (!isAdmin) 
                 return Result<ICollection<long>>.Forbidden();
@@ -29,7 +29,7 @@ public class GetJobFolderPermissionIdsForUserHandler(ICurrentAccountService curr
         
         var permissionIds = await context.UserJobFolderClaims
             .Where(ujfp => ujfp.UserId == request.UserId && ujfp.FolderId == request.FolderId)
-            .Select(ujfp => ujfp.PermissionId)
+            .Select(ujfp => ujfp.ClaimId)
             .ToListAsync(cancellationToken);
 
         return Result<ICollection<long>>.Success(permissionIds);

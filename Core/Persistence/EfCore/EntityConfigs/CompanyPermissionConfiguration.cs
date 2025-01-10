@@ -12,7 +12,7 @@ public class CompanyPermissionConfiguration : IEntityTypeConfiguration<CompanyCl
         
         builder
             .HasMany(companyPermission => companyPermission.UserCompanyPermissions)
-            .WithOne(userCompanyCompanyPermission => userCompanyCompanyPermission.CompanyPermission)
+            .WithOne(userCompanyCompanyPermission => userCompanyCompanyPermission.CompanyClaim)
             .OnDelete(DeleteBehavior.Restrict);
     }
 }

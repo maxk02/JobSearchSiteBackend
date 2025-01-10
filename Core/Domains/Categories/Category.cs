@@ -21,6 +21,6 @@ public class Category : IEntityWithId
     
     public long Id { get; }
     
-    public virtual ICollection<Job>? Jobs { get; set; }
-    public virtual ICollection<Cv>? Cvs { get; set; }
+    public ICollection<Job>? Jobs { get; set; }
+    public ICollection<Cv>? Cvs { get; set; }
 }

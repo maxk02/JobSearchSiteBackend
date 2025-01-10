@@ -11,12 +11,7 @@ public class JobConfiguration : IEntityTypeConfiguration<Job>
         builder.HasKey(job => job.Id);
 
         builder
-            .HasOne(job => job.Company)
-            .WithMany(company => company.Jobs)
-            .OnDelete(DeleteBehavior.Restrict);
-
-        builder
-            .HasMany(job => job.JobFolders)
+            .HasOne(job => job.JobFolder)
             .WithMany(jobFolder => jobFolder.Jobs);
 
         builder

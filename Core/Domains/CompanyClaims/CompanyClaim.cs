@@ -38,5 +38,5 @@ public class CompanyClaim : IEntityWithId, IClaimEntity
         Name = name;
     }
     
-    public virtual ICollection<UserCompanyClaim>? UserCompanyPermissions { get; set; }
+    public ICollection<UserCompanyClaim>? UserCompanyPermissions { get; set; }
 }

@@ -18,6 +18,6 @@ public class JobContractType : IEntityWithId
     
     public string Name { get; }
     
-    public virtual Country? Country { get; set; }
-    public virtual ICollection<Job>? Jobs { get; set; }
+    public Country? Country { get; set; }
+    public ICollection<Job>? Jobs { get; set; }
 }

@@ -21,10 +21,6 @@ public class UpdateCvHandler(
         var currentUserId = currentAccountService.GetIdOrThrow();
 
         var cv = await context.Cvs
-            .Include(cv => cv.SalaryRecord)
-            .Include(cv => cv.EmploymentTypeRecord)
-            .Include(cv => cv.EducationRecords)
-            .Include(cv => cv.WorkRecords)
             .FirstOrDefaultAsync(cv => cv.Id == request.CvId, cancellationToken);
 
         if (cv is null)
@@ -52,6 +48,8 @@ public class UpdateCvHandler(
             cv.Categories = Category.AllValues.Where(c => request.CategoryIds.Contains(c.Id)).ToList();
         }
 
+        
+        //todo
         var cvSearchModel = new CvSearchModel(cv.Id, cv.UserId,
             cv.EducationRecords ?? [],
             cv.WorkRecords ?? [],

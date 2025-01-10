@@ -19,9 +19,29 @@ public class JobFolderConfiguration : IEntityTypeConfiguration<JobFolder>
         //     .HasOne(jobFolder => jobFolder.Parent)
         //     .WithMany(jobFolder => jobFolder.Children)
         //     .OnDelete(DeleteBehavior.Restrict);
+        
+        // builder.HasOne(closure => closure.Ancestor)
+        //     .WithMany(jobFolder => jobFolder.ClosuresWhereThisIsAncestor)
+        //     .HasForeignKey(closure => closure.AncestorId)
+        //     .OnDelete(DeleteBehavior.Restrict);
+        //
+        // builder.HasOne(closure => closure.Descendant)
+        //     .WithMany(jobFolder => jobFolder.ClosuresWhereThisIsDescendant)
+        //     .HasForeignKey(closure => closure.DescendantId)
+        //     .OnDelete(DeleteBehavior.Restrict);
+        
+        builder
+            .HasMany(jobFolder => jobFolder.ClosuresWhereThisIsAncestor)
+            .WithOne(closure => closure.Ancestor)
+            .HasForeignKey(closure => closure.AncestorId);
+        
+        builder
+            .HasMany(jobFolder => jobFolder.ClosuresWhereThisIsDescendant)
+            .WithOne(closure => closure.Descendant)
+            .HasForeignKey(closure => closure.DescendantId);
 
         builder
             .HasMany(jobFolder => jobFolder.Jobs)
-            .WithMany(job => job.JobFolders);
+            .WithOne(job => job.JobFolder);
     }
 }

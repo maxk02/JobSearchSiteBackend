@@ -1,11 +1,15 @@
 ﻿using Core.Domains._Shared.UseCaseStructure;
+using Core.Domains.JobFolderClaims;
+using Core.Domains.JobFolders;
 using Core.Persistence.EfCore;
 using Core.Services.Auth;
+using Microsoft.EntityFrameworkCore;
 using Shared.Result;
 
 namespace Core.Domains.JobApplications.UseCases.UpdateJobApplication;
 
-public class UpdateJobApplicationHandler(ICurrentAccountService currentAccountService,
+public class UpdateJobApplicationHandler(
+    ICurrentAccountService currentAccountService,
     MainDataContext context) : IRequestHandler<UpdateJobApplicationRequest, Result>
 {
     public async Task<Result> Handle(UpdateJobApplicationRequest request,
@@ -13,13 +17,28 @@ public class UpdateJobApplicationHandler(ICurrentAccountService currentAccountSe
     {
         var currentUserId = currentAccountService.GetIdOrThrow();
 
-        var jobApplication = await context.JobApplications.FindAsync([request.JobApplicationId], cancellationToken);
+        var jobApplicationWithJobFolderId = await context.JobApplications
+            .Where(ja => ja.Id == request.JobApplicationId)
+            .Select(ja => new { JobApplication = ja, JobFolderId = ja.Job!.JobFolderId })
+            .SingleOrDefaultAsync(cancellationToken);
 
-        if (jobApplication is null)
+        if (jobApplicationWithJobFolderId is null)
             return Result.NotFound();
-        
-        //todo 
-        
+
+        var jobApplication = jobApplicationWithJobFolderId.JobApplication;
+        context.JobApplications.Attach(jobApplication);
+
+        var jobFolderId = jobApplicationWithJobFolderId.JobFolderId;
+
+        var hasPermissionInCurrentFolderOrAncestors =
+            await context.JobFolderClosures
+                .GetThisOrAncestorsWhereUserHasClaim(jobFolderId, currentUserId,
+                    JobFolderClaim.CanEditJobsAndSubfolders.Id)
+                .AnyAsync(cancellationToken);
+
+        if (!hasPermissionInCurrentFolderOrAncestors)
+            return Result.Forbidden();
+
         jobApplication.Status = request.Status;
 
         context.JobApplications.Update(jobApplication);

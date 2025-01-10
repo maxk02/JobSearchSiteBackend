@@ -13,7 +13,7 @@ public class GetLocationsHandler(MainDataContext context, ILocationSearchReposit
         CancellationToken cancellationToken = default)
     {
         var hitIds =
-            await locationSearchRepository.SearchByCountryId(request.CountryId, request.Query, cancellationToken);
+            await locationSearchRepository.SearchByCountryIdAsync(request.CountryId, request.Query, cancellationToken);
 
         var query = context.Locations
             .Where(l => hitIds.Contains(l.Id))

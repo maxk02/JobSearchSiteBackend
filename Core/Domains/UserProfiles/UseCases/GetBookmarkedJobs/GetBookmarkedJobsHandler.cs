@@ -23,7 +23,8 @@ public class GetBookmarkedJobsHandler(
             return Result<GetBookmarkedJobsResponse>.Forbidden();
 
         var query = context.UserProfiles
-            .Include(u => u.BookmarkedJobs)
+            .Include(u => u.BookmarkedJobs)!
+            .ThenInclude(job => job.JobFolder)
             .Where(u => u.Id == currentAccountId)
             .SelectMany(u => u.BookmarkedJobs ?? new List<Job>());
 
@@ -35,8 +36,8 @@ public class GetBookmarkedJobsHandler(
             .ToListAsync(cancellationToken);
 
         var jobInfocardDtos = bookmarkedJobs
-            .Select(x => new JobInfocardDto(x.Id, x.CompanyId, x.CategoryId, x.Title, x.DateTimePublishedUtc,
-                x.DateTimeExpiringUtc, x.SalaryRecord, x.EmploymentTypeRecord))
+            .Select(x => new JobInfocardDto(x.Id, x.JobFolder!.CompanyId, x.CategoryId, x.Title,
+                x.DateTimePublishedUtc, x.DateTimeExpiringUtc, x.SalaryRecord, x.EmploymentTypeRecord))
             .ToList();
 
         var paginationResponse = new PaginationResponse(count, request.PaginationSpec.PageNumber,

@@ -14,7 +14,7 @@ public class GetJobContractTypesByCountryIdHandler(MainDataContext context)
     {
         var contractTypes = await context.ContractTypes
             .Where(jobContractType => jobContractType.CountryId == request.CountryId)
-            .Select(jobContractType => new JobContractTypeIdWithName(jobContractType.Id, jobContractType.Name))
+            .Select(jobContractType => new JobContractTypeDto(jobContractType.Id, jobContractType.Name))
             .ToListAsync(cancellationToken);
 
         return new GetJobContractTypesByCountryIdResponse(contractTypes);

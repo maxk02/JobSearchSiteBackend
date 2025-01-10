@@ -9,7 +9,6 @@ public class JobValidator : AbstractValidator<Job>
 {
     public JobValidator()
     {
-        RuleFor(x => x.CompanyId).GreaterThanOrEqualTo(1);
         RuleFor(x => x.CategoryId).GreaterThanOrEqualTo(1);
 
         RuleFor(x => x.Title).Length(1, 50)

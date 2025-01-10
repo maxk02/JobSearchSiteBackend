@@ -28,6 +28,6 @@ public class PersonalFile : IEntityWithId, IEntityWithGuid
     
     public long Size { get; private set; }
     
-    public virtual UserProfile? User { get; set; }
-    public virtual ICollection<JobApplication>? JobApplications { get; set; }
+    public UserProfile? User { get; set; }
+    public ICollection<JobApplication>? JobApplications { get; set; }
 }

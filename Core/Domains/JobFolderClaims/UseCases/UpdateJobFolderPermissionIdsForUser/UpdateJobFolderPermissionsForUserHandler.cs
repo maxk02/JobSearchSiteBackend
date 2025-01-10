@@ -22,7 +22,7 @@ public class UpdateJobFolderPermissionsForUserHandler(ICurrentAccountService cur
         
         var currentUserPermissionIds = await context.UserJobFolderClaims
             .Where(ujfp => ujfp.UserId == currentUserId && ujfp.FolderId == request.FolderId)
-            .Select(ujfp => ujfp.PermissionId)
+            .Select(ujfp => ujfp.ClaimId)
             .ToListAsync(cancellationToken);
 
         if (!currentUserPermissionIds.Contains(JobFolderClaim.IsAdmin.Id))
@@ -32,10 +32,10 @@ public class UpdateJobFolderPermissionsForUserHandler(ICurrentAccountService cur
             .Where(ujfp => ujfp.UserId == request.UserId && ujfp.FolderId == request.FolderId)
             .ToListAsync(cancellationToken);
         
-        if (targetUserJobFolderPermissions.Select(ujfp => ujfp.PermissionId).Contains(JobFolderClaim.IsAdmin.Id))
+        if (targetUserJobFolderPermissions.Select(ujfp => ujfp.ClaimId).Contains(JobFolderClaim.IsAdmin.Id))
             return Result.Forbidden("Insufficient permissions for update of permissions of target user.");
         
-        if (targetUserJobFolderPermissions.Select(ujfp => ujfp.PermissionId).Except(currentUserPermissionIds).Any())
+        if (targetUserJobFolderPermissions.Select(ujfp => ujfp.ClaimId).Except(currentUserPermissionIds).Any())
             return Result.Forbidden("Insufficient permissions for update of permissions of target user.");
         
         context.UserJobFolderClaims.RemoveRange(targetUserJobFolderPermissions);

@@ -14,12 +14,12 @@ namespace Core.Domains.Jobs;
 
 public class Job : IEntityWithId
 {
-    public Job(long companyId, long categoryId, string title, string description, bool isPublic, DateTime dateTimePublishedUtc,
+    public Job(long categoryId, long jobFolderId, string title, string description, bool isPublic, DateTime dateTimePublishedUtc,
         DateTime dateTimeExpiringUtc, ICollection<string> responsibilities, ICollection<string> requirements,
         ICollection<string> advantages, SalaryRecord salaryRecord, EmploymentTypeRecord employmentTypeRecord)
     {
-        CompanyId = companyId;
         CategoryId = categoryId;
+        JobFolderId = jobFolderId;
         Title = title;
         Description = description;
         IsPublic = isPublic;
@@ -32,39 +32,37 @@ public class Job : IEntityWithId
         EmploymentTypeRecord = employmentTypeRecord;
     }
     
-    public long Id { get; set; }
+    public long Id { get; private set; }
 
-    public long CompanyId { get; private set; }
-
-    public long CategoryId { get; private set; }
+    public long CategoryId { get; set; }
     
-    public string Title { get; private set; }
+    public long JobFolderId { get; set; }
+    
+    public string Title { get; set; }
 
-    public string Description { get; private set; }
+    public string Description { get; set; }
 
-    public DateTime DateTimePublishedUtc { get; private set; }
+    public DateTime DateTimePublishedUtc { get; set; }
 
-    public DateTime DateTimeExpiringUtc { get; private set; }
+    public DateTime DateTimeExpiringUtc { get; set; }
 
-    public SalaryRecord? SalaryRecord { get; private set; }
+    public SalaryRecord? SalaryRecord { get; set; }
 
-    public EmploymentTypeRecord? EmploymentTypeRecord { get; private set; }
+    public EmploymentTypeRecord? EmploymentTypeRecord { get; set; }
 
-    public IReadOnlyCollection<string> Responsibilities { get; private set; }
+    public ICollection<string>? Responsibilities { get; set; }
 
-    public IReadOnlyCollection<string> Requirements { get; private set; }
+    public ICollection<string>? Requirements { get; set; }
 
-    public IReadOnlyCollection<string> Advantages { get; private set; }
+    public ICollection<string>? Advantages { get; set; }
 
-    public bool IsPublic { get; private set; }
+    public bool IsPublic { get; set; }
+    
+    public Category? Category { get; set; }
+    public JobFolder? JobFolder { get; set; }
+    public ICollection<JobApplication>? JobApplications { get; set; }
+    public ICollection<JobContractType>? JobContractTypes { get; set; }
+    public ICollection<Location>? Locations { get; set; }
 
-    public virtual Company? Company { get; set; }
-    public virtual Category? Category { get; set; }
-    public virtual ICollection<JobApplication>? JobApplications { get; set; }
-    public virtual ICollection<JobContractType>? JobContractTypes { get; set; }
-    public virtual ICollection<Location>? Locations { get; set; }
-
-    public virtual ICollection<UserProfile>? UsersWhoBookmarked { get; set; }
-
-    public virtual ICollection<JobFolder>? JobFolders { get; set; }
+    public ICollection<UserProfile>? UsersWhoBookmarked { get; set; }
 }

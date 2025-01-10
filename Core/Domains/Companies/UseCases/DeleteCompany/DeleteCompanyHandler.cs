@@ -25,7 +25,7 @@ public class DeleteCompanyHandler(
             join ucp in context.UserCompanyClaims on company.Id equals ucp.CompanyId into ucpGroup
             from ucp in ucpGroup.DefaultIfEmpty()
             where company.Id == request.CompanyId && ucp.UserId == currentUserId
-            group ucp.PermissionId by new { Company = company, UserId = ucp.UserId }
+            group ucp.ClaimId by new { Company = company, UserId = ucp.UserId }
             into grouped
             select new { grouped.Key.Company, PermissionIds = grouped.ToList() };
 

@@ -8,7 +8,7 @@ namespace Core.Domains.JobFolders;
 
 public class JobFolder : IEntityWithId, IHierarchicalEntity<JobFolder, JobFolderClosure>
 {
-    public JobFolder(long? companyId, string? name, string? description)
+    public JobFolder(long companyId, string? name, string? description)
     {
         CompanyId = companyId;
         Name = name;
@@ -17,17 +17,17 @@ public class JobFolder : IEntityWithId, IHierarchicalEntity<JobFolder, JobFolder
     
     public long Id { get; set; }
     
-    public long? CompanyId { get; private set; }
+    public long CompanyId { get; private set; }
     
     public string? Name { get; private set; }
     
     public string? Description { get; private set; }
     
-    public virtual Company? Company { get; set; }
+    public Company? Company { get; set; }
     
-    public ICollection<JobFolderClosure>? Ancestors { get; set; }
-    public ICollection<JobFolderClosure>? Descendants { get; set; }
+    public ICollection<JobFolderClosure>? ClosuresWhereThisIsDescendant { get; set; }
+    public ICollection<JobFolderClosure>? ClosuresWhereThisIsAncestor { get; set; }
     
-    public virtual ICollection<Job>? Jobs { get; set; }
-    public virtual ICollection<UserJobFolderClaim>? UserJobFolderClaims { get; set; }
+    public ICollection<Job>? Jobs { get; set; }
+    public ICollection<UserJobFolderClaim>? UserJobFolderClaims { get; set; }
 }

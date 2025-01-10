@@ -19,7 +19,7 @@ public class JobApplication : IEntityWithId
     public long JobId { get; private set; }
     public string Status { get; set; }
     
-    public virtual Job? Job { get; set; }
-    public virtual UserProfile? User { get; set; }
-    public virtual ICollection<PersonalFile>? PersonalFiles { get; set; }
+    public Job? Job { get; set; }
+    public UserProfile? User { get; set; }
+    public ICollection<PersonalFile>? PersonalFiles { get; set; }
 }

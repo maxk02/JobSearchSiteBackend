@@ -5,11 +5,13 @@ namespace Core.Domains.Jobs.Search;
 public record JobSearchModel
 (
     long Id,
-    long CompanyId,
-    long CategoryId,
-    string Title,
-    string Description,
-    ICollection<string> Responsibilities,
-    ICollection<string> Requirements,
-    ICollection<string> Advantages
+    long? JobFolderId,
+    long? CountryId,
+    long? CompanyId,
+    long? CategoryId,
+    string? Title,
+    string? Description,
+    ICollection<string>? Responsibilities,
+    ICollection<string>? Requirements,
+    ICollection<string>? Advantages
 ) : ISearchModel;

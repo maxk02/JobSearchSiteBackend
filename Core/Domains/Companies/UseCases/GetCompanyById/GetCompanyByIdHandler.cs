@@ -28,11 +28,11 @@ public class GetCompanyByIdHandler(
                 return Result<GetCompanyByIdResponse>.Forbidden("Requested company profile is private.");
             
             var canEditProfile = await context.UserCompanyClaims
-                .AnyAsync(
+                .Where(
                     ucp => ucp.UserId == currentUserId 
                     && ucp.CompanyId == company.Id 
-                    && ucp.PermissionId == CompanyClaim.CanEditProfile.Id,
-                    cancellationToken);
+                    && ucp.ClaimId == CompanyClaim.CanEditProfile.Id)
+                .AnyAsync(cancellationToken);
 
             if (!canEditProfile)
                 return Result<GetCompanyByIdResponse>.Forbidden("Requested company profile is private.");

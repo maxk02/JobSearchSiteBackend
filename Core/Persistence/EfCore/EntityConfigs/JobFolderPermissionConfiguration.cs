@@ -12,7 +12,7 @@ public class JobFolderPermissionConfiguration : IEntityTypeConfiguration<JobFold
 
         builder
             .HasMany(jobFolderPermission => jobFolderPermission.UserJobFolderPermissions)
-            .WithOne(userJobFolderPermission => userJobFolderPermission.JobFolderPermission)
+            .WithOne(userJobFolderPermission => userJobFolderPermission.JobFolderClaim)
             .OnDelete(DeleteBehavior.Restrict);
     }
 }

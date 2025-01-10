@@ -2,4 +2,4 @@
 
 namespace Core.Domains.JobContractTypes.UseCases.GetJobContractTypesByCountryId;
 
-public record GetJobContractTypesByCountryIdResponse(ICollection<JobContractTypeIdWithName> JobContractTypeIdsWithNames);
+public record GetJobContractTypesByCountryIdResponse(ICollection<JobContractTypeDto> JobContractTypeIdsWithNames);

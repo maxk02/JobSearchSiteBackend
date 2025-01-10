@@ -21,11 +21,6 @@ public class CompanyConfiguration : IEntityTypeConfiguration<Company>
             .OnDelete(DeleteBehavior.Restrict);
 
         builder
-            .HasMany(company => company.Jobs)
-            .WithOne(job => job.Company)
-            .OnDelete(DeleteBehavior.Restrict);
-
-        builder
             .HasOne(company => company.Country)
             .WithMany(country => country.Companies)
             .OnDelete(DeleteBehavior.Restrict);
