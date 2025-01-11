@@ -5,12 +5,12 @@ using Core.Services.Auth;
 using Microsoft.EntityFrameworkCore;
 using Shared.Result;
 
-namespace Core.Domains.JobFolderClaims.UseCases.GetJobFolderPermissionIdsForUser;
+namespace Core.Domains.JobFolderClaims.UseCases.GetJobFolderClaimIdsForUser;
 
-public class GetJobFolderPermissionIdsForUserHandler(ICurrentAccountService currentAccountService,
-    MainDataContext context) : IRequestHandler<GetJobFolderPermissionIdsForUserRequest, Result<ICollection<long>>>
+public class GetJobFolderClaimIdsForUserHandler(ICurrentAccountService currentAccountService,
+    MainDataContext context) : IRequestHandler<GetJobFolderClaimIdsForUserRequest, Result<ICollection<long>>>
 {
-    public async Task<Result<ICollection<long>>> Handle(GetJobFolderPermissionIdsForUserRequest request,
+    public async Task<Result<ICollection<long>>> Handle(GetJobFolderClaimIdsForUserRequest request,
         CancellationToken cancellationToken = default)
     {
         var currentUserId = currentAccountService.GetIdOrThrow();

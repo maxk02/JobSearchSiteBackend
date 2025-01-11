@@ -4,14 +4,14 @@ using Core.Services.Auth;
 using Microsoft.EntityFrameworkCore;
 using Shared.Result;
 
-namespace Core.Domains.CompanyClaims.UseCases.GetCompanyPermissionIdsForUser;
+namespace Core.Domains.CompanyClaims.UseCases.GetCompanyClaimIdsForUser;
 
-public class GetCompanyPermissionIdsForUserHandler(
+public class GetCompanyClaimIdsForUserHandler(
     ICurrentAccountService currentAccountService,
     MainDataContext context)
-    : IRequestHandler<GetCompanyPermissionIdsForUserRequest, Result<ICollection<long>>>
+    : IRequestHandler<GetCompanyClaimIdsForUserRequest, Result<ICollection<long>>>
 {
-    public async Task<Result<ICollection<long>>> Handle(GetCompanyPermissionIdsForUserRequest request,
+    public async Task<Result<ICollection<long>>> Handle(GetCompanyClaimIdsForUserRequest request,
         CancellationToken cancellationToken = default)
     {
         var currentUserId = currentAccountService.GetIdOrThrow();

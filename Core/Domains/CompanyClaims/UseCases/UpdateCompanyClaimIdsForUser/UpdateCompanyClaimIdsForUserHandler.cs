@@ -5,14 +5,14 @@ using Microsoft.EntityFrameworkCore;
 using Shared.Result;
 using Shared.Result.FluentValidation;
 
-namespace Core.Domains.CompanyClaims.UseCases.UpdateCompanyPermissionIdsForUser;
+namespace Core.Domains.CompanyClaims.UseCases.UpdateCompanyClaimIdsForUser;
 
-public class UpdateCompanyPermissionIdsForUserHandler(
+public class UpdateCompanyClaimIdsForUserHandler(
     ICurrentAccountService currentAccountService,
     MainDataContext context) 
-    : IRequestHandler<UpdateCompanyPermissionIdsForUserRequest, Result>
+    : IRequestHandler<UpdateCompanyClaimIdsForUserRequest, Result>
 {
-    public async Task<Result> Handle(UpdateCompanyPermissionIdsForUserRequest request, CancellationToken cancellationToken = default)
+    public async Task<Result> Handle(UpdateCompanyClaimIdsForUserRequest request, CancellationToken cancellationToken = default)
     {
         var currentUserId = currentAccountService.GetIdOrThrow();
 
