@@ -1,5 +1,6 @@
 ﻿using Core.Domains._Shared.UseCaseStructure;
 using Core.Domains.CompanyClaims;
+using Core.Domains.JobFolders;
 using Core.Persistence.EfCore;
 using Core.Services.Auth;
 using Microsoft.EntityFrameworkCore;
@@ -14,24 +15,26 @@ public class GetJobFolderClaimIdsForUserHandler(ICurrentAccountService currentAc
         CancellationToken cancellationToken = default)
     {
         var currentUserId = currentAccountService.GetIdOrThrow();
-
-        if (currentUserId != request.UserId)
-        {
-            //todo hierarchy
-            var isAdmin = await context.UserJobFolderClaims
-                .AnyAsync(ujfp => ujfp.UserId == currentUserId 
-                          && ujfp.FolderId == request.FolderId
-                          && ujfp.ClaimId == CompanyClaim.IsAdmin.Id, cancellationToken);
-            
-            if (!isAdmin) 
-                return Result<ICollection<long>>.Forbidden();
-        }
         
-        var permissionIds = await context.UserJobFolderClaims
-            .Where(ujfp => ujfp.UserId == request.UserId && ujfp.FolderId == request.FolderId)
-            .Select(ujfp => ujfp.ClaimId)
+        var currentUserClaimIdsOnThisAndAncestors = await context.JobFolderClosures
+            .GetClaimIdsForThisAndAncestors(request.FolderId, currentUserId)
+            .ToListAsync(cancellationToken);
+        
+        if (request.UserId == currentUserId)
+            return currentUserClaimIdsOnThisAndAncestors;
+        
+        if (!currentUserClaimIdsOnThisAndAncestors.Contains(JobFolderClaim.IsAdmin.Id))
+            return Result<ICollection<long>>.Forbidden("Current user is not a folder admin.");
+        
+        var targetUserClaimIdsOnThisAndAncestors = await context.JobFolderClosures
+            .GetClaimIdsForThisAndAncestors(request.FolderId, request.UserId)
             .ToListAsync(cancellationToken);
 
-        return Result<ICollection<long>>.Success(permissionIds);
+        var visibleClaimIds =
+            currentUserClaimIdsOnThisAndAncestors
+                .Intersect(targetUserClaimIdsOnThisAndAncestors)
+                .ToList();
+        
+        return visibleClaimIds;
     }
 }

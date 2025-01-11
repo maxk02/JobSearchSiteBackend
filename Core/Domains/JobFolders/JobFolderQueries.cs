@@ -19,7 +19,7 @@ public static class JobFolderQueries
                     claimIds.Contains(userJobFolderClaim.ClaimId)));
     }
 
-    public static IQueryable<JobFolderClosure> GetThisOrAncestorsWhereUserHasClaim(
+    public static IQueryable<JobFolderClosure> GetThisOrAncestorWhereUserHasClaim(
         this DbSet<JobFolderClosure> dbSet,
         long jobFolderId, long userProfileId, long claimId)
     {
@@ -33,17 +33,17 @@ public static class JobFolderQueries
                     userJobFolderClaim.ClaimId == claimId));
     }
     
-    public static IQueryable<long> GetDistinctClaimIdsForThisAndAncestors(
+    public static IQueryable<long> GetClaimIdsForThisAndAncestors(
         this DbSet<JobFolderClosure> dbSet,
         long jobFolderId, long userProfileId)
     {
         return dbSet
-            .Include(jfc => jfc.Ancestor)
-            .ThenInclude(jobFolder => jobFolder!.UserJobFolderClaims)
+            // .Include(jfc => jfc.Ancestor)
+            // .ThenInclude(jobFolder => jobFolder!.UserJobFolderClaims)
+            .AsNoTracking()
             .Where(jfc => jfc.DescendantId == jobFolderId)
             .SelectMany(jfc => jfc.Ancestor!.UserJobFolderClaims!)
             .Where(ujfc => ujfc.UserId == userProfileId)
-            .Select(ujfc => ujfc.ClaimId)
-            .Distinct();
+            .Select(ujfc => ujfc.ClaimId);
     }
 }

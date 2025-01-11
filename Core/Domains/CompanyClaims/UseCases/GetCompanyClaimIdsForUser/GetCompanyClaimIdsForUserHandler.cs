@@ -16,25 +16,26 @@ public class GetCompanyClaimIdsForUserHandler(
     {
         var currentUserId = currentAccountService.GetIdOrThrow();
 
-        var targetUserPermissions = await context.UserCompanyClaims
+        var currentUserClaimIds = await context.UserCompanyClaims
             .Where(ucp => ucp.UserId == currentUserId && ucp.CompanyId == request.CompanyId)
             .Select(ucp => ucp.Id)
             .ToListAsync(cancellationToken);
         
-        if (currentUserId == request.UserId)
-        {
-            return Result<ICollection<long>>.Success(targetUserPermissions);
-        }
+        if (request.UserId == currentUserId)
+            return currentUserClaimIds;
         
-        var isCurrentUserAdmin = await context.UserCompanyClaims.AnyAsync(
-            ucp => ucp.UserId == currentUserId
-                   && ucp.CompanyId == request.CompanyId
-                   && ucp.Id == CompanyClaim.IsAdmin.Id,
-            cancellationToken);
-            
-        if (!isCurrentUserAdmin) 
+        if (!currentUserClaimIds.Contains(CompanyClaim.IsAdmin.Id))
             return Result<ICollection<long>>.Forbidden();
         
-        return Result<ICollection<long>>.Success(targetUserPermissions);
+        var targetUserClaimIds = await context.UserCompanyClaims
+            .Where(ucp => ucp.UserId == request.UserId && ucp.CompanyId == request.CompanyId)
+            .Select(ucp => ucp.Id)
+            .ToListAsync(cancellationToken);
+
+        var visibleClaimIds = currentUserClaimIds
+            .Intersect(targetUserClaimIds)
+            .ToList();
+
+        return visibleClaimIds;
     }
 }

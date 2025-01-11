@@ -4,4 +4,4 @@ using Shared.Result;
 namespace Core.Domains.CompanyClaims.UseCases.UpdateCompanyClaimIdsForUser;
 
 public record UpdateCompanyClaimIdsForUserRequest(long UserId, long CompanyId,
-    ICollection<long> CompanyPermissionIds) : IRequest<Result>;
+    ICollection<long> CompanyClaimIds) : IRequest<Result>;

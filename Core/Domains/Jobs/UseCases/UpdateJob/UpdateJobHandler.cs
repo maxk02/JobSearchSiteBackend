@@ -28,7 +28,7 @@ public class UpdateJobHandler(
 
         var hasPermissionInCurrentFolderOrAncestors =
             await context.JobFolderClosures
-                .GetThisOrAncestorsWhereUserHasClaim(job.JobFolderId, currentUserId,
+                .GetThisOrAncestorWhereUserHasClaim(job.JobFolderId, currentUserId,
                     JobFolderClaim.CanEditJobsAndSubfolders.Id)
                 .AnyAsync(cancellationToken);
 
@@ -41,7 +41,7 @@ public class UpdateJobHandler(
         {
             var hasPermissionInRequestedFolderOrAncestors =
                 await context.JobFolderClosures
-                    .GetThisOrAncestorsWhereUserHasClaim(request.JobFolderId.Value, currentUserId,
+                    .GetThisOrAncestorWhereUserHasClaim(request.JobFolderId.Value, currentUserId,
                         JobFolderClaim.CanEditJobsAndSubfolders.Id)
                     .AnyAsync(cancellationToken);
 

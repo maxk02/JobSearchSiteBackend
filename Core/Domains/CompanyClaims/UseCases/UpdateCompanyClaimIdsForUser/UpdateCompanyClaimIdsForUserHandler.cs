@@ -1,4 +1,5 @@
 ﻿using Core.Domains._Shared.UseCaseStructure;
+using Core.Domains.JobFolderClaims;
 using Core.Persistence.EfCore;
 using Core.Services.Auth;
 using Microsoft.EntityFrameworkCore;
@@ -9,53 +10,73 @@ namespace Core.Domains.CompanyClaims.UseCases.UpdateCompanyClaimIdsForUser;
 
 public class UpdateCompanyClaimIdsForUserHandler(
     ICurrentAccountService currentAccountService,
-    MainDataContext context) 
+    MainDataContext context)
     : IRequestHandler<UpdateCompanyClaimIdsForUserRequest, Result>
 {
-    public async Task<Result> Handle(UpdateCompanyClaimIdsForUserRequest request, CancellationToken cancellationToken = default)
+    public async Task<Result> Handle(UpdateCompanyClaimIdsForUserRequest request,
+        CancellationToken cancellationToken = default)
     {
         var currentUserId = currentAccountService.GetIdOrThrow();
 
         var permissionsValidator = new CompanyClaimIdCollectionValidator();
-        var validationResult = permissionsValidator.Validate(request.CompanyPermissionIds);
+        var validationResult = await permissionsValidator.ValidateAsync(request.CompanyClaimIds, cancellationToken);
         if (!validationResult.IsValid)
             return Result.Invalid(validationResult.AsErrors());
-        
-        var company = await context.Companies.FindAsync([request.CompanyId], cancellationToken);
-        if (company is null)
-            return Result.NotFound();
-        
-        var userExists = await context.UserProfiles.AnyAsync(u => u.Id == request.UserId, cancellationToken);
-        if (!userExists)
-            return Result.NotFound();
-        
-        var currentUserClaims = await context.UserCompanyClaims
+
+        var companyExists = await context.Companies
+            .Where(c => c.Id == request.CompanyId)
+            .AnyAsync(cancellationToken);
+
+        if (!companyExists) return Result.NotFound();
+
+        var userExists = await context.UserProfiles
+            .Where(u => u.Id == request.UserId)
+            .AnyAsync(cancellationToken);
+
+        if (!userExists) return Result.NotFound();
+
+        if (request.UserId == currentUserId)
+            return Result.Error();
+
+        var currentUserClaimIds = await context.UserCompanyClaims
             .Where(ucp => ucp.UserId == currentUserId && ucp.CompanyId == request.CompanyId)
             .Select(ucp => ucp.Id)
             .ToListAsync(cancellationToken);
 
-        if (!currentUserClaims.Contains(CompanyClaim.IsAdmin.Id))
+        if (!currentUserClaimIds.Contains(CompanyClaim.IsAdmin.Id))
             return Result.Forbidden();
-        
-        var targetUserClaims = await context.UserCompanyClaims
+
+        if (request.CompanyClaimIds.Except(currentUserClaimIds).Any())
+            return Result.Forbidden();
+
+        var targetUserClaimIds = await context.UserCompanyClaims
             .Where(ucp => ucp.UserId == request.UserId && ucp.CompanyId == request.CompanyId)
             .Select(ucp => ucp.Id)
             .ToListAsync(cancellationToken);
-        
-        if (!targetUserClaims.Contains(CompanyClaim.IsOwner.Id) 
-            && !targetUserClaims.Contains(CompanyClaim.IsAdmin.Id))
+
+        if (targetUserClaimIds.Contains(JobFolderClaim.IsOwner.Id))
             return Result.Forbidden();
-        
-        if (targetUserClaims.Except(currentUserClaims).Any())
+
+        if (targetUserClaimIds.Contains(CompanyClaim.IsAdmin.Id)
+            && !targetUserClaimIds.Contains(CompanyClaim.IsOwner.Id))
             return Result.Forbidden();
-        
-        company.UserCompanyClaims = request.CompanyPermissionIds.Select(cpId => 
-            new UserCompanyClaim(request.UserId, request.CompanyId, cpId)).ToList();
-        
-        context.Companies.Update(company);
-        
+
+        var claimIdsToRemove =
+            currentUserClaimIds
+                .Except(request.CompanyClaimIds)
+                .ToList();
+
+        var targetUserCompanyClaimsToRemove =
+            context.UserCompanyClaims
+                .Where(ujfc => ujfc.CompanyId == request.CompanyId
+                               && ujfc.UserId == request.UserId
+                               && claimIdsToRemove.Contains(ujfc.ClaimId));
+
+        context.UserCompanyClaims.RemoveRange(targetUserCompanyClaimsToRemove);
+        context.UserCompanyClaims.AddRange(request.CompanyClaimIds
+            .Select(id => new UserCompanyClaim(request.UserId, request.CompanyId, id)));
         await context.SaveChangesAsync(cancellationToken);
-        
+
         return Result.Success();
     }
 }

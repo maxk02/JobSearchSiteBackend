@@ -32,7 +32,7 @@ public class UpdateJobApplicationHandler(
 
         var hasPermissionInCurrentFolderOrAncestors =
             await context.JobFolderClosures
-                .GetThisOrAncestorsWhereUserHasClaim(jobFolderId, currentUserId,
+                .GetThisOrAncestorWhereUserHasClaim(jobFolderId, currentUserId,
                     JobFolderClaim.CanEditJobsAndSubfolders.Id)
                 .AnyAsync(cancellationToken);
 

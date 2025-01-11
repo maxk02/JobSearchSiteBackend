@@ -3,5 +3,5 @@ using Shared.Result;
 
 namespace Core.Domains.JobFolderClaims.UseCases.UpdateJobFolderClaimIdsForUser;
 
-public record UpdateJobFolderClaimIdsForUserRequest(long UserId, long FolderId, ICollection<long> FolderPermissionIds)
-    : IRequest<Result>;
+public record UpdateJobFolderClaimIdsForUserRequest(long UserId, long FolderId,
+    ICollection<long> JobFolderClaimIds) : IRequest<Result>;

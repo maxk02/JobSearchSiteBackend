@@ -50,7 +50,7 @@ public class AddJobHandler(
 
         var hasPermissionInRequestedFolderOrAncestors =
             await context.JobFolderClosures
-                .GetThisOrAncestorsWhereUserHasClaim(request.JobFolderId, currentUserId,
+                .GetThisOrAncestorWhereUserHasClaim(request.JobFolderId, currentUserId,
                     JobFolderClaim.CanEditJobsAndSubfolders.Id)
                 .AnyAsync(cancellationToken);
 

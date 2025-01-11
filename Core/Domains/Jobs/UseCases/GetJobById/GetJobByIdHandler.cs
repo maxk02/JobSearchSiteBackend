@@ -40,7 +40,7 @@ public class GetJobByIdHandler(
                 return Result<GetJobByIdResponse>.Forbidden();
 
             var canEdit = await context.JobFolderClosures
-                .GetThisOrAncestorsWhereUserHasClaim(job.JobFolderId, currentUserId.Value,
+                .GetThisOrAncestorWhereUserHasClaim(job.JobFolderId, currentUserId.Value,
                     JobFolderClaim.CanEditJobsAndSubfolders.Id)
                 .AnyAsync(cancellationToken);
 
