@@ -8,7 +8,7 @@ using Shared.Result;
 
 namespace Core.Domains.Cvs;
 
-public class Cv : IEntityWithId
+public class Cv : IEntityWithId, IEntityWithRowVersioning
 {
     public Cv(long userId, SalaryRecord? salaryRecord, EmploymentTypeRecord? employmentTypeRecord,
         ICollection<EducationRecord> educationRecords,
@@ -23,6 +23,8 @@ public class Cv : IEntityWithId
     }
     
     public long Id { get; private set; }
+
+    public byte[] RowVersion { get; private set; } = [];
     
     public long UserId { get; private set; }
     

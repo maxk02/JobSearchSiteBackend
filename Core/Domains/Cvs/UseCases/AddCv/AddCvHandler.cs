@@ -44,19 +44,20 @@ public class AddCvHandler(
         context.Cvs.Add(newCv);
         await context.SaveChangesAsync(cancellationToken);
 
-        var cvSearchModel = new CvSearchModel(newCv.Id, newCv.UserId,
-            newCv.EducationRecords ?? new List<EducationRecord>(),
-            newCv.WorkRecords ?? new List<WorkRecord>(),
-            newCv.Skills ?? new List<string>(),
-            new List<long>(), new List<long>());
+        var cvSearchModel = new CvSearchModel(
+            newCv.Id, newCv.RowVersion, newCv.UserId,
+            newCv.EducationRecords ?? [],
+            newCv.WorkRecords ?? [],
+            newCv.Skills ?? []
+        );
 
         await transaction.CommitAsync(cancellationToken);
-        
+
         backgroundJobService.Enqueue(
-            () => cvSearchRepository.AddAsync(cvSearchModel, CancellationToken.None),
+            () => cvSearchRepository.AddOrSetConstFieldsAsync(cvSearchModel, CancellationToken.None),
             BackgroundJobQueues.CvSearch
         );
-        
+
         return Result.Success();
     }
 }

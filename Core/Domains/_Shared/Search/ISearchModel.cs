@@ -3,4 +3,5 @@
 public interface ISearchModel
 {
     public long Id { get; init; }
+    // public byte[] Version { get; init; }
 }

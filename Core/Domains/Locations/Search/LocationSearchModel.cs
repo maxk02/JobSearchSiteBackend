@@ -5,6 +5,7 @@ namespace Core.Domains.Locations.Search;
 public record LocationSearchModel
 (
     long Id,
+    byte[] Version,
     long CountryId,
     string Name,
     ICollection<string> Subdivisions,

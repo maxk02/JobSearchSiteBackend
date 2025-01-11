@@ -33,7 +33,7 @@ public class CreateCompanyHandler(
         await context.SaveChangesAsync(cancellationToken);
         
         var companySearchModel =
-            new CompanySearchModel(company.Id, company.CountryId, company.Name, company.Description);
+            new CompanySearchModel(company.Id, company.RowVersion, company.CountryId, company.Name, company.Description);
 
         //adding full permission set to user
         company.UserCompanyClaims = CompanyClaim.AllIds
@@ -57,7 +57,7 @@ public class CreateCompanyHandler(
         await transaction.CommitAsync(cancellationToken);
         
         backgroundJobService
-            .Enqueue(() => companySearchRepository.AddAsync(companySearchModel, CancellationToken.None),
+            .Enqueue(() => companySearchRepository.AddOrSetConstFieldsAsync(companySearchModel, CancellationToken.None),
             BackgroundJobQueues.CompanySearch);
 
         return new CreateCompanyResponse(company.Id);

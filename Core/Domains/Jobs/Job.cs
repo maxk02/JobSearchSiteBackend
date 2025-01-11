@@ -12,7 +12,7 @@ using Shared.Result.FluentValidation;
 
 namespace Core.Domains.Jobs;
 
-public class Job : IEntityWithId
+public class Job : IEntityWithId, IEntityWithRowVersioning
 {
     public Job(long categoryId, long jobFolderId, string title, string description, bool isPublic, DateTime dateTimePublishedUtc,
         DateTime dateTimeExpiringUtc, ICollection<string> responsibilities, ICollection<string> requirements,
@@ -33,6 +33,8 @@ public class Job : IEntityWithId
     }
     
     public long Id { get; private set; }
+
+    public byte[] RowVersion { get; set; } = [];
 
     public long CategoryId { get; set; }
     

@@ -9,7 +9,7 @@ using Shared.Result.FluentValidation;
 
 namespace Core.Domains.Companies;
 
-public class Company : IEntityWithId
+public class Company : IEntityWithId, IEntityWithRowVersioning
 {
     public Company(string name, string? description, bool isPublic, long countryId)
     {
@@ -20,6 +20,8 @@ public class Company : IEntityWithId
     }
     
     public long Id { get; private set; }
+    
+    public byte[] RowVersion { get; private set; } =  [];
     
     public long CountryId { get; private set; }
     

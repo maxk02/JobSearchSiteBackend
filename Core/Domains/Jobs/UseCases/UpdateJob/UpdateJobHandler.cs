@@ -34,6 +34,8 @@ public class UpdateJobHandler(
 
         if (!hasPermissionInCurrentFolderOrAncestors)
             return Result.Forbidden();
+        
+        var jobSearchModel = new JobSearchModel(job.Id, job.RowVersion);
 
         if (request.JobFolderId is not null)
         {
@@ -47,6 +49,7 @@ public class UpdateJobHandler(
                 return Result.Forbidden();
 
             job.JobFolderId = request.JobFolderId.Value;
+            jobSearchModel.JobFolderId = request.JobFolderId.Value;
         }
 
         if (request.CategoryId is not null)
@@ -55,13 +58,20 @@ public class UpdateJobHandler(
                 return Result.Error();
 
             job.CategoryId = request.CategoryId.Value;
+            jobSearchModel.CategoryId = request.CategoryId.Value;
         }
 
         if (request.Title is not null)
+        {
             job.Title = request.Title;
+            jobSearchModel.Title = request.Title;
+        }
 
         if (request.Description is not null)
+        {
             job.Description = request.Description;
+            jobSearchModel.Description = request.Description;
+        }
 
         if (request.IsPublic is not null)
             job.IsPublic = request.IsPublic.Value;
@@ -77,13 +87,22 @@ public class UpdateJobHandler(
         }
 
         if (request.Responsibilities is not null)
+        {
             job.Responsibilities = request.Responsibilities;
+            jobSearchModel.Responsibilities = request.Responsibilities;
+        }
 
         if (request.Requirements is not null)
+        {
             job.Requirements = request.Requirements;
+            jobSearchModel.Requirements = request.Requirements;
+        }
 
         if (request.Advantages is not null)
+        {
             job.Advantages = request.Advantages;
+            jobSearchModel.Advantages = request.Advantages;
+        }
 
         if (request.SalaryRecord is not null)
             job.SalaryRecord = request.SalaryRecord;
@@ -128,19 +147,14 @@ public class UpdateJobHandler(
 
         if (!validationResult.IsValid)
             return Result.Error();
-
-
-        //todo
-        var jobSearchModel = new JobSearchModel(job.Id, 1, 1, 1,
-            job.CategoryId, job.Title, job.Description,
-            job.Responsibilities ?? [], job.Requirements ?? [], job.Advantages ?? []);
+        
 
         context.Jobs.Update(job);
         await context.SaveChangesAsync(cancellationToken);
 
 
         backgroundJobService.Enqueue(
-            () => jobSearchRepository.UpdateAsync(jobSearchModel, CancellationToken.None),
+            () => jobSearchRepository.UpdateIfNewestAsync(jobSearchModel, CancellationToken.None),
             BackgroundJobQueues.JobSearch
         );
 
