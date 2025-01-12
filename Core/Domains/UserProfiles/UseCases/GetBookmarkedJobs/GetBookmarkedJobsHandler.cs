@@ -25,7 +25,7 @@ public class GetBookmarkedJobsHandler(
         var query = context.UserProfiles
             .Include(u => u.BookmarkedJobs)!
             .ThenInclude(job => job.JobFolder)
-            .Where(u => u.Id == currentAccountId)
+            .Where(u => u.Id == request.UserId)
             .SelectMany(u => u.BookmarkedJobs ?? new List<Job>());
 
         var count = await query.CountAsync(cancellationToken);

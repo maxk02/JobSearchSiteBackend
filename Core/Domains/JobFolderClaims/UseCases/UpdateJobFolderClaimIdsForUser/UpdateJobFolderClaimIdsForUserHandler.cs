@@ -65,10 +65,11 @@ public class UpdateJobFolderClaimIdsForUserHandler(ICurrentAccountService curren
             .ToList();
 
         var targetUserFolderClaimsToRemove = 
-            context.UserJobFolderClaims
+            await context.UserJobFolderClaims
             .Where(ujfc => ujfc.FolderId == request.FolderId 
                            && ujfc.UserId == request.UserId
-                           && claimIdsToRemove.Contains(ujfc.ClaimId));
+                           && claimIdsToRemove.Contains(ujfc.ClaimId))
+            .ToListAsync(cancellationToken);
         
         context.UserJobFolderClaims.RemoveRange(targetUserFolderClaimsToRemove);
         context.UserJobFolderClaims.AddRange(request.JobFolderClaimIds

@@ -26,18 +26,19 @@ public class UpdateJobApplicationHandler(
             return Result.NotFound();
 
         var jobApplication = jobApplicationWithJobFolderId.JobApplication;
-        context.JobApplications.Attach(jobApplication);
-
+        
         var jobFolderId = jobApplicationWithJobFolderId.JobFolderId;
 
         var hasPermissionInCurrentFolderOrAncestors =
             await context.JobFolderClosures
                 .GetThisOrAncestorWhereUserHasClaim(jobFolderId, currentUserId,
-                    JobFolderClaim.CanEditJobsAndSubfolders.Id)
+                    JobFolderClaim.CanManageApplications.Id)
                 .AnyAsync(cancellationToken);
 
         if (!hasPermissionInCurrentFolderOrAncestors)
             return Result.Forbidden();
+        
+        context.JobApplications.Attach(jobApplication);
 
         jobApplication.Status = request.Status;
 

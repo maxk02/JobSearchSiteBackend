@@ -67,10 +67,11 @@ public class UpdateCompanyClaimIdsForUserHandler(
                 .ToList();
 
         var targetUserCompanyClaimsToRemove =
-            context.UserCompanyClaims
+            await context.UserCompanyClaims
                 .Where(ujfc => ujfc.CompanyId == request.CompanyId
                                && ujfc.UserId == request.UserId
-                               && claimIdsToRemove.Contains(ujfc.ClaimId));
+                               && claimIdsToRemove.Contains(ujfc.ClaimId))
+                .ToListAsync(cancellationToken);
 
         context.UserCompanyClaims.RemoveRange(targetUserCompanyClaimsToRemove);
         context.UserCompanyClaims.AddRange(request.CompanyClaimIds

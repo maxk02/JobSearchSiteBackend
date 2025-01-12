@@ -33,16 +33,16 @@ public class GetFirstCvHandler(
             .Include(cv => cv.Categories)
             .Where(cv => cv.UserId == request.UserId);
         
-        var cv = await query
-            .FirstOrDefaultAsync(cancellationToken);
+        var cv = await query.SingleOrDefaultAsync(cancellationToken);
         
         if (cv is null)
             return Result<GetFirstCvResponse>.NotFound();
 
-        var cvDto = new CvDto(cv.Id, cv.UserId, cv.SalaryRecord, cv.EmploymentTypeRecord,
-            cv.EducationRecords ?? new List<EducationRecord>(),
-            cv.WorkRecords ?? new List<WorkRecord>(),
-            cv.Skills ?? new List<string>());
+        var cvDto = new CvDto(cv.Id, cv.UserId,
+            cv.SalaryRecord, cv.EmploymentTypeRecord,
+            cv.EducationRecords ?? [],
+            cv.WorkRecords ?? [],
+            cv.Skills ?? []);
         
         var response = new GetFirstCvResponse(cvDto);
 

@@ -13,8 +13,9 @@ public class JobFolderClaim : IEntityWithId, IClaimEntity
         new JobFolderClaim(4, nameof(CanReadStats)),
         new JobFolderClaim(5, nameof(CanEditInfo)),
         new JobFolderClaim(6, nameof(CanEditJobsAndSubfolders)),
-        new JobFolderClaim(7, nameof(CanManageApplications)),
-        new JobFolderClaim(8, nameof(CanContactPeopleWithPublicCv))
+        new JobFolderClaim(7, nameof(CanReadJobsAndSubfolders)),
+        new JobFolderClaim(8, nameof(CanManageApplications)),
+        new JobFolderClaim(9, nameof(CanContactPeopleWithPublicCv))
     ];
 
     public static readonly ImmutableArray<long> AllIds = [..AllValues.Select(permission => permission.Id)];
@@ -28,6 +29,8 @@ public class JobFolderClaim : IEntityWithId, IClaimEntity
     public static readonly JobFolderClaim CanReadStats = AllValues.First(permission => permission.Name == nameof(CanReadStats));
 
     public static readonly JobFolderClaim CanEditInfo = AllValues.First(permission => permission.Name == nameof(CanEditInfo));
+    
+    public static readonly JobFolderClaim CanReadJobsAndSubfolders = AllValues.First(permission => permission.Name == nameof(CanReadJobsAndSubfolders));
 
     public static readonly JobFolderClaim CanEditJobsAndSubfolders = AllValues.First(permission => permission.Name == nameof(CanEditJobsAndSubfolders));
 

@@ -1,5 +1,4 @@
-﻿using Core.Domains.JobFolderClaims;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 
 namespace Core.Domains.JobFolders;
 
@@ -10,8 +9,6 @@ public static class JobFolderQueries
         long jobFolderId, long userProfileId, ICollection<long> claimIds)
     {
         return dbSet
-            .Include(jobFolderClosure => jobFolderClosure.Ancestor)
-            .ThenInclude(ancestralJobFolder => ancestralJobFolder!.UserJobFolderClaims)
             .Where(jobFolderClosure => jobFolderClosure.DescendantId == jobFolderId)
             .Where(jobFolderClosure => jobFolderClosure.Ancestor!.UserJobFolderClaims!
                 .Any(userJobFolderClaim =>
@@ -24,8 +21,6 @@ public static class JobFolderQueries
         long jobFolderId, long userProfileId, long claimId)
     {
         return dbSet
-            .Include(jobFolderClosure => jobFolderClosure.Ancestor)
-            .ThenInclude(ancestralJobFolder => ancestralJobFolder!.UserJobFolderClaims)
             .Where(jobFolderClosure => jobFolderClosure.DescendantId == jobFolderId)
             .Where(jobFolderClosure => jobFolderClosure.Ancestor!.UserJobFolderClaims!
                 .Any(userJobFolderClaim =>
@@ -38,8 +33,6 @@ public static class JobFolderQueries
         long jobFolderId, long userProfileId)
     {
         return dbSet
-            // .Include(jfc => jfc.Ancestor)
-            // .ThenInclude(jobFolder => jobFolder!.UserJobFolderClaims)
             .AsNoTracking()
             .Where(jfc => jfc.DescendantId == jobFolderId)
             .SelectMany(jfc => jfc.Ancestor!.UserJobFolderClaims!)

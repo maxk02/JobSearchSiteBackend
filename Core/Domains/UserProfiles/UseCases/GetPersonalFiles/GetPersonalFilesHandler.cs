@@ -22,21 +22,16 @@ public class GetPersonalFilesHandler(
         if (currentAccountId != request.UserId)
             return Result<GetPersonalFilesResponse>.Forbidden();
 
-        var query = context.UserProfiles
-            .Include(u => u.PersonalFiles)
-            .Where(u => u.Id == currentAccountId)
-            .SelectMany(u => u.PersonalFiles ?? new List<PersonalFile>());
+        var query = context.PersonalFiles
+            .Where(pf => pf.UserId == request.UserId)
+            .Select(x => new PersonalFileInfocardDto(x.Id, x.Name, x.Extension, x.Size));
         
         var count = await query.CountAsync(cancellationToken);
         
-        var bookmarkedCompanies = await query
+        var personalFileInfocardDtos = await query
             .Skip((request.PaginationSpec.PageNumber - 1) * request.PaginationSpec.PageSize)
             .Take(request.PaginationSpec.PageSize)
             .ToListAsync(cancellationToken);
-
-        var personalFileInfocardDtos = bookmarkedCompanies
-            .Select(x => new PersonalFileInfocardDto(x.Id, x.UserId, x.Name, x.Extension, x.Size))
-            .ToList();
 
         var paginationResponse = new PaginationResponse(count, request.PaginationSpec.PageNumber,
             request.PaginationSpec.PageSize);

@@ -18,7 +18,7 @@ public class GetUserProfileByIdHandler(ICurrentAccountService currentAccountServ
             .Include(u => u.Phone)
             .Where(u => u.Id == request.Id);
         
-        var user  = await query.FirstOrDefaultAsync(cancellationToken);
+        var user  = await query.SingleOrDefaultAsync(cancellationToken);
 
         if (user is null)
             return Result<GetUserProfileByIdResponse>.NotFound();
