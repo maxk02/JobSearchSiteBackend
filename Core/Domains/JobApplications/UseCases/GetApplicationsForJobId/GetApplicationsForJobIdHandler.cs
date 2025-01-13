@@ -31,7 +31,7 @@ public class GetApplicationsForJobIdHandler(
             return Result<GetApplicationsForJobIdResponse>.NotFound();
 
         var hasPermissionInCurrentFolderOrAncestors =
-            await context.JobFolderClosures
+            await context.JobFolderRelations
                 .GetThisOrAncestorWhereUserHasClaim(jobFolderId, currentUserId,
                     JobFolderClaim.CanManageApplications.Id)
                 .AnyAsync(cancellationToken);

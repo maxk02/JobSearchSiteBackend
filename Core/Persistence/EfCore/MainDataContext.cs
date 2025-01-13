@@ -32,7 +32,7 @@ public class MainDataContext : IdentityDbContext<MyIdentityUser, MyIdentityRole,
     public DbSet<Job> Jobs { get; set; }
     public DbSet<Location> Locations { get; set; }
     public DbSet<JobFolder> JobFolders { get; set; }
-    public DbSet<JobFolderClosure> JobFolderClosures { get; set; }
+    public DbSet<JobFolderRelation> JobFolderRelations { get; set; }
     public DbSet<CompanyClaim> CompanyClaims { get; set; }
     public DbSet<UserCompanyClaim> UserCompanyClaims { get; set; }
     public DbSet<JobFolderClaim> JobFolderClaims { get; set; }

@@ -47,5 +47,5 @@ public class JobFolderClaim : IEntityWithId, IClaimEntity
         Name = name;
     }
 
-    public ICollection<UserJobFolderClaim>? UserJobFolderPermissions { get; set; }
+    public ICollection<UserJobFolderClaim>? UserJobFolderClaims { get; set; }
 }

@@ -6,7 +6,7 @@ using Shared.Result;
 
 namespace Core.Domains.JobFolders;
 
-public class JobFolder : IEntityWithId, IHierarchicalEntity<JobFolder, JobFolderClosure>
+public class JobFolder : IEntityWithId, IHierarchicalEntity<JobFolder, JobFolderRelation>
 {
     public JobFolder(long companyId, string? name, string? description)
     {
@@ -25,8 +25,8 @@ public class JobFolder : IEntityWithId, IHierarchicalEntity<JobFolder, JobFolder
     
     public Company? Company { get; set; }
     
-    public ICollection<JobFolderClosure>? ClosuresWhereThisIsDescendant { get; set; }
-    public ICollection<JobFolderClosure>? ClosuresWhereThisIsAncestor { get; set; }
+    public ICollection<JobFolderRelation>? RelationsWhereThisIsDescendant { get; set; }
+    public ICollection<JobFolderRelation>? RelationsWhereThisIsAncestor { get; set; }
     
     public ICollection<Job>? Jobs { get; set; }
     public ICollection<UserJobFolderClaim>? UserJobFolderClaims { get; set; }

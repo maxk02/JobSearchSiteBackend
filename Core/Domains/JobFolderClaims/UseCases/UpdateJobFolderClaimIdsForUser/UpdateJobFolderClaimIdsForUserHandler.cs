@@ -15,16 +15,11 @@ public class UpdateJobFolderClaimIdsForUserHandler(ICurrentAccountService curren
         CancellationToken cancellationToken = default)
     {
         var currentUserId = currentAccountService.GetIdOrThrow();
-
-        var permissionsValidator = new JobFolderClaimIdCollectionValidator();
-        var validationResult = await permissionsValidator.ValidateAsync(request.JobFolderClaimIds, cancellationToken);
-        if (!validationResult.IsValid)
-            return Result.Invalid(validationResult.AsErrors());
         
         if (request.UserId == currentUserId)
             return Result.Error();
         
-        var currentUserClaimIdsForThisAndAncestors = await context.JobFolderClosures
+        var currentUserClaimIdsForThisAndAncestors = await context.JobFolderRelations
             .GetClaimIdsForThisAndAncestors(request.FolderId, currentUserId)
             .ToListAsync(cancellationToken);
         
@@ -34,7 +29,7 @@ public class UpdateJobFolderClaimIdsForUserHandler(ICurrentAccountService curren
         if (request.JobFolderClaimIds.Except(currentUserClaimIdsForThisAndAncestors).Any())
             return Result.Forbidden();
         
-        var targetUserClaimIdsForThisAndAncestors = await context.JobFolderClosures
+        var targetUserClaimIdsForThisAndAncestors = await context.JobFolderRelations
             .GetClaimIdsForThisAndAncestors(request.FolderId, request.UserId)
             .ToListAsync(cancellationToken);
         
@@ -51,13 +46,28 @@ public class UpdateJobFolderClaimIdsForUserHandler(ICurrentAccountService curren
             .Select(ujfc => ujfc.ClaimId)
             .ToListAsync(cancellationToken);
 
-        var claimIdsThatTargetUserAlreadyHasAtAncestors =
+        var claimIdsForAncestors =
             targetUserClaimIdsForThisAndAncestors
                 .Except(targetUserClaimIdsForThis)
+                .ToList();
+
+        var claimIdsThatTargetUserAlreadyHasAtAncestors =
+            claimIdsForAncestors
                 .Intersect(request.JobFolderClaimIds);
         
         if (claimIdsThatTargetUserAlreadyHasAtAncestors.Any())
             return Result.Error();
+
+        var claimIdsForAncestorsWithRequestedClaimsConcated = 
+            claimIdsForAncestors
+                .Concat(request.JobFolderClaimIds)
+                .ToList();
+        
+        var permissionsValidator = new JobFolderClaimIdCollectionValidator();
+        var validationResult = await permissionsValidator
+            .ValidateAsync(claimIdsForAncestorsWithRequestedClaimsConcated, cancellationToken);
+        if (!validationResult.IsValid)
+            return Result.Invalid(validationResult.AsErrors());
         
         var claimIdsToRemove = 
             currentUserClaimIdsForThisAndAncestors

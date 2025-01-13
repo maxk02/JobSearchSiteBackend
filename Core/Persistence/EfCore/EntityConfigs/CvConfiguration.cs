@@ -13,6 +13,7 @@ public class CvConfiguration : IEntityTypeConfiguration<Cv>
         builder
             .HasOne(cv => cv.User)
             .WithMany(user => user.Cvs)
+            .HasForeignKey(cv => cv.UserId)
             .OnDelete(DeleteBehavior.Restrict);
 
         builder

@@ -12,7 +12,9 @@ public class JobConfiguration : IEntityTypeConfiguration<Job>
 
         builder
             .HasOne(job => job.JobFolder)
-            .WithMany(jobFolder => jobFolder.Jobs);
+            .WithMany(jobFolder => jobFolder.Jobs)
+            .HasForeignKey(job => job.JobFolderId)
+            .OnDelete(DeleteBehavior.Cascade);
 
         builder
             .HasMany(job => job.JobContractTypes)
@@ -21,6 +23,7 @@ public class JobConfiguration : IEntityTypeConfiguration<Job>
         builder
             .HasOne(job => job.Category)
             .WithMany(category => category.Jobs)
+            .HasForeignKey(job => job.CategoryId)
             .OnDelete(DeleteBehavior.Restrict);
 
         builder
@@ -30,7 +33,8 @@ public class JobConfiguration : IEntityTypeConfiguration<Job>
         builder
             .HasMany(job => job.JobApplications)
             .WithOne(jobApplication => jobApplication.Job)
-            .OnDelete(DeleteBehavior.Restrict);
+            .HasForeignKey(jobApplication => jobApplication.JobId)
+            .OnDelete(DeleteBehavior.Cascade);
 
         builder
             .HasMany(job => job.UsersWhoBookmarked)

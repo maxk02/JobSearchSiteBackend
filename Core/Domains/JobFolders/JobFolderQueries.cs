@@ -4,8 +4,8 @@ namespace Core.Domains.JobFolders;
 
 public static class JobFolderQueries
 {
-    public static IQueryable<JobFolderClosure> GetThisOrAncestorsWhereUserHasClaims(
-        this DbSet<JobFolderClosure> dbSet,
+    public static IQueryable<JobFolderRelation> GetThisOrAncestorsWhereUserHasClaims(
+        this DbSet<JobFolderRelation> dbSet,
         long jobFolderId, long userProfileId, ICollection<long> claimIds)
     {
         return dbSet
@@ -16,8 +16,8 @@ public static class JobFolderQueries
                     claimIds.Contains(userJobFolderClaim.ClaimId)));
     }
 
-    public static IQueryable<JobFolderClosure> GetThisOrAncestorWhereUserHasClaim(
-        this DbSet<JobFolderClosure> dbSet,
+    public static IQueryable<JobFolderRelation> GetThisOrAncestorWhereUserHasClaim(
+        this DbSet<JobFolderRelation> dbSet,
         long jobFolderId, long userProfileId, long claimId)
     {
         return dbSet
@@ -29,7 +29,7 @@ public static class JobFolderQueries
     }
     
     public static IQueryable<long> GetClaimIdsForThisAndAncestors(
-        this DbSet<JobFolderClosure> dbSet,
+        this DbSet<JobFolderRelation> dbSet,
         long jobFolderId, long userProfileId)
     {
         return dbSet

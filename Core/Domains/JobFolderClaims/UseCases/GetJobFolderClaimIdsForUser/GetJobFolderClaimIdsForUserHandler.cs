@@ -16,7 +16,7 @@ public class GetJobFolderClaimIdsForUserHandler(ICurrentAccountService currentAc
     {
         var currentUserId = currentAccountService.GetIdOrThrow();
         
-        var currentUserClaimIdsOnThisAndAncestors = await context.JobFolderClosures
+        var currentUserClaimIdsOnThisAndAncestors = await context.JobFolderRelations
             .GetClaimIdsForThisAndAncestors(request.FolderId, currentUserId)
             .ToListAsync(cancellationToken);
         
@@ -26,7 +26,7 @@ public class GetJobFolderClaimIdsForUserHandler(ICurrentAccountService currentAc
         if (!currentUserClaimIdsOnThisAndAncestors.Contains(JobFolderClaim.IsAdmin.Id))
             return Result<ICollection<long>>.Forbidden("Current user is not a folder admin.");
         
-        var targetUserClaimIdsOnThisAndAncestors = await context.JobFolderClosures
+        var targetUserClaimIdsOnThisAndAncestors = await context.JobFolderRelations
             .GetClaimIdsForThisAndAncestors(request.FolderId, request.UserId)
             .ToListAsync(cancellationToken);
 

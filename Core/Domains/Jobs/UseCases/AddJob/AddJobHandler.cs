@@ -49,7 +49,7 @@ public class AddJobHandler(
         var companyId = jobFolder.Company!.Id;
 
         var hasPermissionInRequestedFolderOrAncestors =
-            await context.JobFolderClosures
+            await context.JobFolderRelations
                 .GetThisOrAncestorWhereUserHasClaim(request.JobFolderId, currentUserId,
                     JobFolderClaim.CanEditJobsAndSubfolders.Id)
                 .AnyAsync(cancellationToken);

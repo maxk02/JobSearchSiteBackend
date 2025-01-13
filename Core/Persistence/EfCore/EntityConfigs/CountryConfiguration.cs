@@ -13,16 +13,19 @@ public class CountryConfiguration : IEntityTypeConfiguration<Country>
         builder
             .HasMany(country => country.JobContractTypes)
             .WithOne(jobContractType => jobContractType.Country)
+            .HasForeignKey(jobContractType => jobContractType.CountryId)
             .OnDelete(DeleteBehavior.Restrict);
 
         builder
             .HasMany(country => country.Companies)
             .WithOne(company => company.Country)
+            .HasForeignKey(company => company.CountryId)
             .OnDelete(DeleteBehavior.Restrict);
 
         builder
             .HasMany(country => country.Locations)
             .WithOne(location => location.Country)
+            .HasForeignKey(location => location.CountryId)
             .OnDelete(DeleteBehavior.Restrict);
     }
 }

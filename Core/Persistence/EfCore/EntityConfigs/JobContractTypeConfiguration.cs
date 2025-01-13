@@ -17,6 +17,7 @@ public class JobContractTypeConfiguration : IEntityTypeConfiguration<JobContract
         builder
             .HasOne(jobContractType => jobContractType.Country)
             .WithMany(country => country.JobContractTypes)
+            .HasForeignKey(jobContractType => jobContractType.CountryId)
             .OnDelete(DeleteBehavior.Restrict);
     }
 }

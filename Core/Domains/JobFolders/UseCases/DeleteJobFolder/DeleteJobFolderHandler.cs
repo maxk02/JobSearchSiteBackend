@@ -18,15 +18,20 @@ public class DeleteJobFolderHandler(ICurrentAccountService currentAccountService
         if (jobFolder is null)
             return Result.NotFound();
         
-        var hasEditClaim = await context.JobFolderClosures
+        var hasEditClaim = await context.JobFolderRelations
             .GetThisOrAncestorWhereUserHasClaim(request.Id, currentUserId,
-                JobFolderClaim.CanReadJobsAndSubfolders.Id)
+                JobFolderClaim.CanEditJobsAndSubfolders.Id)
             .AnyAsync(cancellationToken);
 
         if (!hasEditClaim)
             return Result.Forbidden();
+
+        var thisAndDescendants = await context.JobFolderRelations
+            .Where(jfc => jfc.AncestorId == request.Id)
+            .Select(jfc => jfc.Descendant)
+            .ToListAsync(cancellationToken);
         
-        context.JobFolders.Remove(jobFolder);
+        context.JobFolders.RemoveRange(jobFolder);
         await context.SaveChangesAsync(cancellationToken);
         
         return Result.Success();

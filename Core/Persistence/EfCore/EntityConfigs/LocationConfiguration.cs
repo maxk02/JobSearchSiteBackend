@@ -12,7 +12,9 @@ public class LocationConfiguration : IEntityTypeConfiguration<Location>
 
         builder
             .HasOne(location => location.Country)
-            .WithMany(country => country.Locations);
+            .WithMany(country => country.Locations)
+            .HasForeignKey(location => location.CountryId)
+            .OnDelete(DeleteBehavior.Restrict);
 
         builder
             .OwnsMany(location => location.Subdivisions, ownedNavigationBuilder => ownedNavigationBuilder.ToJson());

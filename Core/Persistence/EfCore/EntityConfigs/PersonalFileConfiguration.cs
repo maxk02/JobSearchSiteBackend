@@ -13,6 +13,7 @@ public class PersonalFileConfiguration : IEntityTypeConfiguration<PersonalFile>
         builder
             .HasOne(personalFile => personalFile.User)
             .WithMany(user => user.PersonalFiles)
+            .HasForeignKey(personalFile => personalFile.UserId)
             .OnDelete(DeleteBehavior.Restrict);
 
         builder

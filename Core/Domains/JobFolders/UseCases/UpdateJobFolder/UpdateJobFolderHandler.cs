@@ -14,7 +14,7 @@ public class UpdateJobFolderHandler(ICurrentAccountService currentAccountService
     {
         var currentUserId = currentAccountService.GetIdOrThrow();
 
-        var hasEditInfoClaim = await context.JobFolderClosures
+        var hasEditInfoClaim = await context.JobFolderRelations
             .GetThisOrAncestorWhereUserHasClaim(request.Id, currentUserId,
                 JobFolderClaim.CanEditInfo.Id)
             .AnyAsync(cancellationToken);

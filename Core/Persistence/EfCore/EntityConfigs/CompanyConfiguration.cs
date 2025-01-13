@@ -13,16 +13,19 @@ public class CompanyConfiguration : IEntityTypeConfiguration<Company>
         builder
             .HasMany(company => company.JobFolders)
             .WithOne(jobFolder => jobFolder.Company)
-            .OnDelete(DeleteBehavior.Restrict);
+            .HasForeignKey(jobFolder => jobFolder.CompanyId)
+            .OnDelete(DeleteBehavior.Cascade);
 
         builder
             .HasMany(company => company.UserCompanyClaims)
             .WithOne(userCompanyPermission => userCompanyPermission.Company)
-            .OnDelete(DeleteBehavior.Restrict);
+            .HasForeignKey(userCompanyPermission => userCompanyPermission.CompanyId)
+            .OnDelete(DeleteBehavior.Cascade);
 
         builder
             .HasOne(company => company.Country)
             .WithMany(country => country.Companies)
+            .HasForeignKey(company => company.CountryId)
             .OnDelete(DeleteBehavior.Restrict);
 
         builder

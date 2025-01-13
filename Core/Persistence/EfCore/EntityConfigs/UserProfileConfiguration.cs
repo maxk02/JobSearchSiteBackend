@@ -20,27 +20,32 @@ public class UserProfileConfiguration : IEntityTypeConfiguration<UserProfile>
         builder
             .HasMany(userProfile => userProfile.JobApplications)
             .WithOne(jobApplication => jobApplication.User)
-            .OnDelete(DeleteBehavior.Restrict);
+            .HasForeignKey(jobApplication => jobApplication.UserId)
+            .OnDelete(DeleteBehavior.Cascade);
 
         builder
             .HasMany(userProfile => userProfile.PersonalFiles)
             .WithOne(personalFile => personalFile.User)
+            .HasForeignKey(personalFile => personalFile.UserId)
             .OnDelete(DeleteBehavior.Restrict);
 
         builder
             .HasMany(userProfile => userProfile.Cvs)
             .WithOne(cv => cv.User)
-            .OnDelete(DeleteBehavior.Restrict);
+            .HasForeignKey(cv => cv.UserId)
+            .OnDelete(DeleteBehavior.Cascade);
 
         builder
             .HasMany(userProfile => userProfile.UserJobFolderClaims)
-            .WithOne(userProfileFolderPermission => userProfileFolderPermission.User)
-            .OnDelete(DeleteBehavior.Restrict);
+            .WithOne(userJobFolderClaim => userJobFolderClaim.User)
+            .HasForeignKey(userJobFolderClaim => userJobFolderClaim.UserId)
+            .OnDelete(DeleteBehavior.Cascade);
 
         builder
             .HasMany(userProfile => userProfile.UserCompanyClaims)
-            .WithOne(userProfileCompanyPermission => userProfileCompanyPermission.User)
-            .OnDelete(DeleteBehavior.Restrict);
+            .WithOne(userCompanyClaim => userCompanyClaim.User)
+            .HasForeignKey(userCompanyClaim => userCompanyClaim.UserId)
+            .OnDelete(DeleteBehavior.Cascade);
         
         builder
             .HasMany(userProfile => userProfile.BookmarkedJobs)

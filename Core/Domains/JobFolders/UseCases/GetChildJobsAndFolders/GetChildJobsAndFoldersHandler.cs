@@ -22,7 +22,7 @@ public class GetChildJobsAndFoldersHandler(
         if (jobFolder is null)
             return Result<GetChildJobsAndFoldersResponse>.NotFound();
 
-        var hasReadClaim = await context.JobFolderClosures
+        var hasReadClaim = await context.JobFolderRelations
             .GetThisOrAncestorWhereUserHasClaim(request.JobFolderId, currentUserId,
                 JobFolderClaim.CanReadJobsAndSubfolders.Id)
             .AnyAsync(cancellationToken);
@@ -36,7 +36,7 @@ public class GetChildJobsAndFoldersHandler(
                 job.DateTimeExpiringUtc, job.SalaryRecord, job.EmploymentTypeRecord))
             .ToListAsync(cancellationToken);
 
-        var childJobFolderDtos = await context.JobFolderClosures
+        var childJobFolderDtos = await context.JobFolderRelations
             .Where(jfc => jfc.AncestorId == request.JobFolderId)
             .Where(jfc => jfc.Depth == 1)
             .Select(jfc => new JobFolderDto(jfc.Descendant!.Id, jfc.Descendant!.Name!, jfc.Descendant.Description))

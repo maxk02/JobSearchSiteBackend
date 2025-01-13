@@ -13,16 +13,19 @@ public class UserJobFolderClaimConfiguration : IEntityTypeConfiguration<UserJobF
         builder
             .HasOne(userJobFolderClaim => userJobFolderClaim.User)
             .WithMany(user => user.UserJobFolderClaims)
-            .OnDelete(DeleteBehavior.Restrict);
+            .HasForeignKey(userJobFolderClaim => userJobFolderClaim.UserId)
+            .OnDelete(DeleteBehavior.Cascade);
 
         builder
             .HasOne(userJobFolderClaim => userJobFolderClaim.JobFolder)
             .WithMany(jobFolder => jobFolder.UserJobFolderClaims)
-            .OnDelete(DeleteBehavior.Restrict);
+            .HasForeignKey(userJobFolderClaim => userJobFolderClaim.FolderId)
+            .OnDelete(DeleteBehavior.Cascade);
 
         builder
             .HasOne(userJobFolderClaim => userJobFolderClaim.JobFolderClaim)
-            .WithMany(jobFolderClaim => jobFolderClaim.UserJobFolderPermissions)
+            .WithMany(jobFolderClaim => jobFolderClaim.UserJobFolderClaims)
+            .HasForeignKey(userJobFolderClaim => userJobFolderClaim.ClaimId)
             .OnDelete(DeleteBehavior.Restrict);
     }
 }

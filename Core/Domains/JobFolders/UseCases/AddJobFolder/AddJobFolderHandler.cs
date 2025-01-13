@@ -15,7 +15,7 @@ public class AddJobFolderHandler(
     {
         var currentUserId = currentAccountService.GetIdOrThrow();
 
-        var currentUserClaimIdsForParentAndAncestors = await context.JobFolderClosures
+        var currentUserClaimIdsForParentAndAncestors = await context.JobFolderRelations
             .GetClaimIdsForThisAndAncestors(request.ParentId, currentUserId)
             .ToListAsync(cancellationToken);
 
@@ -37,15 +37,15 @@ public class AddJobFolderHandler(
         context.JobFolders.Add(jobFolder);
         await context.SaveChangesAsync(cancellationToken);
 
-        var parentClosures = await context.JobFolderClosures
+        var parentClosures = await context.JobFolderRelations
             .Where(c => c.DescendantId == request.ParentId)
             .ToListAsync(cancellationToken);
 
         var newClosures = parentClosures
-            .Select(c => new JobFolderClosure(c.AncestorId, jobFolder.Id, c.Depth + 1))
-            .Append(new JobFolderClosure(jobFolder.Id, jobFolder.Id, 0));
+            .Select(c => new JobFolderRelation(c.AncestorId, jobFolder.Id, c.Depth + 1))
+            .Append(new JobFolderRelation(jobFolder.Id, jobFolder.Id, 0));
 
-        context.JobFolderClosures.AddRange(newClosures);
+        context.JobFolderRelations.AddRange(newClosures);
 
         context.UserJobFolderClaims.AddRange(
             JobFolderClaim.AllIds.Select(id => new UserJobFolderClaim(currentUserId, jobFolder.Id, id))

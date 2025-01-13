@@ -30,7 +30,7 @@ public class UpdateJobApplicationHandler(
         var jobFolderId = jobApplicationWithJobFolderId.JobFolderId;
 
         var hasPermissionInCurrentFolderOrAncestors =
-            await context.JobFolderClosures
+            await context.JobFolderRelations
                 .GetThisOrAncestorWhereUserHasClaim(jobFolderId, currentUserId,
                     JobFolderClaim.CanManageApplications.Id)
                 .AnyAsync(cancellationToken);

@@ -13,11 +13,13 @@ public class JobApplicationConfiguration : IEntityTypeConfiguration<JobApplicati
         builder
             .HasOne(jobApplication => jobApplication.User)
             .WithMany(user => user.JobApplications)
+            .HasForeignKey(jobApplication => jobApplication.UserId)
             .OnDelete(DeleteBehavior.Restrict);
 
         builder
             .HasOne(jobApplication => jobApplication.Job)
             .WithMany(job => job.JobApplications)
+            .HasForeignKey(jobApplication => jobApplication.JobId)
             .OnDelete(DeleteBehavior.Restrict);
 
         builder

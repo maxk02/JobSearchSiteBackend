@@ -13,16 +13,19 @@ public class UserCompanyClaimConfiguration : IEntityTypeConfiguration<UserCompan
         builder
             .HasOne(userCompanyClaim => userCompanyClaim.User)
             .WithMany(user => user.UserCompanyClaims)
-            .OnDelete(DeleteBehavior.Restrict);
+            .HasForeignKey(userCompanyClaim => userCompanyClaim.UserId)
+            .OnDelete(DeleteBehavior.Cascade);
 
         builder
             .HasOne(userCompanyClaim => userCompanyClaim.Company)
             .WithMany(company => company.UserCompanyClaims)
-            .OnDelete(DeleteBehavior.Restrict);
+            .HasForeignKey(userCompanyClaim => userCompanyClaim.CompanyId)
+            .OnDelete(DeleteBehavior.Cascade);
 
         builder
             .HasOne(userCompanyClaim => userCompanyClaim.CompanyClaim)
-            .WithMany(companyClaim => companyClaim.UserCompanyPermissions)
+            .WithMany(companyClaim => companyClaim.UserCompanyClaims)
+            .HasForeignKey(userCompanyClaim => userCompanyClaim.ClaimId)
             .OnDelete(DeleteBehavior.Restrict);
     }
 }

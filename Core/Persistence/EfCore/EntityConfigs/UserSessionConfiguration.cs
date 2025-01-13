@@ -12,6 +12,7 @@ public class UserSessionConfiguration : IEntityTypeConfiguration<UserSession>
 
         builder
             .HasOne(session => session.UserProfile)
-            .WithMany(u => u.UserSessions);
+            .WithMany(u => u.UserSessions)
+            .HasForeignKey(session => session.UserId);
     }
 }

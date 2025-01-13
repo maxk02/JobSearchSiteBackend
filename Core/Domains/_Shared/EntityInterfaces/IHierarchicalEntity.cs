@@ -1,7 +1,7 @@
 ﻿namespace Core.Domains._Shared.EntityInterfaces;
 
-public interface IHierarchicalEntity<T, TClosure> where T : IEntityWithId where TClosure : IClosure<T>
+public interface IHierarchicalEntity<T, TClosure> where T : IEntityWithId where TClosure : IHierarchicalEntityRelation<T>
 {
-    public ICollection<TClosure>? ClosuresWhereThisIsDescendant { get; }
-    public ICollection<TClosure>? ClosuresWhereThisIsAncestor { get; }
+    public ICollection<TClosure>? RelationsWhereThisIsDescendant { get; }
+    public ICollection<TClosure>? RelationsWhereThisIsAncestor { get; }
 }
