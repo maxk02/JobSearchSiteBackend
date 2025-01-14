@@ -1,5 +1,8 @@
-﻿using Core.Persistence.EfCore;
+﻿using Amazon.S3;
+using Core.Persistence.EfCore;
+using Core.Persistence.EfCore.EntityConfigs.AspNetCoreIdentity;
 using Core.Services.EmailSender;
+using Hangfire;
 using Infrastructure.EmailSender.SendGrid;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -10,31 +13,38 @@ namespace Infrastructure;
 
 public static class ServiceExtensions
 {
-    public static void ConfigureDataPersistence(this IServiceCollection serviceCollection, IConfiguration configuration)
+    public static void ConfigurePersistenceWithIdentity(this IServiceCollection serviceCollection, IConfiguration configuration)
     {
         serviceCollection.AddDbContext<MainDataContext>(options =>
-            options.UseSqlServer(configuration.GetConnectionString("DataDbConnection")));
+            options.UseSqlServer(configuration.GetConnectionString("MainDb")));
+        
+        serviceCollection.AddIdentity<MyIdentityUser, MyIdentityRole>(options =>
+            {
+                options.Password.RequireDigit = true;
+                options.Password.RequireNonAlphanumeric = false;
+                options.Password.RequireUppercase = true;
+                options.Password.RequireLowercase = true;
+                options.Password.RequiredLength = 8;
+                options.SignIn.RequireConfirmedEmail = false;
+            })
+            .AddEntityFrameworkStores<MainDataContext>()
+            .AddDefaultTokenProviders();
     }
     
-    // public static void ConfigureAuthenticationPersistence(this IServiceCollection serviceCollection, IConfiguration configuration)
-    // {
-    //     serviceCollection.AddDbContext<MyIdentityDbContext>(options =>
-    //         options.UseSqlServer(configuration.GetConnectionString("IdentityDbConnection")));
-    //
-    //     serviceCollection.AddIdentity<MyIdentityUser, IdentityRole>(options =>
-    //         {
-    //             options.Password.RequireDigit = true;
-    //             options.Password.RequireNonAlphanumeric = false;
-    //             options.Password.RequireUppercase = true;
-    //             options.Password.RequireLowercase = true;
-    //             options.Password.RequiredLength = 8;
-    //             options.SignIn.RequireConfirmedEmail = true;
-    //         })
-    //         .AddEntityFrameworkStores<MyIdentityDbContext>()
-    //         .AddDefaultTokenProviders();
-    // }
+    public static void ConfigureAmazonS3(this IServiceCollection serviceCollection, IConfiguration configuration)
+    {
+        serviceCollection.AddDefaultAWSOptions(configuration.GetAWSOptions());
+        serviceCollection.AddAWSService<IAmazonS3>();
+    }
+    
+    public static void ConfigureHangfire(this IServiceCollection serviceCollection, IConfiguration configuration)
+    {
+        serviceCollection.AddHangfire(config =>
+            config.UseSqlServerStorage(configuration.GetConnectionString("HangfireDb")));
+        serviceCollection.AddHangfireServer();
+    }
 
-    public static void ConfigureEmailSenderService(this IServiceCollection serviceCollection, IConfiguration configuration)
+    public static void ConfigureSendGrid(this IServiceCollection serviceCollection, IConfiguration configuration)
     {
         serviceCollection.AddTransient<IEmailSenderService, SendGridEmailSenderService>(provider =>
         {

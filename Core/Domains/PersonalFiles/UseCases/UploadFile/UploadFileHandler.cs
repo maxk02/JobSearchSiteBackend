@@ -5,6 +5,7 @@ using Core.Services.Auth;
 using Core.Services.BackgroundJobs;
 using Core.Services.FileStorage;
 using Core.Services.TextExtractor;
+using Microsoft.Extensions.Caching.Memory;
 using Shared.Result;
 
 namespace Core.Domains.PersonalFiles.UseCases.UploadFile;
@@ -15,28 +16,25 @@ public class UploadFileHandler(
     IBackgroundJobService backgroundJobService,
     ITextExtractor textExtractor,
     IPersonalFileSearchRepository personalFileSearchRepository,
+    IMemoryCache memoryCache,
     MainDataContext context) : IRequestHandler<UploadFileRequest, Result>
 {
     public async Task<Result> Handle(UploadFileRequest request, CancellationToken cancellationToken = default)
     {
         var currentUserId = currentAccountService.GetIdOrThrow();
 
-        var newFile = new PersonalFile(currentUserId, request.FileName,
-            request.Extension, request.FileStream.Length);
+        using var memoryStream = new MemoryStream();
+        await request.FileStream.CopyToAsync(memoryStream, cancellationToken);
         
-        //starting transaction to be able to use SaveChangesAsync multiple times and revert all changes if something fails
-        await using var transaction = await context.Database.BeginTransactionAsync(cancellationToken);
-        context.PersonalFiles.Add(newFile);
-        await context.SaveChangesAsync(cancellationToken);
+        var newFile = new PersonalFile(currentUserId, request.FileName,
+            request.Extension, memoryStream.Length);
 
-        var fileId = newFile.Id;
-
-        await fileStorageService.UploadFileAsync(request.FileStream, newFile.GuidIdentifier,
-            newFile.Extension, cancellationToken);
+        await fileStorageService.UploadFileAsync(memoryStream, newFile.GuidIdentifier, cancellationToken);
 
         try
         {
-            await transaction.CommitAsync(cancellationToken);
+            context.PersonalFiles.Add(newFile);
+            await context.SaveChangesAsync(cancellationToken);
         }
         catch
         {
@@ -46,6 +44,58 @@ public class UploadFileHandler(
             throw;
         }
 
+        const int retryAttempts = 70;
+        var retryInterval = TimeSpan.FromHours(1);
+        var retainCacheFor = retryInterval * (retryAttempts + 2);
+        var memCacheFileSize = (int)Math.Round((double)newFile.Size / 1024 / 1024);
+
+        try
+        {
+            memoryCache.Set(newFile.GuidIdentifier, memoryStream.ToArray(),
+                new MemoryCacheEntryOptions().SetSize(memCacheFileSize).SetAbsoluteExpiration(retainCacheFor));
+        }
+        catch
+        {
+            // ignored
+        }
+
+        backgroundJobService.Enqueue(
+            () => ProcessFileAsync(newFile.GuidIdentifier, newFile.Id, newFile.Extension, memCacheFileSize, retainCacheFor),
+            BackgroundJobQueues.PersonalFileTextExtractionAndSearch, retryAttempts, retryInterval
+        );
+
         return Result.Success();
+    }
+
+
+    private async Task ProcessFileAsync(Guid fileGuid, long fileId, string fileExtension,
+        long memCacheFileSize, TimeSpan retainCacheFor)
+    {
+        memoryCache.TryGetValue(fileGuid, out byte[]? fileBytes);
+
+        if (fileBytes is null)
+        {
+            await using var downloadStream = await fileStorageService
+                .GetDownloadStreamAsync(fileGuid, CancellationToken.None);
+
+            using var memoryStream = new MemoryStream();
+            await downloadStream.CopyToAsync(memoryStream);
+            fileBytes = memoryStream.ToArray();
+
+            memoryCache.Set(fileGuid, fileBytes,
+                new MemoryCacheEntryOptions().SetSize(memCacheFileSize).SetAbsoluteExpiration(retainCacheFor));
+        }
+
+        memoryCache.TryGetValue($"{fileGuid.ToString()}_text", out string? text);
+
+        if (text is null)
+        {
+            text = await textExtractor.ExtractTextAsync(fileBytes, fileExtension, CancellationToken.None);
+
+            memoryCache.Set($"{fileGuid.ToString()}_text", text, 
+                new MemoryCacheEntryOptions().SetSize(1).SetAbsoluteExpiration(retainCacheFor));
+        }
+
+        await personalFileSearchRepository.AddOrSetConstFieldsAsync(new PersonalFileSearchModel(fileId, text));
     }
 }

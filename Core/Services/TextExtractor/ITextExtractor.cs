@@ -2,5 +2,5 @@
 
 public interface ITextExtractor
 {
-    Task<string?> ExtractTextAsync(Stream fileStream, string extension, CancellationToken cancellationToken = default);
+    Task<string> ExtractTextAsync(byte[] fileContent, string extension, CancellationToken cancellationToken = default);
 }

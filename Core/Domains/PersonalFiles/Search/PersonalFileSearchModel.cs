@@ -5,6 +5,6 @@ namespace Core.Domains.PersonalFiles.Search;
 public record PersonalFileSearchModel(
     long Id,
     string? TextContent,
-    ICollection<long>? JobIdsApplied,
-    ICollection<long>? JobIdsUnapplied
+    ICollection<long>? JobIdsApplied = null,
+    ICollection<long>? JobIdsUnapplied = null
 ) : ISearchModel;
