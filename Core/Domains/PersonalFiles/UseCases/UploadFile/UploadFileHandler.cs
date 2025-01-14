@@ -4,7 +4,7 @@ using Core.Persistence.EfCore;
 using Core.Services.Auth;
 using Core.Services.BackgroundJobs;
 using Core.Services.FileStorage;
-using Core.Services.TextExtractor;
+using Core.Services.TextExtraction;
 using Microsoft.Extensions.Caching.Memory;
 using Shared.Result;
 
@@ -14,7 +14,7 @@ public class UploadFileHandler(
     ICurrentAccountService currentAccountService,
     IFileStorageService fileStorageService,
     IBackgroundJobService backgroundJobService,
-    ITextExtractor textExtractor,
+    ITextExtractionService textExtractionService,
     IPersonalFileSearchRepository personalFileSearchRepository,
     IMemoryCache memoryCache,
     MainDataContext context) : IRequestHandler<UploadFileRequest, Result>
@@ -90,12 +90,15 @@ public class UploadFileHandler(
 
         if (text is null)
         {
-            text = await textExtractor.ExtractTextAsync(fileBytes, fileExtension, CancellationToken.None);
+            text = await textExtractionService.ExtractTextAsync(fileBytes, fileExtension, CancellationToken.None);
 
             memoryCache.Set($"{fileGuid.ToString()}_text", text, 
                 new MemoryCacheEntryOptions().SetSize(1).SetAbsoluteExpiration(retainCacheFor));
         }
 
-        await personalFileSearchRepository.AddOrSetConstFieldsAsync(new PersonalFileSearchModel(fileId, text));
+        if (text != "")
+        {
+            await personalFileSearchRepository.AddOrSetConstFieldsAsync(new PersonalFileSearchModel(fileId, text));
+        }
     }
 }

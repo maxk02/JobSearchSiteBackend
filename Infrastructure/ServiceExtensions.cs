@@ -1,8 +1,10 @@
 ﻿using Amazon.S3;
 using Core.Persistence.EfCore;
 using Core.Persistence.EfCore.EntityConfigs.AspNetCoreIdentity;
-using Core.Services.EmailSender;
+using Core.Services.BackgroundJobs;
+using Core.Services.EmailSending;
 using Hangfire;
+using Infrastructure.BackgroundJobs.Hangfire;
 using Infrastructure.EmailSender.SendGrid;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -41,19 +43,23 @@ public static class ServiceExtensions
     {
         serviceCollection.AddHangfire(config =>
             config.UseSqlServerStorage(configuration.GetConnectionString("HangfireDb")));
-        serviceCollection.AddHangfireServer();
+        serviceCollection.AddHangfireServer(options =>
+        {
+            options.Queues = BackgroundJobQueues.AllValues;
+        });
+        serviceCollection.AddSingleton<IBackgroundJobService, HangfireBackgroundJobService>();
     }
 
     public static void ConfigureSendGrid(this IServiceCollection serviceCollection, IConfiguration configuration)
     {
-        serviceCollection.AddTransient<IEmailSenderService, SendGridEmailSenderService>(provider =>
+        serviceCollection.AddTransient<IEmailSendingService, SendGridEmailSendingService>(provider =>
         {
             var sendGridApiKey = configuration["SendGrid:ApiKey"];
             var senderEmail = configuration["SendGrid:SenderEmail"];
             if (sendGridApiKey == null || senderEmail == null)
                 throw new Exception();
 
-            return new SendGridEmailSenderService(sendGridApiKey, senderEmail);
+            return new SendGridEmailSendingService(sendGridApiKey, senderEmail);
         });
     }
 }

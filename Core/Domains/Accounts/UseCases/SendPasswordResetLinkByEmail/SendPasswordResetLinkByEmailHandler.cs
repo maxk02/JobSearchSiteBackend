@@ -1,13 +1,13 @@
 ﻿using Core.Domains._Shared.UseCaseStructure;
 using Core.Persistence.EfCore.EntityConfigs.AspNetCoreIdentity;
-using Core.Services.EmailSender;
+using Core.Services.EmailSending;
 using Microsoft.AspNetCore.Identity;
 using Shared.Result;
 
 namespace Core.Domains.Accounts.UseCases.SendPasswordResetLinkByEmail;
 
 public class SendPasswordResetLinkByEmailHandler(UserManager<MyIdentityUser> userManager,
-    IEmailSenderService emailSenderService) : IRequestHandler<SendPasswordResetLinkByEmailRequest, Result>
+    IEmailSendingService emailSendingService) : IRequestHandler<SendPasswordResetLinkByEmailRequest, Result>
 {
     public async Task<Result> Handle(SendPasswordResetLinkByEmailRequest request, CancellationToken cancellationToken = default)
     {
@@ -19,7 +19,7 @@ public class SendPasswordResetLinkByEmailHandler(UserManager<MyIdentityUser> use
         
         var link = "https://example.com/reset-password/" + token; //todo
 
-        var emailSendingResult = await emailSenderService
+        var emailSendingResult = await emailSendingService
             .SendPasswordResetMessageAsync(request.Email, link, cancellationToken);
         
         return emailSendingResult;

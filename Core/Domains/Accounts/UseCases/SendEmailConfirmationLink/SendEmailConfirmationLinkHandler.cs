@@ -1,7 +1,7 @@
 ﻿using Core.Domains._Shared.UseCaseStructure;
 using Core.Persistence.EfCore.EntityConfigs.AspNetCoreIdentity;
 using Core.Services.Auth;
-using Core.Services.EmailSender;
+using Core.Services.EmailSending;
 using Microsoft.AspNetCore.Identity;
 using Shared.Result;
 
@@ -9,7 +9,7 @@ namespace Core.Domains.Accounts.UseCases.SendEmailConfirmationLink;
 
 public class SendEmailConfirmationLinkHandler(ICurrentAccountService currentAccountService,
     UserManager<MyIdentityUser> userManager,
-    IEmailSenderService emailSenderService) : IRequestHandler<SendEmailConfirmationLinkRequest, Result>
+    IEmailSendingService emailSendingService) : IRequestHandler<SendEmailConfirmationLinkRequest, Result>
 {
     public async Task<Result> Handle(SendEmailConfirmationLinkRequest request, CancellationToken cancellationToken = default)
     {
@@ -27,7 +27,7 @@ public class SendEmailConfirmationLinkHandler(ICurrentAccountService currentAcco
         
         var link = "https://example.com/confirm-email/" + token; //todo
 
-        var emailSendingResult = await emailSenderService
+        var emailSendingResult = await emailSendingService
             .SendEmailConfirmationMessageAsync(request.Email, link, cancellationToken);
         
         return emailSendingResult;

@@ -1,6 +1,6 @@
-﻿namespace Core.Services.TextExtractor;
+﻿namespace Core.Services.TextExtraction;
 
-public interface ITextExtractor
+public interface ITextExtractionService
 {
     Task<string> ExtractTextAsync(byte[] fileContent, string extension, CancellationToken cancellationToken = default);
 }

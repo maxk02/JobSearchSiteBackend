@@ -9,6 +9,8 @@ public class JobConfiguration : IEntityTypeConfiguration<Job>
     public void Configure(EntityTypeBuilder<Job> builder)
     {
         builder.HasKey(job => job.Id);
+        
+        builder.Property(job => job.RowVersion).IsRowVersion();
 
         builder
             .HasOne(job => job.JobFolder)

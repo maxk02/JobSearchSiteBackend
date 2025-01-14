@@ -1,16 +1,16 @@
-﻿using Core.Services.EmailSender;
+﻿using Core.Services.EmailSending;
 using SendGrid;
 using SendGrid.Helpers.Mail;
 using Shared.Result;
 
 namespace Infrastructure.EmailSender.SendGrid;
 
-public class SendGridEmailSenderService : IEmailSenderService
+public class SendGridEmailSendingService : IEmailSendingService
 {
     private readonly string _sendGridApiKey;
     private readonly string _senderEmail;
 
-    public SendGridEmailSenderService(string sendGridApiKey, string senderEmail)
+    public SendGridEmailSendingService(string sendGridApiKey, string senderEmail)
     {
         _sendGridApiKey = sendGridApiKey;
         _senderEmail = senderEmail;

@@ -10,6 +10,8 @@ public class CvConfiguration : IEntityTypeConfiguration<Cv>
     {
         builder.HasKey(cv => cv.Id);
         
+        builder.Property(cv => cv.RowVersion).IsRowVersion();
+        
         builder
             .HasOne(cv => cv.User)
             .WithMany(user => user.Cvs)

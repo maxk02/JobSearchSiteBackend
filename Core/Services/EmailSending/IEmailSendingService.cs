@@ -1,8 +1,8 @@
 ﻿using Shared.Result;
 
-namespace Core.Services.EmailSender;
+namespace Core.Services.EmailSending;
 
-public interface IEmailSenderService
+public interface IEmailSendingService
 {
     public Task<Result> SendEmailConfirmationMessageAsync(string email, string confirmationLink,
         CancellationToken cancellationToken = default);
