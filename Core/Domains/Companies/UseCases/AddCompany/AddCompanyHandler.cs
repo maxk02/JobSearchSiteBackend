@@ -8,16 +8,16 @@ using Core.Services.Auth;
 using Core.Services.BackgroundJobs;
 using Shared.Result;
 
-namespace Core.Domains.Companies.UseCases.CreateCompany;
+namespace Core.Domains.Companies.UseCases.AddCompany;
 
-public class CreateCompanyHandler(
+public class AddCompanyHandler(
     ICurrentAccountService currentAccountService,
     ICompanySearchRepository companySearchRepository,
     IBackgroundJobService backgroundJobService,
     MainDataContext context)
-    : IRequestHandler<CreateCompanyRequest, Result<CreateCompanyResponse>>
+    : IRequestHandler<AddCompanyRequest, Result<AddCompanyResponse>>
 {
-    public async Task<Result<CreateCompanyResponse>> Handle(CreateCompanyRequest request,
+    public async Task<Result<AddCompanyResponse>> Handle(AddCompanyRequest request,
         CancellationToken cancellationToken = default)
     {
         var currentUserId = currentAccountService.GetIdOrThrow();
@@ -60,6 +60,6 @@ public class CreateCompanyHandler(
             .Enqueue(() => companySearchRepository.AddOrSetConstFieldsAsync(companySearchModel, CancellationToken.None),
             BackgroundJobQueues.CompanySearch);
 
-        return new CreateCompanyResponse(company.Id);
+        return new AddCompanyResponse(company.Id);
     }
 }

@@ -4,12 +4,12 @@ using Core.Services.EmailSending;
 using Microsoft.AspNetCore.Identity;
 using Shared.Result;
 
-namespace Core.Domains.Accounts.UseCases.SendPasswordResetLinkByEmail;
+namespace Core.Domains.Accounts.UseCases.SendPasswordResetLink;
 
-public class SendPasswordResetLinkByEmailHandler(UserManager<MyIdentityUser> userManager,
-    IEmailSendingService emailSendingService) : IRequestHandler<SendPasswordResetLinkByEmailRequest, Result>
+public class SendPasswordResetLinkHandler(UserManager<MyIdentityUser> userManager,
+    IEmailSendingService emailSendingService) : IRequestHandler<SendPasswordResetLinkRequest, Result>
 {
-    public async Task<Result> Handle(SendPasswordResetLinkByEmailRequest request, CancellationToken cancellationToken = default)
+    public async Task<Result> Handle(SendPasswordResetLinkRequest request, CancellationToken cancellationToken = default)
     {
         var user = await userManager.FindByEmailAsync(request.Email);
         if (user is null)

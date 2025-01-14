@@ -3,12 +3,12 @@ using Core.Persistence.EfCore;
 using Core.Services.Auth;
 using Shared.Result;
 
-namespace Core.Domains.Accounts.UseCases.SignOut;
+namespace Core.Domains.Accounts.UseCases.LogOut;
 
-public class SignOutHandler(ICurrentAccountService currentAccountService,
-    MainDataContext context) : IRequestHandler<SignOutRequest, Result>
+public class LogOutHandler(ICurrentAccountService currentAccountService,
+    MainDataContext context) : IRequestHandler<LogOutRequest, Result>
 {
-    public async Task<Result> Handle(SignOutRequest request, CancellationToken cancellationToken = default)
+    public async Task<Result> Handle(LogOutRequest request, CancellationToken cancellationToken = default)
     {
         var currentUserJwtId = currentAccountService.GetTokenIdentifierOrThrow();
 

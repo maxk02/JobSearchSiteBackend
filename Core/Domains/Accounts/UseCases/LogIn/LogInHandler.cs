@@ -5,24 +5,24 @@ using Core.Services.Auth;
 using Microsoft.AspNetCore.Identity;
 using Shared.Result;
 
-namespace Core.Domains.Accounts.UseCases.SignInWithEmail;
+namespace Core.Domains.Accounts.UseCases.LogIn;
 
-public class SignInWithEmailHandler(UserManager<MyIdentityUser> userManager,
+public class LogInHandler(UserManager<MyIdentityUser> userManager,
     MainDataContext context,
     IJwtGenerationService jwtGenerationService) 
-    : IRequestHandler<SignInWithEmailRequest, Result<SignInWithEmailResponse>>
+    : IRequestHandler<LogInRequest, Result<LogInResponse>>
 {
-    public async Task<Result<SignInWithEmailResponse>> Handle(SignInWithEmailRequest request, CancellationToken cancellationToken = default)
+    public async Task<Result<LogInResponse>> Handle(LogInRequest request, CancellationToken cancellationToken = default)
     {
         var user = await userManager.FindByEmailAsync(request.Email);
 
         if (user is null)
-            return Result<SignInWithEmailResponse>.NotFound();
+            return Result<LogInResponse>.NotFound();
 
         var isPasswordCorrect = await userManager.CheckPasswordAsync(user, request.Password);
 
         if (!isPasswordCorrect)
-            return Result<SignInWithEmailResponse>.Unauthorized();
+            return Result<LogInResponse>.Unauthorized();
 
         var roles = await userManager.GetRolesAsync(user);
 
@@ -38,6 +38,6 @@ public class SignInWithEmailHandler(UserManager<MyIdentityUser> userManager,
         context.UserSessions.Add(newUserSession);
         await context.SaveChangesAsync(cancellationToken);
 
-        return new SignInWithEmailResponse(token);
+        return new LogInResponse(token);
     }
 }

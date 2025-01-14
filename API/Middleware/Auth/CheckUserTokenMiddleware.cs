@@ -15,11 +15,11 @@ public class CheckUserTokenMiddleware(RequestDelegate next, ICurrentAccountServi
             return;
         }
         
-        var hasAuthorizeAttribute = endpoint.Metadata
-            .OfType<Microsoft.AspNetCore.Authorization.AuthorizeAttribute>()
+        var hasAllowAnonymousAttribute = endpoint.Metadata
+            .OfType<Microsoft.AspNetCore.Authorization.AllowAnonymousAttribute>()
             .Any();
 
-        if (!hasAuthorizeAttribute)
+        if (hasAllowAnonymousAttribute)
         {
             await next(httpContext);
             return;

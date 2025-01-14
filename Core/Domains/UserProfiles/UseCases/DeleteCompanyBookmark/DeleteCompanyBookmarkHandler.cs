@@ -4,12 +4,12 @@ using Core.Services.Auth;
 using Microsoft.EntityFrameworkCore;
 using Shared.Result;
 
-namespace Core.Domains.UserProfiles.UseCases.RemoveCompanyBookmark;
+namespace Core.Domains.UserProfiles.UseCases.DeleteCompanyBookmark;
 
-public class RemoveCompanyBookmarkHandler(ICurrentAccountService currentAccountService,
-    MainDataContext context) : IRequestHandler<RemoveCompanyBookmarkRequest, Result>
+public class DeleteCompanyBookmarkHandler(ICurrentAccountService currentAccountService,
+    MainDataContext context) : IRequestHandler<DeleteCompanyBookmarkRequest, Result>
 {
-    public async Task<Result> Handle(RemoveCompanyBookmarkRequest request, CancellationToken cancellationToken = default)
+    public async Task<Result> Handle(DeleteCompanyBookmarkRequest request, CancellationToken cancellationToken = default)
     {
         var currentAccountId = currentAccountService.GetIdOrThrow();
 

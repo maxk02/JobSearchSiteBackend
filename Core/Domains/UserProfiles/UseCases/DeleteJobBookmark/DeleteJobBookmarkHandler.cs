@@ -4,12 +4,12 @@ using Core.Services.Auth;
 using Microsoft.EntityFrameworkCore;
 using Shared.Result;
 
-namespace Core.Domains.UserProfiles.UseCases.RemoveJobBookmark;
+namespace Core.Domains.UserProfiles.UseCases.DeleteJobBookmark;
 
-public class RemoveJobBookmarkHandler(ICurrentAccountService currentAccountService,
-    MainDataContext context) : IRequestHandler<RemoveJobBookmarkRequest, Result>
+public class DeleteJobBookmarkHandler(ICurrentAccountService currentAccountService,
+    MainDataContext context) : IRequestHandler<DeleteJobBookmarkRequest, Result>
 {
-    public async Task<Result> Handle(RemoveJobBookmarkRequest request, CancellationToken cancellationToken = default)
+    public async Task<Result> Handle(DeleteJobBookmarkRequest request, CancellationToken cancellationToken = default)
     {
         var currentAccountId = currentAccountService.GetIdOrThrow();
 
