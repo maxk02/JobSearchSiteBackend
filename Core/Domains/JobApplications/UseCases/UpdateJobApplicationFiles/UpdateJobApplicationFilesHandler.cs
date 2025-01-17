@@ -39,23 +39,10 @@ public class UpdateJobApplicationFilesHandler(
         {
             return Result<long>.Error();
         }
-
-        var jobId = jobApplication.JobId;
-
-        var oldPersonalFileIds = jobApplication.PersonalFiles?.Select(x => x.Id).ToList() ?? [];
+        
         jobApplication.PersonalFiles = newPersonalFiles;
         context.Update(jobApplication);
         await context.SaveChangesAsync(cancellationToken);
-
-        backgroundJobService.Enqueue(
-            () => personalFileSearchRepository.RemoveAppliedToJobIdAsync(oldPersonalFileIds, jobId,
-                CancellationToken.None),
-            BackgroundJobQueues.PersonalFileTextExtractionAndSearch);
-
-        backgroundJobService.Enqueue(
-            () => personalFileSearchRepository.AddAppliedToJobIdAsync(request.PersonalFileIds, jobId,
-                CancellationToken.None),
-            BackgroundJobQueues.PersonalFileTextExtractionAndSearch);
 
         return Result.Success();
     }

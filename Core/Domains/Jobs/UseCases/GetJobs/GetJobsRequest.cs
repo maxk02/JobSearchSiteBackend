@@ -8,8 +8,8 @@ namespace Core.Domains.Jobs.UseCases.GetJobs;
 public record GetJobsRequest(
     string Query,
     PaginationSpec PaginationSpec,
-    long CountryId,
     bool? MustHaveSalaryRecord,
     EmploymentTypeRecord? EmploymentTypeRecord,
+    ICollection<long>? CountryIds,
     ICollection<long>? CategoryIds,
     ICollection<long>? ContractTypeIds) : IRequest<Result<GetJobsResponse>>;

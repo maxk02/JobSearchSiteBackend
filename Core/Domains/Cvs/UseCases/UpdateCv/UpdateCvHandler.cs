@@ -1,4 +1,5 @@
-﻿using Core.Domains._Shared.UseCaseStructure;
+﻿using System.Transactions;
+using Core.Domains._Shared.UseCaseStructure;
 using Core.Domains.Categories;
 using Core.Domains.Cvs.Search;
 using Core.Domains.Cvs.ValueEntities;
@@ -25,6 +26,7 @@ public class UpdateCvHandler(
             .Include(cv => cv.EmploymentTypeRecord)
             .Include(cv => cv.EducationRecords)
             .Include(cv => cv.WorkRecords)
+            .Include(cv => cv.Skills)
             .FirstOrDefaultAsync(cv => cv.Id == request.CvId, cancellationToken);
 
         if (cv is null)
@@ -32,29 +34,22 @@ public class UpdateCvHandler(
 
         if (cv.UserId != currentUserId)
             return Result.Forbidden();
-        
-        var cvSearchModel = new CvSearchModel(cv.Id, cv.RowVersion);
 
-        if (request.SalaryRecord is not null) {cv.SalaryRecord = request.SalaryRecord;}
+        if (request.SalaryRecord is not null)
+        {
+            cv.SalaryRecord = request.SalaryRecord;
+        }
+
         if (request.EmploymentTypeRecord is not null) cv.EmploymentTypeRecord = request.EmploymentTypeRecord;
 
         if (request.EducationRecords is not null)
-        {
             cv.EducationRecords = request.EducationRecords;
-            cvSearchModel.EducationRecords = request.EducationRecords;
-        }
 
         if (request.WorkRecords is not null)
-        {
             cv.WorkRecords = request.WorkRecords;
-            cvSearchModel.WorkRecords = request.WorkRecords;
-        }
 
         if (request.Skills is not null)
-        {
             cv.Skills = request.Skills;
-            cvSearchModel.Skills = request.Skills;
-        }
 
         if (request.CategoryIds is not null && request.CategoryIds.Count != 0)
         {
@@ -70,12 +65,25 @@ public class UpdateCvHandler(
         }
 
         context.Cvs.Update(cv);
+
+        var transaction = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled);
+        
         await context.SaveChangesAsync(cancellationToken);
 
+        var cvSearchModel = new CvSearchModel(
+            cv.Id,
+            cv.EducationRecords ?? [],
+            cv.WorkRecords ?? [],
+            cv.Skills ?? []
+        );
+
         backgroundJobService.Enqueue(
-            () => cvSearchRepository.UpdateIfNewestAsync(cvSearchModel, CancellationToken.None),
+            () => cvSearchRepository
+                .AddOrUpdateIfNewestAsync(cvSearchModel, cv.RowVersion, CancellationToken.None),
             BackgroundJobQueues.CvSearch
         );
+        
+        transaction.Complete();
 
         return Result.Success();
     }

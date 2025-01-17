@@ -1,4 +1,5 @@
-﻿using Core.Domains._Shared.UseCaseStructure;
+﻿using System.Transactions;
+using Core.Domains._Shared.UseCaseStructure;
 using Core.Domains.JobFolderClaims;
 using Core.Domains.JobFolders;
 using Core.Domains.Jobs.Search;
@@ -20,7 +21,11 @@ public class DeleteJobHandler(
     {
         var currentUserId = currentAccountService.GetIdOrThrow();
 
-        var job = await context.Jobs.FindAsync([request.JobId], cancellationToken);
+        var job = await context.Jobs
+            .Include(job => job.JobFolder)
+            .ThenInclude(jf => jf!.Company)
+            .Where(job => job.Id == request.JobId)
+            .SingleOrDefaultAsync(cancellationToken);
 
         if (job is null)
             return Result.Error();
@@ -34,13 +39,32 @@ public class DeleteJobHandler(
         if (!hasPermissionInCurrentFolderOrAncestors)
             return Result.Forbidden();
 
+        var countryId = job.JobFolder!.Company!.CountryId;
+        var jobRowVersion = job.RowVersion;
+        
+        var jobSearchModel = new JobSearchModel(
+            job.Id,
+            countryId,
+            job.CategoryId,
+            job.Title,
+            job.Description,
+            job.Responsibilities!,
+            job.Requirements!,
+            job.Advantages!
+        );
+        
         context.Jobs.Remove(job);
+        
+        using var transaction = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled);
+        
         await context.SaveChangesAsync(cancellationToken);
 
         backgroundJobService.Enqueue(
-            () => jobSearchRepository.DeleteAsync(request.JobId, CancellationToken.None),
+            () => jobSearchRepository.SoftDeleteAsync(jobSearchModel, jobRowVersion, CancellationToken.None),
             BackgroundJobQueues.JobSearch
         );
+        
+        transaction.Complete();
 
         return Result.Success();
     }

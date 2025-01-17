@@ -9,6 +9,8 @@ public class PersonalFileConfiguration : IEntityTypeConfiguration<PersonalFile>
     public void Configure(EntityTypeBuilder<PersonalFile> builder)
     {
         builder.HasKey(personalFile => personalFile.Id);
+        
+        builder.Property(personalFile => personalFile.RowVersion).IsRowVersion();
 
         builder
             .HasOne(personalFile => personalFile.User)

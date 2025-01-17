@@ -1,4 +1,5 @@
-﻿using Core.Domains._Shared.UseCaseStructure;
+﻿using System.Transactions;
+using Core.Domains._Shared.UseCaseStructure;
 using Core.Domains.PersonalFiles.Search;
 using Core.Persistence.EfCore;
 using Core.Services.Auth;
@@ -30,7 +31,12 @@ public class UploadFileHandler(
             request.Extension, memoryStream.Length);
 
         await fileStorageService.UploadFileAsync(memoryStream, newFile.GuidIdentifier, cancellationToken);
-
+        
+        var retainCacheFor = TimeSpan.FromHours(48);
+        var memCacheFileSize = (int)Math.Round((double)newFile.Size / 1024 / 1024);
+        
+        using var transaction = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled);
+        
         try
         {
             context.PersonalFiles.Add(newFile);
@@ -43,11 +49,13 @@ public class UploadFileHandler(
                 BackgroundJobQueues.PersonalFileStorage);
             throw;
         }
-
-        const int retryAttempts = 70;
-        var retryInterval = TimeSpan.FromHours(1);
-        var retainCacheFor = retryInterval * (retryAttempts + 2);
-        var memCacheFileSize = (int)Math.Round((double)newFile.Size / 1024 / 1024);
+        
+        backgroundJobService.Enqueue(
+            () => ProcessFileAsync(newFile, memCacheFileSize, retainCacheFor),
+            BackgroundJobQueues.PersonalFileTextExtractionAndSearch
+        );
+        
+        transaction.Complete();
 
         try
         {
@@ -59,46 +67,59 @@ public class UploadFileHandler(
             // ignored
         }
 
-        backgroundJobService.Enqueue(
-            () => ProcessFileAsync(newFile.GuidIdentifier, newFile.Id, newFile.Extension, memCacheFileSize, retainCacheFor),
-            BackgroundJobQueues.PersonalFileTextExtractionAndSearch, retryAttempts, retryInterval
-        );
-
         return Result.Success();
     }
 
 
-    private async Task ProcessFileAsync(Guid fileGuid, long fileId, string fileExtension,
-        long memCacheFileSize, TimeSpan retainCacheFor)
+    private async Task ProcessFileAsync(PersonalFile fileEntity, long memCacheFileSize, TimeSpan retainCacheFor)
     {
-        memoryCache.TryGetValue(fileGuid, out byte[]? fileBytes);
+        memoryCache.TryGetValue(fileEntity.GuidIdentifier, out byte[]? fileBytes);
 
         if (fileBytes is null)
         {
             await using var downloadStream = await fileStorageService
-                .GetDownloadStreamAsync(fileGuid, CancellationToken.None);
+                .GetDownloadStreamAsync(fileEntity.GuidIdentifier, CancellationToken.None);
 
             using var memoryStream = new MemoryStream();
             await downloadStream.CopyToAsync(memoryStream);
             fileBytes = memoryStream.ToArray();
 
-            memoryCache.Set(fileGuid, fileBytes,
+            memoryCache.Set(fileEntity.GuidIdentifier, fileBytes,
                 new MemoryCacheEntryOptions().SetSize(memCacheFileSize).SetAbsoluteExpiration(retainCacheFor));
         }
 
-        memoryCache.TryGetValue($"{fileGuid.ToString()}_text", out string? text);
+        memoryCache.TryGetValue($"{fileEntity.GuidIdentifier.ToString()}_text", out string? text);
 
         if (text is null)
         {
-            text = await textExtractionService.ExtractTextAsync(fileBytes, fileExtension, CancellationToken.None);
+            text = await textExtractionService.ExtractTextAsync(fileBytes, fileEntity.Extension, CancellationToken.None);
 
-            memoryCache.Set($"{fileGuid.ToString()}_text", text, 
+            memoryCache.Set($"{fileEntity.GuidIdentifier.ToString()}_text", text, 
                 new MemoryCacheEntryOptions().SetSize(1).SetAbsoluteExpiration(retainCacheFor));
         }
 
         if (text != "")
         {
-            await personalFileSearchRepository.AddOrSetConstFieldsAsync(new PersonalFileSearchModel(fileId, text));
+            await personalFileSearchRepository
+                .AddOrUpdateIfNewestAsync(new PersonalFileSearchModel(fileEntity.Id, text), fileEntity.RowVersion);
+        }
+
+        try
+        {
+            memoryCache.Remove(fileEntity.GuidIdentifier);
+        }
+        catch
+        {
+            // ignored
+        }
+
+        try
+        {
+            memoryCache.Remove($"{fileEntity.GuidIdentifier.ToString()}_text");
+        }
+        catch
+        {
+            // ignored
         }
     }
 }

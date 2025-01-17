@@ -30,22 +30,9 @@ public class DeleteJobApplicationHandler(
 
         if (jobApplication.UserId != currentUserId)
             return Result.Forbidden();
-
-        var userId = jobApplication.UserId;
-        var jobId = jobApplication.JobId;
-
-        var oldPersonalFileIds = jobApplication.PersonalFiles?.Select(x => x.Id).ToList() ?? [];
+        
         context.JobApplications.Remove(jobApplication);
         await context.SaveChangesAsync(cancellationToken);
-
-        backgroundJobService.Enqueue(
-            () => cvSearchRepository.RemoveAppliedToJobIdAsync(userId, jobId, CancellationToken.None),
-            BackgroundJobQueues.CvSearch);
-
-        backgroundJobService.Enqueue(
-            () => personalFileSearchRepository.RemoveAppliedToJobIdAsync(oldPersonalFileIds, jobId,
-                CancellationToken.None),
-            BackgroundJobQueues.PersonalFileTextExtractionAndSearch);
 
         return Result.Success();
     }

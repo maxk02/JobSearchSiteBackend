@@ -1,4 +1,5 @@
-﻿using Core.Domains._Shared.UseCaseStructure;
+﻿using System.Transactions;
+using Core.Domains._Shared.UseCaseStructure;
 using Core.Domains.Companies.Search;
 using Core.Domains.CompanyClaims;
 using Core.Domains.JobFolderClaims;
@@ -24,16 +25,15 @@ public class AddCompanyHandler(
 
         //creating company and checking result
         var company = new Company(request.Name, request.Description, request.IsPublic, request.CountryId);
-        
-        //starting transaction to be able to use SaveChangesAsync multiple times and revert all changes if something fails
-        await using var transaction = await context.Database.BeginTransactionAsync(cancellationToken);
+
+        var transaction = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled);
 
         //adding company and saving early to retrieve generated id
         await context.Companies.AddAsync(company, cancellationToken);
         await context.SaveChangesAsync(cancellationToken);
-        
+
         var companySearchModel =
-            new CompanySearchModel(company.Id, company.RowVersion, company.CountryId, company.Name, company.Description);
+            new CompanySearchModel(company.Id, company.CountryId, company.Name, company.Description);
 
         //adding full permission set to user
         company.UserCompanyClaims = CompanyClaim.AllIds
@@ -53,12 +53,14 @@ public class AddCompanyHandler(
         // saving changes
         await context.SaveChangesAsync(cancellationToken);
 
-        //committing transaction
-        await transaction.CommitAsync(cancellationToken);
-        
         backgroundJobService
-            .Enqueue(() => companySearchRepository.AddOrSetConstFieldsAsync(companySearchModel, CancellationToken.None),
-            BackgroundJobQueues.CompanySearch);
+            .Enqueue(
+                () => companySearchRepository.
+                    AddOrUpdateIfNewestAsync(companySearchModel, company.RowVersion, CancellationToken.None),
+                BackgroundJobQueues.CompanySearch);
+        
+        //committing transaction
+        transaction.Complete();
 
         return new AddCompanyResponse(company.Id);
     }

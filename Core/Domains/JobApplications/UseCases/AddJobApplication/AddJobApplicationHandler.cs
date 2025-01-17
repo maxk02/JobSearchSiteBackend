@@ -12,10 +12,7 @@ namespace Core.Domains.JobApplications.UseCases.AddJobApplication;
 
 public class AddJobApplicationHandler(
     ICurrentAccountService currentAccountService,
-    MainDataContext context,
-    ICvSearchRepository cvSearchRepository,
-    IPersonalFileSearchRepository personalFileSearchRepository,
-    IBackgroundJobService jobService)
+    MainDataContext context)
     : IRequestHandler<AddJobApplicationRequest, Result<AddJobApplicationResponse>>
 {
     public async Task<Result<AddJobApplicationResponse>> Handle(AddJobApplicationRequest request,
@@ -39,19 +36,8 @@ public class AddJobApplicationHandler(
 
         jobApplication.PersonalFiles = requestedPersonalFilesOfUser;
 
-        var userId = jobApplication.UserId;
-        var jobId = jobApplication.JobId;
-
         await context.JobApplications.AddAsync(jobApplication, cancellationToken);
         await context.SaveChangesAsync(cancellationToken);
-
-        jobService.Enqueue(() => cvSearchRepository.AddAppliedToJobIdAsync(userId, jobId, CancellationToken.None),
-            BackgroundJobQueues.CvSearch);
-
-        jobService.Enqueue(
-            () => personalFileSearchRepository.AddAppliedToJobIdAsync(request.PersonalFileIds, jobId,
-                CancellationToken.None),
-            BackgroundJobQueues.PersonalFileTextExtractionAndSearch);
 
         return Result<AddJobApplicationResponse>.Success(new AddJobApplicationResponse(jobApplication.Id));
     }

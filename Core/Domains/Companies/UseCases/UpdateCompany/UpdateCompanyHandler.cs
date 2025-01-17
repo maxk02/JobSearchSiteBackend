@@ -1,4 +1,5 @@
-﻿using Core.Domains._Shared.UseCaseStructure;
+﻿using System.Transactions;
+using Core.Domains._Shared.UseCaseStructure;
 using Core.Domains.Companies.Search;
 using Core.Domains.CompanyClaims;
 using Core.Persistence.EfCore;
@@ -45,16 +46,24 @@ public class UpdateCompanyHandler(
         if (request.IsPublic is not null) company.IsPublic = request.IsPublic.Value;
 
         var companySearchModel = new CompanySearchModel(
-            company.Id, company.RowVersion, company.CountryId,
-            company.Name, company.Description
+            company.Id,
+            company.CountryId,
+            company.Name,
+            company.Description
         );
 
         context.Companies.Update(company);
+
+        using var transaction = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled);
+        
         await context.SaveChangesAsync(cancellationToken);
 
         backgroundJobService
-            .Enqueue(() => companySearchRepository.UpdateIfNewestAsync(companySearchModel, CancellationToken.None),
+            .Enqueue(() => companySearchRepository
+                    .AddOrUpdateIfNewestAsync(companySearchModel, company.RowVersion, CancellationToken.None),
                 BackgroundJobQueues.CompanySearch);
+        
+        transaction.Complete();
 
         return Result.Success();
     }

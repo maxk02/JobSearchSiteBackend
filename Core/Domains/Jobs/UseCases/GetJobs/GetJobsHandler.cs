@@ -15,16 +15,16 @@ public class GetJobsHandler(
     public async Task<Result<GetJobsResponse>> Handle(GetJobsRequest request,
         CancellationToken cancellationToken = default)
     {
-        var hitIds =
-            await jobSearchRepository.SearchByCountryIdAsync(request.CountryId, request.Query, cancellationToken);
+        var hitIds = await jobSearchRepository
+            .SearchFromCountriesAndCategoriesAsync(request.CountryIds ?? [], request.CategoryIds ?? [],
+                request.Query, cancellationToken);
 
         var query = context.Jobs
             .AsNoTracking()
             .Where(job => job.IsPublic)
-            .Where(job => job.JobFolder!.Company!.CountryId == request.CountryId)
             .Where(job => hitIds.Contains(job.Id));
 
-        if (request.MustHaveSalaryRecord is not null && request.MustHaveSalaryRecord.Value == true)
+        if (request.MustHaveSalaryRecord is not null && request.MustHaveSalaryRecord.Value)
             query = query.Where(job => job.SalaryRecord != null);
 
         if (request.EmploymentTypeRecord is not null)
@@ -32,6 +32,9 @@ public class GetJobsHandler(
 
         if (request.CategoryIds is not null && request.CategoryIds.Count != 0)
             query = query.Where(job => request.CategoryIds.Contains(job.CategoryId));
+
+        if (request.CountryIds is not null && request.CountryIds.Count != 0)
+            query = query.Where(job => request.CountryIds.Contains(job.JobFolder!.Company!.CountryId));
 
         if (request.ContractTypeIds is not null && request.ContractTypeIds.Count != 0)
             query = query.Where(job => job.JobContractTypes!.Any(jct => request.ContractTypeIds.Contains(jct.Id)));

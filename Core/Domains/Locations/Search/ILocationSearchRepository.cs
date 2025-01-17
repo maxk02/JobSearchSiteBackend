@@ -2,8 +2,9 @@
 
 namespace Core.Domains.Locations.Search;
 
-public interface ILocationSearchRepository : ISearchRepository<LocationSearchModel>
+public interface ILocationSearchRepository : ISearchRepository<LocationSearchModel>,
+    IBulkSearchRepository<LocationSearchModel>
 {
-    Task<ICollection<long>> SearchByCountryIdAsync(long countryId, string query,
+    Task<ICollection<long>> SearchFromCountryIdAsync(long countryId, string query,
         CancellationToken cancellationToken = default);
 }

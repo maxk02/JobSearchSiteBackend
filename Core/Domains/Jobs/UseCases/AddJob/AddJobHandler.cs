@@ -1,4 +1,5 @@
-﻿using Core.Domains._Shared.UseCaseStructure;
+﻿using System.Transactions;
+using Core.Domains._Shared.UseCaseStructure;
 using Core.Domains.Categories;
 using Core.Domains.JobFolderClaims;
 using Core.Domains.JobFolders;
@@ -31,22 +32,20 @@ public class AddJobHandler(
 
         if (!validationResult.IsValid)
             return Result.Error();
-
-
+        
         if (!Category.AllIds.Contains(request.CategoryId))
             return Result.Error();
 
-
         var jobFolder = await context.JobFolders
-            .Include(jf => jf.Company)
+            .AsNoTracking()
+            .Include(jobFolder => jobFolder.Company)
             .Where(jf => jf.Id == request.JobFolderId)
             .SingleOrDefaultAsync(cancellationToken);
 
         if (jobFolder is null)
             return Result.Error();
-
+        
         var countryId = jobFolder.Company!.CountryId;
-        var companyId = jobFolder.Company!.Id;
 
         var hasPermissionInRequestedFolderOrAncestors =
             await context.JobFolderRelations
@@ -84,23 +83,31 @@ public class AddJobHandler(
             return Result.Error();
 
         job.Locations = locations;
-
-        //starting transaction to be able to use SaveChangesAsync multiple times and revert all changes if something fails
-        await using var transaction = await context.Database.BeginTransactionAsync(cancellationToken);
-
+        
         context.Jobs.Add(job);
+        
+        using var transaction = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled);
+        
         await context.SaveChangesAsync(cancellationToken);
 
-        var jobSearchModel = new JobSearchModel(job.Id, job.RowVersion, job.JobFolderId,
-            countryId, companyId, job.CategoryId, job.Title, job.Description,
-            job.Responsibilities ?? [], job.Requirements ?? [], job.Advantages ?? []);
-
-        await transaction.CommitAsync(cancellationToken);
-
+        var jobSearchModel = new JobSearchModel(
+            job.Id,
+            countryId,
+            job.CategoryId,
+            job.Title,
+            job.Description,
+            job.Responsibilities ?? [],
+            job.Requirements ?? [],
+            job.Advantages ?? []
+        );
+        
         backgroundJobService.Enqueue(
-            () => jobSearchRepository.AddOrSetConstFieldsAsync(jobSearchModel, CancellationToken.None),
+            () => jobSearchRepository
+                .AddOrUpdateIfNewestAsync(jobSearchModel, job.RowVersion, CancellationToken.None),
             BackgroundJobQueues.JobSearch
         );
+
+        transaction.Complete();
 
         return Result.Success();
     }

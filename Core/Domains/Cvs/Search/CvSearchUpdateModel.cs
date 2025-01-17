@@ -9,4 +9,4 @@ public record CvSearchUpdateModel(
     ICollection<EducationRecord> EducationRecords,
     ICollection<WorkRecord> WorkRecords,
     ICollection<string> Skills
-) : ISearchModel;
+) : ISearchModelWithId;

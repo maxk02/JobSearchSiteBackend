@@ -1,9 +1,11 @@
 ﻿namespace Core.Domains._Shared.Search;
 
-public interface ISearchRepository<T> where T : ISearchModel
+public interface ISearchRepository<T> where T : ISearchModelWithId
 {
-    public Task AddOrSetConstFieldsAsync(T searchModel, CancellationToken cancellationToken = default);
-    public Task UpdateIfNewestAsync(T searchModel, CancellationToken cancellationToken = default);
-    public Task DeleteAsync(long id, CancellationToken cancellationToken = default);
-    // public Task<ICollection<long>> SearchAllAsync(string query, CancellationToken cancellationToken = default);
+    public string IndexName { get; }
+    public Task CreateIndexAsync(CancellationToken cancellationToken = default);
+    public Task<bool> CheckIndexExistenceAsync(CancellationToken cancellationToken = default);
+    public Task<ICollection<long>> SearchFromIdsAsync(ICollection<long> ids, string query,
+        CancellationToken cancellationToken = default);
+    public Task<ICollection<long>> SearchFromAllAsync(string query, CancellationToken cancellationToken = default);
 }

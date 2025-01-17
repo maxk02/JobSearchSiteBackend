@@ -1,4 +1,5 @@
-﻿using Core.Domains._Shared.UseCaseStructure;
+﻿using System.Transactions;
+using Core.Domains._Shared.UseCaseStructure;
 using Core.Domains.Categories;
 using Core.Domains.Cvs.Search;
 using Core.Domains.Cvs.ValueEntities;
@@ -36,27 +37,27 @@ public class AddCvHandler(
             newCv.Categories = Category.AllValues
                 .Where(c => request.CategoryIds.Contains(c.Id))
                 .ToList();
-        }
-
-        //starting transaction to be able to use SaveChangesAsync multiple times and revert all changes if something fails
-        await using var transaction = await context.Database.BeginTransactionAsync(cancellationToken);
-
+        } 
         context.Cvs.Add(newCv);
+        
+        using var transaction = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled);
+        
         await context.SaveChangesAsync(cancellationToken);
 
         var cvSearchModel = new CvSearchModel(
-            newCv.Id, newCv.RowVersion, newCv.UserId,
+            newCv.Id,
             newCv.EducationRecords ?? [],
             newCv.WorkRecords ?? [],
             newCv.Skills ?? []
         );
-
-        await transaction.CommitAsync(cancellationToken);
-
+        
         backgroundJobService.Enqueue(
-            () => cvSearchRepository.AddOrSetConstFieldsAsync(cvSearchModel, CancellationToken.None),
+            () => cvSearchRepository
+                .AddOrUpdateIfNewestAsync(cvSearchModel, newCv.RowVersion, CancellationToken.None),
             BackgroundJobQueues.CvSearch
         );
+
+        transaction.Complete();
 
         return Result.Success();
     }

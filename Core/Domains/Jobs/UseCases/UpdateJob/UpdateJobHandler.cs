@@ -1,4 +1,5 @@
-﻿using Core.Domains._Shared.UseCaseStructure;
+﻿using System.Transactions;
+using Core.Domains._Shared.UseCaseStructure;
 using Core.Domains.Categories;
 using Core.Domains.JobFolderClaims;
 using Core.Domains.JobFolders;
@@ -21,10 +22,17 @@ public class UpdateJobHandler(
     {
         var currentUserId = currentAccountService.GetIdOrThrow();
 
-        var job = await context.Jobs.FindAsync([request.Id], cancellationToken);
+        var job = await context.Jobs
+            .Include(job => job.JobFolder)
+            .ThenInclude(jobFolder => jobFolder!.Company)
+            .Where(job => job.Id == request.Id)
+            .SingleOrDefaultAsync(cancellationToken);
 
         if (job is null)
             return Result.Error();
+
+        var countryId = job.JobFolder!.Company!.CountryId;
+        var companyId = job.JobFolder!.CompanyId;
 
         var hasPermissionInCurrentFolderOrAncestors =
             await context.JobFolderRelations
@@ -34,11 +42,17 @@ public class UpdateJobHandler(
 
         if (!hasPermissionInCurrentFolderOrAncestors)
             return Result.Forbidden();
-        
-        var jobSearchModel = new JobSearchModel(job.Id, job.RowVersion);
 
         if (request.JobFolderId is not null)
         {
+            var newCompanyId = await context.JobFolders
+                .Where(jf => jf.Id == request.JobFolderId)
+                .Select(jf => jf.CompanyId)
+                .SingleOrDefaultAsync(cancellationToken);
+            
+            if (newCompanyId != companyId)
+                return Result.Error();
+            
             var hasPermissionInRequestedFolderOrAncestors =
                 await context.JobFolderRelations
                     .GetThisOrAncestorWhereUserHasClaim(request.JobFolderId.Value, currentUserId,
@@ -49,7 +63,6 @@ public class UpdateJobHandler(
                 return Result.Forbidden();
 
             job.JobFolderId = request.JobFolderId.Value;
-            jobSearchModel.JobFolderId = request.JobFolderId.Value;
         }
 
         if (request.CategoryId is not null)
@@ -58,20 +71,13 @@ public class UpdateJobHandler(
                 return Result.Error();
 
             job.CategoryId = request.CategoryId.Value;
-            jobSearchModel.CategoryId = request.CategoryId.Value;
         }
 
         if (request.Title is not null)
-        {
             job.Title = request.Title;
-            jobSearchModel.Title = request.Title;
-        }
 
         if (request.Description is not null)
-        {
             job.Description = request.Description;
-            jobSearchModel.Description = request.Description;
-        }
 
         if (request.IsPublic is not null)
             job.IsPublic = request.IsPublic.Value;
@@ -87,29 +93,19 @@ public class UpdateJobHandler(
         }
 
         if (request.Responsibilities is not null)
-        {
             job.Responsibilities = request.Responsibilities;
-            jobSearchModel.Responsibilities = request.Responsibilities;
-        }
 
         if (request.Requirements is not null)
-        {
             job.Requirements = request.Requirements;
-            jobSearchModel.Requirements = request.Requirements;
-        }
 
         if (request.Advantages is not null)
-        {
             job.Advantages = request.Advantages;
-            jobSearchModel.Advantages = request.Advantages;
-        }
 
         if (request.SalaryRecord is not null)
             job.SalaryRecord = request.SalaryRecord;
 
         if (request.EmploymentTypeRecord is not null)
             job.EmploymentTypeRecord = request.EmploymentTypeRecord;
-
 
         if (request.ContractTypeIds is not null)
         {
@@ -148,15 +144,30 @@ public class UpdateJobHandler(
         if (!validationResult.IsValid)
             return Result.Error();
         
-
         context.Jobs.Update(job);
+        
+        using var transaction = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled);
+        
         await context.SaveChangesAsync(cancellationToken);
 
+        var jobSearchModel = new JobSearchModel(
+            job.Id,
+            countryId,
+            job.CategoryId,
+            job.Title,
+            job.Description,
+            job.Responsibilities!,
+            job.Requirements!,
+            job.Advantages!
+        );
 
         backgroundJobService.Enqueue(
-            () => jobSearchRepository.UpdateIfNewestAsync(jobSearchModel, CancellationToken.None),
+            () => jobSearchRepository
+                .AddOrUpdateIfNewestAsync(jobSearchModel, job.RowVersion, CancellationToken.None),
             BackgroundJobQueues.JobSearch
         );
+        
+        transaction.Complete();
 
         return Result.Success();
     }

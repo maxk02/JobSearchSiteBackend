@@ -12,8 +12,8 @@ public class GetLocationsHandler(MainDataContext context, ILocationSearchReposit
     public async Task<GetLocationsResponse> Handle(GetLocationsRequest request,
         CancellationToken cancellationToken = default)
     {
-        var hitIds =
-            await locationSearchRepository.SearchByCountryIdAsync(request.CountryId, request.Query, cancellationToken);
+        var hitIds = await locationSearchRepository
+            .SearchFromCountryIdAsync(request.CountryId, request.Query, cancellationToken);
 
         var query = context.Locations
             .Where(l => hitIds.Contains(l.Id))

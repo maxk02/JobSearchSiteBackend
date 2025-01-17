@@ -5,6 +5,5 @@ namespace Core.Domains.PersonalFiles.Search;
 public record PersonalFileSearchModel(
     long Id,
     string? TextContent,
-    ICollection<long>? JobIdsApplied = null,
-    ICollection<long>? JobIdsUnapplied = null
-) : ISearchModel;
+    DateTime? DeletionDateTimeUtc = null
+) : ISearchModelWithId, ISearchModelWithDeletionDateTime;

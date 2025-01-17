@@ -14,7 +14,7 @@ public class GetCompaniesHandler(
     public async Task<GetCompaniesResponse> Handle(GetCompaniesRequest request,
         CancellationToken cancellationToken = default)
     {
-        var hitIds = await companySearchRepository.SearchByCountryIdAsync(request.CountryId, request.Query, cancellationToken);
+        var hitIds = await companySearchRepository.SearchFromCountryIdAsync(request.CountryId, request.Query, cancellationToken);
 
         var query = context.Companies
             .Where(c => c.CountryId == request.CountryId

@@ -1,4 +1,5 @@
-﻿using Core.Domains._Shared.UseCaseStructure;
+﻿using System.Transactions;
+using Core.Domains._Shared.UseCaseStructure;
 using Core.Domains.Companies.Search;
 using Core.Domains.CompanyClaims;
 using Core.Persistence.EfCore;
@@ -37,14 +38,27 @@ public class DeleteCompanyHandler(
         if (!companyWithPermissionIds.PermissionIds.Contains(CompanyClaim.IsOwner.Id))
             return Result.Forbidden("Insufficient permissions for requested company deletion.");
         
-        var companyId = companyWithPermissionIds.Company.Id;
+        var companyRowVersion = companyWithPermissionIds.Company.RowVersion;
+        
+        var companySearchModel = new CompanySearchModel(
+            companyWithPermissionIds.Company.Id,
+            companyWithPermissionIds.Company.CountryId,
+            companyWithPermissionIds.Company.Name,
+            companyWithPermissionIds.Company.Description
+        );
 
         context.Companies.Remove(companyWithPermissionIds.Company);
+
+        using var transaction = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled);
+        
         await context.SaveChangesAsync(cancellationToken);
         
         backgroundJobService.Enqueue(
-            () => companySearchRepository.DeleteAsync(companyId, CancellationToken.None),
+            () => companySearchRepository
+                .SoftDeleteAsync(companySearchModel, companyRowVersion, CancellationToken.None),
             BackgroundJobQueues.CompanySearch);
+        
+        transaction.Complete();
 
         return Result.Success();
     }
