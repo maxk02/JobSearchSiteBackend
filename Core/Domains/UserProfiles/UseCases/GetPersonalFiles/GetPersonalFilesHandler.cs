@@ -5,7 +5,7 @@ using Core.Domains.PersonalFiles.Dtos;
 using Core.Persistence.EfCore;
 using Core.Services.Auth;
 using Microsoft.EntityFrameworkCore;
-using Shared.Result;
+using Ardalis.Result;
 
 namespace Core.Domains.UserProfiles.UseCases.GetPersonalFiles;
 

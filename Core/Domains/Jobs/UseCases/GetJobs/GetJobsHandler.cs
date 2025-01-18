@@ -4,7 +4,7 @@ using Core.Domains.Jobs.Dtos;
 using Core.Domains.Jobs.Search;
 using Core.Persistence.EfCore;
 using Microsoft.EntityFrameworkCore;
-using Shared.Result;
+using Ardalis.Result;
 
 namespace Core.Domains.Jobs.UseCases.GetJobs;
 

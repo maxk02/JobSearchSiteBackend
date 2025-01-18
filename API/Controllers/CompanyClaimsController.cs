@@ -1,4 +1,5 @@
-﻿using Core.Domains.CompanyClaims.UseCases.GetCompanyClaimIdsForUser;
+﻿using Ardalis.Result.AspNetCore;
+using Core.Domains.CompanyClaims.UseCases.GetCompanyClaimIdsForUser;
 using Core.Domains.CompanyClaims.UseCases.UpdateCompanyClaimIdsForUser;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -11,14 +12,14 @@ namespace API.Controllers;
 public class CompanyClaimsController : ControllerBase
 {
     [HttpGet]
-    public async Task<ActionResult> GetCompanyClaimIdsForUser(
+    public async Task<ActionResult<ICollection<long>>> GetCompanyClaimIdsForUser(
         [FromQuery] GetCompanyClaimIdsForUserRequest request,
         [FromServices] GetCompanyClaimIdsForUserHandler handler,
         CancellationToken cancellationToken)
     {
         var result = await handler.Handle(request, cancellationToken);
         
-        throw new NotImplementedException();
+        return this.ToActionResult(result);
     }
     
     [HttpPatch]
@@ -29,6 +30,6 @@ public class CompanyClaimsController : ControllerBase
     {
         var result = await handler.Handle(request, cancellationToken);
         
-        throw new NotImplementedException();
+        return this.ToActionResult(result);
     }
 }

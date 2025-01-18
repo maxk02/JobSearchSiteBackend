@@ -3,7 +3,7 @@ using Core.Persistence.EfCore;
 using Core.Services.Auth;
 using Core.Services.BackgroundJobs;
 using Core.Services.FileStorage;
-using Shared.Result;
+using Ardalis.Result;
 
 namespace Core.Domains.PersonalFiles.UseCases.DeleteFile;
 

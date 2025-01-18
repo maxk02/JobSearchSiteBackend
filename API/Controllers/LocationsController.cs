@@ -1,4 +1,5 @@
-﻿using Core.Domains.Locations.UseCases.GetLocations;
+﻿using Ardalis.Result.AspNetCore;
+using Core.Domains.Locations.UseCases.GetLocations;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -11,13 +12,13 @@ public class LocationsController : ControllerBase
 {
     [HttpGet]
     [AllowAnonymous]
-    public async Task<ActionResult> GetLocations(
+    public async Task<ActionResult<GetLocationsResponse>> GetLocations(
         [FromQuery] GetLocationsRequest request,
         [FromServices] GetLocationsHandler handler,
         CancellationToken cancellationToken)
     {
         var result = await handler.Handle(request, cancellationToken);
         
-        throw new NotImplementedException();
+        return this.ToActionResult(result);
     }
 }

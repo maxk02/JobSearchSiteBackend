@@ -4,7 +4,7 @@ using Core.Domains.JobApplications.Dtos;
 using Core.Persistence.EfCore;
 using Core.Services.Auth;
 using Microsoft.EntityFrameworkCore;
-using Shared.Result;
+using Ardalis.Result;
 
 namespace Core.Domains.UserProfiles.UseCases.GetJobApplicationsForUser;
 

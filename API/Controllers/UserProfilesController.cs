@@ -1,4 +1,5 @@
-﻿using Core.Domains._Shared.Pagination;
+﻿using Ardalis.Result.AspNetCore;
+using Core.Domains._Shared.Pagination;
 using Core.Domains.UserProfiles.UseCases.AddCompanyBookmark;
 using Core.Domains.UserProfiles.UseCases.AddJobBookmark;
 using Core.Domains.UserProfiles.UseCases.AddUserProfile;
@@ -32,7 +33,7 @@ public class UserProfilesController : ControllerBase
         var request = new AddCompanyBookmarkRequest(userProfileId, companyId);
         var result = await handler.Handle(request, cancellationToken);
         
-        throw new NotImplementedException();
+        return this.ToActionResult(result);
     }
     
     [HttpPost]
@@ -46,18 +47,18 @@ public class UserProfilesController : ControllerBase
         var request = new AddJobBookmarkRequest(userProfileId, jobId);
         var result = await handler.Handle(request, cancellationToken);
         
-        throw new NotImplementedException();
+        return this.ToActionResult(result);
     }
     
     [HttpPost]
-    public async Task<ActionResult> AddUserProfile(
+    public async Task<ActionResult<AddUserProfileResponse>> AddUserProfile(
         [FromBody] AddUserProfileRequest request,
         [FromServices] AddUserProfileHandler handler,
         CancellationToken cancellationToken)
     {
         var result = await handler.Handle(request, cancellationToken);
         
-        throw new NotImplementedException();
+        return this.ToActionResult(result);
     }
     
     [HttpDelete]
@@ -71,7 +72,7 @@ public class UserProfilesController : ControllerBase
         var request = new DeleteCompanyBookmarkRequest(userProfileId, companyId);
         var result = await handler.Handle(request, cancellationToken);
         
-        throw new NotImplementedException();
+        return this.ToActionResult(result);
     }
     
     [HttpDelete]
@@ -85,12 +86,12 @@ public class UserProfilesController : ControllerBase
         var request = new DeleteJobBookmarkRequest(userProfileId, jobId);
         var result = await handler.Handle(request, cancellationToken);
         
-        throw new NotImplementedException();
+        return this.ToActionResult(result);
     }
     
     [HttpGet]
     [Route("{id:long:min(1)}/bookmarks/companies")]
-    public async Task<ActionResult> GetBookmarkedCompanies(
+    public async Task<ActionResult<GetBookmarkedCompaniesResponse>> GetBookmarkedCompanies(
         long id,
         [FromQuery] PaginationSpec paginationSpec,
         [FromServices] GetBookmarkedCompaniesHandler handler,
@@ -99,12 +100,12 @@ public class UserProfilesController : ControllerBase
         var request = new GetBookmarkedCompaniesRequest(id, paginationSpec);
         var result = await handler.Handle(request, cancellationToken);
         
-        throw new NotImplementedException();
+        return this.ToActionResult(result);
     }
     
     [HttpGet]
     [Route("{id:long:min(1)}/bookmarks/jobs")]
-    public async Task<ActionResult> GetBookmarkedJobs(
+    public async Task<ActionResult<GetBookmarkedJobsResponse>> GetBookmarkedJobs(
         long id,
         [FromQuery] PaginationSpec paginationSpec,
         [FromServices] GetBookmarkedJobsHandler handler,
@@ -113,12 +114,12 @@ public class UserProfilesController : ControllerBase
         var request = new GetBookmarkedJobsRequest(id, paginationSpec);
         var result = await handler.Handle(request, cancellationToken);
         
-        throw new NotImplementedException();
+        return this.ToActionResult(result);
     }
     
     [HttpGet]
     [Route("{id:long:min(1)}/cv")]
-    public async Task<ActionResult> GetFirstCv(
+    public async Task<ActionResult<GetFirstCvResponse>> GetFirstCv(
         long id,
         [FromServices] GetFirstCvHandler handler,
         CancellationToken cancellationToken)
@@ -126,12 +127,12 @@ public class UserProfilesController : ControllerBase
         var request = new GetFirstCvRequest(id);
         var result = await handler.Handle(request, cancellationToken);
         
-        throw new NotImplementedException();
+        return this.ToActionResult(result);
     }
     
     [HttpGet]
     [Route("{id:long:min(1)}/job-applications")]
-    public async Task<ActionResult> GetJobApplications(
+    public async Task<ActionResult<GetJobApplicationsForUserResponse>> GetJobApplications(
         long id,
         [FromQuery] PaginationSpec paginationSpec,
         [FromServices] GetJobApplicationsForUserHandler handler,
@@ -140,12 +141,12 @@ public class UserProfilesController : ControllerBase
         var request = new GetJobApplicationsForUserRequest(id, paginationSpec);
         var result = await handler.Handle(request, cancellationToken);
         
-        throw new NotImplementedException();
+        return this.ToActionResult(result);
     }
     
     [HttpGet]
     [Route("{id:long:min(1)}/personal-files")]
-    public async Task<ActionResult> GetPersonalFiles(
+    public async Task<ActionResult<GetPersonalFilesResponse>> GetPersonalFiles(
         long id,
         [FromQuery] PaginationSpec paginationSpec,
         [FromServices] GetPersonalFilesHandler handler,
@@ -154,7 +155,7 @@ public class UserProfilesController : ControllerBase
         var request = new GetPersonalFilesRequest(id, paginationSpec);
         var result = await handler.Handle(request, cancellationToken);
         
-        throw new NotImplementedException();
+        return this.ToActionResult(result);
     }
     
     [HttpGet("{id:long:min(1)}")]
@@ -164,9 +165,9 @@ public class UserProfilesController : ControllerBase
         CancellationToken cancellationToken)
     {
         var request = new GetUserProfileByIdRequest(id);
-        var response = await handler.Handle(request, cancellationToken);
+        var result = await handler.Handle(request, cancellationToken);
 
-        throw new NotImplementedException();
+        return this.ToActionResult(result);
     }
     
     [HttpPatch]
@@ -177,6 +178,6 @@ public class UserProfilesController : ControllerBase
     {
         var result = await handler.Handle(request, cancellationToken);
         
-        throw new NotImplementedException();
+        return this.ToActionResult(result);
     }
 }

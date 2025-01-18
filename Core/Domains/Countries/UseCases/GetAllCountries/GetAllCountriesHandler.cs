@@ -1,7 +1,7 @@
 ﻿using Core.Domains._Shared.UseCaseStructure;
 using Core.Persistence.EfCore;
 using Microsoft.EntityFrameworkCore;
-using Shared.Result;
+using Ardalis.Result;
 
 namespace Core.Domains.Countries.UseCases.GetAllCountries;
 

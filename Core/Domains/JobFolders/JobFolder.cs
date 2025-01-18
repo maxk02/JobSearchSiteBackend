@@ -2,7 +2,7 @@
 using Core.Domains.Companies;
 using Core.Domains.JobFolderClaims;
 using Core.Domains.Jobs;
-using Shared.Result;
+using Ardalis.Result;
 
 namespace Core.Domains.JobFolders;
 

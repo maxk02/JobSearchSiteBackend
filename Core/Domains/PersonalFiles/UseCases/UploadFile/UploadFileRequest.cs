@@ -1,4 +1,4 @@
-﻿using Shared.Result;
+﻿using Ardalis.Result;
 using Core.Domains._Shared.UseCaseStructure;
 
 namespace Core.Domains.PersonalFiles.UseCases.UploadFile;

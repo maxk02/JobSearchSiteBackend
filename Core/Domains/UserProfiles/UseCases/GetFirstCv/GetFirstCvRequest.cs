@@ -1,6 +1,6 @@
 ﻿using Core.Domains._Shared.Pagination;
 using Core.Domains._Shared.UseCaseStructure;
-using Shared.Result;
+using Ardalis.Result;
 
 namespace Core.Domains.UserProfiles.UseCases.GetFirstCv;
 

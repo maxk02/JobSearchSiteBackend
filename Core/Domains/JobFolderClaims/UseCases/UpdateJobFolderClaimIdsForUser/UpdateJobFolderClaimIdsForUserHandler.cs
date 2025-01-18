@@ -3,8 +3,8 @@ using Core.Domains.JobFolders;
 using Core.Persistence.EfCore;
 using Core.Services.Auth;
 using Microsoft.EntityFrameworkCore;
-using Shared.Result;
-using Shared.Result.FluentValidation;
+using Ardalis.Result;
+using Ardalis.Result.FluentValidation;
 
 namespace Core.Domains.JobFolderClaims.UseCases.UpdateJobFolderClaimIdsForUser;
 

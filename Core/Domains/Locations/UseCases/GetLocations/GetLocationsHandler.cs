@@ -1,4 +1,5 @@
-﻿using Core.Domains._Shared.UseCaseStructure;
+﻿using Ardalis.Result;
+using Core.Domains._Shared.UseCaseStructure;
 using Core.Domains.Locations.Dtos;
 using Core.Domains.Locations.Search;
 using Core.Persistence.EfCore;
@@ -7,9 +8,9 @@ using Microsoft.EntityFrameworkCore;
 namespace Core.Domains.Locations.UseCases.GetLocations;
 
 public class GetLocationsHandler(MainDataContext context, ILocationSearchRepository locationSearchRepository)
-    : IRequestHandler<GetLocationsRequest, GetLocationsResponse>
+    : IRequestHandler<GetLocationsRequest, Result<GetLocationsResponse>>
 {
-    public async Task<GetLocationsResponse> Handle(GetLocationsRequest request,
+    public async Task<Result<GetLocationsResponse>> Handle(GetLocationsRequest request,
         CancellationToken cancellationToken = default)
     {
         var hitIds = await locationSearchRepository

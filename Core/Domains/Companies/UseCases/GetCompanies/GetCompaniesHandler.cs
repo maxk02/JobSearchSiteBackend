@@ -1,4 +1,5 @@
-﻿using Core.Domains._Shared.Pagination;
+﻿using Ardalis.Result;
+using Core.Domains._Shared.Pagination;
 using Core.Domains._Shared.UseCaseStructure;
 using Core.Domains.Companies.Dtos;
 using Core.Domains.Companies.Search;
@@ -9,9 +10,9 @@ namespace Core.Domains.Companies.UseCases.GetCompanies;
 
 public class GetCompaniesHandler(
     ICompanySearchRepository companySearchRepository,
-    MainDataContext context) : IRequestHandler<GetCompaniesRequest, GetCompaniesResponse>
+    MainDataContext context) : IRequestHandler<GetCompaniesRequest, Result<GetCompaniesResponse>>
 {
-    public async Task<GetCompaniesResponse> Handle(GetCompaniesRequest request,
+    public async Task<Result<GetCompaniesResponse>> Handle(GetCompaniesRequest request,
         CancellationToken cancellationToken = default)
     {
         var hitIds = await companySearchRepository.SearchFromCountryIdAsync(request.CountryId, request.Query, cancellationToken);

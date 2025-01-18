@@ -1,6 +1,6 @@
 ﻿using Core.Domains._Shared.UseCaseStructure;
 using Core.Domains._Shared.ValueEntities;
-using Shared.Result;
+using Ardalis.Result;
 
 namespace Core.Domains.UserProfiles.UseCases.UpdateUserProfile;
 

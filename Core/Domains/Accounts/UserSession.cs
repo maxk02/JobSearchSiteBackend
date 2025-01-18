@@ -1,6 +1,6 @@
 ﻿using Core.Domains.UserProfiles;
-using Shared.Result;
-using Shared.Result.FluentValidation;
+using Ardalis.Result;
+using Ardalis.Result.FluentValidation;
 
 namespace Core.Domains.Accounts;
 

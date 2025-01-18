@@ -7,7 +7,7 @@ using Core.Services.BackgroundJobs;
 using Core.Services.FileStorage;
 using Core.Services.TextExtraction;
 using Microsoft.Extensions.Caching.Memory;
-using Shared.Result;
+using Ardalis.Result;
 
 namespace Core.Domains.PersonalFiles.UseCases.UploadFile;
 

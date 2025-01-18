@@ -1,7 +1,7 @@
 ﻿using Core.Domains._Shared.UseCaseStructure;
 using Core.Persistence.EfCore;
 using Core.Services.Auth;
-using Shared.Result;
+using Ardalis.Result;
 
 namespace Core.Domains.PersonalFiles.UseCases.UpdateFile;
 

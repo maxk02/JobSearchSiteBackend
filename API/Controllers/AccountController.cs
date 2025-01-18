@@ -1,4 +1,5 @@
-﻿using Core.Domains.Accounts.UseCases.ChangePassword;
+﻿using Ardalis.Result.AspNetCore;
+using Core.Domains.Accounts.UseCases.ChangePassword;
 using Core.Domains.Accounts.UseCases.ConfirmEmail;
 using Core.Domains.Accounts.UseCases.CreateAccount;
 using Core.Domains.Accounts.UseCases.DeleteAccount;
@@ -6,6 +7,7 @@ using Core.Domains.Accounts.UseCases.ExtendSession;
 using Core.Domains.Accounts.UseCases.GetUserSessions;
 using Core.Domains.Accounts.UseCases.LogIn;
 using Core.Domains.Accounts.UseCases.LogOut;
+using Core.Domains.Accounts.UseCases.ResetPassword;
 using Core.Domains.Accounts.UseCases.SendEmailConfirmationLink;
 using Core.Domains.Accounts.UseCases.SendPasswordResetLink;
 using Microsoft.AspNetCore.Authorization;
@@ -27,7 +29,7 @@ public class AccountController : ControllerBase
     {
         var result = await handler.Handle(request, cancellationToken);
         
-        throw new NotImplementedException();
+        return this.ToActionResult(result);
     }
     
     [HttpPost]
@@ -39,7 +41,7 @@ public class AccountController : ControllerBase
     {
         var result = await handler.Handle(request, cancellationToken);
         
-        throw new NotImplementedException();
+        return this.ToActionResult(result);
     }
     
     [HttpPost]
@@ -52,7 +54,7 @@ public class AccountController : ControllerBase
     {
         var result = await handler.Handle(request, cancellationToken);
         
-        throw new NotImplementedException();
+        return this.ToActionResult(result);
     }
     
     [HttpPost]
@@ -64,31 +66,31 @@ public class AccountController : ControllerBase
     {
         var result = await handler.Handle(request, cancellationToken);
         
-        throw new NotImplementedException();
+        return this.ToActionResult(result);
     }
     
     [HttpPost]
     [Route("/extend-session")]
-    public async Task<ActionResult> ExtendSession(
+    public async Task<ActionResult<ExtendSessionResponse>> ExtendSession(
         ExtendSessionRequest request,
         [FromServices] ExtendSessionHandler handler,
         CancellationToken cancellationToken)
     {
         var result = await handler.Handle(request, cancellationToken);
         
-        throw new NotImplementedException();
+        return this.ToActionResult(result);
     }
     
     [HttpGet]
     [Route("/sessions")]
-    public async Task<ActionResult> GetUserSessions(
+    public async Task<ActionResult<GetUserSessionsResponse>> GetUserSessions(
         GetUserSessionsRequest request,
         [FromServices] GetUserSessionsHandler handler,
         CancellationToken cancellationToken)
     {
         var result = await handler.Handle(request, cancellationToken);
         
-        throw new NotImplementedException();
+        return this.ToActionResult(result);
     }
     
     [HttpPost]
@@ -101,7 +103,7 @@ public class AccountController : ControllerBase
     {
         var result = await handler.Handle(request, cancellationToken);
         
-        throw new NotImplementedException();
+        return this.ToActionResult(result);
     }
     
     [HttpPost]
@@ -113,20 +115,20 @@ public class AccountController : ControllerBase
     {
         var result = await handler.Handle(request, cancellationToken);
         
-        throw new NotImplementedException();
+        return this.ToActionResult(result);
     }
     
     [HttpPost]
     [Route("/reset-password")]
     [AllowAnonymous]
     public async Task<ActionResult> ResetPassword(
-        ExtendSessionRequest request,
-        [FromServices] ExtendSessionHandler handler,
+        ResetPasswordRequest request,
+        [FromServices] ResetPasswordHandler handler,
         CancellationToken cancellationToken)
     {
         var result = await handler.Handle(request, cancellationToken);
         
-        throw new NotImplementedException();
+        return this.ToActionResult(result);
     }
     
     [HttpPost]
@@ -138,7 +140,7 @@ public class AccountController : ControllerBase
     {
         var result = await handler.Handle(request, cancellationToken);
         
-        throw new NotImplementedException();
+        return this.ToActionResult(result);
     }
     
     [HttpPost]
@@ -151,6 +153,6 @@ public class AccountController : ControllerBase
     {
         var result = await handler.Handle(request, cancellationToken);
         
-        throw new NotImplementedException();
+        return this.ToActionResult(result);
     }
 }

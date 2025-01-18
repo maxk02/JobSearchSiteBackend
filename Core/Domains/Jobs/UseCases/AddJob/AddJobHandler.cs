@@ -8,7 +8,7 @@ using Core.Persistence.EfCore;
 using Core.Services.Auth;
 using Core.Services.BackgroundJobs;
 using Microsoft.EntityFrameworkCore;
-using Shared.Result;
+using Ardalis.Result;
 
 namespace Core.Domains.Jobs.UseCases.AddJob;
 

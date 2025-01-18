@@ -6,7 +6,7 @@ using Core.Domains.Cvs.ValueEntities;
 using Core.Persistence.EfCore;
 using Core.Services.Auth;
 using Core.Services.BackgroundJobs;
-using Shared.Result;
+using Ardalis.Result;
 
 namespace Core.Domains.Cvs.UseCases.AddCv;
 

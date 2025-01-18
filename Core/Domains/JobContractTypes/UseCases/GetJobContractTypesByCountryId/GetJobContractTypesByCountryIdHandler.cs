@@ -2,7 +2,7 @@
 using Core.Domains.JobContractTypes.Dtos;
 using Core.Persistence.EfCore;
 using Microsoft.EntityFrameworkCore;
-using Shared.Result;
+using Ardalis.Result;
 
 namespace Core.Domains.JobContractTypes.UseCases.GetJobContractTypesByCountryId;
 

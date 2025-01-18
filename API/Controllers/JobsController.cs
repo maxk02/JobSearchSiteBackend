@@ -1,4 +1,5 @@
-﻿using Core.Domains.Jobs.UseCases.AddJob;
+﻿using Ardalis.Result.AspNetCore;
+using Core.Domains.Jobs.UseCases.AddJob;
 using Core.Domains.Jobs.UseCases.DeleteJob;
 using Core.Domains.Jobs.UseCases.GetJobs;
 using Core.Domains.Jobs.UseCases.GetJobById;
@@ -21,7 +22,7 @@ public class JobsController : ControllerBase
     {
         var result = await handler.Handle(request, cancellationToken);
         
-        throw new NotImplementedException();
+        return this.ToActionResult(result);
     }
     
     [HttpDelete("{id:long:min(1)}")]
@@ -33,24 +34,24 @@ public class JobsController : ControllerBase
         var request = new DeleteJobRequest(id);
         var result = await handler.Handle(request, cancellationToken);
         
-        throw new NotImplementedException();
+        return this.ToActionResult(result);
     }
     
     [HttpGet]
     [AllowAnonymous]
-    public async Task<ActionResult> GetJobs(
+    public async Task<ActionResult<GetJobsResponse>> GetJobs(
         [FromQuery] GetJobsRequest request,
         [FromServices] GetJobsHandler handler,
         CancellationToken cancellationToken)
     {
         var result = await handler.Handle(request, cancellationToken);
         
-        throw new NotImplementedException();
+        return this.ToActionResult(result);
     }
     
     [HttpGet("{id:long:min(1)}")]
     [AllowAnonymous]
-    public async Task<ActionResult> GetJob(
+    public async Task<ActionResult<GetJobByIdResponse>> GetJob(
         long id,
         [FromServices] GetJobByIdHandler handler,
         CancellationToken cancellationToken)
@@ -58,7 +59,7 @@ public class JobsController : ControllerBase
         var request = new GetJobByIdRequest(id);
         var result = await handler.Handle(request, cancellationToken);
         
-        throw new NotImplementedException();
+        return this.ToActionResult(result);
     }
     
     [HttpPatch]
@@ -69,6 +70,6 @@ public class JobsController : ControllerBase
     {
         var result = await handler.Handle(request, cancellationToken);
         
-        throw new NotImplementedException();
+        return this.ToActionResult(result);
     }
 }

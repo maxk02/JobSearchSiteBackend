@@ -4,14 +4,12 @@ using Core.Persistence.EfCore;
 using Core.Services.Auth;
 using Core.Services.BackgroundJobs;
 using Microsoft.EntityFrameworkCore;
-using Shared.Result;
+using Ardalis.Result;
 
 namespace Core.Domains.JobApplications.UseCases.UpdateJobApplicationFiles;
 
 public class UpdateJobApplicationFilesHandler(
     ICurrentAccountService currentAccountService,
-    IPersonalFileSearchRepository personalFileSearchRepository,
-    IBackgroundJobService backgroundJobService,
     MainDataContext context) : IRequestHandler<UpdateJobApplicationFilesRequest, Result>
 {
     public async Task<Result> Handle(UpdateJobApplicationFilesRequest request,
@@ -37,7 +35,7 @@ public class UpdateJobApplicationFilesHandler(
         if (!request.PersonalFileIds.All(newPersonalFiles.Select(x => x.Id).Contains) ||
             newPersonalFiles.Any(x => x.UserId != currentUserId))
         {
-            return Result<long>.Error();
+            return Result.Error();
         }
         
         jobApplication.PersonalFiles = newPersonalFiles;

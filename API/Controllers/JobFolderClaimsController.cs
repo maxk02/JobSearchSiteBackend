@@ -1,4 +1,5 @@
-﻿using Core.Domains.CompanyClaims.UseCases.GetCompanyClaimIdsForUser;
+﻿using Ardalis.Result.AspNetCore;
+using Core.Domains.CompanyClaims.UseCases.GetCompanyClaimIdsForUser;
 using Core.Domains.CompanyClaims.UseCases.UpdateCompanyClaimIdsForUser;
 using Core.Domains.JobFolderClaims.UseCases.GetJobFolderClaimIdsForUser;
 using Core.Domains.JobFolderClaims.UseCases.UpdateJobFolderClaimIdsForUser;
@@ -13,14 +14,14 @@ namespace API.Controllers;
 public class JobFolderClaimsController : ControllerBase
 {
     [HttpGet]
-    public async Task<ActionResult> GetJobFolderClaimIdsForUser(
+    public async Task<ActionResult<ICollection<long>>> GetJobFolderClaimIdsForUser(
         [FromQuery] GetJobFolderClaimIdsForUserRequest request,
         [FromServices] GetJobFolderClaimIdsForUserHandler handler,
         CancellationToken cancellationToken)
     {
         var result = await handler.Handle(request, cancellationToken);
         
-        throw new NotImplementedException();
+        return this.ToActionResult(result);
     }
     
     [HttpPatch]
@@ -31,6 +32,6 @@ public class JobFolderClaimsController : ControllerBase
     {
         var result = await handler.Handle(request, cancellationToken);
         
-        throw new NotImplementedException();
+        return this.ToActionResult(result);
     }
 }

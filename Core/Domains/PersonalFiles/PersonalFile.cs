@@ -1,8 +1,8 @@
 ﻿using Core.Domains._Shared.EntityInterfaces;
 using Core.Domains.JobApplications;
 using Core.Domains.UserProfiles;
-using Shared.Result;
-using Shared.Result.FluentValidation;
+using Ardalis.Result;
+using Ardalis.Result.FluentValidation;
 
 namespace Core.Domains.PersonalFiles;
 

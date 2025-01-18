@@ -1,4 +1,5 @@
-﻿using Core.Domains.PersonalFiles.UseCases.DeleteFile;
+﻿using Ardalis.Result.AspNetCore;
+using Core.Domains.PersonalFiles.UseCases.DeleteFile;
 using Core.Domains.PersonalFiles.UseCases.UpdateFile;
 using Core.Domains.PersonalFiles.UseCases.UploadFile;
 using Microsoft.AspNetCore.Authorization;
@@ -19,7 +20,7 @@ public class PersonalFilesController : ControllerBase
     {
         var result = await handler.Handle(request, cancellationToken);
         
-        throw new NotImplementedException();
+        return this.ToActionResult(result);
     }
     
     [HttpDelete("{id:long:min(1)}")]
@@ -31,7 +32,7 @@ public class PersonalFilesController : ControllerBase
         var request = new DeleteFileRequest(id);
         var result = await handler.Handle(request, cancellationToken);
         
-        throw new NotImplementedException();
+        return this.ToActionResult(result);
     }
     
     [HttpPatch]
@@ -42,6 +43,6 @@ public class PersonalFilesController : ControllerBase
     {
         var result = await handler.Handle(request, cancellationToken);
         
-        throw new NotImplementedException();
+        return this.ToActionResult(result);
     }
 }

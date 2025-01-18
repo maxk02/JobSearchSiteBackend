@@ -1,4 +1,5 @@
-﻿using Core.Domains._Shared.UseCaseStructure;
+﻿using Ardalis.Result;
+using Core.Domains._Shared.UseCaseStructure;
 using Core.Domains.Accounts.Dtos;
 using Core.Persistence.EfCore;
 using Core.Services.Auth;
@@ -7,9 +8,9 @@ using Microsoft.EntityFrameworkCore;
 namespace Core.Domains.Accounts.UseCases.GetUserSessions;
 
 public class GetUserSessionsHandler(ICurrentAccountService currentAccountService,
-    MainDataContext context) : IRequestHandler<GetUserSessionsRequest, GetUserSessionsResponse>
+    MainDataContext context) : IRequestHandler<GetUserSessionsRequest, Result<GetUserSessionsResponse>>
 {
-    public async Task<GetUserSessionsResponse> Handle(GetUserSessionsRequest request,
+    public async Task<Result<GetUserSessionsResponse>> Handle(GetUserSessionsRequest request,
         CancellationToken cancellationToken = default)
     {
         var currentAccountId = currentAccountService.GetIdOrThrow();

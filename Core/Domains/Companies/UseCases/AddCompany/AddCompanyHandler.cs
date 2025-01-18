@@ -7,7 +7,7 @@ using Core.Domains.JobFolders;
 using Core.Persistence.EfCore;
 using Core.Services.Auth;
 using Core.Services.BackgroundJobs;
-using Shared.Result;
+using Ardalis.Result;
 
 namespace Core.Domains.Companies.UseCases.AddCompany;
 

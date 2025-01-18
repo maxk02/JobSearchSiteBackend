@@ -3,7 +3,7 @@ using Core.Persistence.EfCore;
 using Core.Persistence.EfCore.EntityConfigs.AspNetCoreIdentity;
 using Core.Services.Auth;
 using Microsoft.AspNetCore.Identity;
-using Shared.Result;
+using Ardalis.Result;
 
 namespace Core.Domains.Accounts.UseCases.LogIn;
 

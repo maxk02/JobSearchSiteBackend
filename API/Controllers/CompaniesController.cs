@@ -1,4 +1,5 @@
-﻿using Core.Domains.Companies.UseCases.AddCompany;
+﻿using Ardalis.Result.AspNetCore;
+using Core.Domains.Companies.UseCases.AddCompany;
 using Core.Domains.Companies.UseCases.DeleteCompany;
 using Core.Domains.Companies.UseCases.GetCompanies;
 using Core.Domains.Companies.UseCases.GetCompanyById;
@@ -13,14 +14,14 @@ namespace API.Controllers;
 public class CompaniesController : ControllerBase
 {
     [HttpPost]
-    public async Task<ActionResult> AddCompany(
+    public async Task<ActionResult<AddCompanyResponse>> AddCompany(
         [FromBody] AddCompanyRequest request,
         [FromServices] AddCompanyHandler handler,
         CancellationToken cancellationToken)
     {
         var result = await handler.Handle(request, cancellationToken);
         
-        throw new NotImplementedException();
+        return this.ToActionResult(result);
     }
     
     [HttpDelete("{id:long:min(1)}")]
@@ -32,24 +33,24 @@ public class CompaniesController : ControllerBase
         var request = new DeleteCompanyRequest(id);
         var result = await handler.Handle(request, cancellationToken);
         
-        throw new NotImplementedException();
+        return this.ToActionResult(result);
     }
     
     [HttpGet]
     [AllowAnonymous]
-    public async Task<ActionResult> GetCompanies(
+    public async Task<ActionResult<GetCompaniesResponse>> GetCompanies(
         [FromQuery] GetCompaniesRequest request,
         [FromServices] GetCompaniesHandler handler,
         CancellationToken cancellationToken)
     {
         var result = await handler.Handle(request, cancellationToken);
         
-        throw new NotImplementedException();
+        return this.ToActionResult(result);
     }
     
     [HttpGet("{id:long:min(1)}")]
     [AllowAnonymous]
-    public async Task<ActionResult> GetCompany(
+    public async Task<ActionResult<GetCompanyByIdResponse>> GetCompany(
         long id,
         [FromServices] GetCompanyByIdHandler handler,
         CancellationToken cancellationToken)
@@ -57,6 +58,6 @@ public class CompaniesController : ControllerBase
         var request = new GetCompanyByIdRequest(id);
         var result = await handler.Handle(request, cancellationToken);
         
-        throw new NotImplementedException();
+        return this.ToActionResult(result);
     }
 }

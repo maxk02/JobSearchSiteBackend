@@ -1,4 +1,5 @@
-﻿using Core.Domains.Cvs.UseCases.AddCv;
+﻿using Ardalis.Result.AspNetCore;
+using Core.Domains.Cvs.UseCases.AddCv;
 using Core.Domains.Cvs.UseCases.DeleteCv;
 using Core.Domains.Cvs.UseCases.GetCvById;
 using Core.Domains.Cvs.UseCases.UpdateCv;
@@ -20,7 +21,7 @@ public class CvsController : ControllerBase
     {
         var result = await handler.Handle(request, cancellationToken);
         
-        throw new NotImplementedException();
+        return this.ToActionResult(result);
     }
     
     [HttpDelete("{id:long:min(1)}")]
@@ -32,11 +33,11 @@ public class CvsController : ControllerBase
         var request = new DeleteCvRequest(id);
         var result = await handler.Handle(request, cancellationToken);
         
-        throw new NotImplementedException();
+        return this.ToActionResult(result);
     }
     
     [HttpGet("{id:long:min(1)}")]
-    public async Task<ActionResult> GetCv(
+    public async Task<ActionResult<GetCvByIdResponse>> GetCv(
         long id,
         [FromServices] GetCvByIdHandler handler,
         CancellationToken cancellationToken)
@@ -44,7 +45,7 @@ public class CvsController : ControllerBase
         var request = new GetCvByIdRequest(id);
         var result = await handler.Handle(request, cancellationToken);
         
-        throw new NotImplementedException();
+        return this.ToActionResult(result);
     }
     
     [HttpPatch]
@@ -55,6 +56,6 @@ public class CvsController : ControllerBase
     {
         var result = await handler.Handle(request, cancellationToken);
         
-        throw new NotImplementedException();
+        return this.ToActionResult(result);
     }
 }

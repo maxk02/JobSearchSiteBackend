@@ -4,7 +4,7 @@ using Core.Domains.Categories;
 using Core.Domains.Cvs.ValueEntities;
 using Core.Domains.Locations;
 using Core.Domains.UserProfiles;
-using Shared.Result;
+using Ardalis.Result;
 
 namespace Core.Domains.Cvs;
 

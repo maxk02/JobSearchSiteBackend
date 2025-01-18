@@ -1,6 +1,6 @@
 ﻿using Core.Domains._Shared.UseCaseStructure;
 using Core.Domains.JobApplications.Enums;
-using Shared.Result;
+using Ardalis.Result;
 
 namespace Core.Domains.JobApplications.UseCases.UpdateJobApplication;
 

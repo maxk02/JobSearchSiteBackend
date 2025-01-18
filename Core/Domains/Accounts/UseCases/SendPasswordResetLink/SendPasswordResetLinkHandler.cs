@@ -6,7 +6,7 @@ using Core.Services.EmailSender;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Options;
 using Shared.MyAppSettings;
-using Shared.Result;
+using Ardalis.Result;
 
 namespace Core.Domains.Accounts.UseCases.SendPasswordResetLink;
 
