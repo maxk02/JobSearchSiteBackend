@@ -4,5 +4,5 @@ using Shared.Result;
 
 namespace Core.Domains.JobApplications.UseCases.GetApplicationsForJobId;
 
-public record GetApplicationsForJobIdRequest(long JobId, PaginationSpec PaginationSpec)
+public record GetApplicationsForJobIdRequest(long JobId, string Query, PaginationSpec PaginationSpec)
     : IRequest<Result<GetApplicationsForJobIdResponse>>;

@@ -21,6 +21,7 @@ public class GetJobsHandler(
 
         var query = context.Jobs
             .AsNoTracking()
+            .Where(job => job.DateTimeExpiringUtc > DateTime.UtcNow)
             .Where(job => job.IsPublic)
             .Where(job => hitIds.Contains(job.Id));
 
@@ -42,6 +43,7 @@ public class GetJobsHandler(
         var count = await query.CountAsync(cancellationToken);
 
         var jobInfocardDtos = await query
+            .OrderByDescending(job => job.DateTimePublishedUtc)
             .Skip((request.PaginationSpec.PageNumber - 1) * request.PaginationSpec.PageSize)
             .Take(request.PaginationSpec.PageSize)
             .Select(x => new JobInfocardDto(x.Id, x.JobFolder!.CompanyId, x.CategoryId, x.Title,
