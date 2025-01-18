@@ -1,17 +1,25 @@
 ﻿using Core.Domains._Shared.UseCaseStructure;
+using Core.Domains.Accounts.EmailMessages;
 using Core.Persistence.EfCore.EntityConfigs.AspNetCoreIdentity;
 using Core.Services.Auth;
-using Core.Services.EmailSending;
+using Core.Services.BackgroundJobs;
+using Core.Services.EmailSender;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.Options;
+using Shared.MyAppSettings;
 using Shared.Result;
 
 namespace Core.Domains.Accounts.UseCases.SendEmailConfirmationLink;
 
-public class SendEmailConfirmationLinkHandler(ICurrentAccountService currentAccountService,
+public class SendEmailConfirmationLinkHandler(
+    ICurrentAccountService currentAccountService,
     UserManager<MyIdentityUser> userManager,
-    IEmailSendingService emailSendingService) : IRequestHandler<SendEmailConfirmationLinkRequest, Result>
+    IBackgroundJobService backgroundJobService,
+    IOptions<MyAppSettings> injectedAppSettings,
+    IEmailSenderService emailSenderService) : IRequestHandler<SendEmailConfirmationLinkRequest, Result>
 {
-    public async Task<Result> Handle(SendEmailConfirmationLinkRequest request, CancellationToken cancellationToken = default)
+    public async Task<Result> Handle(SendEmailConfirmationLinkRequest request,
+        CancellationToken cancellationToken = default)
     {
         var currentUserId = currentAccountService.GetIdOrThrow();
         
@@ -25,11 +33,16 @@ public class SendEmailConfirmationLinkHandler(ICurrentAccountService currentAcco
 
         var token = await userManager.GenerateEmailConfirmationTokenAsync(user);
         
-        var link = "https://example.com/confirm-email/" + token; //todo
-
-        var emailSendingResult = await emailSendingService
-            .SendEmailConfirmationMessageAsync(request.Email, link, cancellationToken);
+        var domainName = injectedAppSettings.Value.DomainName;
         
-        return emailSendingResult;
+        var link = $"https://{domainName}/account/confirm-email/{token}";
+
+        var emailToSend = new EmailConfirmationEmail(link);
+
+        backgroundJobService.Enqueue(() => emailSenderService
+                .SendEmailAsync(request.Email, emailToSend.Subject, emailToSend.Content, CancellationToken.None),
+            BackgroundJobQueues.EmailSending);
+
+        return Result.Success();
     }
 }

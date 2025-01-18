@@ -1,15 +1,23 @@
-﻿using Core.Domains._Shared.UseCaseStructure;
+﻿using System.Transactions;
+using Core.Domains._Shared.UseCaseStructure;
+using Core.Domains.Accounts.EmailMessages;
 using Core.Persistence.EfCore;
 using Core.Persistence.EfCore.EntityConfigs.AspNetCoreIdentity;
 using Core.Services.Auth;
+using Core.Services.BackgroundJobs;
+using Core.Services.EmailSender;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.Options;
+using Shared.MyAppSettings;
 using Shared.Result;
 
 namespace Core.Domains.Accounts.UseCases.CreateAccount;
 
-public class CreateAccountHandler(UserManager<MyIdentityUser> userManager,
-    MainDataContext context,
-    IJwtGenerationService jwtGenerationService) 
+public class CreateAccountHandler(
+    IOptions<MyAppSettings> settings,
+    UserManager<MyIdentityUser> userManager,
+    IBackgroundJobService backgroundJobService,
+    IEmailSenderService emailSenderService) 
     : IRequestHandler<CreateAccountRequest, Result<CreateAccountResponse>>
 {
     public async Task<Result<CreateAccountResponse>> Handle(CreateAccountRequest request,
@@ -18,25 +26,30 @@ public class CreateAccountHandler(UserManager<MyIdentityUser> userManager,
         var userFromDb = await userManager.FindByEmailAsync(request.Email);
 
         if (userFromDb is not null)
-            return Result<CreateAccountResponse>.Conflict("User already registered.");
+            return Result<CreateAccountResponse>.Conflict();
 
         var user = new MyIdentityUser { Email = request.Email };
+
+        using var transaction = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled);
+        
         var aspNetIdentityResult = await userManager.CreateAsync(user, request.Password);
 
         if (!aspNetIdentityResult.Succeeded)
             return Result<CreateAccountResponse>.Error();
 
-        var accountData = new AccountData(user.Id, []);
-
-        var newTokenId = Guid.NewGuid();
+        var token = await userManager.GenerateEmailConfirmationTokenAsync(user);
         
-        var token = jwtGenerationService.Generate(accountData, newTokenId);
+        var domainName = settings.Value.DomainName;
 
-        var newUserSession = new UserSession(newTokenId.ToString(), user.Id, DateTime.UtcNow,
-            DateTime.UtcNow.Add(TimeSpan.FromDays(30)), request.Device, request.Os, request.Client);
+        var link = $"https://{domainName}/account/confirm-email/{token}";
         
-        context.UserSessions.Add(newUserSession);
-        await context.SaveChangesAsync(cancellationToken);
+        var emailToSend = new EmailConfirmationEmail(link);
+
+        backgroundJobService.Enqueue(() => emailSenderService
+                .SendEmailAsync(request.Email, emailToSend.Subject, emailToSend.Content, CancellationToken.None),
+            BackgroundJobQueues.EmailSending);
+        
+        transaction.Complete();
 
         return new CreateAccountResponse(token);
     }

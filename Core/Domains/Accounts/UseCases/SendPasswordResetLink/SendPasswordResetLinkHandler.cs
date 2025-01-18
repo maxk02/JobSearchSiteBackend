@@ -1,13 +1,20 @@
 ﻿using Core.Domains._Shared.UseCaseStructure;
+using Core.Domains.Accounts.EmailMessages;
 using Core.Persistence.EfCore.EntityConfigs.AspNetCoreIdentity;
-using Core.Services.EmailSending;
+using Core.Services.BackgroundJobs;
+using Core.Services.EmailSender;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.Options;
+using Shared.MyAppSettings;
 using Shared.Result;
 
 namespace Core.Domains.Accounts.UseCases.SendPasswordResetLink;
 
-public class SendPasswordResetLinkHandler(UserManager<MyIdentityUser> userManager,
-    IEmailSendingService emailSendingService) : IRequestHandler<SendPasswordResetLinkRequest, Result>
+public class SendPasswordResetLinkHandler(
+    UserManager<MyIdentityUser> userManager,
+    IOptions<MyAppSettings> injectedAppSettings,
+    IEmailSenderService emailSenderService,
+    IBackgroundJobService backgroundJobService) : IRequestHandler<SendPasswordResetLinkRequest, Result>
 {
     public async Task<Result> Handle(SendPasswordResetLinkRequest request, CancellationToken cancellationToken = default)
     {
@@ -17,11 +24,16 @@ public class SendPasswordResetLinkHandler(UserManager<MyIdentityUser> userManage
 
         var token = await userManager.GeneratePasswordResetTokenAsync(user);
         
-        var link = "https://example.com/reset-password/" + token; //todo
-
-        var emailSendingResult = await emailSendingService
-            .SendPasswordResetMessageAsync(request.Email, link, cancellationToken);
+        var domainName = injectedAppSettings.Value.DomainName;
         
-        return emailSendingResult;
+        var link = $"https://{domainName}/account/reset-password/{token}";
+
+        var emailToSend = new ResetPasswordEmail(link);
+
+        backgroundJobService.Enqueue(() => emailSenderService
+                .SendEmailAsync(request.Email, emailToSend.Subject, emailToSend.Content, CancellationToken.None),
+            BackgroundJobQueues.EmailSending);
+
+        return Result.Success();
     }
 }

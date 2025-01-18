@@ -9,6 +9,7 @@ public static class BackgroundJobQueues
     public static readonly string LocationSearch = nameof(LocationSearch);
     public static readonly string PersonalFileTextExtractionAndSearch = nameof(PersonalFileTextExtractionAndSearch);
     public static readonly string PersonalFileStorage = nameof(PersonalFileStorage);
+    public static readonly string EmailSending = nameof(EmailSending);
 
     public static readonly string[] AllValues =
     [
@@ -16,6 +17,7 @@ public static class BackgroundJobQueues
         CompanySearch,
         CvSearch,
         LocationSearch,
+        EmailSending,
         PersonalFileTextExtractionAndSearch,
         PersonalFileStorage,
         Default
