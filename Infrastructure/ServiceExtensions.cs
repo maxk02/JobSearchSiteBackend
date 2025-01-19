@@ -4,46 +4,25 @@ using Core.Domains.Cvs.Search;
 using Core.Domains.Jobs.Search;
 using Core.Domains.Locations.Search;
 using Core.Domains.PersonalFiles.Search;
-using Core.Persistence.EfCore;
-using Core.Persistence.EfCore.EntityConfigs.AspNetCoreIdentity;
 using Core.Services.BackgroundJobs;
 using Core.Services.EmailSender;
 using Core.Services.FileStorage;
+using Core.Services.TextExtraction;
 using Elasticsearch.Net;
 using Hangfire;
 using Infrastructure.BackgroundJobs.Hangfire;
-using Infrastructure.EmailSender.SendGrid;
+using Infrastructure.EmailSender.MailKit;
 using Infrastructure.FileStorage.AmazonS3;
 using Infrastructure.Search.Elasticsearch;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
+using Infrastructure.TextExtraction;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Options;
 using Nest;
 
 namespace Infrastructure;
 
 public static class ServiceExtensions
 {
-    public static void ConfigurePersistenceWithIdentity(this IServiceCollection serviceCollection, IConfiguration configuration)
-    {
-        serviceCollection.AddDbContext<MainDataContext>(options =>
-            options.UseSqlServer(configuration.GetConnectionString("MainDb")));
-        
-        serviceCollection.AddIdentity<MyIdentityUser, MyIdentityRole>(options =>
-            {
-                options.Password.RequireDigit = true;
-                options.Password.RequireNonAlphanumeric = false;
-                options.Password.RequireUppercase = true;
-                options.Password.RequireLowercase = true;
-                options.Password.RequiredLength = 8;
-                options.SignIn.RequireConfirmedEmail = true;
-            })
-            .AddEntityFrameworkStores<MainDataContext>()
-            .AddDefaultTokenProviders();
-    }
-    
     public static void ConfigureAmazonS3(this IServiceCollection serviceCollection, IConfiguration configuration)
     {
         var bucketName = configuration["AWS:BucketName"];
@@ -86,6 +65,11 @@ public static class ServiceExtensions
         serviceCollection.AddSingleton<IPersonalFileSearchRepository, ElasticPersonalFileSearchRepository>();
     }
     
+    public static void ConfigureTextExtraction(this IServiceCollection serviceCollection)
+    {
+        serviceCollection.AddSingleton<ITextExtractionService, TextExtractionService>();
+    }
+    
     public static void ConfigureHangfire(this IServiceCollection serviceCollection, IConfiguration configuration)
     {
         serviceCollection.AddHangfire(config =>
@@ -97,22 +81,8 @@ public static class ServiceExtensions
         serviceCollection.AddSingleton<IBackgroundJobService, HangfireBackgroundJobService>();
     }
 
-    public static void ConfigureSendGrid(this IServiceCollection serviceCollection, IConfiguration configuration)
+    public static void ConfigureMailKit(this IServiceCollection serviceCollection)
     {
-        serviceCollection.AddTransient<IEmailSenderService, SendGridEmailSenderService>(provider =>
-        {
-            var sendGridApiKey = configuration["SendGrid:ApiKey"];
-            var senderEmail = configuration["SendGrid:SenderEmail"];
-            var domainName = configuration["DomainName"];
-
-            if (string.IsNullOrEmpty(sendGridApiKey) 
-                || string.IsNullOrEmpty(senderEmail)
-                || string.IsNullOrEmpty(domainName))
-            {
-                throw new ArgumentNullException();
-            }
-
-            return new SendGridEmailSenderService(sendGridApiKey, senderEmail, domainName);
-        });
+        serviceCollection.AddTransient<IEmailSenderService, MailKitEmailSenderService>();
     }
 }

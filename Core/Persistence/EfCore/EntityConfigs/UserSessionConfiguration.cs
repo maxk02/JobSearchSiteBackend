@@ -10,6 +10,11 @@ public class UserSessionConfiguration : IEntityTypeConfiguration<UserSession>
     {
         builder.HasKey(j => j.TokenId);
 
+        builder.Property(session => session.TokenId).HasMaxLength(50);
+        builder.Property(session => session.LastDevice).HasMaxLength(50);
+        builder.Property(session => session.LastOs).HasMaxLength(50);
+        builder.Property(session => session.LastClient).HasMaxLength(50);
+
         builder
             .HasOne(session => session.UserProfile)
             .WithMany(u => u.UserSessions)

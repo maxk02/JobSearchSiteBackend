@@ -12,6 +12,9 @@ public class PersonalFileConfiguration : IEntityTypeConfiguration<PersonalFile>
         
         builder.Property(personalFile => personalFile.RowVersion).IsRowVersion();
 
+        builder.Property(personalFile => personalFile.Name).HasMaxLength(40);
+        builder.Property(personalFile => personalFile.Extension).HasMaxLength(25);
+
         builder
             .HasOne(personalFile => personalFile.User)
             .WithMany(user => user.PersonalFiles)
