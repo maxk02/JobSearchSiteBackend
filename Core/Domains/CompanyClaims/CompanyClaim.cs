@@ -29,8 +29,8 @@ public class CompanyClaim : IEntityWithId, IClaimEntity
 
     public static readonly CompanyClaim CanEditNewsfeed = AllValues.First(permission => permission.Name == nameof(CanEditNewsfeed));
     
-    public long Id { get; }
-    public string Name { get; }
+    public long Id { get; private set; }
+    public string Name { get; private set; }
 
     private CompanyClaim(long id, string name)
     {

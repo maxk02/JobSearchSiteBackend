@@ -1,6 +1,7 @@
 ﻿using System.Text;
 using Core.Persistence.EfCore;
 using Core.Persistence.EfCore.EntityConfigs.AspNetCoreIdentity;
+using Core.Services.Auth;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -18,7 +19,7 @@ public static class ServiceExtensions
         IConfiguration configuration)
     {
         serviceCollection.AddDbContext<MainDataContext>(options =>
-            options.UseSqlServer(configuration.GetConnectionString("MainDb")));
+            options.UseSqlServer(Environment.GetEnvironmentVariable("MAIN_DB_CONNECTION_STRING")));
         
         serviceCollection.AddIdentity<MyIdentityUser, MyIdentityRole>(options =>
             {
@@ -57,5 +58,10 @@ public static class ServiceExtensions
                     IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey))
                 };
             });
+    }
+    
+    public static void ConfigureJwtGenerationService(this IServiceCollection serviceCollection)
+    {
+        serviceCollection.AddSingleton<IJwtGenerationService, JwtGenerationService>();
     }
 }

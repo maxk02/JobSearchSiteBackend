@@ -70,10 +70,10 @@ public static class ServiceExtensions
         serviceCollection.AddSingleton<ITextExtractionService, TextExtractionService>();
     }
     
-    public static void ConfigureHangfire(this IServiceCollection serviceCollection, IConfiguration configuration)
+    public static void ConfigureHangfire(this IServiceCollection serviceCollection)
     {
         serviceCollection.AddHangfire(config =>
-            config.UseSqlServerStorage(configuration.GetConnectionString("MainDb")));
+            config.UseSqlServerStorage(Environment.GetEnvironmentVariable("MAIN_DB_CONNECTION_STRING")));
         serviceCollection.AddHangfireServer(options =>
         {
             options.Queues = BackgroundJobQueues.AllValues;

@@ -44,16 +44,18 @@ public class JobConfiguration : IEntityTypeConfiguration<Job>
             .UsingEntity(junctionEntityBuilder => junctionEntityBuilder.ToTable("JobBookmarks"));
         
         builder.OwnsOne(job => job.SalaryRecord,
-            ownedNavigationBuilder => ownedNavigationBuilder.ToJson());
+            ownedNavigationBuilder =>
+            {
+                ownedNavigationBuilder.ToJson();
+                ownedNavigationBuilder.Property(salaryRecord => salaryRecord.Minimum).HasPrecision(10, 2);
+                ownedNavigationBuilder.Property(salaryRecord => salaryRecord.Maximum).HasPrecision(10, 2);
+            });
         
-        builder.OwnsMany(job => job.Responsibilities,
-            ownedNavigationBuilder => ownedNavigationBuilder.ToJson());
+        builder.Property(job => job.Responsibilities).HasColumnType("nvarchar(max)");
         
-        builder.OwnsMany(job => job.Requirements,
-            ownedNavigationBuilder => ownedNavigationBuilder.ToJson());
+        builder.Property(job => job.Requirements).HasColumnType("nvarchar(max)");
         
-        builder.OwnsMany(job => job.Advantages,
-            ownedNavigationBuilder => ownedNavigationBuilder.ToJson());
+        builder.Property(job => job.Advantages).HasColumnType("nvarchar(max)");
         
         builder.OwnsOne(job => job.EmploymentTypeRecord,
             ownedNavigationBuilder => ownedNavigationBuilder.ToJson());

@@ -25,13 +25,14 @@ public class DeleteJobFolderHandler(ICurrentAccountService currentAccountService
 
         if (!hasEditClaim)
             return Result.Forbidden();
-
+        
         var thisAndDescendants = await context.JobFolderRelations
-            .Where(jfc => jfc.AncestorId == request.Id)
-            .Select(jfc => jfc.Descendant)
+            .Where(jfr => jfr.AncestorId == request.Id)
+            .Select(jfr => new { Relation = jfr, JobFolder = jfr.Descendant! })
             .ToListAsync(cancellationToken);
         
-        context.JobFolders.RemoveRange(jobFolder);
+        context.JobFolderRelations.RemoveRange(thisAndDescendants.Select(x => x.Relation));
+        context.JobFolders.RemoveRange(thisAndDescendants.Select(x => x.JobFolder));
         await context.SaveChangesAsync(cancellationToken);
         
         return Result.Success();

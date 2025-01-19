@@ -12,11 +12,11 @@ public class JobContractType : IEntityWithId
         Name = name;
     }
     
-    public long Id { get; }
+    public long Id { get; private set; }
     
-    public long CountryId { get; }
+    public long CountryId { get; private set; }
     
-    public string Name { get; }
+    public string Name { get; private set; }
     
     public Country? Country { get; set; }
     public ICollection<Job>? Jobs { get; set; }

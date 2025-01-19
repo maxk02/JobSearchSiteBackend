@@ -22,6 +22,13 @@ public class Cv : IEntityWithId, IEntityWithRowVersioning
         Skills = [..skills];
     }
     
+    // ef core
+    private Cv(long userId, ICollection<string> skills)
+    {
+        UserId = userId;
+        Skills = [..skills];
+    }
+    
     public long Id { get; private set; }
 
     public byte[] RowVersion { get; private set; } = [];

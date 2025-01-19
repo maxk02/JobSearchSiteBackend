@@ -25,6 +25,17 @@ public class UserProfile : IEntityWithId
         Phone = phone;
     }
     
+    // ef core
+    private UserProfile(string firstName, string? middleName, string lastName,
+        DateOnly? dateOfBirth, string email)
+    {
+        FirstName = firstName;
+        MiddleName = middleName;
+        LastName = lastName;
+        DateOfBirth = dateOfBirth;
+        Email = email;
+    }
+    
     public long Id { get; private set; }
 
     public string FirstName { get; set; }

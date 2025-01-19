@@ -1,28 +1,21 @@
 ﻿using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
-using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
+using Shared.MyAppSettings;
 
 namespace Core.Services.Auth;
 
-public class JwtGenerationService(IConfiguration configuration) : IJwtGenerationService
+public class JwtGenerationService(IOptions<MyJwtSettings> settings) : IJwtGenerationService
 {
     public string Generate(AccountData accountData, Guid newTokenId)
     {
-        var jwtSettings = configuration.GetSection("JwtSettings");
-        
-        var secretKey = jwtSettings["Secret"];
-        if (secretKey is null)
-            throw new NotImplementedException();
+        var secretKey = settings.Value.SecretKey;
 
-        var issuer = jwtSettings["Issuer"];
-        if (issuer is null)
-            throw new NotImplementedException();
+        var issuer = settings.Value.Issuer;
 
-        var audience = jwtSettings["Audience"];
-        if (audience is null)
-            throw new NotImplementedException();
+        var audience = settings.Value.Audience;
         
         List<Claim> claims = [
             new(JwtRegisteredClaimNames.Sub, accountData.Id.ToString()),

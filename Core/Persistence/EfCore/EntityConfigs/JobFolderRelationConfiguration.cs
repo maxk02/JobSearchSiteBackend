@@ -13,12 +13,12 @@ public class JobFolderRelationConfiguration : IEntityTypeConfiguration<JobFolder
         builder.HasOne(relation => relation.Ancestor)
             .WithMany(jobFolder => jobFolder.RelationsWhereThisIsAncestor)
             .HasForeignKey(relation => relation.AncestorId)
-            .OnDelete(DeleteBehavior.Cascade);
+            .OnDelete(DeleteBehavior.Restrict);
 
         builder.HasOne(relation => relation.Descendant)
             .WithMany(jobFolder => jobFolder.RelationsWhereThisIsDescendant)
             .HasForeignKey(relation => relation.DescendantId)
-            .OnDelete(DeleteBehavior.Cascade);
+            .OnDelete(DeleteBehavior.Restrict);
 
         builder.Property(relation => relation.Depth).IsRequired();
     }

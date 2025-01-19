@@ -15,9 +15,8 @@ public class LocationConfiguration : IEntityTypeConfiguration<Location>
             .WithMany(country => country.Locations)
             .HasForeignKey(location => location.CountryId)
             .OnDelete(DeleteBehavior.Restrict);
-
-        builder
-            .OwnsMany(location => location.Subdivisions, ownedNavigationBuilder => ownedNavigationBuilder.ToJson());
+        
+        builder.Property(location => location.Subdivisions).HasColumnType("nvarchar(max)");
 
         builder
             .HasMany(location => location.Jobs)

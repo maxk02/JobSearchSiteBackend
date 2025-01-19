@@ -45,11 +45,6 @@ public class MainDataContext : IdentityDbContext<MyIdentityUser, MyIdentityRole,
     {
     }
 
-    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-    {
-        // optionsBuilder.UseSqlServer("");
-    }
-
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);

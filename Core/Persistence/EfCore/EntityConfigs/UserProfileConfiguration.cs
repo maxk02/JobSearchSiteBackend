@@ -16,6 +16,8 @@ public class UserProfileConfiguration : IEntityTypeConfiguration<UserProfile>
             .WithOne()
             .HasForeignKey<UserProfile>(userProfile => userProfile.Id)
             .OnDelete(DeleteBehavior.Cascade);
+
+        builder.OwnsOne(userProfile => userProfile.Phone).ToJson();
         
         builder
             .HasMany(userProfile => userProfile.JobApplications)

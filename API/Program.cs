@@ -46,9 +46,10 @@ builder.Services.AddMemoryCache(options =>
 
 builder.Services.AddScoped<ICurrentAccountService, JwtCurrentAccountService>();
 builder.Services.ConfigureJwtAuthentication(builder.Configuration);
-
-builder.Services.ConfigureHangfire(builder.Configuration);
+builder.Services.ConfigureJwtGenerationService();
 builder.Services.ConfigurePersistenceWithIdentity(builder.Configuration);
+
+builder.Services.ConfigureHangfire();
 builder.Services.ConfigureAmazonS3(builder.Configuration);
 builder.Services.ConfigureMailKit();
 builder.Services.ConfigureElasticSearch(builder.Configuration);

@@ -38,8 +38,8 @@ public class JobFolderClaim : IEntityWithId, IClaimEntity
 
     public static readonly JobFolderClaim CanContactPeopleWithPublicCv = AllValues.First(permission => permission.Name == nameof(CanContactPeopleWithPublicCv));
 
-    public long Id { get; }
-    public string Name { get; }
+    public long Id { get; private set; }
+    public string Name { get; private set; }
 
     private JobFolderClaim(long id, string name)
     {
