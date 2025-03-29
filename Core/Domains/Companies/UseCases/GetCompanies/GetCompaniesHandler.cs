@@ -29,13 +29,13 @@ public class GetCompaniesHandler(
             .Take(request.PaginationSpec.PageSize)
             .ToListAsync(cancellationToken);
 
-        var companyInfocardDtos = companies
-            .Select(x => new CompanyInfocardDto(x.Id, x.Name, x.CountryId)).ToList();
+        var companyInfoDtos = companies
+            .Select(x => new CompanyInfoDto(x.Id, x.Name, x.CountryId)).ToList();
 
         var paginationResponse = new PaginationResponse(count, request.PaginationSpec.PageNumber,
             request.PaginationSpec.PageSize);
 
-        var response = new GetCompaniesResponse(companyInfocardDtos, paginationResponse);
+        var response = new GetCompaniesResponse(companyInfoDtos, paginationResponse);
 
         return response;
     }

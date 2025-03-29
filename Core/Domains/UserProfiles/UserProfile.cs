@@ -14,7 +14,7 @@ namespace Core.Domains.UserProfiles;
 public class UserProfile : IEntityWithId
 {
     public UserProfile(long accountId, string firstName, string? middleName, string lastName,
-        DateOnly? dateOfBirth, string email, Phone? phone)
+        DateOnly? dateOfBirth, string email, string? phone)
     {
         Id = accountId;
         FirstName = firstName;
@@ -48,7 +48,7 @@ public class UserProfile : IEntityWithId
     
     public string Email { get; set; }
     
-    public Phone? Phone { get; set; }
+    public string? Phone { get; set; }
     
     
     public ICollection<PersonalFile>? PersonalFiles { get; set; }

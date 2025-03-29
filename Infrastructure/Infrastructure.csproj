@@ -7,13 +7,13 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <PackageReference Include="AWSSDK.Core" Version="3.7.401.2" />
-      <PackageReference Include="AWSSDK.Extensions.NETCore.Setup" Version="3.7.301" />
-      <PackageReference Include="AWSSDK.S3" Version="3.7.412.2" />
-      <PackageReference Include="DocumentFormat.OpenXml" Version="3.2.0" />
-      <PackageReference Include="Hangfire" Version="1.8.17" />
-      <PackageReference Include="Hangfire.SqlServer" Version="1.8.17" />
-      <PackageReference Include="MailKit" Version="4.9.0" />
+      <PackageReference Include="AWSSDK.Core" Version="3.7.402.28" />
+      <PackageReference Include="AWSSDK.Extensions.NETCore.Setup" Version="3.7.400" />
+      <PackageReference Include="AWSSDK.S3" Version="3.7.415.27" />
+      <PackageReference Include="DocumentFormat.OpenXml" Version="3.3.0" />
+      <PackageReference Include="Hangfire" Version="1.8.18" />
+      <PackageReference Include="Hangfire.SqlServer" Version="1.8.18" />
+      <PackageReference Include="MailKit" Version="4.11.0" />
       <PackageReference Include="NEST" Version="7.17.5" />
       <PackageReference Include="PDFsharp" Version="6.1.1" />
     </ItemGroup>

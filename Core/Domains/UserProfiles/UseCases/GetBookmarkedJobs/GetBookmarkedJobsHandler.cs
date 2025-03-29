@@ -35,15 +35,15 @@ public class GetBookmarkedJobsHandler(
             .Take(request.PaginationSpec.PageSize)
             .ToListAsync(cancellationToken);
 
-        var jobInfocardDtos = bookmarkedJobs
-            .Select(x => new JobInfocardDto(x.Id, x.JobFolder!.CompanyId, x.CategoryId, x.Title,
+        var jobInfoDtos = bookmarkedJobs
+            .Select(x => new JobInfoDto(x.Id, x.JobFolder!.CompanyId, x.CategoryId, x.Title,
                 x.DateTimePublishedUtc, x.DateTimeExpiringUtc, x.SalaryRecord, x.EmploymentTypeRecord))
             .ToList();
 
         var paginationResponse = new PaginationResponse(count, request.PaginationSpec.PageNumber,
             request.PaginationSpec.PageSize);
 
-        var response = new GetBookmarkedJobsResponse(jobInfocardDtos, paginationResponse);
+        var response = new GetBookmarkedJobsResponse(jobInfoDtos, paginationResponse);
 
         return response;
     }

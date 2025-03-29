@@ -7,20 +7,20 @@ using Core.Services.Auth;
 using Microsoft.EntityFrameworkCore;
 using Ardalis.Result;
 
-namespace Core.Domains.JobFolders.UseCases.GetChildJobsAndFolders;
+namespace Core.Domains.JobFolders.UseCases.GetChildFolders;
 
-public class GetChildJobsAndFoldersHandler(
+public class GetChildFoldersHandler(
     ICurrentAccountService currentAccountService,
-    MainDataContext context) : IRequestHandler<GetChildJobsAndFoldersRequest, Result<GetChildJobsAndFoldersResponse>>
+    MainDataContext context) : IRequestHandler<GetChildFoldersRequest, Result<GetChildFoldersResponse>>
 {
-    public async Task<Result<GetChildJobsAndFoldersResponse>> Handle(GetChildJobsAndFoldersRequest request,
+    public async Task<Result<GetChildFoldersResponse>> Handle(GetChildFoldersRequest request,
         CancellationToken cancellationToken = default)
     {
         var currentUserId = currentAccountService.GetIdOrThrow();
 
         var jobFolder = await context.JobFolders.FindAsync([request.JobFolderId], cancellationToken);
         if (jobFolder is null)
-            return Result<GetChildJobsAndFoldersResponse>.NotFound();
+            return Result<GetChildFoldersResponse>.NotFound();
 
         var hasReadClaim = await context.JobFolderRelations
             .GetThisOrAncestorWhereUserHasClaim(request.JobFolderId, currentUserId,
@@ -28,13 +28,7 @@ public class GetChildJobsAndFoldersHandler(
             .AnyAsync(cancellationToken);
 
         if (!hasReadClaim)
-            return Result<GetChildJobsAndFoldersResponse>.Forbidden();
-        
-        var childJobInfocardDtos = await context.Jobs
-            .Where(job => job.JobFolderId == request.JobFolderId)
-            .Select(job => new JobInfocardInFolderDto(job.Id, job.CategoryId, job.Title, job.DateTimePublishedUtc,
-                job.DateTimeExpiringUtc, job.SalaryRecord, job.EmploymentTypeRecord))
-            .ToListAsync(cancellationToken);
+            return Result<GetChildFoldersResponse>.Forbidden();
 
         var childJobFolderDtos = await context.JobFolderRelations
             .Where(jfc => jfc.AncestorId == request.JobFolderId)
@@ -42,6 +36,6 @@ public class GetChildJobsAndFoldersHandler(
             .Select(jfc => new JobFolderDto(jfc.Descendant!.Id, jfc.Descendant!.Name!, jfc.Descendant.Description))
             .ToListAsync(cancellationToken);
 
-        return new GetChildJobsAndFoldersResponse(childJobInfocardDtos, childJobFolderDtos);
+        return new GetChildFoldersResponse(childJobFolderDtos);
     }
 }

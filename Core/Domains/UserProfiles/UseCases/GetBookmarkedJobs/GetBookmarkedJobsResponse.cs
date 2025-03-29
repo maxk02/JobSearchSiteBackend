@@ -4,5 +4,5 @@ using Core.Domains.Jobs.Dtos;
 namespace Core.Domains.UserProfiles.UseCases.GetBookmarkedJobs;
 
 public record GetBookmarkedJobsResponse(
-    ICollection<JobInfocardDto> JobInfocardDtos,
+    ICollection<JobInfoDto> JobInfoDtos,
     PaginationResponse PaginationResponse);

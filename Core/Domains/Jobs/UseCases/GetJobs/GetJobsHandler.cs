@@ -42,18 +42,18 @@ public class GetJobsHandler(
 
         var count = await query.CountAsync(cancellationToken);
 
-        var jobInfocardDtos = await query
+        var jobInfoDtos = await query
             .OrderByDescending(job => job.DateTimePublishedUtc)
             .Skip((request.PaginationSpec.PageNumber - 1) * request.PaginationSpec.PageSize)
             .Take(request.PaginationSpec.PageSize)
-            .Select(x => new JobInfocardDto(x.Id, x.JobFolder!.CompanyId, x.CategoryId, x.Title,
+            .Select(x => new JobInfoDto(x.Id, x.JobFolder!.CompanyId, x.CategoryId, x.Title,
                 x.DateTimePublishedUtc, x.DateTimeExpiringUtc, x.SalaryRecord, x.EmploymentTypeRecord))
             .ToListAsync(cancellationToken);
 
         var paginationResponse = new PaginationResponse(count, request.PaginationSpec.PageNumber,
             request.PaginationSpec.PageSize);
 
-        var response = new GetJobsResponse(jobInfocardDtos, paginationResponse);
+        var response = new GetJobsResponse(jobInfoDtos, paginationResponse);
 
         return response;
     }

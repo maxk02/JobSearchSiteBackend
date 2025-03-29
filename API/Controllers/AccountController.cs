@@ -45,7 +45,6 @@ public class AccountController : ControllerBase
     }
     
     [HttpPost]
-    [Route("/register")]
     [AllowAnonymous]
     public async Task<ActionResult<CreateAccountResponse>> CreateAccount(
         CreateAccountRequest request,
@@ -58,7 +57,6 @@ public class AccountController : ControllerBase
     }
     
     [HttpPost]
-    [Route("/delete")]
     public async Task<ActionResult> DeleteAccount(
         DeleteAccountRequest request,
         [FromServices] DeleteAccountHandler handler,

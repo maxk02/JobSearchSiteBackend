@@ -24,11 +24,11 @@ public class GetPersonalFilesHandler(
 
         var query = context.PersonalFiles
             .Where(pf => pf.UserId == request.UserId)
-            .Select(x => new PersonalFileInfocardDto(x.Id, x.Name, x.Extension, x.Size));
+            .Select(x => new PersonalFileInfoDto(x.Id, x.Name, x.Extension, x.Size));
         
         var count = await query.CountAsync(cancellationToken);
         
-        var personalFileInfocardDtos = await query
+        var personalFileInfoDtos = await query
             .Skip((request.PaginationSpec.PageNumber - 1) * request.PaginationSpec.PageSize)
             .Take(request.PaginationSpec.PageSize)
             .ToListAsync(cancellationToken);
@@ -36,7 +36,7 @@ public class GetPersonalFilesHandler(
         var paginationResponse = new PaginationResponse(count, request.PaginationSpec.PageNumber,
             request.PaginationSpec.PageSize);
         
-        var response = new GetPersonalFilesResponse(personalFileInfocardDtos, paginationResponse);
+        var response = new GetPersonalFilesResponse(personalFileInfoDtos, paginationResponse);
 
         return response;
     }

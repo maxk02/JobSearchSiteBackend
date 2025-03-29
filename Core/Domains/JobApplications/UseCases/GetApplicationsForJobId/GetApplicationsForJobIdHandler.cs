@@ -93,7 +93,7 @@ public class GetApplicationsForJobIdHandler(
                     ja.User!.Cvs!.Select(cv => new CvDto(cv.Id, cv.UserId, cv.SalaryRecord, cv.EmploymentTypeRecord,
                         cv.EducationRecords!, cv.WorkRecords!, cv.Skills!)).FirstOrDefault(),
                     ja.PersonalFiles!.Select(pf =>
-                        new PersonalFileInfocardDto(pf.Id, pf.Name, pf.Extension, pf.Size)).ToList(),
+                        new PersonalFileInfoDto(pf.Id, pf.Name, pf.Extension, pf.Size)).ToList(),
                     ja.Status.ToString())
             )
             .ToList();

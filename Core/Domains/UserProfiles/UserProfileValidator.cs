@@ -26,9 +26,9 @@ public class UserProfileValidator : AbstractValidator<UserProfile>
 
         RuleFor(x => x.Email).Length(1, 50).EmailAddress();
 
-        When(x => x.Phone != null, () =>
-        {
-            RuleFor(x => x.Phone!).SetValidator(new PhoneValidator());
-        });
+        // When(x => x.Phone != null, () =>
+        // {
+        //     RuleFor(x => x.Phone!).SetValidator(new PhoneValidator());
+        // });
     }
 }

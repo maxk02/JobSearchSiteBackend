@@ -10,5 +10,5 @@ public record JobApplicationForManagersDto(
     string UserFullName,
     DateTime DateTimeAppliedUtc,
     CvDto? Cv,
-    ICollection<PersonalFileInfocardDto> PersonalFiles,
+    ICollection<PersonalFileInfoDto> PersonalFiles,
     string Status);

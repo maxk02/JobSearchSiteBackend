@@ -3,6 +3,7 @@ using Core.Domains.Companies.UseCases.AddCompany;
 using Core.Domains.Companies.UseCases.DeleteCompany;
 using Core.Domains.Companies.UseCases.GetCompanies;
 using Core.Domains.Companies.UseCases.GetCompanyById;
+using Core.Domains.Companies.UseCases.UpdateCompany;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -56,6 +57,17 @@ public class CompaniesController : ControllerBase
         CancellationToken cancellationToken)
     {
         var request = new GetCompanyByIdRequest(id);
+        var result = await handler.Handle(request, cancellationToken);
+        
+        return this.ToActionResult(result);
+    }
+    
+    [HttpPatch]
+    public async Task<ActionResult> UpdateCompany(
+        [FromBody] UpdateCompanyRequest request,
+        [FromServices] UpdateCompanyHandler handler,
+        CancellationToken cancellationToken)
+    {
         var result = await handler.Handle(request, cancellationToken);
         
         return this.ToActionResult(result);

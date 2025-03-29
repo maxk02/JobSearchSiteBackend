@@ -3,5 +3,4 @@ using Ardalis.Result;
 
 namespace Core.Domains.Accounts.UseCases.CreateAccount;
 
-public record CreateAccountRequest(string Email, string Password,
-    string? Device, string? Os, string? Client) : IRequest<Result<CreateAccountResponse>>;
+public record CreateAccountRequest(string Email, string Password) : IRequest<Result<CreateAccountResponse>>;

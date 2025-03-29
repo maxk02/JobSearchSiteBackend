@@ -2,5 +2,5 @@
 
 namespace Core.Domains.Jobs.Dtos;
 
-public record JobInfocardDto(long Id, long CompanyId, long CategoryId, string Title, DateTime DateTimePublishedUtc,
+public record JobInfoDto(long Id, long CompanyId, long CategoryId, string Title, DateTime DateTimePublishedUtc,
     DateTime DateTimeExpiringUtc, SalaryRecord? SalaryRecord, EmploymentTypeRecord? EmploymentTypeRecord);
