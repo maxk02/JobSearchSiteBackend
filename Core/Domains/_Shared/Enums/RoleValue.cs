@@ -1,6 +1,6 @@
 ﻿namespace Core.Domains._Shared.Enums;
 
-public enum RoleValues
+public enum RoleValue
 {
     User = 1,
     Moderator = 2,

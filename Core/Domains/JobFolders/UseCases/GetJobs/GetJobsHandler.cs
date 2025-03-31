@@ -1,4 +1,6 @@
 ﻿using Ardalis.Result;
+using AutoMapper;
+using AutoMapper.QueryableExtensions;
 using Core.Domains._Shared.UseCaseStructure;
 using Core.Domains.JobFolderClaims;
 using Core.Domains.Jobs.Dtos;
@@ -10,7 +12,8 @@ namespace Core.Domains.JobFolders.UseCases.GetJobs;
 
 public class GetJobsHandler(
     ICurrentAccountService currentAccountService,
-    MainDataContext context) : IRequestHandler<GetJobsRequest, Result<GetJobsResponse>>
+    MainDataContext context,
+    IMapper mapper) : IRequestHandler<GetJobsRequest, Result<GetJobsResponse>>
 {
     public async Task<Result<GetJobsResponse>> Handle(GetJobsRequest request,
         CancellationToken cancellationToken = default)
@@ -28,13 +31,11 @@ public class GetJobsHandler(
 
         if (!hasReadClaim)
             return Result<GetJobsResponse>.Forbidden();
-
-        throw new NotImplementedException();
         
         var childJobInfoDtos = await context.Jobs
             .Where(job => job.JobFolderId == request.JobFolderId)
-            .Select(job => new JobInfoDto(job.Id, 1, job.CategoryId, job.Title, job.DateTimePublishedUtc,
-                job.DateTimeExpiringUtc, job.SalaryRecord, job.EmploymentTypeRecord))
+            .ProjectTo<JobCardDto>(mapper.ConfigurationProvider)
+            // .Select(job => mapper.Map<JobCardDto>(job))
             .ToListAsync(cancellationToken);
 
         return new GetJobsResponse(childJobInfoDtos);

@@ -1,6 +1,6 @@
 ﻿namespace Core.Domains.JobApplications.Enums;
 
-public enum JobApplicationStatusEnum
+public enum JobApplicationStatus
 {
     Submitted = 0,
     Shortlisted = 1,

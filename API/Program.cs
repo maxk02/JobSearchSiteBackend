@@ -5,9 +5,7 @@ using Core.Domains.Accounts;
 using Core.Domains.Companies;
 using Core.Domains.CompanyClaims;
 using Core.Domains.Countries;
-using Core.Domains.Cvs;
 using Core.Domains.JobApplications;
-using Core.Domains.JobContractTypes;
 using Core.Domains.JobFolderClaims;
 using Core.Domains.JobFolders;
 using Core.Domains.Jobs;
@@ -15,12 +13,13 @@ using Core.Domains.Locations;
 using Core.Domains.PersonalFiles;
 using Core.Domains.UserProfiles;
 using Core.Services.Auth;
+using DotNetEnv;
 using Infrastructure;
 using Shared.MyAppSettings;
 
 var builder = WebApplication.CreateBuilder(args);
 
-DotNetEnv.Env.Load();
+Env.Load();
 
 builder.Configuration.AddEnvironmentVariables();
 
@@ -59,9 +58,9 @@ builder.Services.ConfigureAccountUseCases();
 builder.Services.ConfigureCompanyUseCases();
 builder.Services.ConfigureCompanyClaimUseCases();
 builder.Services.ConfigureCountryUseCases();
-builder.Services.ConfigureCvUseCases();
+// builder.Services.ConfigureCvUseCases();
 builder.Services.ConfigureJobApplicationUseCases();
-builder.Services.ConfigureJobContractTypeUseCases();
+// builder.Services.ConfigureJobContractTypeUseCases();
 builder.Services.ConfigureJobFolderClaimUseCases();
 builder.Services.ConfigureJobFolderUseCases();
 builder.Services.ConfigureJobUseCases();

@@ -7,12 +7,15 @@ using Core.Persistence.EfCore;
 using Core.Services.Auth;
 using Microsoft.EntityFrameworkCore;
 using Ardalis.Result;
+using AutoMapper;
+using Core.Domains.Jobs.Dtos;
 
 namespace Core.Domains.Jobs.UseCases.GetJobById;
 
 public class GetJobByIdHandler(
     ICurrentAccountService currentAccountService,
-    MainDataContext context) : IRequestHandler<GetJobByIdRequest, Result<GetJobByIdResponse>>
+    MainDataContext context,
+    IMapper mapper) : IRequestHandler<GetJobByIdRequest, Result<GetJobByIdResponse>>
 {
     public async Task<Result<GetJobByIdResponse>> Handle(GetJobByIdRequest request,
         CancellationToken cancellationToken = default)
@@ -20,11 +23,11 @@ public class GetJobByIdHandler(
         var job = await context.Jobs
             .AsNoTracking()
             .Where(j => j.Id == request.Id)
-            .Include(job => job.SalaryRecord)
-            .Include(job => job.EmploymentTypeRecord)
+            .Include(job => job.SalaryInfo)
+            .Include(job => job.EmploymentTypes)
             .Include(job => job.Responsibilities)
             .Include(job => job.Requirements)
-            .Include(job => job.Advantages)
+            .Include(job => job.NiceToHaves)
             .Include(job => job.JobContractTypes)
             .Include(job => job.Locations)
             .SingleOrDefaultAsync(cancellationToken);
@@ -47,19 +50,9 @@ public class GetJobByIdHandler(
             if (!canEdit)
                 return Result<GetJobByIdResponse>.Forbidden();
         }
-
-        var jobContractTypeDtos = job.JobContractTypes!
-            .Select(jct => new JobContractTypeDto(jct.Id, jct.Name))
-            .ToArray();
-
-        var locationDtos = job.Locations!
-            .Select(l => new LocationDto(l.Id, l.CountryId, l.Name,
-                l.Subdivisions, l.Description, l.Code))
-            .ToArray();
-
-        return new GetJobByIdResponse(job.Id, job.CategoryId, job.Title, job.Description,
-            job.DateTimePublishedUtc, job.DateTimeExpiringUtc, job.Responsibilities ?? [],
-            job.Requirements ?? [], job.Advantages ?? [], job.SalaryRecord, job.EmploymentTypeRecord,
-            jobContractTypeDtos, locationDtos);
+        
+        var jobDetailedDto = mapper.Map<JobDetailedDto>(job);
+        
+        return new GetJobByIdResponse(jobDetailedDto);
     }
 }

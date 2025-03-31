@@ -1,5 +1,4 @@
-﻿using Core.Domains._Shared.ValueEntities;
-using FluentValidation;
+﻿using FluentValidation;
 using Shared.FluentValidationAddons;
 using Shared.FluentValidationAddons.StringFiltering;
 

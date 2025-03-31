@@ -1,6 +1,4 @@
-﻿using Core.Domains.Cvs.Search;
-using Core.Domains.Cvs.ValueEntities;
-using Core.Domains.PersonalFiles.Search;
+﻿using Core.Domains.PersonalFiles.Search;
 using Elasticsearch.Net;
 using Nest;
 

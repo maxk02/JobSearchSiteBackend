@@ -1,6 +1,5 @@
 ﻿using Amazon.S3;
 using Core.Domains.Companies.Search;
-using Core.Domains.Cvs.Search;
 using Core.Domains.Jobs.Search;
 using Core.Domains.Locations.Search;
 using Core.Domains.PersonalFiles.Search;
@@ -59,7 +58,7 @@ public static class ServiceExtensions
         });
 
         serviceCollection.AddSingleton<ICompanySearchRepository, ElasticCompanySearchRepository>();
-        serviceCollection.AddSingleton<ICvSearchRepository, ElasticCvSearchRepository>();
+        // serviceCollection.AddSingleton<ICvSearchRepository, ElasticCvSearchRepository>();
         serviceCollection.AddSingleton<IJobSearchRepository, ElasticJobSearchRepository>();
         serviceCollection.AddSingleton<ILocationSearchRepository, ElasticLocationSearchRepository>();
         serviceCollection.AddSingleton<IPersonalFileSearchRepository, ElasticPersonalFileSearchRepository>();

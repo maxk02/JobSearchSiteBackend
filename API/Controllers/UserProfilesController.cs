@@ -7,7 +7,6 @@ using Core.Domains.UserProfiles.UseCases.DeleteCompanyBookmark;
 using Core.Domains.UserProfiles.UseCases.DeleteJobBookmark;
 using Core.Domains.UserProfiles.UseCases.GetBookmarkedCompanies;
 using Core.Domains.UserProfiles.UseCases.GetBookmarkedJobs;
-using Core.Domains.UserProfiles.UseCases.GetFirstCv;
 using Core.Domains.UserProfiles.UseCases.GetJobApplicationsForUser;
 using Core.Domains.UserProfiles.UseCases.GetPersonalFiles;
 using Core.Domains.UserProfiles.UseCases.GetUserProfileById;
@@ -117,18 +116,18 @@ public class UserProfilesController : ControllerBase
         return this.ToActionResult(result);
     }
     
-    [HttpGet]
-    [Route("{id:long:min(1)}/cv")]
-    public async Task<ActionResult<GetFirstCvResponse>> GetFirstCv(
-        long id,
-        [FromServices] GetFirstCvHandler handler,
-        CancellationToken cancellationToken)
-    {
-        var request = new GetFirstCvRequest(id);
-        var result = await handler.Handle(request, cancellationToken);
-        
-        return this.ToActionResult(result);
-    }
+    // [HttpGet]
+    // [Route("{id:long:min(1)}/cv")]
+    // public async Task<ActionResult<GetFirstCvResponse>> GetFirstCv(
+    //     long id,
+    //     [FromServices] GetFirstCvHandler handler,
+    //     CancellationToken cancellationToken)
+    // {
+    //     var request = new GetFirstCvRequest(id);
+    //     var result = await handler.Handle(request, cancellationToken);
+    //     
+    //     return this.ToActionResult(result);
+    // }
     
     [HttpGet]
     [Route("{id:long:min(1)}/job-applications")]

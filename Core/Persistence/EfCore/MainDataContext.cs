@@ -3,7 +3,6 @@ using Core.Domains.Categories;
 using Core.Domains.Companies;
 using Core.Domains.CompanyClaims;
 using Core.Domains.Countries;
-using Core.Domains.Cvs;
 using Core.Domains.JobApplications;
 using Core.Domains.JobContractTypes;
 using Core.Domains.JobFolderClaims;
@@ -26,7 +25,7 @@ public class MainDataContext : IdentityDbContext<MyIdentityUser, MyIdentityRole,
     public DbSet<Company> Companies { get; set; }
     public DbSet<JobContractType> ContractTypes { get; set; }
     public DbSet<Country> Countries { get; set; }
-    public DbSet<Cv> Cvs { get; set; }
+    // public DbSet<Cv> Cvs { get; set; }
     public DbSet<PersonalFile> PersonalFiles { get; set; }
     public DbSet<JobApplication> JobApplications { get; set; }
     public DbSet<Job> Jobs { get; set; }

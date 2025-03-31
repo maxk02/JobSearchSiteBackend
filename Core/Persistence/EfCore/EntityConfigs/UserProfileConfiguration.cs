@@ -16,8 +16,6 @@ public class UserProfileConfiguration : IEntityTypeConfiguration<UserProfile>
             .WithOne()
             .HasForeignKey<UserProfile>(userProfile => userProfile.Id)
             .OnDelete(DeleteBehavior.Cascade);
-
-        builder.OwnsOne(userProfile => userProfile.Phone).ToJson();
         
         builder
             .HasMany(userProfile => userProfile.JobApplications)
@@ -31,11 +29,11 @@ public class UserProfileConfiguration : IEntityTypeConfiguration<UserProfile>
             .HasForeignKey(personalFile => personalFile.UserId)
             .OnDelete(DeleteBehavior.Restrict);
 
-        builder
-            .HasMany(userProfile => userProfile.Cvs)
-            .WithOne(cv => cv.User)
-            .HasForeignKey(cv => cv.UserId)
-            .OnDelete(DeleteBehavior.Cascade);
+        // builder
+        //     .HasMany(userProfile => userProfile.Cvs)
+        //     .WithOne(cv => cv.User)
+        //     .HasForeignKey(cv => cv.UserId)
+        //     .OnDelete(DeleteBehavior.Cascade);
 
         builder
             .HasMany(userProfile => userProfile.UserJobFolderClaims)
@@ -58,5 +56,20 @@ public class UserProfileConfiguration : IEntityTypeConfiguration<UserProfile>
             .HasMany(userProfile => userProfile.BookmarkedCompanies)
             .WithMany(company => company.UsersWhoBookmarked)
             .UsingEntity(junctionEntityBuilder => junctionEntityBuilder.ToTable("CompanyBookmarks"));
+        
+        builder
+            .HasMany(userProfile => userProfile.LastManagedJobs)
+            .WithMany()
+            .UsingEntity(junctionEntityBuilder => junctionEntityBuilder.ToTable("LastManagedJobs"));
+        
+        builder
+            .HasMany(userProfile => userProfile.LastManagedJobFolders)
+            .WithMany()
+            .UsingEntity(junctionEntityBuilder => junctionEntityBuilder.ToTable("LastManagedJobFolders"));
+        
+        builder
+            .HasMany(userProfile => userProfile.BookmarkedJobApplications)
+            .WithMany()
+            .UsingEntity(junctionEntityBuilder => junctionEntityBuilder.ToTable("JobApplicationBookmarks"));
     }
 }

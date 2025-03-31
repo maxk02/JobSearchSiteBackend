@@ -1,5 +1,4 @@
 ﻿using Core.Domains._Shared.UseCaseStructure;
-using Core.Domains.Cvs.Search;
 using Core.Domains.PersonalFiles.Search;
 using Core.Persistence.EfCore;
 using Core.Services.Auth;
@@ -11,7 +10,6 @@ namespace Core.Domains.JobApplications.UseCases.DeleteJobApplication;
 
 public class DeleteJobApplicationHandler(
     ICurrentAccountService currentAccountService,
-    ICvSearchRepository cvSearchRepository,
     IPersonalFileSearchRepository personalFileSearchRepository,
     MainDataContext context,
     IBackgroundJobService backgroundJobService) : IRequestHandler<DeleteJobApplicationRequest, Result>

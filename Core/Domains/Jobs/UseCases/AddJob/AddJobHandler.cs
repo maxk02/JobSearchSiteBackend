@@ -9,6 +9,7 @@ using Core.Services.Auth;
 using Core.Services.BackgroundJobs;
 using Microsoft.EntityFrameworkCore;
 using Ardalis.Result;
+using Core.Domains.EmploymentTypes;
 
 namespace Core.Domains.Jobs.UseCases.AddJob;
 
@@ -24,7 +25,11 @@ public class AddJobHandler(
 
         var job = new Job(request.CategoryId, request.JobFolderId, request.Title, request.Description, request.IsPublic,
             DateTime.UtcNow, DateTime.UtcNow.AddDays(30), request.Responsibilities, request.Requirements,
-            request.Advantages, request.SalaryRecord, request.EmploymentTypeRecord);
+            request.Advantages,
+            request.JobSalaryInfoDto is not null ? new JobSalaryInfo(0, request.JobSalaryInfoDto.Minimum, request.JobSalaryInfoDto.Maximum,
+                request.JobSalaryInfoDto.CurrencyCode, request.JobSalaryInfoDto.UnitOfTime,
+                request.JobSalaryInfoDto.IsAfterTaxes) : null,
+            EmploymentType.AllValues.Where(x => request.EmploymentTypeIds.Contains(x.Id)).ToList());
 
         var validator = new JobValidator();
 
@@ -32,7 +37,7 @@ public class AddJobHandler(
 
         if (!validationResult.IsValid)
             return Result.Error();
-        
+
         if (!Category.AllIds.Contains(request.CategoryId))
             return Result.Error();
 
@@ -44,7 +49,7 @@ public class AddJobHandler(
 
         if (jobFolder is null)
             return Result.Error();
-        
+
         var countryId = jobFolder.Company!.CountryId;
 
         var hasPermissionInRequestedFolderOrAncestors =
@@ -83,11 +88,11 @@ public class AddJobHandler(
             return Result.Error();
 
         job.Locations = locations;
-        
+
         context.Jobs.Add(job);
-        
+
         using var transaction = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled);
-        
+
         await context.SaveChangesAsync(cancellationToken);
 
         var jobSearchModel = new JobSearchModel(
@@ -98,9 +103,9 @@ public class AddJobHandler(
             job.Description,
             job.Responsibilities ?? [],
             job.Requirements ?? [],
-            job.Advantages ?? []
+            job.NiceToHaves ?? []
         );
-        
+
         backgroundJobService.Enqueue(
             () => jobSearchRepository
                 .AddOrUpdateIfNewestAsync(jobSearchModel, job.RowVersion, CancellationToken.None),

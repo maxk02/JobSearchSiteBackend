@@ -1,6 +1,6 @@
 ﻿namespace Core.Domains._Shared.Enums;
 
-public enum UnitsOfTime
+public enum UnitOfTime
 {
     Second = 1,
     Minute = 2,

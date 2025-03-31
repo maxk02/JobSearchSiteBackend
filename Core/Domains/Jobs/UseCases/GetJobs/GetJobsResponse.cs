@@ -4,5 +4,5 @@ using Core.Domains.Jobs.Dtos;
 namespace Core.Domains.Jobs.UseCases.GetJobs;
 
 public record GetJobsResponse(
-    ICollection<JobInfoDto> JobInfoCards,
+    ICollection<JobCardDto> JobCards,
     PaginationResponse PaginationResponse);

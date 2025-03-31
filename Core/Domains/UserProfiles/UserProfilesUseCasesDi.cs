@@ -5,7 +5,6 @@ using Core.Domains.UserProfiles.UseCases.DeleteCompanyBookmark;
 using Core.Domains.UserProfiles.UseCases.DeleteJobBookmark;
 using Core.Domains.UserProfiles.UseCases.GetBookmarkedCompanies;
 using Core.Domains.UserProfiles.UseCases.GetBookmarkedJobs;
-using Core.Domains.UserProfiles.UseCases.GetFirstCv;
 using Core.Domains.UserProfiles.UseCases.GetJobApplicationsForUser;
 using Core.Domains.UserProfiles.UseCases.GetPersonalFiles;
 using Core.Domains.UserProfiles.UseCases.GetUserProfileById;
@@ -25,7 +24,7 @@ public static class UserProfilesUseCasesDi
         serviceCollection.AddScoped<DeleteJobBookmarkHandler>();
         serviceCollection.AddScoped<GetBookmarkedCompaniesHandler>();
         serviceCollection.AddScoped<GetBookmarkedJobsHandler>();
-        serviceCollection.AddScoped<GetFirstCvHandler>();
+        // serviceCollection.AddScoped<GetFirstCvHandler>();
         serviceCollection.AddScoped<GetJobApplicationsForUserHandler>();
         serviceCollection.AddScoped<GetPersonalFilesHandler>();
         serviceCollection.AddScoped<GetUserProfileByIdHandler>();

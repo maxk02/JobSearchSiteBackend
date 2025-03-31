@@ -1,7 +1,4 @@
-﻿using Core.Domains.Companies.Search;
-using Core.Domains.Cvs.Search;
-using Core.Domains.Locations.Search;
-using Elasticsearch.Net;
+﻿using Core.Domains.Locations.Search;
 using Nest;
 
 namespace Infrastructure.Search.Elasticsearch;

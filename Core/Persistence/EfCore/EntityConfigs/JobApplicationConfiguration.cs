@@ -25,5 +25,11 @@ public class JobApplicationConfiguration : IEntityTypeConfiguration<JobApplicati
         builder
             .HasMany(jobApplication => jobApplication.PersonalFiles)
             .WithMany(personalFile => personalFile.JobApplications);
+
+        builder
+            .HasMany(jobApplication => jobApplication.Tags)
+            .WithOne(tag => tag.JobApplication)
+            .HasForeignKey(tag => tag.JobApplicationId)
+            .OnDelete(DeleteBehavior.Cascade);
     }
 }

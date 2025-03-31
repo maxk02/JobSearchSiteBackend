@@ -1,4 +1,6 @@
 ﻿using Ardalis.Result;
+using AutoMapper;
+using AutoMapper.QueryableExtensions;
 using Core.Domains._Shared.Pagination;
 using Core.Domains._Shared.UseCaseStructure;
 using Core.Domains.Companies.Dtos;
@@ -10,7 +12,8 @@ namespace Core.Domains.Companies.UseCases.GetCompanies;
 
 public class GetCompaniesHandler(
     ICompanySearchRepository companySearchRepository,
-    MainDataContext context) : IRequestHandler<GetCompaniesRequest, Result<GetCompaniesResponse>>
+    MainDataContext context,
+    IMapper mapper) : IRequestHandler<GetCompaniesRequest, Result<GetCompaniesResponse>>
 {
     public async Task<Result<GetCompaniesResponse>> Handle(GetCompaniesRequest request,
         CancellationToken cancellationToken = default)
@@ -24,13 +27,11 @@ public class GetCompaniesHandler(
 
         var count = await query.CountAsync(cancellationToken);
 
-        var companies = await query
+        var companyInfoDtos = await query
             .Skip((request.PaginationSpec.PageNumber - 1) * request.PaginationSpec.PageSize)
             .Take(request.PaginationSpec.PageSize)
+            .ProjectTo<CompanyInfoDto>(mapper.ConfigurationProvider)
             .ToListAsync(cancellationToken);
-
-        var companyInfoDtos = companies
-            .Select(x => new CompanyInfoDto(x.Id, x.Name, x.CountryId)).ToList();
 
         var paginationResponse = new PaginationResponse(count, request.PaginationSpec.PageNumber,
             request.PaginationSpec.PageSize);

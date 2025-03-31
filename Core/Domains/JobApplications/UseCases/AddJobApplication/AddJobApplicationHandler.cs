@@ -1,5 +1,4 @@
 ﻿using Core.Domains._Shared.UseCaseStructure;
-using Core.Domains.Cvs.Search;
 using Core.Domains.JobApplications.Enums;
 using Core.Domains.PersonalFiles.Search;
 using Core.Persistence.EfCore;
@@ -23,7 +22,7 @@ public class AddJobApplicationHandler(
         if (request.UserId != currentUserId)
             return Result<AddJobApplicationResponse>.Forbidden();
 
-        var jobApplication = new JobApplication(request.UserId, request.JobId, JobApplicationStatusEnum.Submitted);
+        var jobApplication = new JobApplication(request.UserId, request.JobId, JobApplicationStatus.Submitted);
 
         var requestedPersonalFilesOfUser = await context.PersonalFiles
             .Where(pf => request.PersonalFileIds.Contains(pf.Id) && pf.UserId == currentUserId)

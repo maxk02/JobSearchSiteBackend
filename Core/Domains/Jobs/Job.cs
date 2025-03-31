@@ -1,22 +1,20 @@
 ﻿using Core.Domains._Shared.EntityInterfaces;
-using Core.Domains._Shared.ValueEntities;
 using Core.Domains.Categories;
-using Core.Domains.Companies;
+using Core.Domains.EmploymentTypes;
 using Core.Domains.JobApplications;
 using Core.Domains.JobContractTypes;
 using Core.Domains.JobFolders;
 using Core.Domains.Locations;
 using Core.Domains.UserProfiles;
-using Ardalis.Result;
-using Ardalis.Result.FluentValidation;
 
 namespace Core.Domains.Jobs;
 
 public class Job : IEntityWithId, IEntityWithRowVersioning
 {
-    public Job(long categoryId, long jobFolderId, string title, string description, bool isPublic, DateTime dateTimePublishedUtc,
+    public Job(long categoryId, long jobFolderId, string title, string description, bool isPublic,
+        DateTime dateTimePublishedUtc,
         DateTime dateTimeExpiringUtc, ICollection<string> responsibilities, ICollection<string> requirements,
-        ICollection<string> advantages, SalaryRecord salaryRecord, EmploymentTypeRecord employmentTypeRecord)
+        ICollection<string> niceToHaves, JobSalaryInfo? salaryInfo, ICollection<EmploymentType> employmentTypes)
     {
         CategoryId = categoryId;
         JobFolderId = jobFolderId;
@@ -27,15 +25,16 @@ public class Job : IEntityWithId, IEntityWithRowVersioning
         DateTimeExpiringUtc = dateTimeExpiringUtc;
         Responsibilities = responsibilities.ToList();
         Requirements = requirements.ToList();
-        Advantages = advantages.ToList();
-        SalaryRecord = salaryRecord;
-        EmploymentTypeRecord = employmentTypeRecord;
+        NiceToHaves = niceToHaves.ToList();
+        SalaryInfo = salaryInfo;
+        EmploymentTypes = employmentTypes;
     }
-    
+
     // ef core
-    private Job(long categoryId, long jobFolderId, string title, string description, bool isPublic, DateTime dateTimePublishedUtc,
+    private Job(long categoryId, long jobFolderId, string title, string description, bool isPublic,
+        DateTime dateTimePublishedUtc,
         DateTime dateTimeExpiringUtc, ICollection<string> responsibilities, ICollection<string> requirements,
-        ICollection<string> advantages)
+        ICollection<string> niceToHaves)
     {
         CategoryId = categoryId;
         JobFolderId = jobFolderId;
@@ -46,17 +45,17 @@ public class Job : IEntityWithId, IEntityWithRowVersioning
         DateTimeExpiringUtc = dateTimeExpiringUtc;
         Responsibilities = responsibilities.ToList();
         Requirements = requirements.ToList();
-        Advantages = advantages.ToList();
+        NiceToHaves = niceToHaves.ToList();
     }
-    
+
     public long Id { get; private set; }
 
     public byte[] RowVersion { get; set; } = [];
 
     public long CategoryId { get; set; }
-    
+
     public long JobFolderId { get; set; }
-    
+
     public string Title { get; set; }
 
     public string Description { get; set; }
@@ -65,18 +64,18 @@ public class Job : IEntityWithId, IEntityWithRowVersioning
 
     public DateTime DateTimeExpiringUtc { get; set; }
 
-    public SalaryRecord? SalaryRecord { get; set; }
+    public JobSalaryInfo? SalaryInfo { get; set; }
 
-    public EmploymentTypeRecord? EmploymentTypeRecord { get; set; }
+    public ICollection<EmploymentType>? EmploymentTypes { get; set; }
 
     public ICollection<string>? Responsibilities { get; set; }
 
     public ICollection<string>? Requirements { get; set; }
 
-    public ICollection<string>? Advantages { get; set; }
+    public ICollection<string>? NiceToHaves { get; set; }
 
     public bool IsPublic { get; set; }
-    
+
     public Category? Category { get; set; }
     public JobFolder? JobFolder { get; set; }
     public ICollection<JobApplication>? JobApplications { get; set; }

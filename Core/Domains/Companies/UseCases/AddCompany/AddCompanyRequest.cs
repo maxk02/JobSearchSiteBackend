@@ -4,4 +4,4 @@ using Ardalis.Result;
 namespace Core.Domains.Companies.UseCases.AddCompany;
 
 public record AddCompanyRequest(string Name, string? Description, bool IsPublic,
-    long CountryId) : IRequest<Result<AddCompanyResponse>>;
+    long CountryId, string? LogoLink) : IRequest<Result<AddCompanyResponse>>;

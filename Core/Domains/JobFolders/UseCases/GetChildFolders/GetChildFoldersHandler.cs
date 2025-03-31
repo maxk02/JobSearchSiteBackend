@@ -6,12 +6,15 @@ using Core.Persistence.EfCore;
 using Core.Services.Auth;
 using Microsoft.EntityFrameworkCore;
 using Ardalis.Result;
+using AutoMapper;
+using AutoMapper.QueryableExtensions;
 
 namespace Core.Domains.JobFolders.UseCases.GetChildFolders;
 
 public class GetChildFoldersHandler(
     ICurrentAccountService currentAccountService,
-    MainDataContext context) : IRequestHandler<GetChildFoldersRequest, Result<GetChildFoldersResponse>>
+    MainDataContext context,
+    IMapper mapper) : IRequestHandler<GetChildFoldersRequest, Result<GetChildFoldersResponse>>
 {
     public async Task<Result<GetChildFoldersResponse>> Handle(GetChildFoldersRequest request,
         CancellationToken cancellationToken = default)
@@ -33,7 +36,7 @@ public class GetChildFoldersHandler(
         var childJobFolderDtos = await context.JobFolderRelations
             .Where(jfc => jfc.AncestorId == request.JobFolderId)
             .Where(jfc => jfc.Depth == 1)
-            .Select(jfc => new JobFolderDto(jfc.Descendant!.Id, jfc.Descendant!.Name!, jfc.Descendant.Description))
+            .ProjectTo<JobFolderDto>(mapper.ConfigurationProvider)
             .ToListAsync(cancellationToken);
 
         return new GetChildFoldersResponse(childJobFolderDtos);

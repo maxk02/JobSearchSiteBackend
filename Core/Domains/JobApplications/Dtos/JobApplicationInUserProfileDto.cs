@@ -1,4 +1,5 @@
-﻿using Core.Domains._Shared.ValueEntities;
+﻿using Core.Domains.JobApplications.Enums;
+using Core.Domains.Jobs.Dtos;
 
 namespace Core.Domains.JobApplications.Dtos;
 
@@ -9,7 +10,7 @@ public record JobApplicationInUserProfileDto(
     long JobId,
     string JobTitle,
     DateTime DateTimePublishedUtc,
-    SalaryRecord? SalaryRecord,
-    EmploymentTypeRecord? EmploymentTypeRecord,
+    JobSalaryInfoDto? JobSalaryInfoDto,
+    ICollection<long>? EmploymentTypeIds,
     DateTime DateTimeAppliedUtc,
-    string Status);
+    JobApplicationStatus Status);

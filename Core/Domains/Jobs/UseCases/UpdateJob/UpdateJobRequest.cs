@@ -1,21 +1,7 @@
 ﻿using Core.Domains._Shared.UseCaseStructure;
-using Core.Domains._Shared.ValueEntities;
 using Ardalis.Result;
+using Core.Domains.Jobs.Dtos;
 
 namespace Core.Domains.Jobs.UseCases.UpdateJob;
 
-public record UpdateJobRequest(
-    long Id,
-    long? JobFolderId,
-    long? CategoryId,
-    string? Title,
-    string? Description,
-    bool? IsPublic,
-    DateTime? NewDateTimeExpiringUtc,
-    ICollection<string>? Responsibilities,
-    ICollection<string>? Requirements,
-    ICollection<string>? Advantages,
-    SalaryRecord? SalaryRecord,
-    EmploymentTypeRecord? EmploymentTypeRecord,
-    ICollection<long>? ContractTypeIds,
-    ICollection<long>? LocationIds) : IRequest<Result>;
+public record UpdateJobRequest(long Id, UpdateJobDto Job) : IRequest<Result>;

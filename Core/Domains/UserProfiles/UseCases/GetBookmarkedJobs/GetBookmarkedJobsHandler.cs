@@ -6,12 +6,15 @@ using Core.Persistence.EfCore;
 using Core.Services.Auth;
 using Microsoft.EntityFrameworkCore;
 using Ardalis.Result;
+using AutoMapper;
+using AutoMapper.QueryableExtensions;
 
 namespace Core.Domains.UserProfiles.UseCases.GetBookmarkedJobs;
 
 public class GetBookmarkedJobsHandler(
     ICurrentAccountService currentAccountService,
-    MainDataContext context)
+    MainDataContext context,
+    IMapper mapper)
     : IRequestHandler<GetBookmarkedJobsRequest, Result<GetBookmarkedJobsResponse>>
 {
     public async Task<Result<GetBookmarkedJobsResponse>> Handle(GetBookmarkedJobsRequest request,
@@ -30,20 +33,16 @@ public class GetBookmarkedJobsHandler(
 
         var count = await query.CountAsync(cancellationToken);
 
-        var bookmarkedJobs = await query
+        var bookmarkedJobCardDtos = await query
             .Skip((request.PaginationSpec.PageNumber - 1) * request.PaginationSpec.PageSize)
             .Take(request.PaginationSpec.PageSize)
+            .ProjectTo<JobCardDto>(mapper.ConfigurationProvider)
             .ToListAsync(cancellationToken);
-
-        var jobInfoDtos = bookmarkedJobs
-            .Select(x => new JobInfoDto(x.Id, x.JobFolder!.CompanyId, x.CategoryId, x.Title,
-                x.DateTimePublishedUtc, x.DateTimeExpiringUtc, x.SalaryRecord, x.EmploymentTypeRecord))
-            .ToList();
 
         var paginationResponse = new PaginationResponse(count, request.PaginationSpec.PageNumber,
             request.PaginationSpec.PageSize);
 
-        var response = new GetBookmarkedJobsResponse(jobInfoDtos, paginationResponse);
+        var response = new GetBookmarkedJobsResponse(bookmarkedJobCardDtos, paginationResponse);
 
         return response;
     }

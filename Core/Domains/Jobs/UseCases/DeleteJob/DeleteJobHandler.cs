@@ -50,7 +50,7 @@ public class DeleteJobHandler(
             job.Description,
             job.Responsibilities!,
             job.Requirements!,
-            job.Advantages!
+            job.NiceToHaves!
         );
         
         context.Jobs.Remove(job);

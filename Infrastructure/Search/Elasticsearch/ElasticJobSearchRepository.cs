@@ -70,7 +70,7 @@ public class ElasticJobSearchRepository(IElasticClient client) : IJobSearchRepos
                             .Name(n => n.Requirements)
                         )
                         .Text(t => t
-                            .Name(n => n.Advantages)
+                            .Name(n => n.NiceToHaves)
                         )
                         .Date(d => d
                             .Name(n => n.DeletionDateTimeUtc)

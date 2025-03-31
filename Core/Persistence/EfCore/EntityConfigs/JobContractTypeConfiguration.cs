@@ -11,6 +11,10 @@ public class JobContractTypeConfiguration : IEntityTypeConfiguration<JobContract
         builder.HasKey(jobContractType => jobContractType.Id);
         
         builder
+            .HasIndex(jobContractType => new { jobContractType.CountryId, jobContractType.Name })
+            .IsUnique();
+        
+        builder
             .HasMany(jobContractType => jobContractType.Jobs)
             .WithMany(job => job.JobContractTypes);
 

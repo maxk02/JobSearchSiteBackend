@@ -4,4 +4,4 @@ using Ardalis.Result;
 
 namespace Core.Domains.JobApplications.UseCases.UpdateJobApplication;
 
-public record UpdateJobApplicationRequest(long JobApplicationId, JobApplicationStatusEnum Status) : IRequest<Result>;
+public record UpdateJobApplicationRequest(long JobApplicationId, JobApplicationStatus Status) : IRequest<Result>;

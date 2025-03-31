@@ -1,5 +1,4 @@
 ﻿using Core.Domains.Companies.Search;
-using Core.Domains.Cvs.Search;
 using Elasticsearch.Net;
 using Nest;
 

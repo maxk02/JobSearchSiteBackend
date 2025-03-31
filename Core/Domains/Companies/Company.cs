@@ -11,9 +11,10 @@ namespace Core.Domains.Companies;
 
 public class Company : IEntityWithId, IEntityWithRowVersioning
 {
-    public Company(string name, string? description, bool isPublic, long countryId)
+    public Company(string name, string? description, bool isPublic, long countryId, string? logoLink)
     {
         CountryId = countryId;
+        LogoLink = logoLink;
         Name = name;
         Description = description;
         IsPublic = isPublic;
@@ -24,6 +25,8 @@ public class Company : IEntityWithId, IEntityWithRowVersioning
     public byte[] RowVersion { get; private set; } =  [];
     
     public long CountryId { get; private set; }
+    
+    public string? LogoLink { get; private set; }
     
     public string Name { get; set; }
     

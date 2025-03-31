@@ -11,6 +11,6 @@ public record JobSearchModel
     string? Description,
     ICollection<string> Responsibilities,
     ICollection<string> Requirements,
-    ICollection<string> Advantages,
+    ICollection<string> NiceToHaves,
     DateTime? DeletionDateTimeUtc = null
 ) : ISearchModelWithId, ISearchModelWithDeletionDateTime;

@@ -9,10 +9,14 @@ public class CategoryConfiguration : IEntityTypeConfiguration<Category>
     public void Configure(EntityTypeBuilder<Category> builder)
     {
         builder.HasKey(category => category.Id);
-        
+
         builder
-            .HasMany(category => category.Cvs)
-            .WithMany(cv => cv.Categories);
+            .HasIndex(category => category.NameEng)
+            .IsUnique();
+        
+        // builder
+        //     .HasMany(category => category.Cvs)
+        //     .WithMany(cv => cv.Categories);
         
         builder
             .HasMany(category => category.Jobs)

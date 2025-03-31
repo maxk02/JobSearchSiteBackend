@@ -1,4 +1,5 @@
 ﻿using Core.Domains.Jobs;
+using Core.Domains.Jobs.Dtos;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -42,22 +43,21 @@ public class JobConfiguration : IEntityTypeConfiguration<Job>
             .HasMany(job => job.UsersWhoBookmarked)
             .WithMany(user => user.BookmarkedJobs)
             .UsingEntity(junctionEntityBuilder => junctionEntityBuilder.ToTable("JobBookmarks"));
-        
-        builder.OwnsOne(job => job.SalaryRecord,
-            ownedNavigationBuilder =>
-            {
-                ownedNavigationBuilder.ToJson();
-                ownedNavigationBuilder.Property(salaryRecord => salaryRecord.Minimum).HasPrecision(10, 2);
-                ownedNavigationBuilder.Property(salaryRecord => salaryRecord.Maximum).HasPrecision(10, 2);
-            });
+
+        builder
+            .HasOne(job => job.SalaryInfo)
+            .WithOne()
+            .HasForeignKey<JobSalaryInfo>(salaryInfo => salaryInfo.JobId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        builder
+            .HasMany(job => job.EmploymentTypes)
+            .WithMany(employmentType => employmentType.Jobs);
         
         builder.Property(job => job.Responsibilities).HasColumnType("nvarchar(max)");
         
         builder.Property(job => job.Requirements).HasColumnType("nvarchar(max)");
         
-        builder.Property(job => job.Advantages).HasColumnType("nvarchar(max)");
-        
-        builder.OwnsOne(job => job.EmploymentTypeRecord,
-            ownedNavigationBuilder => ownedNavigationBuilder.ToJson());
+        builder.Property(job => job.NiceToHaves).HasColumnType("nvarchar(max)");
     }
 }

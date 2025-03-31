@@ -1,6 +1,6 @@
 ﻿using Core.Domains._Shared.UseCaseStructure;
-using Core.Domains._Shared.ValueEntities;
 using Ardalis.Result;
+using Core.Domains.Jobs.Dtos;
 
 namespace Core.Domains.Jobs.UseCases.AddJob;
 
@@ -14,7 +14,7 @@ public record AddJobRequest(
     ICollection<string> Responsibilities,
     ICollection<string> Requirements,
     ICollection<string> Advantages,
-    SalaryRecord SalaryRecord,
-    EmploymentTypeRecord EmploymentTypeRecord,
+    JobSalaryInfoDto? JobSalaryInfoDto,
+    ICollection<long> EmploymentTypeIds,
     ICollection<long> ContractTypeIds,
     ICollection<long> LocationIds) : IRequest<Result>;

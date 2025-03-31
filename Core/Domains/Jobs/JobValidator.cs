@@ -1,5 +1,4 @@
-﻿using Core.Domains._Shared.ValueEntities;
-using FluentValidation;
+﻿using FluentValidation;
 using Shared.FluentValidationAddons;
 using Shared.FluentValidationAddons.StringFiltering;
 
@@ -20,15 +19,10 @@ public class JobValidator : AbstractValidator<Job>
         RuleFor(x => x.DateTimeExpiringUtc)
             .InclusiveBetween(DateTime.UtcNow, DateTime.UtcNow.AddMonths(6));
 
-        When(x => x.SalaryRecord != null, () =>
-        {
-            RuleFor(x => x.SalaryRecord!).SetValidator(new SalaryRecordValidator());
-        });
-        
-        When(x => x.EmploymentTypeRecord != null, () =>
-        {
-            RuleFor(x => x.EmploymentTypeRecord!).SetValidator(new EmploymentTypeRecordValidator());
-        });
+        // When(x => x.SalaryRecord != null, () =>
+        // {
+        //     RuleFor(x => x.SalaryRecord!).SetValidator(new SalaryRecordValidator());
+        // });
 
         RuleFor(x => x.Responsibilities)
             .ForEach(x => x.Length(1, 50)
@@ -38,7 +32,7 @@ public class JobValidator : AbstractValidator<Job>
             .ForEach(x => x.Length(1, 50)
                 .WhitelistPolicy(new WhitelistPolicy().Letters().Digits().Spaces()));
         
-        RuleFor(x => x.Advantages)
+        RuleFor(x => x.NiceToHaves)
             .ForEach(x => x.Length(1, 50)
                 .WhitelistPolicy(new WhitelistPolicy().Letters().Digits().Spaces()));
     }

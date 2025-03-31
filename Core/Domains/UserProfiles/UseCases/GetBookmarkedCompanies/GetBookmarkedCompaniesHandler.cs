@@ -6,12 +6,15 @@ using Core.Persistence.EfCore;
 using Core.Services.Auth;
 using Microsoft.EntityFrameworkCore;
 using Ardalis.Result;
+using AutoMapper;
+using AutoMapper.QueryableExtensions;
 
 namespace Core.Domains.UserProfiles.UseCases.GetBookmarkedCompanies;
 
 public class GetBookmarkedCompaniesHandler(
     ICurrentAccountService currentAccountService,
-    MainDataContext context) 
+    MainDataContext context,
+    IMapper mapper) 
     : IRequestHandler<GetBookmarkedCompaniesRequest, Result<GetBookmarkedCompaniesResponse>>
 {
     public async Task<Result<GetBookmarkedCompaniesResponse>> Handle(GetBookmarkedCompaniesRequest request,
@@ -29,13 +32,11 @@ public class GetBookmarkedCompaniesHandler(
         
         var count = await query.CountAsync(cancellationToken);
         
-        var bookmarkedCompanies = await query
+        var companyInfoDtos = await query
             .Skip((request.PaginationSpec.PageNumber - 1) * request.PaginationSpec.PageSize)
             .Take(request.PaginationSpec.PageSize)
+            .ProjectTo<CompanyInfoDto>(mapper.ConfigurationProvider)
             .ToListAsync(cancellationToken);
-
-        var companyInfoDtos = bookmarkedCompanies
-            .Select(x => new CompanyInfoDto(x.Id, x.Name, x.CountryId)).ToList();
 
         var paginationResponse = new PaginationResponse(count, request.PaginationSpec.PageNumber,
             request.PaginationSpec.PageSize);

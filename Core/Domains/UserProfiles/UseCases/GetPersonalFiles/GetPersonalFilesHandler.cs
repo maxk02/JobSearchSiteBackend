@@ -1,17 +1,19 @@
-﻿using Core.Domains._Shared.Pagination;
+﻿using Ardalis.Result;
+using AutoMapper;
+using AutoMapper.QueryableExtensions;
+using Core.Domains._Shared.Pagination;
 using Core.Domains._Shared.UseCaseStructure;
-using Core.Domains.PersonalFiles;
 using Core.Domains.PersonalFiles.Dtos;
 using Core.Persistence.EfCore;
 using Core.Services.Auth;
 using Microsoft.EntityFrameworkCore;
-using Ardalis.Result;
 
 namespace Core.Domains.UserProfiles.UseCases.GetPersonalFiles;
 
 public class GetPersonalFilesHandler(
     ICurrentAccountService currentAccountService,
-    MainDataContext context) 
+    MainDataContext context,
+    IMapper mapper) 
     : IRequestHandler<GetPersonalFilesRequest, Result<GetPersonalFilesResponse>>
 {
     public async Task<Result<GetPersonalFilesResponse>> Handle(GetPersonalFilesRequest request,
@@ -23,14 +25,14 @@ public class GetPersonalFilesHandler(
             return Result<GetPersonalFilesResponse>.Forbidden();
 
         var query = context.PersonalFiles
-            .Where(pf => pf.UserId == request.UserId)
-            .Select(x => new PersonalFileInfoDto(x.Id, x.Name, x.Extension, x.Size));
+            .Where(pf => pf.UserId == request.UserId);
         
         var count = await query.CountAsync(cancellationToken);
         
         var personalFileInfoDtos = await query
             .Skip((request.PaginationSpec.PageNumber - 1) * request.PaginationSpec.PageSize)
             .Take(request.PaginationSpec.PageSize)
+            .ProjectTo<PersonalFileInfoDto>(mapper.ConfigurationProvider)
             .ToListAsync(cancellationToken);
 
         var paginationResponse = new PaginationResponse(count, request.PaginationSpec.PageNumber,

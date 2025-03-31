@@ -1,11 +1,10 @@
 ﻿using Core.Domains._Shared.EntityInterfaces;
-using Core.Domains._Shared.ValueEntities;
 using Core.Domains.Accounts;
 using Core.Domains.Companies;
 using Core.Domains.CompanyClaims;
-using Core.Domains.Cvs;
 using Core.Domains.JobApplications;
 using Core.Domains.JobFolderClaims;
+using Core.Domains.JobFolders;
 using Core.Domains.Jobs;
 using Core.Domains.PersonalFiles;
 
@@ -52,11 +51,15 @@ public class UserProfile : IEntityWithId
     
     
     public ICollection<PersonalFile>? PersonalFiles { get; set; }
-    public ICollection<Cv>? Cvs { get; set; }
+    // public ICollection<Cv>? Cvs { get; set; }
     
     public ICollection<JobApplication>? JobApplications { get; set; }
     public ICollection<Job>? BookmarkedJobs { get; set; }
     public ICollection<Company>? BookmarkedCompanies { get; set; }
+    
+    public ICollection<Job>? LastManagedJobs { get; set; }
+    public ICollection<JobFolder>? LastManagedJobFolders { get; set; }
+    public ICollection<JobApplication>? BookmarkedJobApplications { get; set; }
 
     public ICollection<UserCompanyClaim>? UserCompanyClaims { get; set; }
     public ICollection<UserJobFolderClaim>? UserJobFolderClaims { get; set; }

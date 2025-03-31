@@ -1,4 +1,6 @@
 ﻿using Ardalis.Result;
+using AutoMapper;
+using AutoMapper.QueryableExtensions;
 using Core.Domains._Shared.UseCaseStructure;
 using Core.Domains.Locations.Dtos;
 using Core.Domains.Locations.Search;
@@ -7,7 +9,10 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Core.Domains.Locations.UseCases.GetLocations;
 
-public class GetLocationsHandler(MainDataContext context, ILocationSearchRepository locationSearchRepository)
+public class GetLocationsHandler(
+    MainDataContext context,
+    ILocationSearchRepository locationSearchRepository,
+    IMapper mapper)
     : IRequestHandler<GetLocationsRequest, Result<GetLocationsResponse>>
 {
     public async Task<Result<GetLocationsResponse>> Handle(GetLocationsRequest request,
@@ -20,11 +25,9 @@ public class GetLocationsHandler(MainDataContext context, ILocationSearchReposit
             .Where(l => hitIds.Contains(l.Id))
             .Take(10);
 
-        var locations = await query.ToListAsync(cancellationToken);
-
-        var locationDtos = locations
-            .Select(l => new LocationDto(l.Id, l.CountryId, l.Name, l.Subdivisions, l.Description, l.Code))
-            .ToList();
+        var locationDtos = await query
+            .ProjectTo<LocationDto>(mapper.ConfigurationProvider)
+            .ToListAsync(cancellationToken);
 
         var response = new GetLocationsResponse(locationDtos);
 

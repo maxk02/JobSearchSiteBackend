@@ -2,4 +2,4 @@
 
 namespace Core.Domains.JobFolders.UseCases.GetJobs;
 
-public record GetJobsResponse(ICollection<JobInfoDto> Jobs);
+public record GetJobsResponse(ICollection<JobCardDto> Jobs);
