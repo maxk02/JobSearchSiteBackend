@@ -13,11 +13,14 @@ namespace API.Controllers.JobFolderClaims;
 public class JobFolderClaimsController(IMapper mapper) : ControllerBase
 {
     [HttpGet]
+    [Route("/job-folder/{folderId:long:min(1)}/user/{userId:long:min(1)}")]
     public async Task<ActionResult<ICollection<long>>> GetJobFolderClaimIdsForUser(
-        [FromQuery] GetJobFolderClaimIdsForUserRequest request,
+        [FromRoute] long folderId, [FromRoute] long userId,
         [FromServices] GetJobFolderClaimIdsForUserHandler handler,
         CancellationToken cancellationToken)
     {
+        var request = new GetJobFolderClaimIdsForUserRequest(userId, folderId);
+        
         var result = await handler.Handle(request, cancellationToken);
         
         return this.ToActionResult(result);
@@ -25,7 +28,7 @@ public class JobFolderClaimsController(IMapper mapper) : ControllerBase
     
     [HttpPatch("/job-folder/{folderId:long:min(1)}/user/{userId:long:min(1)}")]
     public async Task<ActionResult> UpdateJobFolderClaimIdsForUser(
-        long folderId, long userId,
+        [FromRoute] long folderId, [FromRoute] long userId,
         [FromBody] UpdateJobFolderClaimIdsForUserRequestDto requestDto,
         [FromServices] UpdateJobFolderClaimIdsForUserHandler handler,
         CancellationToken cancellationToken)

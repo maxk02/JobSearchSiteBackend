@@ -47,7 +47,7 @@ public class AccountController : ControllerBase
     [HttpPost]
     [AllowAnonymous]
     [Route("/create")]
-    public async Task<ActionResult<CreateAccountResponse>> CreateAccount(
+    public async Task<ActionResult> CreateAccount(
         CreateAccountRequest request,
         [FromServices] CreateAccountHandler handler,
         CancellationToken cancellationToken)

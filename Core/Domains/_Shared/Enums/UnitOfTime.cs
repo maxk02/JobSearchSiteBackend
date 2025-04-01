@@ -2,13 +2,11 @@
 
 public enum UnitOfTime
 {
-    Second = 1,
-    Minute = 2,
-    Hour = 3,
-    Day = 4,
-    Week = 5,
-    Month = 6,
-    Quarter = 7,
-    Semester = 8,
-    Year = 9
+    Hour = 1,
+    Day = 2,
+    Week = 3,
+    Month = 4,
+    Quarter = 5,
+    Semester = 6,
+    Year = 7
 }

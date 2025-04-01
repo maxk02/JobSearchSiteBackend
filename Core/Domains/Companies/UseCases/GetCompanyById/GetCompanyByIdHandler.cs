@@ -4,12 +4,15 @@ using Core.Persistence.EfCore;
 using Core.Services.Auth;
 using Microsoft.EntityFrameworkCore;
 using Ardalis.Result;
+using AutoMapper;
+using Core.Domains.Companies.Dtos;
 
 namespace Core.Domains.Companies.UseCases.GetCompanyById;
 
 public class GetCompanyByIdHandler(
     ICurrentAccountService currentAccountService,
-    MainDataContext context)
+    MainDataContext context,
+    IMapper mapper)
     : IRequestHandler<GetCompanyByIdRequest, Result<GetCompanyByIdResponse>>
 {
     public async Task<Result<GetCompanyByIdResponse>> Handle(GetCompanyByIdRequest request,
@@ -37,7 +40,9 @@ public class GetCompanyByIdHandler(
             if (!canEditProfile)
                 return Result<GetCompanyByIdResponse>.Forbidden("Requested company profile is private.");
         }
-
-        return new GetCompanyByIdResponse(company.Name, company.Description, company.CountryId);
+        
+        var companyInfoDto = mapper.Map<CompanyInfoDto>(company);
+        
+        return new GetCompanyByIdResponse(companyInfoDto);
     }
 }

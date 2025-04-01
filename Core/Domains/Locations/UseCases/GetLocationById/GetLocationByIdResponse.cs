@@ -1,4 +1,5 @@
-﻿namespace Core.Domains.Locations.UseCases.GetLocationById;
+﻿using Core.Domains.Locations.Dtos;
 
-public record GetLocationByIdResponse(long CountryId, string Name,
-    ICollection<string> Subdivisions, string? Description, string? Code);
+namespace Core.Domains.Locations.UseCases.GetLocationById;
+
+public record GetLocationByIdResponse(LocationDto Location);

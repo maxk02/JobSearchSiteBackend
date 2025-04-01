@@ -4,5 +4,5 @@ using Core.Domains.PersonalFiles.Dtos;
 namespace Core.Domains.UserProfiles.UseCases.GetPersonalFiles;
 
 public record GetPersonalFilesResponse(
-    ICollection<PersonalFileInfoDto> PersonalFileInfoDtos,
+    ICollection<PersonalFileInfoDto> PersonalFileInfos,
     PaginationResponse PaginationResponse);

@@ -21,11 +21,11 @@ public class GetPersonalFilesHandler(
     {
         var currentAccountId = currentAccountService.GetIdOrThrow();
         
-        if (currentAccountId != request.UserId)
+        if (currentAccountId != request.Id)
             return Result<GetPersonalFilesResponse>.Forbidden();
 
         var query = context.PersonalFiles
-            .Where(pf => pf.UserId == request.UserId);
+            .Where(pf => pf.UserId == request.Id);
         
         var count = await query.CountAsync(cancellationToken);
         

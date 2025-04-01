@@ -57,7 +57,8 @@ namespace Core.Persistence.EfCore.Migrations
                 columns: table => new
                 {
                     Id = table.Column<long>(type: "bigint", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1")
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    NameEng = table.Column<string>(type: "nvarchar(450)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -88,6 +89,19 @@ namespace Core.Persistence.EfCore.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Countries", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "EmploymentType",
+                columns: table => new
+                {
+                    Id = table.Column<long>(type: "bigint", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    NameEng = table.Column<string>(type: "nvarchar(450)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_EmploymentType", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -217,6 +231,7 @@ namespace Core.Persistence.EfCore.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     RowVersion = table.Column<byte[]>(type: "rowversion", rowVersion: true, nullable: false),
                     CountryId = table.Column<long>(type: "bigint", nullable: false),
+                    LogoLink = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     IsPublic = table.Column<bool>(type: "bit", nullable: false)
@@ -239,13 +254,36 @@ namespace Core.Persistence.EfCore.Migrations
                     Id = table.Column<long>(type: "bigint", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     CountryId = table.Column<long>(type: "bigint", nullable: false),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    Name = table.Column<string>(type: "nvarchar(450)", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_ContractTypes", x => x.Id);
                     table.ForeignKey(
                         name: "FK_ContractTypes_Countries_CountryId",
+                        column: x => x.CountryId,
+                        principalTable: "Countries",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Locations",
+                columns: table => new
+                {
+                    Id = table.Column<long>(type: "bigint", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    CountryId = table.Column<long>(type: "bigint", nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Subdivisions = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Code = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Locations", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Locations_Countries_CountryId",
                         column: x => x.CountryId,
                         principalTable: "Countries",
                         principalColumn: "Id",
@@ -271,6 +309,35 @@ namespace Core.Persistence.EfCore.Migrations
                         principalTable: "Companies",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "UserProfiles",
+                columns: table => new
+                {
+                    Id = table.Column<long>(type: "bigint", nullable: false),
+                    FirstName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    MiddleName = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    LastName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    DateOfBirth = table.Column<DateOnly>(type: "date", nullable: true),
+                    Email = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Phone = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    LocationId = table.Column<long>(type: "bigint", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_UserProfiles", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_UserProfiles_AspNetUsers_Id",
+                        column: x => x.Id,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_UserProfiles_Locations_LocationId",
+                        column: x => x.LocationId,
+                        principalTable: "Locations",
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -313,11 +380,9 @@ namespace Core.Persistence.EfCore.Migrations
                     DateTimeExpiringUtc = table.Column<DateTime>(type: "datetime2", nullable: false),
                     Responsibilities = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Requirements = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Advantages = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    NiceToHaves = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     IsPublic = table.Column<bool>(type: "bit", nullable: false),
-                    CompanyId = table.Column<long>(type: "bigint", nullable: true),
-                    EmploymentTypeRecord = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    SalaryRecord = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                    CompanyId = table.Column<long>(type: "bigint", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -342,48 +407,6 @@ namespace Core.Persistence.EfCore.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "JobJobContractType",
-                columns: table => new
-                {
-                    JobContractTypesId = table.Column<long>(type: "bigint", nullable: false),
-                    JobsId = table.Column<long>(type: "bigint", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_JobJobContractType", x => new { x.JobContractTypesId, x.JobsId });
-                    table.ForeignKey(
-                        name: "FK_JobJobContractType_ContractTypes_JobContractTypesId",
-                        column: x => x.JobContractTypesId,
-                        principalTable: "ContractTypes",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_JobJobContractType_Jobs_JobsId",
-                        column: x => x.JobsId,
-                        principalTable: "Jobs",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "CategoryCv",
-                columns: table => new
-                {
-                    CategoriesId = table.Column<long>(type: "bigint", nullable: false),
-                    CvsId = table.Column<long>(type: "bigint", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_CategoryCv", x => new { x.CategoriesId, x.CvsId });
-                    table.ForeignKey(
-                        name: "FK_CategoryCv_Categories_CategoriesId",
-                        column: x => x.CategoriesId,
-                        principalTable: "Categories",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "CompanyBookmarks",
                 columns: table => new
                 {
@@ -399,157 +422,33 @@ namespace Core.Persistence.EfCore.Migrations
                         principalTable: "Companies",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Cvs",
-                columns: table => new
-                {
-                    Id = table.Column<long>(type: "bigint", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    RowVersion = table.Column<byte[]>(type: "rowversion", rowVersion: true, nullable: false),
-                    UserId = table.Column<long>(type: "bigint", nullable: false),
-                    Skills = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    IsPublic = table.Column<bool>(type: "bit", nullable: false),
-                    EducationRecords = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    EmploymentTypeRecord = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    SalaryRecord = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    WorkRecords = table.Column<string>(type: "nvarchar(max)", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Cvs", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Locations",
-                columns: table => new
-                {
-                    Id = table.Column<long>(type: "bigint", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    CountryId = table.Column<long>(type: "bigint", nullable: false),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Subdivisions = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Code = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    CvId = table.Column<long>(type: "bigint", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Locations", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Locations_Countries_CountryId",
-                        column: x => x.CountryId,
-                        principalTable: "Countries",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_Locations_Cvs_CvId",
-                        column: x => x.CvId,
-                        principalTable: "Cvs",
-                        principalColumn: "Id");
-                });
-
-            migrationBuilder.CreateTable(
-                name: "JobLocation",
-                columns: table => new
-                {
-                    JobsId = table.Column<long>(type: "bigint", nullable: false),
-                    LocationsId = table.Column<long>(type: "bigint", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_JobLocation", x => new { x.JobsId, x.LocationsId });
-                    table.ForeignKey(
-                        name: "FK_JobLocation_Jobs_JobsId",
-                        column: x => x.JobsId,
-                        principalTable: "Jobs",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_JobLocation_Locations_LocationsId",
-                        column: x => x.LocationsId,
-                        principalTable: "Locations",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "UserProfiles",
-                columns: table => new
-                {
-                    Id = table.Column<long>(type: "bigint", nullable: false),
-                    FirstName = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    MiddleName = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    LastName = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    DateOfBirth = table.Column<DateOnly>(type: "date", nullable: true),
-                    Email = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    LocationId = table.Column<long>(type: "bigint", nullable: true),
-                    Phone = table.Column<string>(type: "nvarchar(max)", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_UserProfiles", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_UserProfiles_AspNetUsers_Id",
-                        column: x => x.Id,
-                        principalTable: "AspNetUsers",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_UserProfiles_Locations_LocationId",
-                        column: x => x.LocationId,
-                        principalTable: "Locations",
-                        principalColumn: "Id");
-                });
-
-            migrationBuilder.CreateTable(
-                name: "JobApplications",
-                columns: table => new
-                {
-                    Id = table.Column<long>(type: "bigint", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    DateTimeCreatedUtc = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    UserId = table.Column<long>(type: "bigint", nullable: false),
-                    JobId = table.Column<long>(type: "bigint", nullable: false),
-                    Status = table.Column<int>(type: "int", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_JobApplications", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_JobApplications_Jobs_JobId",
-                        column: x => x.JobId,
-                        principalTable: "Jobs",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_JobApplications_UserProfiles_UserId",
-                        column: x => x.UserId,
+                        name: "FK_CompanyBookmarks_UserProfiles_UsersWhoBookmarkedId",
+                        column: x => x.UsersWhoBookmarkedId,
                         principalTable: "UserProfiles",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
-                name: "JobBookmarks",
+                name: "LastManagedJobFolders",
                 columns: table => new
                 {
-                    BookmarkedJobsId = table.Column<long>(type: "bigint", nullable: false),
-                    UsersWhoBookmarkedId = table.Column<long>(type: "bigint", nullable: false)
+                    LastManagedJobFoldersId = table.Column<long>(type: "bigint", nullable: false),
+                    UserProfileId = table.Column<long>(type: "bigint", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_JobBookmarks", x => new { x.BookmarkedJobsId, x.UsersWhoBookmarkedId });
+                    table.PrimaryKey("PK_LastManagedJobFolders", x => new { x.LastManagedJobFoldersId, x.UserProfileId });
                     table.ForeignKey(
-                        name: "FK_JobBookmarks_Jobs_BookmarkedJobsId",
-                        column: x => x.BookmarkedJobsId,
-                        principalTable: "Jobs",
+                        name: "FK_LastManagedJobFolders_JobFolders_LastManagedJobFoldersId",
+                        column: x => x.LastManagedJobFoldersId,
+                        principalTable: "JobFolders",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_JobBookmarks_UserProfiles_UsersWhoBookmarkedId",
-                        column: x => x.UsersWhoBookmarkedId,
+                        name: "FK_LastManagedJobFolders_UserProfiles_UserProfileId",
+                        column: x => x.UserProfileId,
                         principalTable: "UserProfiles",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
@@ -669,6 +568,200 @@ namespace Core.Persistence.EfCore.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "EmploymentTypeJob",
+                columns: table => new
+                {
+                    EmploymentTypesId = table.Column<long>(type: "bigint", nullable: false),
+                    JobsId = table.Column<long>(type: "bigint", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_EmploymentTypeJob", x => new { x.EmploymentTypesId, x.JobsId });
+                    table.ForeignKey(
+                        name: "FK_EmploymentTypeJob_EmploymentType_EmploymentTypesId",
+                        column: x => x.EmploymentTypesId,
+                        principalTable: "EmploymentType",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_EmploymentTypeJob_Jobs_JobsId",
+                        column: x => x.JobsId,
+                        principalTable: "Jobs",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "JobApplications",
+                columns: table => new
+                {
+                    Id = table.Column<long>(type: "bigint", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    DateTimeCreatedUtc = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    UserId = table.Column<long>(type: "bigint", nullable: false),
+                    JobId = table.Column<long>(type: "bigint", nullable: false),
+                    Status = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_JobApplications", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_JobApplications_Jobs_JobId",
+                        column: x => x.JobId,
+                        principalTable: "Jobs",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_JobApplications_UserProfiles_UserId",
+                        column: x => x.UserId,
+                        principalTable: "UserProfiles",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "JobBookmarks",
+                columns: table => new
+                {
+                    BookmarkedJobsId = table.Column<long>(type: "bigint", nullable: false),
+                    UsersWhoBookmarkedId = table.Column<long>(type: "bigint", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_JobBookmarks", x => new { x.BookmarkedJobsId, x.UsersWhoBookmarkedId });
+                    table.ForeignKey(
+                        name: "FK_JobBookmarks_Jobs_BookmarkedJobsId",
+                        column: x => x.BookmarkedJobsId,
+                        principalTable: "Jobs",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_JobBookmarks_UserProfiles_UsersWhoBookmarkedId",
+                        column: x => x.UsersWhoBookmarkedId,
+                        principalTable: "UserProfiles",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "JobJobContractType",
+                columns: table => new
+                {
+                    JobContractTypesId = table.Column<long>(type: "bigint", nullable: false),
+                    JobsId = table.Column<long>(type: "bigint", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_JobJobContractType", x => new { x.JobContractTypesId, x.JobsId });
+                    table.ForeignKey(
+                        name: "FK_JobJobContractType_ContractTypes_JobContractTypesId",
+                        column: x => x.JobContractTypesId,
+                        principalTable: "ContractTypes",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_JobJobContractType_Jobs_JobsId",
+                        column: x => x.JobsId,
+                        principalTable: "Jobs",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "JobLocation",
+                columns: table => new
+                {
+                    JobsId = table.Column<long>(type: "bigint", nullable: false),
+                    LocationsId = table.Column<long>(type: "bigint", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_JobLocation", x => new { x.JobsId, x.LocationsId });
+                    table.ForeignKey(
+                        name: "FK_JobLocation_Jobs_JobsId",
+                        column: x => x.JobsId,
+                        principalTable: "Jobs",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_JobLocation_Locations_LocationsId",
+                        column: x => x.LocationsId,
+                        principalTable: "Locations",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "JobSalaryInfo",
+                columns: table => new
+                {
+                    JobId = table.Column<long>(type: "bigint", nullable: false),
+                    Minimum = table.Column<decimal>(type: "decimal(12,2)", nullable: true),
+                    Maximum = table.Column<decimal>(type: "decimal(12,2)", nullable: true),
+                    CurrencyCode = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    UnitOfTime = table.Column<int>(type: "int", nullable: false),
+                    IsAfterTaxes = table.Column<bool>(type: "bit", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_JobSalaryInfo", x => x.JobId);
+                    table.ForeignKey(
+                        name: "FK_JobSalaryInfo_Jobs_JobId",
+                        column: x => x.JobId,
+                        principalTable: "Jobs",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "LastManagedJobs",
+                columns: table => new
+                {
+                    LastManagedJobsId = table.Column<long>(type: "bigint", nullable: false),
+                    UserProfileId = table.Column<long>(type: "bigint", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_LastManagedJobs", x => new { x.LastManagedJobsId, x.UserProfileId });
+                    table.ForeignKey(
+                        name: "FK_LastManagedJobs_Jobs_LastManagedJobsId",
+                        column: x => x.LastManagedJobsId,
+                        principalTable: "Jobs",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_LastManagedJobs_UserProfiles_UserProfileId",
+                        column: x => x.UserProfileId,
+                        principalTable: "UserProfiles",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "JobApplicationBookmarks",
+                columns: table => new
+                {
+                    BookmarkedJobApplicationsId = table.Column<long>(type: "bigint", nullable: false),
+                    UserProfileId = table.Column<long>(type: "bigint", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_JobApplicationBookmarks", x => new { x.BookmarkedJobApplicationsId, x.UserProfileId });
+                    table.ForeignKey(
+                        name: "FK_JobApplicationBookmarks_JobApplications_BookmarkedJobApplicationsId",
+                        column: x => x.BookmarkedJobApplicationsId,
+                        principalTable: "JobApplications",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_JobApplicationBookmarks_UserProfiles_UserProfileId",
+                        column: x => x.UserProfileId,
+                        principalTable: "UserProfiles",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "JobApplicationPersonalFile",
                 columns: table => new
                 {
@@ -688,6 +781,26 @@ namespace Core.Persistence.EfCore.Migrations
                         name: "FK_JobApplicationPersonalFile_PersonalFiles_PersonalFilesId",
                         column: x => x.PersonalFilesId,
                         principalTable: "PersonalFiles",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "JobApplicationTag",
+                columns: table => new
+                {
+                    Id = table.Column<long>(type: "bigint", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    JobApplicationId = table.Column<long>(type: "bigint", nullable: false),
+                    Tag = table.Column<string>(type: "nvarchar(450)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_JobApplicationTag", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_JobApplicationTag_JobApplications_JobApplicationId",
+                        column: x => x.JobApplicationId,
+                        principalTable: "JobApplications",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -732,9 +845,10 @@ namespace Core.Persistence.EfCore.Migrations
                 filter: "[NormalizedUserName] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
-                name: "IX_CategoryCv_CvsId",
-                table: "CategoryCv",
-                column: "CvsId");
+                name: "IX_Categories_NameEng",
+                table: "Categories",
+                column: "NameEng",
+                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_Companies_CountryId",
@@ -747,15 +861,26 @@ namespace Core.Persistence.EfCore.Migrations
                 column: "UsersWhoBookmarkedId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_ContractTypes_CountryId",
+                name: "IX_ContractTypes_CountryId_Name",
                 table: "ContractTypes",
-                column: "CountryId");
+                columns: new[] { "CountryId", "Name" },
+                unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_Cvs_UserId",
-                table: "Cvs",
-                column: "UserId",
+                name: "IX_EmploymentType_NameEng",
+                table: "EmploymentType",
+                column: "NameEng",
                 unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_EmploymentTypeJob_JobsId",
+                table: "EmploymentTypeJob",
+                column: "JobsId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_JobApplicationBookmarks_UserProfileId",
+                table: "JobApplicationBookmarks",
+                column: "UserProfileId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_JobApplicationPersonalFile_PersonalFilesId",
@@ -771,6 +896,12 @@ namespace Core.Persistence.EfCore.Migrations
                 name: "IX_JobApplications_UserId",
                 table: "JobApplications",
                 column: "UserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_JobApplicationTag_JobApplicationId_Tag",
+                table: "JobApplicationTag",
+                columns: new[] { "JobApplicationId", "Tag" },
+                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_JobBookmarks_UsersWhoBookmarkedId",
@@ -813,14 +944,19 @@ namespace Core.Persistence.EfCore.Migrations
                 column: "JobFolderId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_LastManagedJobFolders_UserProfileId",
+                table: "LastManagedJobFolders",
+                column: "UserProfileId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_LastManagedJobs_UserProfileId",
+                table: "LastManagedJobs",
+                column: "UserProfileId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Locations_CountryId",
                 table: "Locations",
                 column: "CountryId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Locations_CvId",
-                table: "Locations",
-                column: "CvId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_PersonalFiles_UserId",
@@ -866,43 +1002,11 @@ namespace Core.Persistence.EfCore.Migrations
                 name: "IX_UserSessions_UserId",
                 table: "UserSessions",
                 column: "UserId");
-
-            migrationBuilder.AddForeignKey(
-                name: "FK_CategoryCv_Cvs_CvsId",
-                table: "CategoryCv",
-                column: "CvsId",
-                principalTable: "Cvs",
-                principalColumn: "Id",
-                onDelete: ReferentialAction.Cascade);
-
-            migrationBuilder.AddForeignKey(
-                name: "FK_CompanyBookmarks_UserProfiles_UsersWhoBookmarkedId",
-                table: "CompanyBookmarks",
-                column: "UsersWhoBookmarkedId",
-                principalTable: "UserProfiles",
-                principalColumn: "Id",
-                onDelete: ReferentialAction.Cascade);
-
-            migrationBuilder.AddForeignKey(
-                name: "FK_Cvs_UserProfiles_UserId",
-                table: "Cvs",
-                column: "UserId",
-                principalTable: "UserProfiles",
-                principalColumn: "Id",
-                onDelete: ReferentialAction.Cascade);
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropForeignKey(
-                name: "FK_UserProfiles_AspNetUsers_Id",
-                table: "UserProfiles");
-
-            migrationBuilder.DropForeignKey(
-                name: "FK_Locations_Cvs_CvId",
-                table: "Locations");
-
             migrationBuilder.DropTable(
                 name: "AspNetRoleClaims");
 
@@ -919,13 +1023,19 @@ namespace Core.Persistence.EfCore.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
-                name: "CategoryCv");
-
-            migrationBuilder.DropTable(
                 name: "CompanyBookmarks");
 
             migrationBuilder.DropTable(
+                name: "EmploymentTypeJob");
+
+            migrationBuilder.DropTable(
+                name: "JobApplicationBookmarks");
+
+            migrationBuilder.DropTable(
                 name: "JobApplicationPersonalFile");
+
+            migrationBuilder.DropTable(
+                name: "JobApplicationTag");
 
             migrationBuilder.DropTable(
                 name: "JobBookmarks");
@@ -940,6 +1050,15 @@ namespace Core.Persistence.EfCore.Migrations
                 name: "JobLocation");
 
             migrationBuilder.DropTable(
+                name: "JobSalaryInfo");
+
+            migrationBuilder.DropTable(
+                name: "LastManagedJobFolders");
+
+            migrationBuilder.DropTable(
+                name: "LastManagedJobs");
+
+            migrationBuilder.DropTable(
                 name: "UserCompanyClaims");
 
             migrationBuilder.DropTable(
@@ -952,10 +1071,13 @@ namespace Core.Persistence.EfCore.Migrations
                 name: "AspNetRoles");
 
             migrationBuilder.DropTable(
-                name: "JobApplications");
+                name: "EmploymentType");
 
             migrationBuilder.DropTable(
                 name: "PersonalFiles");
+
+            migrationBuilder.DropTable(
+                name: "JobApplications");
 
             migrationBuilder.DropTable(
                 name: "ContractTypes");
@@ -970,25 +1092,22 @@ namespace Core.Persistence.EfCore.Migrations
                 name: "Jobs");
 
             migrationBuilder.DropTable(
+                name: "UserProfiles");
+
+            migrationBuilder.DropTable(
                 name: "Categories");
 
             migrationBuilder.DropTable(
                 name: "JobFolders");
 
             migrationBuilder.DropTable(
-                name: "Companies");
-
-            migrationBuilder.DropTable(
                 name: "AspNetUsers");
 
             migrationBuilder.DropTable(
-                name: "Cvs");
-
-            migrationBuilder.DropTable(
-                name: "UserProfiles");
-
-            migrationBuilder.DropTable(
                 name: "Locations");
+
+            migrationBuilder.DropTable(
+                name: "Companies");
 
             migrationBuilder.DropTable(
                 name: "Countries");

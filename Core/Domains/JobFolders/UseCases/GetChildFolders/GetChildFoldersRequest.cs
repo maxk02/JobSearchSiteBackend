@@ -3,4 +3,4 @@ using Ardalis.Result;
 
 namespace Core.Domains.JobFolders.UseCases.GetChildFolders;
 
-public record GetChildFoldersRequest(long JobFolderId) : IRequest<Result<GetChildFoldersResponse>>;
+public record GetChildFoldersRequest(long Id) : IRequest<Result<GetChildFoldersResponse>>;

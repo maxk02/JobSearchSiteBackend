@@ -4,5 +4,5 @@ using Ardalis.Result;
 
 namespace Core.Domains.UserProfiles.UseCases.GetPersonalFiles;
 
-public record GetPersonalFilesRequest(long UserId, PaginationSpec PaginationSpec) 
+public record GetPersonalFilesRequest(long Id, PaginationSpec PaginationSpec) 
     : IRequest<Result<GetPersonalFilesResponse>>;

@@ -1,28 +1,28 @@
-﻿using Core.Domains._Shared.Pagination;
+﻿using Ardalis.Result;
+using AutoMapper;
+using AutoMapper.QueryableExtensions;
+using Core.Domains._Shared.Pagination;
 using Core.Domains._Shared.UseCaseStructure;
 using Core.Domains.JobApplications.Dtos;
 using Core.Persistence.EfCore;
 using Core.Services.Auth;
 using Microsoft.EntityFrameworkCore;
-using Ardalis.Result;
-using AutoMapper;
-using AutoMapper.QueryableExtensions;
 
-namespace Core.Domains.UserProfiles.UseCases.GetJobApplicationsForUser;
+namespace Core.Domains.UserProfiles.UseCases.GetJobApplications;
 
-public class GetJobApplicationsForUserHandler(
+public class GetJobApplicationsHandler(
     ICurrentAccountService currentAccountService,
     MainDataContext context,
     IMapper mapper)
-    : IRequestHandler<GetJobApplicationsForUserRequest, Result<GetJobApplicationsForUserResponse>>
+    : IRequestHandler<GetJobApplicationsRequest, Result<GetJobApplicationsResponse>>
 {
-    public async Task<Result<GetJobApplicationsForUserResponse>> Handle(GetJobApplicationsForUserRequest request,
+    public async Task<Result<GetJobApplicationsResponse>> Handle(GetJobApplicationsRequest request,
         CancellationToken cancellationToken = default)
     {
         var currentAccountId = currentAccountService.GetIdOrThrow();
 
-        if (currentAccountId != request.UserId)
-            return Result<GetJobApplicationsForUserResponse>.Forbidden();
+        if (currentAccountId != request.Id)
+            return Result<GetJobApplicationsResponse>.Forbidden();
 
         var query = context.JobApplications
             .AsNoTracking()
@@ -39,7 +39,7 @@ public class GetJobApplicationsForUserHandler(
         var paginationResponse = new PaginationResponse(count, request.PaginationSpec.PageNumber,
             request.PaginationSpec.PageSize);
 
-        var response = new GetJobApplicationsForUserResponse(jobApplicationDtos, paginationResponse);
+        var response = new GetJobApplicationsResponse(jobApplicationDtos, paginationResponse);
 
         return response;
     }

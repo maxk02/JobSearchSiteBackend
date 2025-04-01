@@ -28,7 +28,7 @@ public class CompaniesController(IMapper mapper) : ControllerBase
 
     [HttpDelete("{id:long:min(1)}")]
     public async Task<ActionResult> DeleteCompany(
-        long id,
+        [FromRoute] long id,
         [FromServices] DeleteCompanyHandler handler,
         CancellationToken cancellationToken)
     {
@@ -53,7 +53,7 @@ public class CompaniesController(IMapper mapper) : ControllerBase
     [HttpGet("{id:long:min(1)}")]
     [AllowAnonymous]
     public async Task<ActionResult<GetCompanyByIdResponse>> GetCompany(
-        long id,
+        [FromRoute] long id,
         [FromServices] GetCompanyByIdHandler handler,
         CancellationToken cancellationToken)
     {
@@ -65,7 +65,7 @@ public class CompaniesController(IMapper mapper) : ControllerBase
 
     [HttpPatch("{id:long:min(1)}")]
     public async Task<ActionResult> UpdateCompany(
-        long id,
+        [FromRoute] long id,
         [FromBody] UpdateCompanyRequestDto requestDto,
         [FromServices] UpdateCompanyHandler handler,
         CancellationToken cancellationToken)

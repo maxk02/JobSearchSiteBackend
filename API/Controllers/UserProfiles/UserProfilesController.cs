@@ -8,7 +8,7 @@ using Core.Domains.UserProfiles.UseCases.DeleteCompanyBookmark;
 using Core.Domains.UserProfiles.UseCases.DeleteJobBookmark;
 using Core.Domains.UserProfiles.UseCases.GetBookmarkedCompanies;
 using Core.Domains.UserProfiles.UseCases.GetBookmarkedJobs;
-using Core.Domains.UserProfiles.UseCases.GetJobApplicationsForUser;
+using Core.Domains.UserProfiles.UseCases.GetJobApplications;
 using Core.Domains.UserProfiles.UseCases.GetPersonalFiles;
 using Core.Domains.UserProfiles.UseCases.GetUserProfileById;
 using Core.Domains.UserProfiles.UseCases.UpdateUserProfile;
@@ -119,13 +119,13 @@ public class UserProfilesController(IMapper mapper) : ControllerBase
     
     [HttpGet]
     [Route("{id:long:min(1)}/job-applications")]
-    public async Task<ActionResult<GetJobApplicationsForUserResponse>> GetJobApplications(
+    public async Task<ActionResult<GetJobApplicationsResponse>> GetJobApplications(
         long id,
         [FromQuery] PaginationSpec paginationSpec,
-        [FromServices] GetJobApplicationsForUserHandler handler,
+        [FromServices] GetJobApplicationsHandler handler,
         CancellationToken cancellationToken)
     {
-        var request = new GetJobApplicationsForUserRequest(id, paginationSpec);
+        var request = new GetJobApplicationsRequest(id, paginationSpec);
         var result = await handler.Handle(request, cancellationToken);
         
         return this.ToActionResult(result);

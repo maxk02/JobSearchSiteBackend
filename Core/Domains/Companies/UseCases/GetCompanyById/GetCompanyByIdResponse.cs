@@ -1,3 +1,5 @@
-﻿namespace Core.Domains.Companies.UseCases.GetCompanyById;
+﻿using Core.Domains.Companies.Dtos;
 
-public record GetCompanyByIdResponse(string Name, string? Description, long CountryId);
+namespace Core.Domains.Companies.UseCases.GetCompanyById;
+
+public record GetCompanyByIdResponse(CompanyInfoDto? Company);

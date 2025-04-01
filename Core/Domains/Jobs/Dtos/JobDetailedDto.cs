@@ -4,12 +4,12 @@ namespace Core.Domains.Jobs.Dtos;
 
 public record JobDetailedDto(
     long Id,
-    string CompanyLogoLink,
+    string? CompanyLogoLink,
     string CompanyName,
     ICollection<LocationDto> Locations,
     long CategoryId,
     string Title,
-    string Description,
+    string? Description,
     DateTime DateTimePublishedUtc,
     DateTime DateTimeExpiringUtc,
     ICollection<string> Responsibilities,

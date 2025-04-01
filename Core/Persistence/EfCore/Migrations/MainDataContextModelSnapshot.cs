@@ -17,25 +17,10 @@ namespace Core.Persistence.EfCore.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "9.0.1")
+                .HasAnnotation("ProductVersion", "9.0.3")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
-
-            modelBuilder.Entity("CategoryCv", b =>
-                {
-                    b.Property<long>("CategoriesId")
-                        .HasColumnType("bigint");
-
-                    b.Property<long>("CvsId")
-                        .HasColumnType("bigint");
-
-                    b.HasKey("CategoriesId", "CvsId");
-
-                    b.HasIndex("CvsId");
-
-                    b.ToTable("CategoryCv");
-                });
 
             modelBuilder.Entity("CompanyUserProfile", b =>
                 {
@@ -94,7 +79,14 @@ namespace Core.Persistence.EfCore.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
 
+                    b.Property<string>("NameEng")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
                     b.HasKey("Id");
+
+                    b.HasIndex("NameEng")
+                        .IsUnique();
 
                     b.ToTable("Categories");
                 });
@@ -115,6 +107,9 @@ namespace Core.Persistence.EfCore.Migrations
 
                     b.Property<bool>("IsPublic")
                         .HasColumnType("bit");
+
+                    b.Property<string>("LogoLink")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -195,7 +190,7 @@ namespace Core.Persistence.EfCore.Migrations
                     b.ToTable("Countries");
                 });
 
-            modelBuilder.Entity("Core.Domains.Cvs.Cv", b =>
+            modelBuilder.Entity("Core.Domains.EmploymentTypes.EmploymentType", b =>
                 {
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
@@ -203,27 +198,16 @@ namespace Core.Persistence.EfCore.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
 
-                    b.Property<bool>("IsPublic")
-                        .HasColumnType("bit");
-
-                    b.Property<byte[]>("RowVersion")
-                        .IsConcurrencyToken()
+                    b.Property<string>("NameEng")
                         .IsRequired()
-                        .ValueGeneratedOnAddOrUpdate()
-                        .HasColumnType("rowversion");
-
-                    b.PrimitiveCollection<string>("Skills")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<long>("UserId")
-                        .HasColumnType("bigint");
+                        .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("UserId")
+                    b.HasIndex("NameEng")
                         .IsUnique();
 
-                    b.ToTable("Cvs");
+                    b.ToTable("EmploymentType");
                 });
 
             modelBuilder.Entity("Core.Domains.JobApplications.JobApplication", b =>
@@ -255,6 +239,29 @@ namespace Core.Persistence.EfCore.Migrations
                     b.ToTable("JobApplications");
                 });
 
+            modelBuilder.Entity("Core.Domains.JobApplications.JobApplicationTag", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
+
+                    b.Property<long>("JobApplicationId")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("Tag")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("JobApplicationId", "Tag")
+                        .IsUnique();
+
+                    b.ToTable("JobApplicationTag");
+                });
+
             modelBuilder.Entity("Core.Domains.JobContractTypes.JobContractType", b =>
                 {
                     b.Property<long>("Id")
@@ -268,11 +275,12 @@ namespace Core.Persistence.EfCore.Migrations
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CountryId");
+                    b.HasIndex("CountryId", "Name")
+                        .IsUnique();
 
                     b.ToTable("ContractTypes");
                 });
@@ -372,9 +380,6 @@ namespace Core.Persistence.EfCore.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
 
-                    b.PrimitiveCollection<string>("Advantages")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<long>("CategoryId")
                         .HasColumnType("bigint");
 
@@ -396,6 +401,9 @@ namespace Core.Persistence.EfCore.Migrations
 
                     b.Property<long>("JobFolderId")
                         .HasColumnType("bigint");
+
+                    b.PrimitiveCollection<string>("NiceToHaves")
+                        .HasColumnType("nvarchar(max)");
 
                     b.PrimitiveCollection<string>("Requirements")
                         .HasColumnType("nvarchar(max)");
@@ -424,6 +432,32 @@ namespace Core.Persistence.EfCore.Migrations
                     b.ToTable("Jobs");
                 });
 
+            modelBuilder.Entity("Core.Domains.Jobs.JobSalaryInfo", b =>
+                {
+                    b.Property<long>("JobId")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("CurrencyCode")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool?>("IsAfterTaxes")
+                        .HasColumnType("bit");
+
+                    b.Property<decimal?>("Maximum")
+                        .HasColumnType("decimal(12,2)");
+
+                    b.Property<decimal?>("Minimum")
+                        .HasColumnType("decimal(12,2)");
+
+                    b.Property<int>("UnitOfTime")
+                        .HasColumnType("int");
+
+                    b.HasKey("JobId");
+
+                    b.ToTable("JobSalaryInfo");
+                });
+
             modelBuilder.Entity("Core.Domains.Locations.Location", b =>
                 {
                     b.Property<long>("Id")
@@ -436,9 +470,6 @@ namespace Core.Persistence.EfCore.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<long>("CountryId")
-                        .HasColumnType("bigint");
-
-                    b.Property<long?>("CvId")
                         .HasColumnType("bigint");
 
                     b.Property<string>("Description")
@@ -455,8 +486,6 @@ namespace Core.Persistence.EfCore.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("CountryId");
-
-                    b.HasIndex("CvId");
 
                     b.ToTable("Locations");
                 });
@@ -525,6 +554,9 @@ namespace Core.Persistence.EfCore.Migrations
                         .HasColumnType("bigint");
 
                     b.Property<string>("MiddleName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Phone")
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
@@ -632,6 +664,21 @@ namespace Core.Persistence.EfCore.Migrations
                     b.ToTable("AspNetUsers", (string)null);
                 });
 
+            modelBuilder.Entity("EmploymentTypeJob", b =>
+                {
+                    b.Property<long>("EmploymentTypesId")
+                        .HasColumnType("bigint");
+
+                    b.Property<long>("JobsId")
+                        .HasColumnType("bigint");
+
+                    b.HasKey("EmploymentTypesId", "JobsId");
+
+                    b.HasIndex("JobsId");
+
+                    b.ToTable("EmploymentTypeJob");
+                });
+
             modelBuilder.Entity("JobApplicationPersonalFile", b =>
                 {
                     b.Property<long>("JobApplicationsId")
@@ -645,6 +692,36 @@ namespace Core.Persistence.EfCore.Migrations
                     b.HasIndex("PersonalFilesId");
 
                     b.ToTable("JobApplicationPersonalFile");
+                });
+
+            modelBuilder.Entity("JobApplicationUserProfile", b =>
+                {
+                    b.Property<long>("BookmarkedJobApplicationsId")
+                        .HasColumnType("bigint");
+
+                    b.Property<long>("UserProfileId")
+                        .HasColumnType("bigint");
+
+                    b.HasKey("BookmarkedJobApplicationsId", "UserProfileId");
+
+                    b.HasIndex("UserProfileId");
+
+                    b.ToTable("JobApplicationBookmarks", (string)null);
+                });
+
+            modelBuilder.Entity("JobFolderUserProfile", b =>
+                {
+                    b.Property<long>("LastManagedJobFoldersId")
+                        .HasColumnType("bigint");
+
+                    b.Property<long>("UserProfileId")
+                        .HasColumnType("bigint");
+
+                    b.HasKey("LastManagedJobFoldersId", "UserProfileId");
+
+                    b.HasIndex("UserProfileId");
+
+                    b.ToTable("LastManagedJobFolders", (string)null);
                 });
 
             modelBuilder.Entity("JobJobContractType", b =>
@@ -690,6 +767,21 @@ namespace Core.Persistence.EfCore.Migrations
                     b.HasIndex("UsersWhoBookmarkedId");
 
                     b.ToTable("JobBookmarks", (string)null);
+                });
+
+            modelBuilder.Entity("JobUserProfile1", b =>
+                {
+                    b.Property<long>("LastManagedJobsId")
+                        .HasColumnType("bigint");
+
+                    b.Property<long>("UserProfileId")
+                        .HasColumnType("bigint");
+
+                    b.HasKey("LastManagedJobsId", "UserProfileId");
+
+                    b.HasIndex("UserProfileId");
+
+                    b.ToTable("LastManagedJobs", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<long>", b =>
@@ -795,21 +887,6 @@ namespace Core.Persistence.EfCore.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
-            modelBuilder.Entity("CategoryCv", b =>
-                {
-                    b.HasOne("Core.Domains.Categories.Category", null)
-                        .WithMany()
-                        .HasForeignKey("CategoriesId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Core.Domains.Cvs.Cv", null)
-                        .WithMany()
-                        .HasForeignKey("CvsId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
             modelBuilder.Entity("CompanyUserProfile", b =>
                 {
                     b.HasOne("Core.Domains.Companies.Company", null)
@@ -874,167 +951,6 @@ namespace Core.Persistence.EfCore.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("Core.Domains.Cvs.Cv", b =>
-                {
-                    b.HasOne("Core.Domains.UserProfiles.UserProfile", "User")
-                        .WithMany("Cvs")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.OwnsOne("Core.Domains._Shared.ValueEntities.EmploymentTypeRecord", "EmploymentTypeRecord", b1 =>
-                        {
-                            b1.Property<long>("CvId")
-                                .HasColumnType("bigint");
-
-                            b1.Property<bool>("IsFullTime")
-                                .HasColumnType("bit");
-
-                            b1.Property<bool>("IsHybrid")
-                                .HasColumnType("bit");
-
-                            b1.Property<bool>("IsMobile")
-                                .HasColumnType("bit");
-
-                            b1.Property<bool>("IsOnSite")
-                                .HasColumnType("bit");
-
-                            b1.Property<bool>("IsPartTime")
-                                .HasColumnType("bit");
-
-                            b1.Property<bool>("IsRemote")
-                                .HasColumnType("bit");
-
-                            b1.HasKey("CvId");
-
-                            b1.ToTable("Cvs");
-
-                            b1.ToJson("EmploymentTypeRecord");
-
-                            b1.WithOwner()
-                                .HasForeignKey("CvId");
-                        });
-
-                    b.OwnsOne("Core.Domains._Shared.ValueEntities.SalaryRecord", "SalaryRecord", b1 =>
-                        {
-                            b1.Property<long>("CvId")
-                                .HasColumnType("bigint");
-
-                            b1.Property<string>("CurrencyCode")
-                                .IsRequired()
-                                .HasColumnType("nvarchar(max)");
-
-                            b1.Property<decimal?>("Maximum")
-                                .HasPrecision(10, 2)
-                                .HasColumnType("decimal(10,2)");
-
-                            b1.Property<decimal?>("Minimum")
-                                .HasPrecision(10, 2)
-                                .HasColumnType("decimal(10,2)");
-
-                            b1.Property<string>("UnitOfTime")
-                                .IsRequired()
-                                .HasColumnType("nvarchar(max)");
-
-                            b1.HasKey("CvId");
-
-                            b1.ToTable("Cvs");
-
-                            b1.ToJson("SalaryRecord");
-
-                            b1.WithOwner()
-                                .HasForeignKey("CvId");
-                        });
-
-                    b.OwnsMany("Core.Domains.Cvs.ValueEntities.EducationRecord", "EducationRecords", b1 =>
-                        {
-                            b1.Property<long>("CvId")
-                                .HasColumnType("bigint");
-
-                            b1.Property<int>("__synthesizedOrdinal")
-                                .ValueGeneratedOnAdd()
-                                .HasColumnType("int");
-
-                            b1.Property<DateOnly?>("DateOfFinish")
-                                .HasColumnType("date");
-
-                            b1.Property<DateOnly?>("DateOfStart")
-                                .HasColumnType("date");
-
-                            b1.Property<string>("Degree")
-                                .HasColumnType("nvarchar(max)");
-
-                            b1.Property<string>("Description")
-                                .HasColumnType("nvarchar(max)");
-
-                            b1.Property<string>("Faculty")
-                                .HasColumnType("nvarchar(max)");
-
-                            b1.Property<string>("Institution")
-                                .HasColumnType("nvarchar(max)");
-
-                            b1.Property<string>("Location")
-                                .HasColumnType("nvarchar(max)");
-
-                            b1.Property<string>("Speciality")
-                                .HasColumnType("nvarchar(max)");
-
-                            b1.HasKey("CvId", "__synthesizedOrdinal");
-
-                            b1.ToTable("Cvs");
-
-                            b1.ToJson("EducationRecords");
-
-                            b1.WithOwner()
-                                .HasForeignKey("CvId");
-                        });
-
-                    b.OwnsMany("Core.Domains.Cvs.ValueEntities.WorkRecord", "WorkRecords", b1 =>
-                        {
-                            b1.Property<long>("CvId")
-                                .HasColumnType("bigint");
-
-                            b1.Property<int>("__synthesizedOrdinal")
-                                .ValueGeneratedOnAdd()
-                                .HasColumnType("int");
-
-                            b1.Property<string>("Company")
-                                .HasColumnType("nvarchar(max)");
-
-                            b1.Property<string>("Description")
-                                .HasColumnType("nvarchar(max)");
-
-                            b1.Property<string>("Location")
-                                .HasColumnType("nvarchar(max)");
-
-                            b1.Property<string>("Position")
-                                .HasColumnType("nvarchar(max)");
-
-                            b1.PrimitiveCollection<string>("Responsibilities")
-                                .IsRequired()
-                                .HasColumnType("nvarchar(max)");
-
-                            b1.HasKey("CvId", "__synthesizedOrdinal");
-
-                            b1.ToTable("Cvs");
-
-                            b1.ToJson("WorkRecords");
-
-                            b1.WithOwner()
-                                .HasForeignKey("CvId");
-                        });
-
-                    b.Navigation("EducationRecords");
-
-                    b.Navigation("EmploymentTypeRecord");
-
-                    b.Navigation("SalaryRecord");
-
-                    b.Navigation("User");
-
-                    b.Navigation("WorkRecords");
-                });
-
             modelBuilder.Entity("Core.Domains.JobApplications.JobApplication", b =>
                 {
                     b.HasOne("Core.Domains.Jobs.Job", "Job")
@@ -1052,6 +968,17 @@ namespace Core.Persistence.EfCore.Migrations
                     b.Navigation("Job");
 
                     b.Navigation("User");
+                });
+
+            modelBuilder.Entity("Core.Domains.JobApplications.JobApplicationTag", b =>
+                {
+                    b.HasOne("Core.Domains.JobApplications.JobApplication", "JobApplication")
+                        .WithMany("Tags")
+                        .HasForeignKey("JobApplicationId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("JobApplication");
                 });
 
             modelBuilder.Entity("Core.Domains.JobContractTypes.JobContractType", b =>
@@ -1140,77 +1067,18 @@ namespace Core.Persistence.EfCore.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.OwnsOne("Core.Domains._Shared.ValueEntities.EmploymentTypeRecord", "EmploymentTypeRecord", b1 =>
-                        {
-                            b1.Property<long>("JobId")
-                                .HasColumnType("bigint");
-
-                            b1.Property<bool>("IsFullTime")
-                                .HasColumnType("bit");
-
-                            b1.Property<bool>("IsHybrid")
-                                .HasColumnType("bit");
-
-                            b1.Property<bool>("IsMobile")
-                                .HasColumnType("bit");
-
-                            b1.Property<bool>("IsOnSite")
-                                .HasColumnType("bit");
-
-                            b1.Property<bool>("IsPartTime")
-                                .HasColumnType("bit");
-
-                            b1.Property<bool>("IsRemote")
-                                .HasColumnType("bit");
-
-                            b1.HasKey("JobId");
-
-                            b1.ToTable("Jobs");
-
-                            b1.ToJson("EmploymentTypeRecord");
-
-                            b1.WithOwner()
-                                .HasForeignKey("JobId");
-                        });
-
-                    b.OwnsOne("Core.Domains._Shared.ValueEntities.SalaryRecord", "SalaryRecord", b1 =>
-                        {
-                            b1.Property<long>("JobId")
-                                .HasColumnType("bigint");
-
-                            b1.Property<string>("CurrencyCode")
-                                .IsRequired()
-                                .HasColumnType("nvarchar(max)");
-
-                            b1.Property<decimal?>("Maximum")
-                                .HasPrecision(10, 2)
-                                .HasColumnType("decimal(10,2)");
-
-                            b1.Property<decimal?>("Minimum")
-                                .HasPrecision(10, 2)
-                                .HasColumnType("decimal(10,2)");
-
-                            b1.Property<string>("UnitOfTime")
-                                .IsRequired()
-                                .HasColumnType("nvarchar(max)");
-
-                            b1.HasKey("JobId");
-
-                            b1.ToTable("Jobs");
-
-                            b1.ToJson("SalaryRecord");
-
-                            b1.WithOwner()
-                                .HasForeignKey("JobId");
-                        });
-
                     b.Navigation("Category");
 
-                    b.Navigation("EmploymentTypeRecord");
-
                     b.Navigation("JobFolder");
+                });
 
-                    b.Navigation("SalaryRecord");
+            modelBuilder.Entity("Core.Domains.Jobs.JobSalaryInfo", b =>
+                {
+                    b.HasOne("Core.Domains.Jobs.Job", null)
+                        .WithOne("SalaryInfo")
+                        .HasForeignKey("Core.Domains.Jobs.JobSalaryInfo", "JobId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("Core.Domains.Locations.Location", b =>
@@ -1220,10 +1088,6 @@ namespace Core.Persistence.EfCore.Migrations
                         .HasForeignKey("CountryId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
-
-                    b.HasOne("Core.Domains.Cvs.Cv", null)
-                        .WithMany("Locations")
-                        .HasForeignKey("CvId");
 
                     b.Navigation("Country");
                 });
@@ -1250,35 +1114,21 @@ namespace Core.Persistence.EfCore.Migrations
                     b.HasOne("Core.Domains.Locations.Location", null)
                         .WithMany("Users")
                         .HasForeignKey("LocationId");
+                });
 
-                    b.OwnsOne("Core.Domains._Shared.ValueEntities.Phone", "Phone", b1 =>
-                        {
-                            b1.Property<long>("UserProfileId")
-                                .HasColumnType("bigint");
+            modelBuilder.Entity("EmploymentTypeJob", b =>
+                {
+                    b.HasOne("Core.Domains.EmploymentTypes.EmploymentType", null)
+                        .WithMany()
+                        .HasForeignKey("EmploymentTypesId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
-                            b1.Property<string>("CountryCode")
-                                .IsRequired()
-                                .HasColumnType("nvarchar(max)");
-
-                            b1.Property<string>("Number")
-                                .IsRequired()
-                                .HasColumnType("nvarchar(max)");
-
-                            b1.Property<string>("OperatorOrAreaCode")
-                                .IsRequired()
-                                .HasColumnType("nvarchar(max)");
-
-                            b1.HasKey("UserProfileId");
-
-                            b1.ToTable("UserProfiles");
-
-                            b1.ToJson("Phone");
-
-                            b1.WithOwner()
-                                .HasForeignKey("UserProfileId");
-                        });
-
-                    b.Navigation("Phone");
+                    b.HasOne("Core.Domains.Jobs.Job", null)
+                        .WithMany()
+                        .HasForeignKey("JobsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("JobApplicationPersonalFile", b =>
@@ -1292,6 +1142,36 @@ namespace Core.Persistence.EfCore.Migrations
                     b.HasOne("Core.Domains.PersonalFiles.PersonalFile", null)
                         .WithMany()
                         .HasForeignKey("PersonalFilesId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("JobApplicationUserProfile", b =>
+                {
+                    b.HasOne("Core.Domains.JobApplications.JobApplication", null)
+                        .WithMany()
+                        .HasForeignKey("BookmarkedJobApplicationsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Core.Domains.UserProfiles.UserProfile", null)
+                        .WithMany()
+                        .HasForeignKey("UserProfileId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("JobFolderUserProfile", b =>
+                {
+                    b.HasOne("Core.Domains.JobFolders.JobFolder", null)
+                        .WithMany()
+                        .HasForeignKey("LastManagedJobFoldersId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Core.Domains.UserProfiles.UserProfile", null)
+                        .WithMany()
+                        .HasForeignKey("UserProfileId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
@@ -1337,6 +1217,21 @@ namespace Core.Persistence.EfCore.Migrations
                     b.HasOne("Core.Domains.UserProfiles.UserProfile", null)
                         .WithMany()
                         .HasForeignKey("UsersWhoBookmarkedId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("JobUserProfile1", b =>
+                {
+                    b.HasOne("Core.Domains.Jobs.Job", null)
+                        .WithMany()
+                        .HasForeignKey("LastManagedJobsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Core.Domains.UserProfiles.UserProfile", null)
+                        .WithMany()
+                        .HasForeignKey("UserProfileId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
@@ -1420,9 +1315,9 @@ namespace Core.Persistence.EfCore.Migrations
                     b.Navigation("Locations");
                 });
 
-            modelBuilder.Entity("Core.Domains.Cvs.Cv", b =>
+            modelBuilder.Entity("Core.Domains.JobApplications.JobApplication", b =>
                 {
-                    b.Navigation("Locations");
+                    b.Navigation("Tags");
                 });
 
             modelBuilder.Entity("Core.Domains.JobFolderClaims.JobFolderClaim", b =>
@@ -1444,6 +1339,8 @@ namespace Core.Persistence.EfCore.Migrations
             modelBuilder.Entity("Core.Domains.Jobs.Job", b =>
                 {
                     b.Navigation("JobApplications");
+
+                    b.Navigation("SalaryInfo");
                 });
 
             modelBuilder.Entity("Core.Domains.Locations.Location", b =>
@@ -1453,8 +1350,6 @@ namespace Core.Persistence.EfCore.Migrations
 
             modelBuilder.Entity("Core.Domains.UserProfiles.UserProfile", b =>
                 {
-                    b.Navigation("Cvs");
-
                     b.Navigation("JobApplications");
 
                     b.Navigation("PersonalFiles");

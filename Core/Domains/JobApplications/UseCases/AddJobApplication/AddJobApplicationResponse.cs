@@ -1,3 +1,3 @@
 ﻿namespace Core.Domains.JobApplications.UseCases.AddJobApplication;
 
-public record AddJobApplicationResponse(long AddedApplicationId);
+public record AddJobApplicationResponse(long Id);

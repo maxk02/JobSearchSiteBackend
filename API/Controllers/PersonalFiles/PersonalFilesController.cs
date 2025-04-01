@@ -15,7 +15,7 @@ public class PersonalFilesController(IMapper mapper) : ControllerBase
 {
     [HttpPost]
     public async Task<ActionResult> UploadFile(
-        IFormFile? file,
+        [FromForm] IFormFile file,
         [FromServices] UploadFileHandler handler,
         CancellationToken cancellationToken)
     {

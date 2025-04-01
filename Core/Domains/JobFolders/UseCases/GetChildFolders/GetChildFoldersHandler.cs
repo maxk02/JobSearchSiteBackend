@@ -21,12 +21,12 @@ public class GetChildFoldersHandler(
     {
         var currentUserId = currentAccountService.GetIdOrThrow();
 
-        var jobFolder = await context.JobFolders.FindAsync([request.JobFolderId], cancellationToken);
+        var jobFolder = await context.JobFolders.FindAsync([request.Id], cancellationToken);
         if (jobFolder is null)
             return Result<GetChildFoldersResponse>.NotFound();
 
         var hasReadClaim = await context.JobFolderRelations
-            .GetThisOrAncestorWhereUserHasClaim(request.JobFolderId, currentUserId,
+            .GetThisOrAncestorWhereUserHasClaim(request.Id, currentUserId,
                 JobFolderClaim.CanReadJobsAndSubfolders.Id)
             .AnyAsync(cancellationToken);
 
@@ -34,7 +34,7 @@ public class GetChildFoldersHandler(
             return Result<GetChildFoldersResponse>.Forbidden();
 
         var childJobFolderDtos = await context.JobFolderRelations
-            .Where(jfc => jfc.AncestorId == request.JobFolderId)
+            .Where(jfc => jfc.AncestorId == request.Id)
             .Where(jfc => jfc.Depth == 1)
             .ProjectTo<JobFolderDto>(mapper.ConfigurationProvider)
             .ToListAsync(cancellationToken);

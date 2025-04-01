@@ -18,15 +18,15 @@ public class CreateAccountHandler(
     UserManager<MyIdentityUser> userManager,
     IBackgroundJobService backgroundJobService,
     IEmailSenderService emailSenderService) 
-    : IRequestHandler<CreateAccountRequest, Result<CreateAccountResponse>>
+    : IRequestHandler<CreateAccountRequest, Result>
 {
-    public async Task<Result<CreateAccountResponse>> Handle(CreateAccountRequest request,
+    public async Task<Result> Handle(CreateAccountRequest request,
         CancellationToken cancellationToken = default)
     {
         var userFromDb = await userManager.FindByEmailAsync(request.Email);
 
         if (userFromDb is not null)
-            return Result<CreateAccountResponse>.Conflict();
+            return Result.Conflict();
 
         var user = new MyIdentityUser { Email = request.Email };
 
@@ -35,7 +35,7 @@ public class CreateAccountHandler(
         var aspNetIdentityResult = await userManager.CreateAsync(user, request.Password);
 
         if (!aspNetIdentityResult.Succeeded)
-            return Result<CreateAccountResponse>.Error();
+            return Result.Error();
 
         var token = await userManager.GenerateEmailConfirmationTokenAsync(user);
         
@@ -51,6 +51,6 @@ public class CreateAccountHandler(
         
         transaction.Complete();
 
-        return new CreateAccountResponse(token);
+        return Result.Success();
     }
 }

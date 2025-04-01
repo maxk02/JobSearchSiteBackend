@@ -13,11 +13,14 @@ namespace API.Controllers.CompanyClaims;
 public class CompanyClaimsController(IMapper mapper) : ControllerBase
 {
     [HttpGet]
+    [Route("/company/{companyId:long:min(1)}/user/{userId:long:min(1)}")]
     public async Task<ActionResult<ICollection<long>>> GetCompanyClaimIdsForUser(
-        [FromQuery] GetCompanyClaimIdsForUserRequest request,
+        [FromRoute] long companyId, [FromRoute] long userId,
         [FromServices] GetCompanyClaimIdsForUserHandler handler,
         CancellationToken cancellationToken)
     {
+        var request = new GetCompanyClaimIdsForUserRequest(userId, companyId);
+        
         var result = await handler.Handle(request, cancellationToken);
         
         return this.ToActionResult(result);
@@ -25,7 +28,7 @@ public class CompanyClaimsController(IMapper mapper) : ControllerBase
     
     [HttpPatch("/company/{companyId:long:min(1)}/user/{userId:long:min(1)}")]
     public async Task<ActionResult> UpdateCompanyClaimIdsForUser(
-        long companyId, long userId,
+        [FromRoute] long companyId, [FromRoute] long userId,
         [FromBody] UpdateCompanyClaimIdsForUserRequestDto requestDto,
         [FromServices] UpdateCompanyClaimIdsForUserHandler handler,
         CancellationToken cancellationToken)
