@@ -3,4 +3,4 @@ using Ardalis.Result;
 
 namespace Core.Domains.Companies.UseCases.UpdateCompany;
 
-public record UpdateCompanyRequest(long CompanyId, string? Name, string? Description, bool? IsPublic) : IRequest<Result>;
+public record UpdateCompanyRequest(long Id, string? Name, string? Description, bool? IsPublic) : IRequest<Result>;

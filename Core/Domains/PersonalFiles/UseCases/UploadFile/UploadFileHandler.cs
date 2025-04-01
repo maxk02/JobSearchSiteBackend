@@ -23,12 +23,18 @@ public class UploadFileHandler(
     public async Task<Result> Handle(UploadFileRequest request, CancellationToken cancellationToken = default)
     {
         var currentUserId = currentAccountService.GetIdOrThrow();
+        
+        if (request.FormFile is null || request.FormFile.Length == 0)
+        {
+            return Result.Invalid();
+        }
 
         using var memoryStream = new MemoryStream();
-        await request.FileStream.CopyToAsync(memoryStream, cancellationToken);
+        await request.FormFile.CopyToAsync(memoryStream, cancellationToken);
         
-        var newFile = new PersonalFile(currentUserId, request.FileName,
-            request.Extension, memoryStream.Length);
+        var fileName = Path.GetFileNameWithoutExtension(request.FormFile.FileName);
+        var extension = Path.GetExtension(request.FormFile.FileName).TrimStart('.');
+        var newFile = new PersonalFile(currentUserId, fileName, extension, memoryStream.Length);
 
         await fileStorageService.UploadFileAsync(memoryStream, newFile.GuidIdentifier, cancellationToken);
         

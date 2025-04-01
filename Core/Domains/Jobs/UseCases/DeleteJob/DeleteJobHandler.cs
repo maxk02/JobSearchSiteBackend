@@ -24,7 +24,7 @@ public class DeleteJobHandler(
         var job = await context.Jobs
             .Include(job => job.JobFolder)
             .ThenInclude(jf => jf!.Company)
-            .Where(job => job.Id == request.JobId)
+            .Where(job => job.Id == request.Id)
             .SingleOrDefaultAsync(cancellationToken);
 
         if (job is null)

@@ -19,7 +19,7 @@ public class UpdateJobApplicationFilesHandler(
 
         var jobApplication = await context.JobApplications
             .Include(ja => ja.PersonalFiles)
-            .Where(ja => ja.Id == request.JobApplicationId)
+            .Where(ja => ja.Id == request.Id)
             .SingleOrDefaultAsync(cancellationToken);
 
         if (jobApplication is null)

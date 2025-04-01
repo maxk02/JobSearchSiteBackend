@@ -1,15 +1,14 @@
-﻿using System.Text;
+﻿using System.Reflection;
+using System.Text;
 using Core.Persistence.EfCore;
 using Core.Persistence.EfCore.EntityConfigs.AspNetCoreIdentity;
 using Core.Services.Auth;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
-using Shared.MyAppSettings;
 
 namespace Core;
 
@@ -63,5 +62,10 @@ public static class ServiceExtensions
     public static void ConfigureJwtGenerationService(this IServiceCollection serviceCollection)
     {
         serviceCollection.AddSingleton<IJwtGenerationService, JwtGenerationService>();
+    }
+    
+    public static void ConfigureAutoMapper(this IServiceCollection services)
+    {
+        services.AddAutoMapper(Assembly.GetExecutingAssembly());
     }
 }

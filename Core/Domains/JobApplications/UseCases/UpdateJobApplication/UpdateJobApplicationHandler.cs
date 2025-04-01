@@ -18,7 +18,7 @@ public class UpdateJobApplicationHandler(
         var currentUserId = currentAccountService.GetIdOrThrow();
 
         var jobApplicationWithJobFolderId = await context.JobApplications
-            .Where(ja => ja.Id == request.JobApplicationId)
+            .Where(ja => ja.Id == request.Id)
             .Select(ja => new { JobApplication = ja, JobFolderId = ja.Job!.JobFolderId })
             .SingleOrDefaultAsync(cancellationToken);
 

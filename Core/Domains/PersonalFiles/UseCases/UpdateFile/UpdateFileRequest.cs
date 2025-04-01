@@ -3,4 +3,4 @@ using Ardalis.Result;
 
 namespace Core.Domains.PersonalFiles.UseCases.UpdateFile;
 
-public record UpdateFileRequest(long FileId, string NewName) : IRequest<Result>;
+public record UpdateFileRequest(long Id, string NewName) : IRequest<Result>;

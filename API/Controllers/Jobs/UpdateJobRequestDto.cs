@@ -1,10 +1,10 @@
-﻿using Core.Domains._Shared.UseCaseStructure;
-using Ardalis.Result;
+﻿using Ardalis.Result;
+using Core.Domains._Shared.UseCaseStructure;
 using Core.Domains.Jobs.Dtos;
 
-namespace Core.Domains.Jobs.UseCases.UpdateJob;
+namespace API.Controllers.Jobs;
 
-public record UpdateJobRequest(long Id,
+public record UpdateJobRequestDto(
     long? JobFolderId,
     long? CategoryId,
     string? Title,

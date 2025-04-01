@@ -17,7 +17,7 @@ public class DeleteFileHandler(
     {
         var currentUserId = currentAccountService.GetIdOrThrow();
         
-        var personalFile = await context.PersonalFiles.FindAsync([request.FileId], cancellationToken);
+        var personalFile = await context.PersonalFiles.FindAsync([request.Id], cancellationToken);
 
         if (personalFile is null)
             return Result.NotFound();

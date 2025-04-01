@@ -3,5 +3,5 @@ using Ardalis.Result;
 
 namespace Core.Domains.JobApplications.UseCases.UpdateJobApplicationFiles;
 
-public record UpdateJobApplicationFilesRequest(long JobApplicationId,
+public record UpdateJobApplicationFilesRequest(long Id,
     ICollection<long> PersonalFileIds) : IRequest<Result>;

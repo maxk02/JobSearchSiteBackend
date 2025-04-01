@@ -3,4 +3,4 @@ using Ardalis.Result;
 
 namespace Core.Domains.JobApplications.UseCases.DeleteJobApplication;
 
-public record DeleteJobApplicationRequest(long JobApplicationId) : IRequest<Result>;
+public record DeleteJobApplicationRequest(long Id) : IRequest<Result>;

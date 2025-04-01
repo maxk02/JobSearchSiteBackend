@@ -24,7 +24,7 @@ public class UpdateCompanyHandler(
             from dbCompany in context.Companies
             join dbUcc in context.UserCompanyClaims on dbCompany.Id equals dbUcc.CompanyId into ucpGroup
             from dbUcc in ucpGroup.DefaultIfEmpty()
-            where dbCompany.Id == request.CompanyId && dbUcc.UserId == currentUserId
+            where dbCompany.Id == request.Id && dbUcc.UserId == currentUserId
             group dbUcc.ClaimId by new { Company = dbCompany, UserId = dbUcc.UserId }
             into grouped
             select new { grouped.Key.Company, PermissionIds = grouped.ToList() };

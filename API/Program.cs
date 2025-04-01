@@ -1,3 +1,4 @@
+using System.Reflection;
 using API.Middleware.Auth;
 using API.Services.Auth;
 using Core;
@@ -48,6 +49,9 @@ builder.Services.ConfigureJwtAuthentication(builder.Configuration);
 builder.Services.ConfigureJwtGenerationService();
 builder.Services.ConfigurePersistenceWithIdentity(builder.Configuration);
 
+builder.Services.ConfigureAutoMapper();
+builder.Services.AddAutoMapper(Assembly.GetExecutingAssembly());
+
 builder.Services.ConfigureHangfire();
 builder.Services.ConfigureAmazonS3(builder.Configuration);
 builder.Services.ConfigureMailKit();
@@ -58,9 +62,7 @@ builder.Services.ConfigureAccountUseCases();
 builder.Services.ConfigureCompanyUseCases();
 builder.Services.ConfigureCompanyClaimUseCases();
 builder.Services.ConfigureCountryUseCases();
-// builder.Services.ConfigureCvUseCases();
 builder.Services.ConfigureJobApplicationUseCases();
-// builder.Services.ConfigureJobContractTypeUseCases();
 builder.Services.ConfigureJobFolderClaimUseCases();
 builder.Services.ConfigureJobFolderUseCases();
 builder.Services.ConfigureJobUseCases();

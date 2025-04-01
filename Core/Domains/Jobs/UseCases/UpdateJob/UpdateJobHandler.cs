@@ -45,13 +45,11 @@ public class UpdateJobHandler(
 
         if (!hasPermissionInCurrentFolderOrAncestors)
             return Result.Forbidden();
-        
-        var jobUpdateDto = request.Job;
 
-        if (jobUpdateDto.JobFolderId is not null)
+        if (request.JobFolderId is not null)
         {
             var newCompanyId = await context.JobFolders
-                .Where(jf => jf.Id == jobUpdateDto.JobFolderId)
+                .Where(jf => jf.Id == request.JobFolderId)
                 .Select(jf => jf.CompanyId)
                 .SingleOrDefaultAsync(cancellationToken);
             
@@ -60,63 +58,63 @@ public class UpdateJobHandler(
             
             var hasPermissionInRequestedFolderOrAncestors =
                 await context.JobFolderRelations
-                    .GetThisOrAncestorWhereUserHasClaim(jobUpdateDto.JobFolderId.Value, currentUserId,
+                    .GetThisOrAncestorWhereUserHasClaim(request.JobFolderId.Value, currentUserId,
                         JobFolderClaim.CanEditJobsAndSubfolders.Id)
                     .AnyAsync(cancellationToken);
 
             if (!hasPermissionInRequestedFolderOrAncestors)
                 return Result.Forbidden();
 
-            job.JobFolderId = jobUpdateDto.JobFolderId.Value;
+            job.JobFolderId = request.JobFolderId.Value;
         }
 
-        if (jobUpdateDto.CategoryId is not null)
+        if (request.CategoryId is not null)
         {
-            if (!Category.AllIds.Contains(jobUpdateDto.CategoryId.Value))
+            if (!Category.AllIds.Contains(request.CategoryId.Value))
                 return Result.Error();
 
-            job.CategoryId = jobUpdateDto.CategoryId.Value;
+            job.CategoryId = request.CategoryId.Value;
         }
 
-        if (jobUpdateDto.Title is not null)
-            job.Title = jobUpdateDto.Title;
+        if (request.Title is not null)
+            job.Title = request.Title;
 
-        if (jobUpdateDto.Description is not null)
-            job.Description = jobUpdateDto.Description;
+        if (request.Description is not null)
+            job.Description = request.Description;
 
-        if (jobUpdateDto.IsPublic is not null)
-            job.IsPublic = jobUpdateDto.IsPublic.Value;
+        if (request.IsPublic is not null)
+            job.IsPublic = request.IsPublic.Value;
 
-        if (jobUpdateDto.NewDateTimeExpiringUtc is not null)
+        if (request.NewDateTimeExpiringUtc is not null)
         {
-            var difference = jobUpdateDto.NewDateTimeExpiringUtc.Value - DateTime.UtcNow;
+            var difference = request.NewDateTimeExpiringUtc.Value - DateTime.UtcNow;
 
             if (difference.Minutes < 1 || difference.Days > 30)
                 return Result.Error();
 
-            job.DateTimeExpiringUtc = jobUpdateDto.NewDateTimeExpiringUtc.Value;
+            job.DateTimeExpiringUtc = request.NewDateTimeExpiringUtc.Value;
         }
 
-        if (jobUpdateDto.Responsibilities is not null)
-            job.Responsibilities = jobUpdateDto.Responsibilities;
+        if (request.Responsibilities is not null)
+            job.Responsibilities = request.Responsibilities;
 
-        if (jobUpdateDto.Requirements is not null)
-            job.Requirements = jobUpdateDto.Requirements;
+        if (request.Requirements is not null)
+            job.Requirements = request.Requirements;
 
-        if (jobUpdateDto.Advantages is not null)
-            job.NiceToHaves = jobUpdateDto.Advantages;
+        if (request.Advantages is not null)
+            job.NiceToHaves = request.Advantages;
 
-        if (jobUpdateDto.SalaryInfo is not null)
-            job.SalaryInfo = mapper.Map<JobSalaryInfo>(jobUpdateDto.SalaryInfo);
+        if (request.SalaryInfo is not null)
+            job.SalaryInfo = mapper.Map<JobSalaryInfo>(request.SalaryInfo);
         
-        if (jobUpdateDto.EmploymentTypeIds is not null)
+        if (request.EmploymentTypeIds is not null)
         {
             var employmentTypes = EmploymentType.AllValues
-                .Where(employmentType => jobUpdateDto.EmploymentTypeIds.Contains(employmentType.Id))
+                .Where(employmentType => request.EmploymentTypeIds.Contains(employmentType.Id))
                 .ToList();
 
             var nonExistentEmploymentTypeIds =
-                jobUpdateDto.EmploymentTypeIds.Except(employmentTypes.Select(employmentType => employmentType.Id));
+                request.EmploymentTypeIds.Except(employmentTypes.Select(employmentType => employmentType.Id));
 
             if (nonExistentEmploymentTypeIds.Any())
                 return Result.Error();
@@ -124,14 +122,14 @@ public class UpdateJobHandler(
             job.EmploymentTypes = employmentTypes;
         }
 
-        if (jobUpdateDto.ContractTypeIds is not null)
+        if (request.ContractTypeIds is not null)
         {
             var contractTypes = await context.ContractTypes
-                .Where(jobContractType => jobUpdateDto.ContractTypeIds.Contains(jobContractType.Id))
+                .Where(jobContractType => request.ContractTypeIds.Contains(jobContractType.Id))
                 .ToListAsync(cancellationToken);
 
             var nonExistentContractTypeIds =
-                jobUpdateDto.ContractTypeIds.Except(contractTypes.Select(contractType => contractType.Id));
+                request.ContractTypeIds.Except(contractTypes.Select(contractType => contractType.Id));
 
             if (nonExistentContractTypeIds.Any())
                 return Result.Error();
@@ -139,14 +137,14 @@ public class UpdateJobHandler(
             job.JobContractTypes = contractTypes;
         }
 
-        if (jobUpdateDto.LocationIds is not null)
+        if (request.LocationIds is not null)
         {
             var locations = await context.Locations
-                .Where(location => jobUpdateDto.LocationIds.Contains(location.Id))
+                .Where(location => request.LocationIds.Contains(location.Id))
                 .ToListAsync(cancellationToken);
 
             var nonExistentLocationIds =
-                jobUpdateDto.LocationIds.Except(locations.Select(location => location.Id));
+                request.LocationIds.Except(locations.Select(location => location.Id));
 
             if (nonExistentLocationIds.Any())
                 return Result.Error();
