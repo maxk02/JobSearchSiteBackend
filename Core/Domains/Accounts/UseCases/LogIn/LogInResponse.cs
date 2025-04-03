@@ -1,3 +1,5 @@
-﻿namespace Core.Domains.Accounts.UseCases.LogIn;
+﻿using Core.Domains.Accounts.Dtos;
 
-public record LogInResponse(string Token);
+namespace Core.Domains.Accounts.UseCases.LogIn;
+
+public record LogInResponse(AccountDataDto AccountData, string Token, string TokenId);

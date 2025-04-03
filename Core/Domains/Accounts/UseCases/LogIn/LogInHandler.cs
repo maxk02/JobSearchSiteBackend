@@ -4,12 +4,18 @@ using Core.Persistence.EfCore.EntityConfigs.AspNetCoreIdentity;
 using Core.Services.Auth;
 using Microsoft.AspNetCore.Identity;
 using Ardalis.Result;
+using AutoMapper;
+using AutoMapper.QueryableExtensions;
+using Core.Domains.Accounts.Dtos;
+using Core.Domains.Companies.Dtos;
+using Microsoft.EntityFrameworkCore;
 
 namespace Core.Domains.Accounts.UseCases.LogIn;
 
 public class LogInHandler(UserManager<MyIdentityUser> userManager,
     MainDataContext context,
-    IJwtGenerationService jwtGenerationService) 
+    IJwtGenerationService jwtGenerationService,
+    IMapper mapper) 
     : IRequestHandler<LogInRequest, Result<LogInResponse>>
 {
     public async Task<Result<LogInResponse>> Handle(LogInRequest request, CancellationToken cancellationToken = default)
@@ -33,11 +39,35 @@ public class LogInHandler(UserManager<MyIdentityUser> userManager,
         var token = jwtGenerationService.Generate(accountData, newTokenId);
         
         var newUserSession = new UserSession(newTokenId.ToString(), user.Id, DateTime.UtcNow,
-            DateTime.UtcNow.Add(TimeSpan.FromDays(30)), request.Device, request.Os, request.Client);
+            DateTime.UtcNow.Add(TimeSpan.FromDays(30)));
         
         context.UserSessions.Add(newUserSession);
         await context.SaveChangesAsync(cancellationToken);
 
-        return new LogInResponse(token);
+        var fullName = await context.UserProfiles
+            .Where(u => u.Id == user.Id)
+            .Select(u => $"{u.FirstName} {u.LastName}")
+            .SingleOrDefaultAsync(cancellationToken);
+        
+        var companyInfoDtos = await context.Companies
+            .Where(c => c.UserCompanyClaims!.Any(ucc => ucc.UserId == user.Id))
+            .Distinct()
+            .ProjectTo<CompanyInfoDto>(mapper.ConfigurationProvider)
+            .ToListAsync(cancellationToken);
+        
+        var companyInfoDtosFromFolders = await context.Companies
+            .Where(c => c.JobFolders!.Any(jf => jf.UserJobFolderClaims!.Any(ujfc => ujfc.UserId == user.Id)))
+            .Distinct()
+            .ProjectTo<CompanyInfoDto>(mapper.ConfigurationProvider)
+            .ToListAsync(cancellationToken);
+        
+        var combinedCompanyInfoDtos = companyInfoDtos
+            .Concat(companyInfoDtosFromFolders)
+            .DistinctBy(c => c.Id)
+            .ToList();
+
+        var accountDataDto = new AccountDataDto(user.Id, user.Email ?? "", fullName ?? "", combinedCompanyInfoDtos);
+
+        return new LogInResponse(accountDataDto, token, newTokenId.ToString());
     }
 }

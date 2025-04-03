@@ -1,4 +1,6 @@
-﻿using Ardalis.Result.AspNetCore;
+﻿using Ardalis.Result;
+using Ardalis.Result.AspNetCore;
+using AutoMapper;
 using Core.Domains.Accounts.UseCases.ChangePassword;
 using Core.Domains.Accounts.UseCases.ConfirmEmail;
 using Core.Domains.Accounts.UseCases.CreateAccount;
@@ -18,7 +20,7 @@ namespace API.Controllers.Account;
 [ApiController]
 [Route("api/account")]
 [Authorize]
-public class AccountController : ControllerBase
+public class AccountController(IMapper mapper) : ControllerBase
 {
     [HttpPost]
     [Route("/change-password")]
@@ -103,7 +105,22 @@ public class AccountController : ControllerBase
     {
         var result = await handler.Handle(request, cancellationToken);
         
-        return this.ToActionResult(result);
+        if (!result.IsSuccess)
+            return this.ToActionResult(result);
+        
+        Response.Cookies.Append("auth_token", result.Value.Token, new CookieOptions
+        {
+            HttpOnly = true,
+            Secure = true,
+            SameSite = SameSiteMode.None,
+            // Expires = DateTime.UtcNow.AddDays(30)
+        });
+        
+        var logInResponseDto = mapper.Map<LogInResponse>(result.Value);
+        
+        var newResultWithDto = Result.Success(logInResponseDto);
+        
+        return this.ToActionResult(newResultWithDto);
     }
     
     [HttpPost]
@@ -114,6 +131,8 @@ public class AccountController : ControllerBase
         CancellationToken cancellationToken)
     {
         var result = await handler.Handle(request, cancellationToken);
+
+        Response.Cookies.Delete("auth_token");
         
         return this.ToActionResult(result);
     }

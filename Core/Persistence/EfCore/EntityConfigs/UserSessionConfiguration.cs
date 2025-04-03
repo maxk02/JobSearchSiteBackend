@@ -8,12 +8,9 @@ public class UserSessionConfiguration : IEntityTypeConfiguration<UserSession>
 {
     public void Configure(EntityTypeBuilder<UserSession> builder)
     {
-        builder.HasKey(j => j.TokenId);
+        builder.HasKey(j => j.Token);
 
-        builder.Property(session => session.TokenId).HasMaxLength(50);
-        builder.Property(session => session.LastDevice).HasMaxLength(50);
-        builder.Property(session => session.LastOs).HasMaxLength(50);
-        builder.Property(session => session.LastClient).HasMaxLength(50);
+        builder.Property(session => session.Token).HasMaxLength(50);
 
         builder
             .HasOne(session => session.UserProfile)

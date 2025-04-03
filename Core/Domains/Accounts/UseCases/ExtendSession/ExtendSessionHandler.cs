@@ -22,8 +22,8 @@ public class ExtendSessionHandler(ICurrentAccountService currentAccountService,
         
         var newExpirationTimeUtc = session.ExpiresUtc.AddDays(30);
         
-        var newUserSession = new UserSession(session.TokenId, session.UserId, session.FirstTimeIssuedUtc,
-            newExpirationTimeUtc, session.LastDevice, session.LastOs, session.LastClient);
+        var newUserSession = new UserSession(session.Token, session.UserId,
+            session.FirstTimeIssuedUtc, newExpirationTimeUtc);
         
         context.UserSessions.Add(newUserSession);
         await context.SaveChangesAsync(cancellationToken);

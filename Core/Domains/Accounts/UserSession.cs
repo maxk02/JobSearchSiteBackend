@@ -6,31 +6,21 @@ namespace Core.Domains.Accounts;
 
 public class UserSession
 {
-    public UserSession(string tokenId, long userId, DateTime firstTimeIssuedUtc, DateTime expiresUtc,
-        string? lastDevice, string? lastOs, string? lastClient)
+    public UserSession(string token, long userId, DateTime firstTimeIssuedUtc, DateTime expiresUtc)
     {
-        TokenId = tokenId;
+        Token = token;
         UserId = userId;
         FirstTimeIssuedUtc = firstTimeIssuedUtc;
         ExpiresUtc = expiresUtc;
-        LastDevice = lastDevice;
-        LastOs = lastOs;
-        LastClient = lastClient;
     }
 
-    public string TokenId { get; private set; }
+    public string Token { get; private set; }
 
     public long UserId { get; private set; }
 
     public DateTime FirstTimeIssuedUtc { get; private set; }
 
     public DateTime ExpiresUtc { get; private set; }
-
-    public string? LastDevice { get; private set; }
-
-    public string? LastOs { get; private set; }
-
-    public string? LastClient { get; private set; }
 
     public UserProfile? UserProfile { get; private set; }
 }

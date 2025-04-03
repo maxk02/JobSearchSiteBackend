@@ -30,7 +30,8 @@ public class JwtGenerationService(IOptions<MyJwtSettings> settings) : IJwtGenera
             issuer: issuer,
             audience : audience,
             claims : claims,
-            signingCredentials: credentials);
+            signingCredentials: credentials,
+            notBefore: DateTime.UtcNow);
 
         return new JwtSecurityTokenHandler().WriteToken(tokenDescriptor);
     }
