@@ -1,6 +1,6 @@
 ﻿using Core.Domains._Shared.EntityInterfaces;
 using Core.Domains.Categories;
-using Core.Domains.EmploymentTypes;
+using Core.Domains.EmploymentOptions;
 using Core.Domains.JobApplications;
 using Core.Domains.JobContractTypes;
 using Core.Domains.JobFolders;
@@ -14,7 +14,7 @@ public class Job : IEntityWithId, IEntityWithRowVersioning
     public Job(long categoryId, long jobFolderId, string title, string description, bool isPublic,
         DateTime dateTimePublishedUtc,
         DateTime dateTimeExpiringUtc, ICollection<string> responsibilities, ICollection<string> requirements,
-        ICollection<string> niceToHaves, JobSalaryInfo? salaryInfo, ICollection<EmploymentType> employmentTypes)
+        ICollection<string> niceToHaves, JobSalaryInfo? salaryInfo, ICollection<EmploymentOption> employmentTypes)
     {
         CategoryId = categoryId;
         JobFolderId = jobFolderId;
@@ -66,7 +66,7 @@ public class Job : IEntityWithId, IEntityWithRowVersioning
 
     public JobSalaryInfo? SalaryInfo { get; set; }
 
-    public ICollection<EmploymentType>? EmploymentTypes { get; set; }
+    public ICollection<EmploymentOption>? EmploymentTypes { get; set; }
 
     public ICollection<string>? Responsibilities { get; set; }
 

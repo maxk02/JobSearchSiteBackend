@@ -12,17 +12,13 @@ public class JobFolderClaimIdCollectionValidator : AbstractValidator<ICollection
         {
             RuleFor(x => x).Must(x => JobFolderClaim.AllIds.All(x.Contains));
         });
-        When(x => x.Contains(JobFolderClaim.CanEditStats.Id), () =>
-        {
-            RuleFor(x => x).Must(x => x.Contains(JobFolderClaim.CanReadStats.Id));
-        });
         When(x => x.Contains(JobFolderClaim.CanManageApplications.Id), () =>
         {
-            RuleFor(x => x).Must(x => x.Contains(JobFolderClaim.CanReadJobsAndSubfolders.Id));
+            RuleFor(x => x).Must(x => x.Contains(JobFolderClaim.CanReadJobs.Id));
         });
-        When(x => x.Contains(JobFolderClaim.CanEditJobsAndSubfolders.Id), () =>
+        When(x => x.Contains(JobFolderClaim.CanEditJobs.Id), () =>
         {
-            RuleFor(x => x).Must(x => x.Contains(JobFolderClaim.CanReadJobsAndSubfolders.Id));
+            RuleFor(x => x).Must(x => x.Contains(JobFolderClaim.CanReadJobs.Id));
         });
     }
 }

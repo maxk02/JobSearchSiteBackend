@@ -12,9 +12,5 @@ public class CompanyClaimIdCollectionValidator : AbstractValidator<ICollection<l
         {
             RuleFor(x => x).Must(x => CompanyClaim.AllIds.All(x.Contains));
         });
-        When(x => x.Contains(CompanyClaim.CanEditStats.Id), () =>
-        {
-            RuleFor(x => x).Must(x => x.Contains(CompanyClaim.CanReadStats.Id));
-        });
     }
 }

@@ -9,7 +9,7 @@ using Core.Services.Auth;
 using Core.Services.BackgroundJobs;
 using Microsoft.EntityFrameworkCore;
 using Ardalis.Result;
-using Core.Domains.EmploymentTypes;
+using Core.Domains.EmploymentOptions;
 
 namespace Core.Domains.Jobs.UseCases.AddJob;
 
@@ -29,7 +29,7 @@ public class AddJobHandler(
             request.JobSalaryInfoDto is not null ? new JobSalaryInfo(0, request.JobSalaryInfoDto.Minimum, request.JobSalaryInfoDto.Maximum,
                 request.JobSalaryInfoDto.CurrencyCode, request.JobSalaryInfoDto.UnitOfTime,
                 request.JobSalaryInfoDto.IsAfterTaxes) : null,
-            EmploymentType.AllValues.Where(x => request.EmploymentTypeIds.Contains(x.Id)).ToList());
+            EmploymentOption.AllValues.Where(x => request.EmploymentTypeIds.Contains(x.Id)).ToList());
 
         var validator = new JobValidator();
 
@@ -55,7 +55,7 @@ public class AddJobHandler(
         var hasPermissionInRequestedFolderOrAncestors =
             await context.JobFolderRelations
                 .GetThisOrAncestorWhereUserHasClaim(request.JobFolderId, currentUserId,
-                    JobFolderClaim.CanEditJobsAndSubfolders.Id)
+                    JobFolderClaim.CanEditJobs.Id)
                 .AnyAsync(cancellationToken);
 
         if (!hasPermissionInRequestedFolderOrAncestors)

@@ -14,15 +14,15 @@ public class Category : IEntityWithId
     
     public static readonly ImmutableArray<long> AllIds = [..AllValues.Select(category => category.Id)];
 
-    private Category(long id, string nameEng)
+    private Category(long id, string namePl)
     {
         Id = id;
-        NameEng = nameEng;
+        NamePl = namePl;
     }
     
     public long Id { get; }
     
-    public string NameEng { get; private set; }
+    public string NamePl { get; private set; }
     
     public ICollection<Job>? Jobs { get; set; }
     // public ICollection<Cv>? Cvs { get; set; }

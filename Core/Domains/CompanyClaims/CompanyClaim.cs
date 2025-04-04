@@ -9,10 +9,8 @@ public class CompanyClaim : IEntityWithId, IClaimEntity
     [
         new CompanyClaim(1, nameof(IsOwner)),
         new CompanyClaim(2, nameof(IsAdmin)),
-        new CompanyClaim(3, nameof(CanEditStats)),
-        new CompanyClaim(4, nameof(CanReadStats)),
-        new CompanyClaim(5, nameof(CanEditProfile)),
-        new CompanyClaim(6, nameof(CanEditNewsfeed))
+        new CompanyClaim(3, nameof(CanReadStats)),
+        new CompanyClaim(4, nameof(CanEditProfile))
     ];
     
     public static readonly ImmutableArray<long> AllIds = [..AllValues.Select(permission => permission.Id)];
@@ -21,13 +19,9 @@ public class CompanyClaim : IEntityWithId, IClaimEntity
 
     public static readonly CompanyClaim IsAdmin = AllValues.First(permission => permission.Name == nameof(IsAdmin));
 
-    public static readonly CompanyClaim CanEditStats = AllValues.First(permission => permission.Name == nameof(CanEditStats));
-
     public static readonly CompanyClaim CanReadStats = AllValues.First(permission => permission.Name == nameof(CanReadStats));
 
     public static readonly CompanyClaim CanEditProfile = AllValues.First(permission => permission.Name == nameof(CanEditProfile));
-
-    public static readonly CompanyClaim CanEditNewsfeed = AllValues.First(permission => permission.Name == nameof(CanEditNewsfeed));
     
     public long Id { get; private set; }
     public string Name { get; private set; }

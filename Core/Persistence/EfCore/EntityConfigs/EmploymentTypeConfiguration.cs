@@ -1,16 +1,16 @@
-﻿using Core.Domains.EmploymentTypes;
+﻿using Core.Domains.EmploymentOptions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Core.Persistence.EfCore.EntityConfigs;
 
-public class EmploymentTypeConfiguration : IEntityTypeConfiguration<EmploymentType>
+public class EmploymentTypeConfiguration : IEntityTypeConfiguration<EmploymentOption>
 {
-    public void Configure(EntityTypeBuilder<EmploymentType> builder)
+    public void Configure(EntityTypeBuilder<EmploymentOption> builder)
     {
         builder.HasKey(employmentType => employmentType.Id);
         
-        builder.HasIndex(employmentType => employmentType.NameEng).IsUnique();
+        builder.HasIndex(employmentType => employmentType.NamePl).IsUnique();
 
         builder
             .HasMany(employmentType => employmentType.Jobs)

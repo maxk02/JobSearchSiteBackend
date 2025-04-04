@@ -20,7 +20,7 @@ public class DeleteJobFolderHandler(ICurrentAccountService currentAccountService
         
         var hasEditClaim = await context.JobFolderRelations
             .GetThisOrAncestorWhereUserHasClaim(request.Id, currentUserId,
-                JobFolderClaim.CanEditJobsAndSubfolders.Id)
+                JobFolderClaim.CanEditJobs.Id)
             .AnyAsync(cancellationToken);
 
         if (!hasEditClaim)

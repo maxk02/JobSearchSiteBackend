@@ -33,7 +33,7 @@ public class DeleteJobHandler(
         var hasPermissionInCurrentFolderOrAncestors =
             await context.JobFolderRelations
                 .GetThisOrAncestorWhereUserHasClaim(job.JobFolderId, currentUserId,
-                    JobFolderClaim.CanEditJobsAndSubfolders.Id)
+                    JobFolderClaim.CanEditJobs.Id)
                 .AnyAsync(cancellationToken);
 
         if (!hasPermissionInCurrentFolderOrAncestors)

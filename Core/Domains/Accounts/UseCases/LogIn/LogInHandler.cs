@@ -20,43 +20,46 @@ public class LogInHandler(UserManager<MyIdentityUser> userManager,
 {
     public async Task<Result<LogInResponse>> Handle(LogInRequest request, CancellationToken cancellationToken = default)
     {
-        var user = await userManager.FindByEmailAsync(request.Email);
+        var account = await userManager.FindByEmailAsync(request.Email);
 
-        if (user is null)
+        if (account is null)
             return Result<LogInResponse>.NotFound();
 
-        var isPasswordCorrect = await userManager.CheckPasswordAsync(user, request.Password);
+        var isPasswordCorrect = await userManager.CheckPasswordAsync(account, request.Password);
 
         if (!isPasswordCorrect)
             return Result<LogInResponse>.Unauthorized();
 
-        var roles = await userManager.GetRolesAsync(user);
+        var roles = await userManager.GetRolesAsync(account);
 
-        var accountData = new AccountData(user.Id, roles);
+        var accountData = new AccountData(account.Id, roles);
         
         var newTokenId = Guid.NewGuid();
         
         var token = jwtGenerationService.Generate(accountData, newTokenId);
         
-        var newUserSession = new UserSession(newTokenId.ToString(), user.Id, DateTime.UtcNow,
+        var newUserSession = new UserSession(newTokenId.ToString(), account.Id, DateTime.UtcNow,
             DateTime.UtcNow.Add(TimeSpan.FromDays(30)));
         
         context.UserSessions.Add(newUserSession);
         await context.SaveChangesAsync(cancellationToken);
 
-        var fullName = await context.UserProfiles
-            .Where(u => u.Id == user.Id)
-            .Select(u => $"{u.FirstName} {u.LastName}")
+        var userProfileData = await context.UserProfiles
+            .Where(u => u.Id == account.Id)
+            .Select(u => new { u.FirstName, u.LastName, u.AvatarLink })
             .SingleOrDefaultAsync(cancellationToken);
+
+        var fullName = userProfileData is not null ? $"{userProfileData.FirstName} {userProfileData.LastName}" : null;
+        var avatarLink = userProfileData?.AvatarLink;
         
         var companyInfoDtos = await context.Companies
-            .Where(c => c.UserCompanyClaims!.Any(ucc => ucc.UserId == user.Id))
+            .Where(c => c.UserCompanyClaims!.Any(ucc => ucc.UserId == account.Id))
             .Distinct()
             .ProjectTo<CompanyInfoDto>(mapper.ConfigurationProvider)
             .ToListAsync(cancellationToken);
         
         var companyInfoDtosFromFolders = await context.Companies
-            .Where(c => c.JobFolders!.Any(jf => jf.UserJobFolderClaims!.Any(ujfc => ujfc.UserId == user.Id)))
+            .Where(c => c.JobFolders!.Any(jf => jf.UserJobFolderClaims!.Any(ujfc => ujfc.UserId == account.Id)))
             .Distinct()
             .ProjectTo<CompanyInfoDto>(mapper.ConfigurationProvider)
             .ToListAsync(cancellationToken);
@@ -66,7 +69,7 @@ public class LogInHandler(UserManager<MyIdentityUser> userManager,
             .DistinctBy(c => c.Id)
             .ToList();
 
-        var accountDataDto = new AccountDataDto(user.Id, user.Email ?? "", fullName ?? "", combinedCompanyInfoDtos);
+        var accountDataDto = new AccountDataDto(account.Id, request.Email, fullName, avatarLink, combinedCompanyInfoDtos);
 
         return new LogInResponse(accountDataDto, token, newTokenId.ToString());
     }

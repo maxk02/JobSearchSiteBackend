@@ -26,7 +26,7 @@ public class GetJobsHandler(
 
         var hasReadClaim = await context.JobFolderRelations
             .GetThisOrAncestorWhereUserHasClaim(request.Id, currentUserId,
-                JobFolderClaim.CanReadJobsAndSubfolders.Id)
+                JobFolderClaim.CanReadJobs.Id)
             .AnyAsync(cancellationToken);
 
         if (!hasReadClaim)

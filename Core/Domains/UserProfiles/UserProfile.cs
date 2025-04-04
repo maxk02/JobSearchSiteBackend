@@ -13,7 +13,7 @@ namespace Core.Domains.UserProfiles;
 public class UserProfile : IEntityWithId
 {
     public UserProfile(long accountId, string firstName, string? middleName, string lastName,
-        DateOnly? dateOfBirth, string email, string? phone)
+        DateOnly? dateOfBirth, string email, string? phone, string? avatarLink = null)
     {
         Id = accountId;
         FirstName = firstName;
@@ -22,17 +22,7 @@ public class UserProfile : IEntityWithId
         DateOfBirth = dateOfBirth;
         Email = email;
         Phone = phone;
-    }
-    
-    // ef core
-    private UserProfile(string firstName, string? middleName, string lastName,
-        DateOnly? dateOfBirth, string email)
-    {
-        FirstName = firstName;
-        MiddleName = middleName;
-        LastName = lastName;
-        DateOfBirth = dateOfBirth;
-        Email = email;
+        AvatarLink = avatarLink;
     }
     
     public long Id { get; private set; }
@@ -49,9 +39,10 @@ public class UserProfile : IEntityWithId
     
     public string? Phone { get; set; }
     
+    public string? AvatarLink { get; set; }
+    
     
     public ICollection<PersonalFile>? PersonalFiles { get; set; }
-    // public ICollection<Cv>? Cvs { get; set; }
     
     public ICollection<JobApplication>? JobApplications { get; set; }
     public ICollection<Job>? BookmarkedJobs { get; set; }

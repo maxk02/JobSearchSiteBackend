@@ -8,7 +8,7 @@ public class JobContractTypeValidator : AbstractValidator<JobContractType>
 {
     public JobContractTypeValidator()
     {
-        RuleFor(x => x.Name).Length(1, 50)
+        RuleFor(x => x.NamePl).Length(1, 50)
             .WhitelistPolicy(new WhitelistPolicy().Letters().Digits().Spaces().Symbols().Punctuation());
     }
 }

@@ -10,7 +10,7 @@ using Core.Services.BackgroundJobs;
 using Microsoft.EntityFrameworkCore;
 using Ardalis.Result;
 using AutoMapper;
-using Core.Domains.EmploymentTypes;
+using Core.Domains.EmploymentOptions;
 
 namespace Core.Domains.Jobs.UseCases.UpdateJob;
 
@@ -40,7 +40,7 @@ public class UpdateJobHandler(
         var hasPermissionInCurrentFolderOrAncestors =
             await context.JobFolderRelations
                 .GetThisOrAncestorWhereUserHasClaim(job.JobFolderId, currentUserId,
-                    JobFolderClaim.CanEditJobsAndSubfolders.Id)
+                    JobFolderClaim.CanEditJobs.Id)
                 .AnyAsync(cancellationToken);
 
         if (!hasPermissionInCurrentFolderOrAncestors)
@@ -59,7 +59,7 @@ public class UpdateJobHandler(
             var hasPermissionInRequestedFolderOrAncestors =
                 await context.JobFolderRelations
                     .GetThisOrAncestorWhereUserHasClaim(request.JobFolderId.Value, currentUserId,
-                        JobFolderClaim.CanEditJobsAndSubfolders.Id)
+                        JobFolderClaim.CanEditJobs.Id)
                     .AnyAsync(cancellationToken);
 
             if (!hasPermissionInRequestedFolderOrAncestors)
@@ -109,7 +109,7 @@ public class UpdateJobHandler(
         
         if (request.EmploymentTypeIds is not null)
         {
-            var employmentTypes = EmploymentType.AllValues
+            var employmentTypes = EmploymentOption.AllValues
                 .Where(employmentType => request.EmploymentTypeIds.Contains(employmentType.Id))
                 .ToList();
 

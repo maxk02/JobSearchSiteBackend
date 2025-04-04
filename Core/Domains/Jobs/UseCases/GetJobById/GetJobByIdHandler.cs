@@ -44,7 +44,7 @@ public class GetJobByIdHandler(
 
             var canEdit = await context.JobFolderRelations
                 .GetThisOrAncestorWhereUserHasClaim(job.JobFolderId, currentUserId.Value,
-                    JobFolderClaim.CanEditJobsAndSubfolders.Id)
+                    JobFolderClaim.CanEditJobs.Id)
                 .AnyAsync(cancellationToken);
 
             if (!canEdit)

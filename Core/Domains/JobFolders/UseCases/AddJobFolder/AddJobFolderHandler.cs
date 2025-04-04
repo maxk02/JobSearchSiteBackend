@@ -19,7 +19,7 @@ public class AddJobFolderHandler(
             .GetClaimIdsForThisAndAncestors(request.ParentId, currentUserId)
             .ToListAsync(cancellationToken);
 
-        if (!currentUserClaimIdsForParentAndAncestors.Contains(JobFolderClaim.CanEditJobsAndSubfolders.Id))
+        if (!currentUserClaimIdsForParentAndAncestors.Contains(JobFolderClaim.CanEditJobs.Id))
             return Result<long>.Forbidden();
 
         var parentFolderCompanyId = await context.JobFolders
