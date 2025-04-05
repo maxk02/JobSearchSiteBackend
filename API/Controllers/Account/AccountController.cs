@@ -108,14 +108,6 @@ public class AccountController(IMapper mapper) : ControllerBase
         if (!result.IsSuccess)
             return this.ToActionResult(result);
         
-        Response.Cookies.Append("auth_token", result.Value.Token, new CookieOptions
-        {
-            HttpOnly = true,
-            Secure = true,
-            SameSite = SameSiteMode.None,
-            // Expires = DateTime.UtcNow.AddDays(30)
-        });
-        
         var logInResponseDto = mapper.Map<LogInResponse>(result.Value);
         
         var newResultWithDto = Result.Success(logInResponseDto);
@@ -131,8 +123,6 @@ public class AccountController(IMapper mapper) : ControllerBase
         CancellationToken cancellationToken)
     {
         var result = await handler.Handle(request, cancellationToken);
-
-        Response.Cookies.Delete("auth_token");
         
         return this.ToActionResult(result);
     }

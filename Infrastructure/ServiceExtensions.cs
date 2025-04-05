@@ -4,12 +4,14 @@ using Core.Domains.Jobs.Search;
 using Core.Domains.Locations.Search;
 using Core.Domains.PersonalFiles.Search;
 using Core.Services.BackgroundJobs;
+using Core.Services.Caching;
 using Core.Services.EmailSender;
 using Core.Services.FileStorage;
 using Core.Services.TextExtraction;
 using Elasticsearch.Net;
 using Hangfire;
 using Infrastructure.BackgroundJobs.Hangfire;
+using Infrastructure.Caching;
 using Infrastructure.EmailSender.MailKit;
 using Infrastructure.FileStorage.AmazonS3;
 using Infrastructure.Search.Elasticsearch;
@@ -22,7 +24,7 @@ namespace Infrastructure;
 
 public static class ServiceExtensions
 {
-    public static void ConfigureAmazonS3(this IServiceCollection serviceCollection, IConfiguration configuration)
+    public static void ConfigureFileStorage(this IServiceCollection serviceCollection, IConfiguration configuration)
     {
         var bucketName = configuration["AWS:BucketName"];
         
@@ -37,7 +39,7 @@ public static class ServiceExtensions
             new AmazonS3FileStorageService(provider.GetRequiredService<IAmazonS3>(), bucketName));
     }
     
-    public static void ConfigureElasticSearch(this IServiceCollection serviceCollection, IConfiguration configuration)
+    public static void ConfigureSearch(this IServiceCollection serviceCollection, IConfiguration configuration)
     {
         serviceCollection.AddSingleton<IElasticClient>(provider =>
         {
@@ -58,7 +60,6 @@ public static class ServiceExtensions
         });
 
         serviceCollection.AddSingleton<ICompanySearchRepository, ElasticCompanySearchRepository>();
-        // serviceCollection.AddSingleton<ICvSearchRepository, ElasticCvSearchRepository>();
         serviceCollection.AddSingleton<IJobSearchRepository, ElasticJobSearchRepository>();
         serviceCollection.AddSingleton<ILocationSearchRepository, ElasticLocationSearchRepository>();
         serviceCollection.AddSingleton<IPersonalFileSearchRepository, ElasticPersonalFileSearchRepository>();
@@ -69,7 +70,7 @@ public static class ServiceExtensions
         serviceCollection.AddSingleton<ITextExtractionService, TextExtractionService>();
     }
     
-    public static void ConfigureHangfire(this IServiceCollection serviceCollection)
+    public static void ConfigureBackgroundJobScheduler(this IServiceCollection serviceCollection)
     {
         serviceCollection.AddHangfire(config =>
             config.UseSqlServerStorage(Environment.GetEnvironmentVariable("MAIN_DB_CONNECTION_STRING")));
@@ -80,8 +81,13 @@ public static class ServiceExtensions
         serviceCollection.AddSingleton<IBackgroundJobService, HangfireBackgroundJobService>();
     }
 
-    public static void ConfigureMailKit(this IServiceCollection serviceCollection)
+    public static void ConfigureEmailSender(this IServiceCollection serviceCollection)
     {
         serviceCollection.AddTransient<IEmailSenderService, MailKitEmailSenderService>();
+    }
+    
+    public static void ConfigureMemoryCache(this IServiceCollection serviceCollection)
+    {
+        serviceCollection.AddSingleton(typeof(ICache<,>), typeof(MemoryCache<,>));
     }
 }

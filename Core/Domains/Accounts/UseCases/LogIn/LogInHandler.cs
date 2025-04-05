@@ -8,6 +8,8 @@ using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using Core.Domains.Accounts.Dtos;
 using Core.Domains.Companies.Dtos;
+using Core.Services.Caching;
+using Core.Services.Cookies;
 using Microsoft.EntityFrameworkCore;
 
 namespace Core.Domains.Accounts.UseCases.LogIn;
@@ -15,11 +17,19 @@ namespace Core.Domains.Accounts.UseCases.LogIn;
 public class LogInHandler(UserManager<MyIdentityUser> userManager,
     MainDataContext context,
     IJwtGenerationService jwtGenerationService,
-    IMapper mapper) 
+    IMapper mapper,
+    ICache<string, UserSession> sessionCache,
+    ICurrentAccountService currentAccountService,
+    ICookieService cookieService) 
     : IRequestHandler<LogInRequest, Result<LogInResponse>>
 {
     public async Task<Result<LogInResponse>> Handle(LogInRequest request, CancellationToken cancellationToken = default)
     {
+        if (currentAccountService.IsLoggedIn())
+        {
+            return Result.Forbidden();
+        }
+        
         var account = await userManager.FindByEmailAsync(request.Email);
 
         if (account is null)
@@ -29,20 +39,11 @@ public class LogInHandler(UserManager<MyIdentityUser> userManager,
 
         if (!isPasswordCorrect)
             return Result<LogInResponse>.Unauthorized();
-
-        var roles = await userManager.GetRolesAsync(account);
-
-        var accountData = new AccountData(account.Id, roles);
         
-        var newTokenId = Guid.NewGuid();
+        var isEmailConfirmed = await userManager.IsEmailConfirmedAsync(account);
         
-        var token = jwtGenerationService.Generate(accountData, newTokenId);
-        
-        var newUserSession = new UserSession(newTokenId.ToString(), account.Id, DateTime.UtcNow,
-            DateTime.UtcNow.Add(TimeSpan.FromDays(30)));
-        
-        context.UserSessions.Add(newUserSession);
-        await context.SaveChangesAsync(cancellationToken);
+        if (!isEmailConfirmed)
+            return Result<LogInResponse>.Unauthorized();
 
         var userProfileData = await context.UserProfiles
             .Where(u => u.Id == account.Id)
@@ -68,8 +69,32 @@ public class LogInHandler(UserManager<MyIdentityUser> userManager,
             .Concat(companyInfoDtosFromFolders)
             .DistinctBy(c => c.Id)
             .ToList();
-
+        
         var accountDataDto = new AccountDataDto(account.Id, request.Email, fullName, avatarLink, combinedCompanyInfoDtos);
+        
+        
+        // token generation + session adding
+        
+        var roles = await userManager.GetRolesAsync(account);
+
+        var accountData = new AccountData(account.Id, roles);
+        
+        var newTokenId = Guid.NewGuid();
+        
+        var token = jwtGenerationService.Generate(accountData, newTokenId);
+        
+        var newUserSession = new UserSession(newTokenId.ToString(), account.Id, DateTime.UtcNow,
+            DateTime.UtcNow.Add(TimeSpan.FromDays(30)));
+        
+        context.UserSessions.Add(newUserSession);
+        await context.SaveChangesAsync(cancellationToken);
+        
+        cookieService.SetAuthCookie(newTokenId.ToString());
+        
+        await sessionCache.SetAsync($"user_session_{newTokenId}", newUserSession, new CacheEntryOptions
+        {
+            AbsoluteExpiration = new DateTimeOffset(newUserSession.ExpiresUtc, TimeSpan.Zero),
+        });
 
         return new LogInResponse(accountDataDto, token, newTokenId.ToString());
     }

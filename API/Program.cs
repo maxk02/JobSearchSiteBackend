@@ -1,7 +1,7 @@
 using System.Reflection;
 using System.Text.Json.Serialization;
-using API.Middleware.Auth;
-using API.Services.Auth;
+using API.Middleware;
+using API.Services;
 using Core;
 using Core.Domains.Accounts;
 using Core.Domains.Companies;
@@ -15,6 +15,7 @@ using Core.Domains.Locations;
 using Core.Domains.PersonalFiles;
 using Core.Domains.UserProfiles;
 using Core.Services.Auth;
+using Core.Services.Cookies;
 using DotNetEnv;
 using Infrastructure;
 using Shared.MyAppSettings;
@@ -41,6 +42,25 @@ builder.Services.AddControllers()
         options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
     });
 
+builder.Services.AddAntiforgery(options =>
+{
+    options.HeaderName = "X-CSRF-TOKEN";
+});
+
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowNextJs", policyBuilder =>
+    {
+        policyBuilder
+            .WithOrigins("http://localhost:3000")
+            .AllowAnyMethod()
+            .AllowAnyHeader()
+            .AllowCredentials();
+    });
+});
+
+builder.Services.AddHttpContextAccessor();
+
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
 
@@ -49,18 +69,20 @@ builder.Services.AddMemoryCache(options =>
     options.SizeLimit = 2048; // "MB"
 });
 
+builder.Services.AddScoped<ICookieService, CookieService>();
 builder.Services.AddScoped<ICurrentAccountService, JwtCurrentAccountService>();
 builder.Services.ConfigureJwtAuthentication(builder.Configuration);
 builder.Services.ConfigureJwtGenerationService();
-builder.Services.ConfigurePersistenceWithIdentity(builder.Configuration);
 
 builder.Services.ConfigureAutoMapper();
 builder.Services.AddAutoMapper(Assembly.GetExecutingAssembly());
 
-builder.Services.ConfigureHangfire();
-builder.Services.ConfigureAmazonS3(builder.Configuration);
-builder.Services.ConfigureMailKit();
-builder.Services.ConfigureElasticSearch(builder.Configuration);
+builder.Services.ConfigurePersistenceWithIdentity(builder.Configuration);
+builder.Services.ConfigureMemoryCache();
+builder.Services.ConfigureBackgroundJobScheduler();
+builder.Services.ConfigureFileStorage(builder.Configuration);
+builder.Services.ConfigureEmailSender();
+builder.Services.ConfigureSearch(builder.Configuration);
 builder.Services.ConfigureTextExtraction();
 
 builder.Services.ConfigureAccountUseCases();
@@ -90,10 +112,17 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
+app.UseCors("AllowNextJs");
+
+// app.UseRouting();
+
+app.UseMiddleware<CsrfProtectionMiddleware>();
+
 app.UseAuthentication();
-app.UseAuthorization();
 
 app.UseMiddleware<CheckUserTokenMiddleware>();
+
+app.UseAuthorization();
 
 app.MapControllers();
 

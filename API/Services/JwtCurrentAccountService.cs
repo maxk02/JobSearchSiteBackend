@@ -3,7 +3,7 @@ using System.Security.Claims;
 using Core.Services.Auth;
 using Core.Services.Auth.Exceptions;
 
-namespace API.Services.Auth;
+namespace API.Services;
 
 public class JwtCurrentAccountService(IHttpContextAccessor httpContextAccessor) : ICurrentAccountService
 {
