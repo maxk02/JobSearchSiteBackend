@@ -5,6 +5,6 @@ namespace Core.Domains.Jobs.Dtos;
 public record JobSalaryInfoDto(
     decimal? Minimum,
     decimal? Maximum,
-    string CurrencyCode,
+    Currency Currency,
     UnitOfTime UnitOfTime,
     bool? IsAfterTaxes);

@@ -6,6 +6,6 @@ public class JobSalaryInfoDtoMapper : Profile
 {
     public JobSalaryInfoDtoMapper()
     {
-        CreateMap<JobSalaryInfo, JobSalaryInfoDto>();
+        CreateMap<JobSalaryInfo, JobSalaryInfoDto>().ReverseMap();
     }
 }

@@ -54,8 +54,8 @@ public class GetJobsHandler(
         // list with logo links
         var companyLogoLinks = jobs.Select(x => x.Id).Select(x => "").ToList();
 
-        var paginationResponse = new PaginationResponse(count, request.PaginationSpec.PageNumber,
-            request.PaginationSpec.PageSize);
+        var paginationResponse = new PaginationResponse(request.PaginationSpec.PageNumber,
+            request.PaginationSpec.PageSize, count);
 
         var jobCardDtos = jobs
             .Select((x, i) =>

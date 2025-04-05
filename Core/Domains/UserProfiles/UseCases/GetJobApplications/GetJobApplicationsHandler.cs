@@ -36,8 +36,8 @@ public class GetJobApplicationsHandler(
             .ProjectTo<JobApplicationInUserProfileDto>(mapper.ConfigurationProvider)
             .ToListAsync(cancellationToken);
         
-        var paginationResponse = new PaginationResponse(count, request.PaginationSpec.PageNumber,
-            request.PaginationSpec.PageSize);
+        var paginationResponse = new PaginationResponse(request.PaginationSpec.PageNumber,
+            request.PaginationSpec.PageSize, count);
 
         var response = new GetJobApplicationsResponse(jobApplicationDtos, paginationResponse);
 

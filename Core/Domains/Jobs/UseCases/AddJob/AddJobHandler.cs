@@ -9,6 +9,7 @@ using Core.Services.Auth;
 using Core.Services.BackgroundJobs;
 using Microsoft.EntityFrameworkCore;
 using Ardalis.Result;
+using AutoMapper;
 using Core.Domains.EmploymentOptions;
 
 namespace Core.Domains.Jobs.UseCases.AddJob;
@@ -17,18 +18,25 @@ public class AddJobHandler(
     ICurrentAccountService currentAccountService,
     IJobSearchRepository jobSearchRepository,
     IBackgroundJobService backgroundJobService,
-    MainDataContext context) : IRequestHandler<AddJobRequest, Result>
+    MainDataContext context,
+    IMapper mapper) : IRequestHandler<AddJobRequest, Result>
 {
     public async Task<Result> Handle(AddJobRequest request, CancellationToken cancellationToken = default)
     {
         var currentUserId = currentAccountService.GetIdOrThrow();
-
-        var job = new Job(request.CategoryId, request.JobFolderId, request.Title, request.Description, request.IsPublic,
-            DateTime.UtcNow, DateTime.UtcNow.AddDays(30), request.Responsibilities, request.Requirements,
-            request.Advantages,
-            request.JobSalaryInfoDto is not null ? new JobSalaryInfo(0, request.JobSalaryInfoDto.Minimum, request.JobSalaryInfoDto.Maximum,
-                request.JobSalaryInfoDto.CurrencyCode, request.JobSalaryInfoDto.UnitOfTime,
-                request.JobSalaryInfoDto.IsAfterTaxes) : null,
+        
+        var job = new Job(
+            request.CategoryId,
+            request.JobFolderId,
+            request.Title,
+            request.Description,
+            request.IsPublic,
+            DateTime.UtcNow,
+            DateTime.UtcNow.AddDays(30),
+            request.Responsibilities,
+            request.Requirements,
+            request.NiceToHaves,
+            mapper.Map<JobSalaryInfo>(request.JobSalaryInfoDto),
             EmploymentOption.AllValues.Where(x => request.EmploymentTypeIds.Contains(x.Id)).ToList());
 
         var validator = new JobValidator();

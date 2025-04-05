@@ -11,4 +11,5 @@ public record JobCardDto(
     DateTime DateTimePublishedUtc,
     DateTime DateTimeExpiringUtc,
     JobSalaryInfoDto? SalaryInfo,
-    ICollection<long>? EmploymentTypeIds);
+    ICollection<long>? EmploymentTypeIds,
+    ICollection<long>? ContractTypeIds);

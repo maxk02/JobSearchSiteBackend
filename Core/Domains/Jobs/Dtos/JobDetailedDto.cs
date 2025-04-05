@@ -16,4 +16,5 @@ public record JobDetailedDto(
     ICollection<string> Requirements,
     ICollection<string> NiceToHaves,
     JobSalaryInfoDto? SalaryInfo,
-    ICollection<long>? EmploymentTypeIds);
+    ICollection<long>? EmploymentTypeIds,
+    ICollection<long>? ContractTypeIds);

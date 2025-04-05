@@ -13,7 +13,7 @@ public record AddJobRequest(
     DateTime DateTimeExpiringUtc,
     ICollection<string> Responsibilities,
     ICollection<string> Requirements,
-    ICollection<string> Advantages,
+    ICollection<string> NiceToHaves,
     JobSalaryInfoDto? JobSalaryInfoDto,
     ICollection<long> EmploymentTypeIds,
     ICollection<long> ContractTypeIds,
