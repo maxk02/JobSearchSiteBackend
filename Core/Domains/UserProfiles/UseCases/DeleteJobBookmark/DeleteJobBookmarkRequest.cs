@@ -3,4 +3,4 @@ using Ardalis.Result;
 
 namespace Core.Domains.UserProfiles.UseCases.DeleteJobBookmark;
 
-public record DeleteJobBookmarkRequest(long UserId, long JobId) : IRequest<Result>;
+public record DeleteJobBookmarkRequest(long JobId) : IRequest<Result>;

@@ -4,5 +4,5 @@ using Ardalis.Result;
 
 namespace Core.Domains.UserProfiles.UseCases.GetBookmarkedJobs;
 
-public record GetBookmarkedJobsRequest(long UserId, PaginationSpec PaginationSpec) 
+public record GetBookmarkedJobsRequest(PaginationSpec PaginationSpec) 
     : IRequest<Result<GetBookmarkedJobsResponse>>;

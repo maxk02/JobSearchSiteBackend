@@ -13,12 +13,9 @@ public class DeleteJobBookmarkHandler(ICurrentAccountService currentAccountServi
     {
         var currentAccountId = currentAccountService.GetIdOrThrow();
 
-        if (currentAccountId != request.UserId)
-            return Result.Forbidden();
-
         var user = await context.UserProfiles
             .Include(u => u.BookmarkedCompanies)
-            .FirstOrDefaultAsync(u => u.Id == request.UserId, cancellationToken);
+            .FirstOrDefaultAsync(u => u.Id == currentAccountId, cancellationToken);
 
         if (user is null)
             return Result.Error();

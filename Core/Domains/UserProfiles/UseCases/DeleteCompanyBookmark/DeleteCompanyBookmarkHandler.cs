@@ -13,9 +13,6 @@ public class DeleteCompanyBookmarkHandler(ICurrentAccountService currentAccountS
     {
         var currentAccountId = currentAccountService.GetIdOrThrow();
 
-        if (currentAccountId != request.UserId)
-            return Result.Forbidden();
-
         var user = await context.UserProfiles
             .Include(u => u.BookmarkedCompanies)
             .FirstOrDefaultAsync(u => u.Id == currentAccountId, cancellationToken);

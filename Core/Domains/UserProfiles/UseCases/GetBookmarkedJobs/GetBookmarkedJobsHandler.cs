@@ -22,13 +22,10 @@ public class GetBookmarkedJobsHandler(
     {
         var currentAccountId = currentAccountService.GetIdOrThrow();
 
-        if (currentAccountId != request.UserId)
-            return Result<GetBookmarkedJobsResponse>.Forbidden();
-
         var query = context.UserProfiles
             .Include(u => u.BookmarkedJobs)!
             .ThenInclude(job => job.JobFolder)
-            .Where(u => u.Id == request.UserId)
+            .Where(u => u.Id == currentAccountId)
             .SelectMany(u => u.BookmarkedJobs ?? new List<Job>());
 
         var count = await query.CountAsync(cancellationToken);

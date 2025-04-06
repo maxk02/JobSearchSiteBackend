@@ -20,12 +20,9 @@ public class GetPersonalFilesHandler(
         CancellationToken cancellationToken)
     {
         var currentAccountId = currentAccountService.GetIdOrThrow();
-        
-        if (currentAccountId != request.Id)
-            return Result<GetPersonalFilesResponse>.Forbidden();
 
         var query = context.PersonalFiles
-            .Where(pf => pf.UserId == request.Id);
+            .Where(pf => pf.UserId == currentAccountId);
         
         var count = await query.CountAsync(cancellationToken);
         

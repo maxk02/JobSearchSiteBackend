@@ -21,9 +21,6 @@ public class GetJobApplicationsHandler(
     {
         var currentAccountId = currentAccountService.GetIdOrThrow();
 
-        if (currentAccountId != request.Id)
-            return Result<GetJobApplicationsResponse>.Forbidden();
-
         var query = context.JobApplications
             .AsNoTracking()
             .Where(jobApplication => jobApplication.UserId == currentAccountId);

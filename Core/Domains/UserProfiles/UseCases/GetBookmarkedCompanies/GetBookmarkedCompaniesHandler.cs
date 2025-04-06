@@ -21,9 +21,6 @@ public class GetBookmarkedCompaniesHandler(
         CancellationToken cancellationToken)
     {
         var currentAccountId = currentAccountService.GetIdOrThrow();
-        
-        if (currentAccountId != request.UserId)
-            return Result<GetBookmarkedCompaniesResponse>.Forbidden();
 
         var query = context.UserProfiles
             .Include(u => u.BookmarkedCompanies)

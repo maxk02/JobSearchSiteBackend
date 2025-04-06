@@ -3,4 +3,4 @@ using Ardalis.Result;
 
 namespace Core.Domains.UserProfiles.UseCases.DeleteCompanyBookmark;
 
-public record DeleteCompanyBookmarkRequest(long UserId, long CompanyId) : IRequest<Result>;
+public record DeleteCompanyBookmarkRequest(long CompanyId) : IRequest<Result>;

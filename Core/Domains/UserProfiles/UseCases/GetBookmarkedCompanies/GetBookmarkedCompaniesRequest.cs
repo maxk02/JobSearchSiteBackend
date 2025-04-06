@@ -4,5 +4,5 @@ using Ardalis.Result;
 
 namespace Core.Domains.UserProfiles.UseCases.GetBookmarkedCompanies;
 
-public record GetBookmarkedCompaniesRequest(long UserId, PaginationSpec PaginationSpec) 
+public record GetBookmarkedCompaniesRequest(PaginationSpec PaginationSpec) 
     : IRequest<Result<GetBookmarkedCompaniesResponse>>;

@@ -13,15 +13,11 @@ public class UserProfileValidator : AbstractValidator<UserProfile>
         RuleFor(x => x.FirstName).Length(1, 40)
             .WhitelistPolicy(new WhitelistPolicy().Letters());
         
-        RuleFor(x => x.MiddleName).Length(1, 40)
-            .WhitelistPolicy(new WhitelistPolicy().Letters());
+        // RuleFor(x => x.MiddleName).Length(1, 40)
+        //     .WhitelistPolicy(new WhitelistPolicy().Letters());
         
         RuleFor(x => x.LastName).Length(1, 40)
             .WhitelistPolicy(new WhitelistPolicy().Letters());
-
-        RuleFor(x => x.DateOfBirth)
-            .InclusiveBetween(new DateOnly(1940, 01, 01),
-                DateOnly.FromDateTime(DateTime.Today.AddYears(-15)));
 
         RuleFor(x => x.Email).Length(1, 50).EmailAddress();
 

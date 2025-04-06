@@ -13,26 +13,18 @@ public class UpdateUserProfileHandler(ICurrentAccountService currentAccountServi
         CancellationToken cancellationToken = default)
     {
         var currentAccountId = currentAccountService.GetIdOrThrow();
-        
-        if (currentAccountId != request.Id) return Result.Forbidden();
-        
-        var query = context.UserProfiles
-            .Include(u => u.Phone)
-            .Where(u => u.Id == request.Id);
 
-        var userProfile = await query.SingleOrDefaultAsync(cancellationToken);
+        var user = await context.UserProfiles.FindAsync([currentAccountId], cancellationToken);
         
-        if (userProfile is null)
-            return Result.Error();
+        if (user is null)
+            return Result.NotFound();
         
-        if (request.FirstName is not null) userProfile.FirstName = request.FirstName;
-        if (request.MiddleName is not null) userProfile.MiddleName = request.MiddleName;
-        if (request.LastName is not null) userProfile.LastName = request.LastName;
-        if (request.DateOfBirth is not null) userProfile.DateOfBirth = request.DateOfBirth;
-        if (request.Email is not null) userProfile.Email = request.Email;
-        if (request.Phone is not null) userProfile.Phone = request.Phone;
+        if (request.FirstName is not null) user.FirstName = request.FirstName;
+        if (request.LastName is not null) user.LastName = request.LastName;
+        if (request.Email is not null) user.Email = request.Email;
+        if (request.Phone is not null) user.Phone = request.Phone;
             
-        context.UserProfiles.Update(userProfile);
+        context.UserProfiles.Update(user);
         await context.SaveChangesAsync(cancellationToken);
         
         return Result.Success();

@@ -13,11 +13,8 @@ public class AddUserProfileHandler(ICurrentAccountService currentAccountService,
     {
         var currentAccountId = currentAccountService.GetIdOrThrow();
         
-        if (currentAccountId != request.AccountId)
-            return Result<AddUserProfileResponse>.Forbidden();
-        
-        var newUser = new UserProfile(request.AccountId, request.FirstName, request.MiddleName,
-            request.LastName, request.DateOfBirth, request.Email, request.Phone);
+        var newUser = new UserProfile(currentAccountId, request.FirstName,
+            request.LastName, request.Email, request.Phone);
         
         await context.UserProfiles.AddAsync(newUser, cancellationToken);
         await context.SaveChangesAsync(cancellationToken);
