@@ -21,13 +21,11 @@ public class CheckUserTokenMiddleware(
             return;
         }
         
-        var hasAllowAnonymousAttribute = endpoint.Metadata
-            .OfType<Microsoft.AspNetCore.Authorization.AllowAnonymousAttribute>()
-            .Any();
+        var isAuthenticated = httpContext.User.Identity?.IsAuthenticated ?? false;
 
-        if (hasAllowAnonymousAttribute)
+        if (!isAuthenticated)
         {
-            await next(httpContext);
+            httpContext.Response.StatusCode = StatusCodes.Status401Unauthorized;
             return;
         }
         

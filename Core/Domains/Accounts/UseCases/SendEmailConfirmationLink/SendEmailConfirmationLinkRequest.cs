@@ -3,4 +3,4 @@ using Ardalis.Result;
 
 namespace Core.Domains.Accounts.UseCases.SendEmailConfirmationLink;
 
-public record SendEmailConfirmationLinkRequest(string Email) : IRequest<Result>;
+public record SendEmailConfirmationLinkRequest : IRequest<Result>;

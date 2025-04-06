@@ -18,9 +18,17 @@ using Core.Services.Auth;
 using Core.Services.Cookies;
 using DotNetEnv;
 using Infrastructure;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc.Authorization;
 using Shared.MyAppSettings;
 
 var builder = WebApplication.CreateBuilder(args);
+
+
+//API general
+
+// Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
+builder.Services.AddOpenApi();
 
 Env.Load();
 
@@ -61,22 +69,20 @@ builder.Services.AddCors(options =>
 
 builder.Services.AddHttpContextAccessor();
 
-// Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
-builder.Services.AddOpenApi();
-
 builder.Services.AddMemoryCache(options =>
 {
     options.SizeLimit = 2048; // "MB"
 });
 
+
+// API services
 builder.Services.AddScoped<ICookieService, CookieService>();
 builder.Services.AddScoped<ICurrentAccountService, JwtCurrentAccountService>();
-builder.Services.ConfigureJwtAuthentication(builder.Configuration);
-builder.Services.ConfigureJwtGenerationService();
-
-builder.Services.ConfigureAutoMapper();
 builder.Services.AddAutoMapper(Assembly.GetExecutingAssembly());
 
+// Infrastructure services
+builder.Services.ConfigureJwtAuthentication(builder.Configuration);
+builder.Services.ConfigureJwtTokenGeneration();
 builder.Services.ConfigurePersistenceWithIdentity(builder.Configuration);
 builder.Services.ConfigureMemoryCache();
 builder.Services.ConfigureBackgroundJobScheduler();
@@ -85,17 +91,9 @@ builder.Services.ConfigureEmailSender();
 builder.Services.ConfigureSearch(builder.Configuration);
 builder.Services.ConfigureTextExtraction();
 
-builder.Services.ConfigureAccountUseCases();
-builder.Services.ConfigureCompanyUseCases();
-builder.Services.ConfigureCompanyClaimUseCases();
-builder.Services.ConfigureCountryUseCases();
-builder.Services.ConfigureJobApplicationUseCases();
-builder.Services.ConfigureJobFolderClaimUseCases();
-builder.Services.ConfigureJobFolderUseCases();
-builder.Services.ConfigureJobUseCases();
-builder.Services.ConfigureLocationUseCases();
-builder.Services.ConfigurePersonalFileUseCases();
-builder.Services.ConfigureUserProfileUseCases();
+// Core services
+builder.Services.ConfigureCoreAutoMapper();
+builder.Services.ConfigureUseCases();
 
 builder.WebHost.ConfigureKestrel(options =>
 {
@@ -119,10 +117,10 @@ app.UseCors("AllowNextJs");
 app.UseMiddleware<CsrfProtectionMiddleware>();
 
 app.UseAuthentication();
-
-app.UseMiddleware<CheckUserTokenMiddleware>();
-
 app.UseAuthorization();
+
+app.UseMiddleware<RequireAuthWithEmailConfirmedMiddleware>();
+app.UseMiddleware<CheckUserTokenMiddleware>();
 
 app.MapControllers();
 

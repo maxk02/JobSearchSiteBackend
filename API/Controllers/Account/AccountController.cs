@@ -1,4 +1,5 @@
-﻿using Ardalis.Result;
+﻿using API.Attributes;
+using Ardalis.Result;
 using Ardalis.Result.AspNetCore;
 using AutoMapper;
 using Core.Domains.Accounts.UseCases.ChangePassword;
@@ -142,6 +143,7 @@ public class AccountController(IMapper mapper) : ControllerBase
     
     [HttpPost]
     [Route("/send-email-confirmation-link")]
+    [AllowUnconfirmedEmail]
     public async Task<ActionResult> SendEmailConfirmationLink(
         SendEmailConfirmationLinkRequest request,
         [FromServices] SendEmailConfirmationLinkHandler handler,

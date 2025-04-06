@@ -16,7 +16,7 @@ namespace Core.Domains.Accounts.UseCases.LogIn;
 
 public class LogInHandler(UserManager<MyIdentityUser> userManager,
     MainDataContext context,
-    IJwtGenerationService jwtGenerationService,
+    IJwtTokenGenerationService jwtTokenGenerationService,
     IMapper mapper,
     ICache<string, UserSession> sessionCache,
     ICurrentAccountService currentAccountService,
@@ -41,9 +41,6 @@ public class LogInHandler(UserManager<MyIdentityUser> userManager,
             return Result<LogInResponse>.Unauthorized();
         
         var isEmailConfirmed = await userManager.IsEmailConfirmedAsync(account);
-        
-        if (!isEmailConfirmed)
-            return Result<LogInResponse>.Unauthorized();
 
         var userProfileData = await context.UserProfiles
             .Where(u => u.Id == account.Id)
@@ -77,11 +74,11 @@ public class LogInHandler(UserManager<MyIdentityUser> userManager,
         
         var roles = await userManager.GetRolesAsync(account);
 
-        var accountData = new AccountData(account.Id, roles);
+        var accountData = new AccountData(account.Id, isEmailConfirmed, roles);
         
         var newTokenId = Guid.NewGuid();
         
-        var token = jwtGenerationService.Generate(accountData, newTokenId);
+        var token = jwtTokenGenerationService.Generate(accountData, newTokenId);
         
         var newUserSession = new UserSession(newTokenId.ToString(), account.Id, DateTime.UtcNow,
             DateTime.UtcNow.Add(TimeSpan.FromDays(30)));

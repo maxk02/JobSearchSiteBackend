@@ -1,13 +1,14 @@
 ﻿using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using Core.Services.Auth;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Shared.MyAppSettings;
 
-namespace Core.Services.Auth;
+namespace Infrastructure.Auth;
 
-public class JwtGenerationService(IOptions<MyJwtSettings> settings) : IJwtGenerationService
+public class JwtTokenGenerationService(IOptions<MyJwtSettings> settings) : IJwtTokenGenerationService
 {
     public string Generate(AccountData accountData, Guid newTokenId)
     {
@@ -20,6 +21,7 @@ public class JwtGenerationService(IOptions<MyJwtSettings> settings) : IJwtGenera
         List<Claim> claims = [
             new(JwtRegisteredClaimNames.Sub, accountData.Id.ToString()),
             new(JwtRegisteredClaimNames.Jti, newTokenId.ToString()),
+            new Claim("EmailConfirmed", accountData.EmailConfirmed.ToString().ToLower())
         ];
         claims.AddRange(accountData.Roles.Select(role => new Claim(ClaimTypes.Role, role)));
         

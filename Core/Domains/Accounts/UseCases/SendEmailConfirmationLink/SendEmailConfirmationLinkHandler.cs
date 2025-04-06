@@ -28,7 +28,14 @@ public class SendEmailConfirmationLinkHandler(
         if (user is null)
             return Result.NotFound();
         
-        if (user.Email is null || user.Email != request.Email)
+        var email = user.Email;
+        
+        if (email is null)
+            return Result.Forbidden();
+        
+        var isEmailConfirmed = await userManager.IsEmailConfirmedAsync(user);
+        
+        if (isEmailConfirmed)
             return Result.Forbidden();
 
         var token = await userManager.GenerateEmailConfirmationTokenAsync(user);
@@ -40,7 +47,7 @@ public class SendEmailConfirmationLinkHandler(
         var emailToSend = new EmailConfirmationEmail(link);
 
         backgroundJobService.Enqueue(() => emailSenderService
-                .SendEmailAsync(request.Email, emailToSend.Subject, emailToSend.Content, CancellationToken.None),
+                .SendEmailAsync(email, emailToSend.Subject, emailToSend.Content, CancellationToken.None),
             BackgroundJobQueues.EmailSending);
 
         return Result.Success();
