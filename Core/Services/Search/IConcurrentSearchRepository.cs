@@ -1,4 +1,4 @@
-﻿namespace Core.Domains._Shared.Search;
+﻿namespace Core.Services.Search;
 
 public interface IConcurrentSearchRepository<T> where T : ISearchModelWithId, ISearchModelWithDeletionDateTime
 {

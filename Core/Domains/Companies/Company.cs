@@ -20,21 +20,23 @@ public class Company : IEntityWithId, IEntityWithRowVersioning
         IsPublic = isPublic;
     }
     
-    public long Id { get; private set; }
+    public long Id { get; set; }
     
-    public byte[] RowVersion { get; private set; } =  [];
+    public byte[] RowVersion { get; set; } =  [];
     
-    public long CountryId { get; private set; }
+    public long CountryId { get; set; }
     
-    public string? LogoLink { get; private set; }
+    public string? LogoLink { get; set; }
     
     public string Name { get; set; }
     
     public string? Description { get; set; }
+
+    public decimal Balance { get; set; } = decimal.Zero;
     
     public bool IsPublic { get; set; }
     
-    public Country? Country { get; private set; }
+    public Country? Country { get; set; }
 
     public ICollection<JobFolder>? JobFolders { get; set; }
     public ICollection<Job>? Jobs { get; set; }

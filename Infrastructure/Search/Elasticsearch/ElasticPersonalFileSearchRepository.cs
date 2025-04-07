@@ -7,6 +7,16 @@ namespace Infrastructure.Search.Elasticsearch;
 public class ElasticPersonalFileSearchRepository(IElasticClient client) : IPersonalFileSearchRepository
 {
     public string IndexName => "personalFiles";
+    
+    public async Task SeedAsync()
+    {
+        // Create index if not exists
+        var existsResponse = await client.Indices.ExistsAsync(IndexName);
+        if (!existsResponse.Exists)
+        {
+            await CreateIndexAsync();
+        }
+    }
 
     public async Task AddOrUpdateIfNewestAsync(PersonalFileSearchModel searchModel, byte[] rowVersion,
         CancellationToken cancellationToken = default)

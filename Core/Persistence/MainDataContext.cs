@@ -28,6 +28,7 @@ public class MainDataContext : IdentityDbContext<MyIdentityUser, MyIdentityRole,
     public DbSet<JobApplication> JobApplications { get; set; }
     public DbSet<Job> Jobs { get; set; }
     public DbSet<Location> Locations { get; set; }
+    public DbSet<LocationRelation> LocationRelations { get; set; }
     public DbSet<JobFolder> JobFolders { get; set; }
     public DbSet<JobFolderRelation> JobFolderRelations { get; set; }
     public DbSet<CompanyClaim> CompanyClaims { get; set; }

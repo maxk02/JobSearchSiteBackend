@@ -1,9 +1,8 @@
-﻿using Core.Domains._Shared.Search;
+﻿using Core.Services.Search;
 
 namespace Core.Domains.Locations.Search;
 
-public interface ILocationSearchRepository : ISearchRepository<LocationSearchModel>,
-    IBulkSearchRepository<LocationSearchModel>
+public interface ILocationSearchRepository : ISearchRepository<LocationSearchModel>
 {
     Task<ICollection<long>> SearchFromCountryIdAsync(long countryId, string query,
         CancellationToken cancellationToken = default);

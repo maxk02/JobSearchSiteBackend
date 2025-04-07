@@ -29,25 +29,7 @@ public class Job : IEntityWithId, IEntityWithRowVersioning
         SalaryInfo = salaryInfo;
         EmploymentTypes = employmentTypes;
     }
-
-    // // ef core
-    // private Job(long categoryId, long jobFolderId, string title, string description, bool isPublic,
-    //     DateTime dateTimePublishedUtc,
-    //     DateTime dateTimeExpiringUtc, ICollection<string> responsibilities, ICollection<string> requirements,
-    //     ICollection<string> niceToHaves)
-    // {
-    //     CategoryId = categoryId;
-    //     JobFolderId = jobFolderId;
-    //     Title = title;
-    //     Description = description;
-    //     IsPublic = isPublic;
-    //     DateTimePublishedUtc = dateTimePublishedUtc;
-    //     DateTimeExpiringUtc = dateTimeExpiringUtc;
-    //     Responsibilities = responsibilities.ToList();
-    //     Requirements = requirements.ToList();
-    //     NiceToHaves = niceToHaves.ToList();
-    // }
-
+    
     public long Id { get; private set; }
 
     public byte[] RowVersion { get; set; } = [];

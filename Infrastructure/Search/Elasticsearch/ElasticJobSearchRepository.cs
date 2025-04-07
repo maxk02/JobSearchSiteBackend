@@ -7,6 +7,16 @@ namespace Infrastructure.Search.Elasticsearch;
 public class ElasticJobSearchRepository(IElasticClient client) : IJobSearchRepository
 {
     public string IndexName => "jobs";
+    
+    public async Task SeedAsync()
+    {
+        // Create index if not exists
+        var existsResponse = await client.Indices.ExistsAsync(IndexName);
+        if (!existsResponse.Exists)
+        {
+            await CreateIndexAsync();
+        }
+    }
 
     public async Task AddOrUpdateIfNewestAsync(JobSearchModel searchModel, byte[] rowVersion,
         CancellationToken cancellationToken = default)

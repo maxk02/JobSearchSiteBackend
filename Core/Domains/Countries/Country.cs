@@ -1,5 +1,6 @@
 ﻿using System.Collections.Immutable;
 using Core.Domains._Shared.EntityInterfaces;
+using Core.Domains._Shared.Enums;
 using Core.Domains.Companies;
 using Core.Domains.JobContractTypes;
 using Core.Domains.Locations;
@@ -14,6 +15,12 @@ public class Country : IEntityWithId
         new Country(2, "DEU"),
         new Country(3, "FRA"),
     ];
+
+    public static readonly Dictionary<long, ImmutableArray<Currency>> CountryCurrencies =
+        new()
+        {
+            [1] = [Currency.PLN],
+        };
     
     private Country(long id, string code)
     {

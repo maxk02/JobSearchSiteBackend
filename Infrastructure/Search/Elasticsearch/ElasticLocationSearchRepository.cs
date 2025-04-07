@@ -6,6 +6,45 @@ namespace Infrastructure.Search.Elasticsearch;
 public class ElasticLocationSearchRepository(IElasticClient client) : ILocationSearchRepository
 {
     public string IndexName => "locations";
+    
+    public async Task SeedAsync()
+    {
+        var locations = await SeedFileHelper
+            .LoadJsonAsync<List<LocationSearchModel>>("Domains/Locations/Seed/locations_search.json");
+        if (locations is null)
+            return;
+
+        // Create index if not exists
+        var existsResponse = await client.Indices.ExistsAsync(IndexName);
+        if (!existsResponse.Exists)
+        {
+            await CreateIndexAsync();
+        }
+
+        // Bulk index locations
+        var bulkRequest = new BulkRequest(IndexName)
+        {
+            Operations = new List<IBulkOperation>()
+        };
+
+        foreach (var location in locations)
+        {
+            bulkRequest.Operations.Add(new BulkIndexOperation<LocationSearchModel>(location)
+            {
+                Id = location.Id.ToString()
+            });
+        }
+
+        var bulkResponse = await client.BulkAsync(bulkRequest);
+
+        if (bulkResponse.Errors)
+        {
+            foreach (var item in bulkResponse.ItemsWithErrors)
+            {
+                Console.WriteLine($"Failed to index document {item.Id}: {item.Error}");
+            }
+        }
+    }
 
     public async Task CreateIndexAsync(CancellationToken cancellationToken = default)
     {

@@ -14,10 +14,13 @@ using Core.Domains.Jobs;
 using Core.Domains.Locations;
 using Core.Domains.PersonalFiles;
 using Core.Domains.UserProfiles;
+using Core.Persistence;
 using Core.Services.Auth;
 using Core.Services.Cookies;
+using Core.Services.Search;
 using DotNetEnv;
 using Infrastructure;
+using Infrastructure.Persistence;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc.Authorization;
 using Shared.MyAppSettings;
@@ -101,6 +104,49 @@ builder.WebHost.ConfigureKestrel(options =>
 });
 
 var app = builder.Build();
+
+
+// Implemented search repo types
+var searchRepositories = Assembly.GetExecutingAssembly()
+    .GetTypes()
+    .Where(type => 
+        type.IsClass && 
+        !type.IsAbstract && 
+        type.GetInterfaces().Any(i => 
+            i.IsGenericType && 
+            i.GetGenericTypeDefinition() == typeof(ISearchRepository<>)))
+    .ToList();
+
+// Seeding
+using (var scope = app.Services.CreateScope())
+{
+    var services = scope.ServiceProvider;
+    
+    // DB
+    var dbContext = services.GetRequiredService<MainDataContext>();
+    await MainDataContextSeed.SeedAsync(dbContext);
+    
+    // ElasticSearch
+    foreach (var repoType in searchRepositories)
+    {
+        try
+        {
+            var interfaceType = repoType.GetInterfaces()
+                .First(i => i.IsGenericType && 
+                            i.GetGenericTypeDefinition() == typeof(ISearchRepository<>));
+            var genericArg = interfaceType.GetGenericArguments()[0];
+            var genericInterfaceType = typeof(ISearchRepository<>).MakeGenericType(genericArg);
+            var repository = services.GetRequiredService(genericInterfaceType);
+                
+            await ((dynamic)repository).SeedAsync();
+            Console.WriteLine($"Seeded {repoType.Name} successfully");
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error seeding {repoType.Name}: {ex.Message}");
+        }
+    }
+}
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

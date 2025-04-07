@@ -1,4 +1,4 @@
-﻿using Core.Domains._Shared.Search;
+﻿using Core.Services.Search;
 
 namespace Core.Domains.Companies.Search;
 

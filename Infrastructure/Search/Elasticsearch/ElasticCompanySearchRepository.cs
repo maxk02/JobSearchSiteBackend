@@ -7,6 +7,16 @@ namespace Infrastructure.Search.Elasticsearch;
 public class ElasticCompanySearchRepository(IElasticClient client) : ICompanySearchRepository
 {
     public string IndexName => "companies";
+    
+    public async Task SeedAsync()
+    {
+        // Create index if not exists
+        var existsResponse = await client.Indices.ExistsAsync(IndexName);
+        if (!existsResponse.Exists)
+        {
+            await CreateIndexAsync();
+        }
+    }
 
     public async Task AddOrUpdateIfNewestAsync(CompanySearchModel searchModel, byte[] rowVersion,
         CancellationToken cancellationToken = default)
