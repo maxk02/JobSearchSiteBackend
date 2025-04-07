@@ -1,5 +1,4 @@
 ﻿using Core.Domains._Shared.UseCaseStructure;
-using Core.Persistence.EfCore.EntityConfigs.AspNetCoreIdentity;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Ardalis.Result;

@@ -1,10 +1,10 @@
 ﻿using Core.Domains._Shared.UseCaseStructure;
 using Core.Domains.JobFolderClaims;
-using Core.Persistence.EfCore;
 using Core.Services.Auth;
 using Microsoft.EntityFrameworkCore;
 using Ardalis.Result;
 using Ardalis.Result.FluentValidation;
+using Core.Persistence;
 
 namespace Core.Domains.CompanyClaims.UseCases.UpdateCompanyClaimIdsForUser;
 

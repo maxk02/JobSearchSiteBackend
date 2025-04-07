@@ -1,11 +1,11 @@
 ﻿using System.Text;
 using Amazon.S3;
+using Core.Domains.Accounts;
 using Core.Domains.Companies.Search;
 using Core.Domains.Jobs.Search;
 using Core.Domains.Locations.Search;
 using Core.Domains.PersonalFiles.Search;
-using Core.Persistence.EfCore;
-using Core.Persistence.EfCore.EntityConfigs.AspNetCoreIdentity;
+using Core.Persistence;
 using Core.Services.Auth;
 using Core.Services.BackgroundJobs;
 using Core.Services.Caching;

@@ -1,11 +1,11 @@
 ﻿using Core.Domains._Shared.UseCaseStructure;
 using Core.Domains.JobApplications.Enums;
 using Core.Domains.PersonalFiles.Search;
-using Core.Persistence.EfCore;
 using Core.Services.Auth;
 using Core.Services.BackgroundJobs;
 using Microsoft.EntityFrameworkCore;
 using Ardalis.Result;
+using Core.Persistence;
 
 namespace Core.Domains.JobApplications.UseCases.AddJobApplication;
 

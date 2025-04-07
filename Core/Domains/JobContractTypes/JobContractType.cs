@@ -1,4 +1,5 @@
-﻿using Core.Domains._Shared.EntityInterfaces;
+﻿using System.Collections.Immutable;
+using Core.Domains._Shared.EntityInterfaces;
 using Core.Domains.Countries;
 using Core.Domains.Jobs;
 
@@ -6,7 +7,19 @@ namespace Core.Domains.JobContractTypes;
 
 public class JobContractType : IEntityWithId
 {
-    private JobContractType(long countryId, string namePl)
+    public static readonly ImmutableArray<JobContractType> AllValues =
+    [
+        new JobContractType(1, 1, "Umowa o pracę"),
+        new JobContractType(2, 1, "Umowa o dzieło"),
+        new JobContractType(3, 1, "Umowa zlecenie"),
+        new JobContractType(4, 1, "Kontrakt B2B"),
+        new JobContractType(5, 1, "Umowa o pracę tymczasową"),
+        new JobContractType(6, 1, "Umowa agencyjna"),
+        new JobContractType(7, 1, "Umowa o staż/praktykę"),
+        new JobContractType(8, 1, "Umowa na zastępstwo")
+    ];
+    
+    private JobContractType(long id, long countryId, string namePl)
     {
         CountryId = countryId;
         NamePl = namePl;

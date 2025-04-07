@@ -1,13 +1,13 @@
 ﻿using System.Transactions;
 using Core.Domains._Shared.UseCaseStructure;
 using Core.Domains.PersonalFiles.Search;
-using Core.Persistence.EfCore;
 using Core.Services.Auth;
 using Core.Services.BackgroundJobs;
 using Core.Services.FileStorage;
 using Core.Services.TextExtraction;
 using Microsoft.Extensions.Caching.Memory;
 using Ardalis.Result;
+using Core.Persistence;
 
 namespace Core.Domains.PersonalFiles.UseCases.UploadFile;
 

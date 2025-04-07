@@ -12,13 +12,12 @@ namespace Core.Domains.UserProfiles;
 
 public class UserProfile : IEntityWithId
 {
-    public UserProfile(long accountId, string firstName, string lastName, string email,
+    public UserProfile(long accountId, string firstName, string lastName,
         string? phone, string? avatarLink = null)
     {
         Id = accountId;
         FirstName = firstName;
         LastName = lastName;
-        Email = email;
         Phone = phone;
         AvatarLink = avatarLink;
     }
@@ -29,12 +28,12 @@ public class UserProfile : IEntityWithId
 
     public string LastName { get; set; }
     
-    public string Email { get; set; }
-    
     public string? Phone { get; set; }
     
     public string? AvatarLink { get; set; }
     
+    
+    public MyIdentityUser? Account { get; set; }
     
     public ICollection<PersonalFile>? PersonalFiles { get; set; }
     

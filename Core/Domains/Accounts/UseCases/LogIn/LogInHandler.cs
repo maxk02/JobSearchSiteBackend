@@ -1,6 +1,4 @@
 ﻿using Core.Domains._Shared.UseCaseStructure;
-using Core.Persistence.EfCore;
-using Core.Persistence.EfCore.EntityConfigs.AspNetCoreIdentity;
 using Core.Services.Auth;
 using Microsoft.AspNetCore.Identity;
 using Ardalis.Result;
@@ -8,6 +6,7 @@ using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using Core.Domains.Accounts.Dtos;
 using Core.Domains.Companies.Dtos;
+using Core.Persistence;
 using Core.Services.Caching;
 using Core.Services.Cookies;
 using Microsoft.EntityFrameworkCore;

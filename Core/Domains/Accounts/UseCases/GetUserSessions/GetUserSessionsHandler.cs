@@ -3,7 +3,7 @@ using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using Core.Domains._Shared.UseCaseStructure;
 using Core.Domains.Accounts.Dtos;
-using Core.Persistence.EfCore;
+using Core.Persistence;
 using Core.Services.Auth;
 using Microsoft.EntityFrameworkCore;
 

@@ -4,7 +4,7 @@ using AutoMapper.QueryableExtensions;
 using Core.Domains._Shared.UseCaseStructure;
 using Core.Domains.JobFolderClaims;
 using Core.Domains.Jobs.Dtos;
-using Core.Persistence.EfCore;
+using Core.Persistence;
 using Core.Services.Auth;
 using Microsoft.EntityFrameworkCore;
 

@@ -4,10 +4,10 @@ using Core.Domains.Companies.Search;
 using Core.Domains.CompanyClaims;
 using Core.Domains.JobFolderClaims;
 using Core.Domains.JobFolders;
-using Core.Persistence.EfCore;
 using Core.Services.Auth;
 using Core.Services.BackgroundJobs;
 using Ardalis.Result;
+using Core.Persistence;
 
 namespace Core.Domains.Companies.UseCases.AddCompany;
 

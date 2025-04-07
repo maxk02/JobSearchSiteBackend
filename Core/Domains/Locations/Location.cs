@@ -9,11 +9,11 @@ namespace Core.Domains.Locations;
 
 public class Location : IEntityWithId
 {
-    private Location(long countryId, string name, ICollection<string> subdivisions, string? description, string? code)
+    private Location(long countryId, string name, bool isConcrete, string? description, string? code)
     {
         CountryId = countryId;
         Name = name;
-        Subdivisions = subdivisions;
+        IsConcrete = isConcrete;
         Description = description;
         Code = code;
     }
@@ -21,7 +21,7 @@ public class Location : IEntityWithId
     public long Id { get; private set; }
     public long CountryId { get; private set; }
     public string Name { get; private set; }
-    public ICollection<string> Subdivisions { get; private set; }
+    public bool IsConcrete { get; private set; }
     public string? Description { get; private set; }
     public string? Code { get; private set; }
 
@@ -29,4 +29,7 @@ public class Location : IEntityWithId
     public Country? Country { get; set; }
     public ICollection<UserProfile>? Users { get; set; }
     public ICollection<Job>? Jobs { get; set; }
+    
+    public ICollection<LocationRelation>? RelationsWhereThisIsDescendant { get; set; }
+    public ICollection<LocationRelation>? RelationsWhereThisIsAncestor { get; set; }
 }

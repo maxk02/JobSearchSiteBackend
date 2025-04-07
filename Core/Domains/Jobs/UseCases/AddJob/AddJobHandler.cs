@@ -4,13 +4,13 @@ using Core.Domains.Categories;
 using Core.Domains.JobFolderClaims;
 using Core.Domains.JobFolders;
 using Core.Domains.Jobs.Search;
-using Core.Persistence.EfCore;
 using Core.Services.Auth;
 using Core.Services.BackgroundJobs;
 using Microsoft.EntityFrameworkCore;
 using Ardalis.Result;
 using AutoMapper;
 using Core.Domains.EmploymentOptions;
+using Core.Persistence;
 
 namespace Core.Domains.Jobs.UseCases.AddJob;
 

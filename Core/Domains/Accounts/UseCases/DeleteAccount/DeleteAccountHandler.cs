@@ -1,9 +1,8 @@
 ﻿using Core.Domains._Shared.UseCaseStructure;
-using Core.Persistence.EfCore;
-using Core.Persistence.EfCore.EntityConfigs.AspNetCoreIdentity;
 using Core.Services.Auth;
 using Microsoft.AspNetCore.Identity;
 using Ardalis.Result;
+using Core.Persistence;
 using Core.Services.Caching;
 
 namespace Core.Domains.Accounts.UseCases.DeleteAccount;

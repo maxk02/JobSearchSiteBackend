@@ -1,8 +1,6 @@
 ﻿using System.Transactions;
 using Core.Domains._Shared.UseCaseStructure;
 using Core.Domains.Accounts.EmailMessages;
-using Core.Persistence.EfCore;
-using Core.Persistence.EfCore.EntityConfigs.AspNetCoreIdentity;
 using Core.Services.Auth;
 using Core.Services.BackgroundJobs;
 using Core.Services.EmailSender;

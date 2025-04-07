@@ -7,6 +7,7 @@ using Core.Domains.UserProfiles.UseCases.GetBookmarkedCompanies;
 using Core.Domains.UserProfiles.UseCases.GetBookmarkedJobs;
 using Core.Domains.UserProfiles.UseCases.GetJobApplications;
 using Core.Domains.UserProfiles.UseCases.GetPersonalFiles;
+using Core.Domains.UserProfiles.UseCases.GetUserProfile;
 using Core.Domains.UserProfiles.UseCases.UpdateUserProfile;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -23,10 +24,9 @@ public static class UserProfilesUseCasesDi
         serviceCollection.AddScoped<DeleteJobBookmarkHandler>();
         serviceCollection.AddScoped<GetBookmarkedCompaniesHandler>();
         serviceCollection.AddScoped<GetBookmarkedJobsHandler>();
-        // serviceCollection.AddScoped<GetFirstCvHandler>();
         serviceCollection.AddScoped<GetJobApplicationsHandler>();
         serviceCollection.AddScoped<GetPersonalFilesHandler>();
-        // serviceCollection.AddScoped<GetUserProfileByIdHandler>();
+        serviceCollection.AddScoped<GetUserProfileHandler>();
         serviceCollection.AddScoped<UpdateUserProfileHandler>();
     }
 }

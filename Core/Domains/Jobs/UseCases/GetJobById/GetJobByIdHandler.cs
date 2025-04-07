@@ -3,12 +3,12 @@ using Core.Domains.JobContractTypes.Dtos;
 using Core.Domains.JobFolderClaims;
 using Core.Domains.JobFolders;
 using Core.Domains.Locations.Dtos;
-using Core.Persistence.EfCore;
 using Core.Services.Auth;
 using Microsoft.EntityFrameworkCore;
 using Ardalis.Result;
 using AutoMapper;
 using Core.Domains.Jobs.Dtos;
+using Core.Persistence;
 
 namespace Core.Domains.Jobs.UseCases.GetJobById;
 

@@ -19,7 +19,7 @@ public class UserProfileValidator : AbstractValidator<UserProfile>
         RuleFor(x => x.LastName).Length(1, 40)
             .WhitelistPolicy(new WhitelistPolicy().Letters());
 
-        RuleFor(x => x.Email).Length(1, 50).EmailAddress();
+        // RuleFor(x => x.Email).Length(1, 50).EmailAddress();
 
         // When(x => x.Phone != null, () =>
         // {

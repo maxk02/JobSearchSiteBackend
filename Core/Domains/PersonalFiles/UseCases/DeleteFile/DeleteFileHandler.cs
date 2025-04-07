@@ -1,9 +1,9 @@
 ﻿using Core.Domains._Shared.UseCaseStructure;
-using Core.Persistence.EfCore;
 using Core.Services.Auth;
 using Core.Services.BackgroundJobs;
 using Core.Services.FileStorage;
 using Ardalis.Result;
+using Core.Persistence;
 
 namespace Core.Domains.PersonalFiles.UseCases.DeleteFile;
 

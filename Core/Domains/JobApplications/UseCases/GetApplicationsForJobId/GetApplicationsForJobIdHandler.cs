@@ -5,12 +5,12 @@ using Core.Domains.JobFolderClaims;
 using Core.Domains.JobFolders;
 using Core.Domains.PersonalFiles.Dtos;
 using Core.Domains.PersonalFiles.Search;
-using Core.Persistence.EfCore;
 using Core.Services.Auth;
 using Microsoft.EntityFrameworkCore;
 using Ardalis.Result;
 using AutoMapper;
 using AutoMapper.QueryableExtensions;
+using Core.Persistence;
 
 namespace Core.Domains.JobApplications.UseCases.GetApplicationsForJobId;
 

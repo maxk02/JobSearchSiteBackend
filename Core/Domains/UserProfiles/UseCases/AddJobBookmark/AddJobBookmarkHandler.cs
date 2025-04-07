@@ -1,8 +1,8 @@
 ﻿using Core.Domains._Shared.UseCaseStructure;
-using Core.Persistence.EfCore;
 using Core.Services.Auth;
 using Microsoft.EntityFrameworkCore;
 using Ardalis.Result;
+using Core.Persistence;
 
 namespace Core.Domains.UserProfiles.UseCases.AddJobBookmark;
 

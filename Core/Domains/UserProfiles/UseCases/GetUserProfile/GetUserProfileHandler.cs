@@ -1,7 +1,8 @@
 ﻿using Ardalis.Result;
 using Core.Domains._Shared.UseCaseStructure;
-using Core.Persistence.EfCore;
+using Core.Persistence;
 using Core.Services.Auth;
+using Microsoft.EntityFrameworkCore;
 
 namespace Core.Domains.UserProfiles.UseCases.GetUserProfile;
 
@@ -13,11 +14,19 @@ public class GetUserProfileHandler(ICurrentAccountService currentAccountService,
     {
         var currentAccountId = currentAccountService.GetIdOrThrow();
         
-        var user = await context.UserProfiles.FindAsync([currentAccountId], cancellationToken);
+        // var user = await context.UserProfiles.FindAsync([currentAccountId], cancellationToken);
         
-        if (user is null)
-            return Result<GetUserProfileResponse>.NotFound();
+        var userWithEmail = await context.UserProfiles
+            .Where(u => u.Id == currentAccountId)
+            .Select(u => new { User = u, Email = u.Account!.Email })
+            .SingleOrDefaultAsync(cancellationToken);
 
-        return new GetUserProfileResponse(user.FirstName, user.LastName, user.Email, user.Phone);
+        var user = userWithEmail?.User;
+        var email = userWithEmail?.Email;
+
+        if (user is null || email is null)
+            return Result<GetUserProfileResponse>.Error();
+
+        return new GetUserProfileResponse(user.FirstName, user.LastName, email, user.Phone, user.AvatarLink);
     }
 }

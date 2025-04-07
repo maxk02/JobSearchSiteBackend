@@ -1,11 +1,11 @@
 ﻿using Core.Domains._Shared.UseCaseStructure;
 using Core.Domains.CompanyClaims;
-using Core.Persistence.EfCore;
 using Core.Services.Auth;
 using Microsoft.EntityFrameworkCore;
 using Ardalis.Result;
 using AutoMapper;
 using Core.Domains.Companies.Dtos;
+using Core.Persistence;
 
 namespace Core.Domains.Companies.UseCases.GetCompanyById;
 

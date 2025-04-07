@@ -2,12 +2,12 @@
 using Core.Domains.JobFolderClaims;
 using Core.Domains.JobFolders.Dtos;
 using Core.Domains.Jobs.Dtos;
-using Core.Persistence.EfCore;
 using Core.Services.Auth;
 using Microsoft.EntityFrameworkCore;
 using Ardalis.Result;
 using AutoMapper;
 using AutoMapper.QueryableExtensions;
+using Core.Persistence;
 
 namespace Core.Domains.JobFolders.UseCases.GetChildFolders;
 

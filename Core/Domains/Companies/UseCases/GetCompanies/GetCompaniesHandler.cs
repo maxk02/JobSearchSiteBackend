@@ -5,7 +5,7 @@ using Core.Domains._Shared.Pagination;
 using Core.Domains._Shared.UseCaseStructure;
 using Core.Domains.Companies.Dtos;
 using Core.Domains.Companies.Search;
-using Core.Persistence.EfCore;
+using Core.Persistence;
 using Microsoft.EntityFrameworkCore;
 
 namespace Core.Domains.Companies.UseCases.GetCompanies;

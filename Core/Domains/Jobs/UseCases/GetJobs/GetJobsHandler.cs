@@ -2,10 +2,10 @@
 using Core.Domains._Shared.UseCaseStructure;
 using Core.Domains.Jobs.Dtos;
 using Core.Domains.Jobs.Search;
-using Core.Persistence.EfCore;
 using Microsoft.EntityFrameworkCore;
 using Ardalis.Result;
 using AutoMapper;
+using Core.Persistence;
 
 namespace Core.Domains.Jobs.UseCases.GetJobs;
 

@@ -4,7 +4,7 @@ using AutoMapper.QueryableExtensions;
 using Core.Domains._Shared.Pagination;
 using Core.Domains._Shared.UseCaseStructure;
 using Core.Domains.JobApplications.Dtos;
-using Core.Persistence.EfCore;
+using Core.Persistence;
 using Core.Services.Auth;
 using Microsoft.EntityFrameworkCore;
 

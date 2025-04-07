@@ -4,7 +4,7 @@ using AutoMapper.QueryableExtensions;
 using Core.Domains._Shared.UseCaseStructure;
 using Core.Domains.Locations.Dtos;
 using Core.Domains.Locations.Search;
-using Core.Persistence.EfCore;
+using Core.Persistence;
 using Microsoft.EntityFrameworkCore;
 
 namespace Core.Domains.Locations.UseCases.GetLocations;

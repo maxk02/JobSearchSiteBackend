@@ -1,5 +1,5 @@
 ﻿using Core.Domains.Accounts;
-using Core.Persistence.EfCore;
+using Core.Persistence;
 using Core.Services.Auth;
 using Core.Services.Caching;
 using Microsoft.Extensions.Caching.Memory;
