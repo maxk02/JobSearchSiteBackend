@@ -30,7 +30,7 @@ public class GetCompaniesHandler(
         var companyInfoDtos = await query
             .Skip((request.PaginationSpec.PageNumber - 1) * request.PaginationSpec.PageSize)
             .Take(request.PaginationSpec.PageSize)
-            .ProjectTo<CompanyInfoDto>(mapper.ConfigurationProvider)
+            .ProjectTo<CompanyDto>(mapper.ConfigurationProvider)
             .ToListAsync(cancellationToken);
 
         var paginationResponse = new PaginationResponse(request.PaginationSpec.PageNumber,

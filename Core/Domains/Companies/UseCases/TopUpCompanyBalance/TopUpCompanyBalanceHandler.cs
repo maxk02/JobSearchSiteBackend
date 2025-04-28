@@ -9,13 +9,13 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Core.Domains.Companies.UseCases.UpdateCompanyBalance;
 
-public class UpdateCompanyBalanceHandler(
+public class TopUpCompanyBalanceHandler(
     ICurrentAccountService currentAccountService,
     ICompanySearchRepository companySearchRepository,
     IBackgroundJobService backgroundJobService,
-    MainDataContext context) : IRequestHandler<UpdateCompanyBalanceRequest, Result>
+    MainDataContext context) : IRequestHandler<TopUpCompanyBalanceRequest, Result>
 {
-    public async Task<Result> Handle(UpdateCompanyBalanceRequest request, CancellationToken cancellationToken = default)
+    public async Task<Result> Handle(TopUpCompanyBalanceRequest request, CancellationToken cancellationToken = default)
     {
         var currentUserId = currentAccountService.GetIdOrThrow();
 

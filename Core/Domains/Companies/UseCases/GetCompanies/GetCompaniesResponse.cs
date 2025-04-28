@@ -4,5 +4,5 @@ using Core.Domains.Companies.Dtos;
 namespace Core.Domains.Companies.UseCases.GetCompanies;
 
 public record GetCompaniesResponse(
-    ICollection<CompanyInfoDto> CompanyInfoDtos,
+    ICollection<CompanyDto> CompanyInfoDtos,
     PaginationResponse PaginationResponse);

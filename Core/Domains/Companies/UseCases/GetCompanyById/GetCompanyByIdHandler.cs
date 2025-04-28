@@ -41,7 +41,7 @@ public class GetCompanyByIdHandler(
                 return Result<GetCompanyByIdResponse>.Forbidden("Requested company profile is private.");
         }
         
-        var companyInfoDto = mapper.Map<CompanyInfoDto>(company);
+        var companyInfoDto = mapper.Map<CompanyDto>(company);
         
         return new GetCompanyByIdResponse(companyInfoDto);
     }

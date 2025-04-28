@@ -144,6 +144,7 @@ using (var scope = app.Services.CreateScope())
         catch (Exception ex)
         {
             Console.WriteLine($"Error seeding {repoType.Name}: {ex.Message}");
+            throw;
         }
     }
 }

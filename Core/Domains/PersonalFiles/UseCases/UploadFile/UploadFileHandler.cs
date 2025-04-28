@@ -38,6 +38,8 @@ public class UploadFileHandler(
 
         await fileStorageService.UploadFileAsync(memoryStream, newFile.GuidIdentifier, cancellationToken);
         
+        // link to file
+        
         var retainCacheFor = TimeSpan.FromHours(48);
         var memCacheFileSize = (int)Math.Round((double)newFile.Size / 1024 / 1024);
         

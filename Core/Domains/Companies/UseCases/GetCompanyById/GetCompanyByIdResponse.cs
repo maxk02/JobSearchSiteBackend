@@ -2,4 +2,4 @@
 
 namespace Core.Domains.Companies.UseCases.GetCompanyById;
 
-public record GetCompanyByIdResponse(CompanyInfoDto? Company);
+public record GetCompanyByIdResponse(CompanyDto? Company);

@@ -7,4 +7,4 @@ public record AccountDataDto(
     string Email,
     string? FullName,
     string? AvatarLink,
-    ICollection<CompanyInfoDto> CompaniesManaged);
+    ICollection<CompanyDto> CompaniesManaged);

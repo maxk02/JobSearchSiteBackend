@@ -52,13 +52,13 @@ public class LogInHandler(UserManager<MyIdentityUser> userManager,
         var companyInfoDtos = await context.Companies
             .Where(c => c.UserCompanyClaims!.Any(ucc => ucc.UserId == account.Id))
             .Distinct()
-            .ProjectTo<CompanyInfoDto>(mapper.ConfigurationProvider)
+            .ProjectTo<CompanyDto>(mapper.ConfigurationProvider)
             .ToListAsync(cancellationToken);
         
         var companyInfoDtosFromFolders = await context.Companies
             .Where(c => c.JobFolders!.Any(jf => jf.UserJobFolderClaims!.Any(ujfc => ujfc.UserId == account.Id)))
             .Distinct()
-            .ProjectTo<CompanyInfoDto>(mapper.ConfigurationProvider)
+            .ProjectTo<CompanyDto>(mapper.ConfigurationProvider)
             .ToListAsync(cancellationToken);
         
         var combinedCompanyInfoDtos = companyInfoDtos

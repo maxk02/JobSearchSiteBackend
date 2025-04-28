@@ -3,4 +3,4 @@ using Core.Domains._Shared.UseCaseStructure;
 
 namespace Core.Domains.Companies.UseCases.UpdateCompanyBalance;
 
-public record UpdateCompanyBalanceRequest(long Id, decimal BalanceUpdate) : IRequest<Result>;
+public record TopUpCompanyBalanceRequest(long Id, decimal BalanceUpdate) : IRequest<Result>;
