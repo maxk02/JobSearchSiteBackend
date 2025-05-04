@@ -20,7 +20,7 @@ public class AddJobApplicationHandler(
         var currentUserId = currentAccountService.GetIdOrThrow();
 
         if (request.UserId != currentUserId)
-            return Result<AddJobApplicationResponse>.Forbidden();
+            return Result.Forbidden();
 
         var jobApplication = new JobApplication(request.UserId, request.JobId, JobApplicationStatus.Submitted);
 
@@ -30,14 +30,14 @@ public class AddJobApplicationHandler(
 
         if (!request.PersonalFileIds.All(requestedPersonalFilesOfUser.Select(x => x.Id).Contains))
         {
-            return Result<AddJobApplicationResponse>.Error();
+            return Result.Error();
         }
 
         jobApplication.PersonalFiles = requestedPersonalFilesOfUser;
 
         await context.JobApplications.AddAsync(jobApplication, cancellationToken);
         await context.SaveChangesAsync(cancellationToken);
-
+        
         return Result<AddJobApplicationResponse>.Success(new AddJobApplicationResponse(jobApplication.Id));
     }
 }

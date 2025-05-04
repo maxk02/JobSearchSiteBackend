@@ -26,7 +26,7 @@ public class ElasticJobSearchRepository(IElasticClient client) : IJobSearchRepos
             if (searchModel.DeletionDateTimeUtc is not null)
                 throw new InvalidOperationException();
 
-            var version = BitConverter.ToInt64(rowVersion, 0);
+            var version = rowVersion.Length >= 8 ? BitConverter.ToInt64(rowVersion, 0) : 0;
             await client.IndexAsync(searchModel, u => u
                 .Id(searchModel.Id)
                 .Version(version)
@@ -45,7 +45,7 @@ public class ElasticJobSearchRepository(IElasticClient client) : IJobSearchRepos
             if (searchModel.DeletionDateTimeUtc is null)
                 throw new InvalidOperationException();
 
-            var version = BitConverter.ToInt64(rowVersion, 0);
+            var version = rowVersion.Length >= 8 ? BitConverter.ToInt64(rowVersion, 0) : 0;
             await client.IndexAsync(searchModel, u => u
                 .Id(searchModel.Id)
                 .Version(version)

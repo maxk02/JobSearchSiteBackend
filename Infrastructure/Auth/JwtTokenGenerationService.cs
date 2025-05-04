@@ -12,16 +12,16 @@ public class JwtTokenGenerationService(IOptions<MyJwtSettings> settings) : IJwtT
 {
     public string Generate(AccountData accountData, Guid newTokenId)
     {
-        var secretKey = settings.Value.SecretKey;
+        var secretKey= settings.Value.SecretKey;
 
         var issuer = settings.Value.Issuer;
 
-        var audience = settings.Value.Audience;
+        var audience= settings.Value.Audience;
         
         List<Claim> claims = [
             new(JwtRegisteredClaimNames.Sub, accountData.Id.ToString()),
             new(JwtRegisteredClaimNames.Jti, newTokenId.ToString()),
-            new Claim("EmailConfirmed", accountData.EmailConfirmed.ToString().ToLower())
+            new("EmailConfirmed", accountData.EmailConfirmed.ToString().ToLower())
         ];
         claims.AddRange(accountData.Roles.Select(role => new Claim(ClaimTypes.Role, role)));
         
@@ -30,8 +30,8 @@ public class JwtTokenGenerationService(IOptions<MyJwtSettings> settings) : IJwtT
 
         var tokenDescriptor = new JwtSecurityToken(
             issuer: issuer,
-            audience : audience,
-            claims : claims,
+            audience: audience,
+            claims: claims,
             signingCredentials: credentials,
             notBefore: DateTime.UtcNow);
 

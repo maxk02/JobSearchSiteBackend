@@ -125,8 +125,7 @@ public static class ServiceExtensions
             var client = new ElasticClient(connectionSettings);
             return client;
         });
-
-        serviceCollection.AddSingleton<ICompanySearchRepository, ElasticCompanySearchRepository>();
+        
         serviceCollection.AddSingleton<IJobSearchRepository, ElasticJobSearchRepository>();
         serviceCollection.AddSingleton<ILocationSearchRepository, ElasticLocationSearchRepository>();
         serviceCollection.AddSingleton<IPersonalFileSearchRepository, ElasticPersonalFileSearchRepository>();

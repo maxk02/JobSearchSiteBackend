@@ -1,11 +1,8 @@
 ﻿using Ardalis.Result.AspNetCore;
 using Core.Domains._Shared.Pagination;
-using Core.Domains.UserProfiles.UseCases.AddCompanyBookmark;
 using Core.Domains.UserProfiles.UseCases.AddJobBookmark;
 using Core.Domains.UserProfiles.UseCases.AddUserProfile;
-using Core.Domains.UserProfiles.UseCases.DeleteCompanyBookmark;
 using Core.Domains.UserProfiles.UseCases.DeleteJobBookmark;
-using Core.Domains.UserProfiles.UseCases.GetBookmarkedCompanies;
 using Core.Domains.UserProfiles.UseCases.GetBookmarkedJobs;
 using Core.Domains.UserProfiles.UseCases.GetJobApplications;
 using Core.Domains.UserProfiles.UseCases.GetPersonalFiles;
@@ -21,19 +18,6 @@ namespace API.Controllers.UserProfiles;
 [Authorize]
 public class UserProfilesController : ControllerBase
 {
-    [HttpPost]
-    [Route("bookmarks/companies")]
-    public async Task<ActionResult> AddCompanyBookmark(
-        long companyId,
-        [FromServices] AddCompanyBookmarkHandler handler,
-        CancellationToken cancellationToken)
-    {
-        var request = new AddCompanyBookmarkRequest(companyId);
-        var result = await handler.Handle(request, cancellationToken);
-        
-        return this.ToActionResult(result);
-    }
-    
     [HttpPost]
     [Route("bookmarks/jobs")]
     public async Task<ActionResult> AddJobBookmark(
@@ -59,19 +43,6 @@ public class UserProfilesController : ControllerBase
     }
     
     [HttpDelete]
-    [Route("bookmarks/companies")]
-    public async Task<ActionResult> DeleteCompanyBookmark(
-        long companyId,
-        [FromServices] DeleteCompanyBookmarkHandler handler,
-        CancellationToken cancellationToken)
-    {
-        var request = new DeleteCompanyBookmarkRequest(companyId);
-        var result = await handler.Handle(request, cancellationToken);
-        
-        return this.ToActionResult(result);
-    }
-    
-    [HttpDelete]
     [Route("bookmarks/jobs")]
     public async Task<ActionResult> DeleteJobBookmark(
         long jobId,
@@ -79,19 +50,6 @@ public class UserProfilesController : ControllerBase
         CancellationToken cancellationToken)
     {
         var request = new DeleteJobBookmarkRequest(jobId);
-        var result = await handler.Handle(request, cancellationToken);
-        
-        return this.ToActionResult(result);
-    }
-    
-    [HttpGet]
-    [Route("bookmarks/companies")]
-    public async Task<ActionResult<GetBookmarkedCompaniesResponse>> GetBookmarkedCompanies(
-        [FromQuery] PaginationSpec paginationSpec,
-        [FromServices] GetBookmarkedCompaniesHandler handler,
-        CancellationToken cancellationToken)
-    {
-        var request = new GetBookmarkedCompaniesRequest(paginationSpec);
         var result = await handler.Handle(request, cancellationToken);
         
         return this.ToActionResult(result);

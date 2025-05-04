@@ -6,15 +6,15 @@ namespace Core.Domains.Accounts;
 
 public class UserSession
 {
-    public UserSession(string token, long userId, DateTime firstTimeIssuedUtc, DateTime expiresUtc)
+    public UserSession(string tokenId, long userId, DateTime firstTimeIssuedUtc, DateTime expiresUtc)
     {
-        Token = token;
+        TokenId = tokenId;
         UserId = userId;
         FirstTimeIssuedUtc = firstTimeIssuedUtc;
         ExpiresUtc = expiresUtc;
     }
 
-    public string Token { get; private set; }
+    public string TokenId { get; private set; }
 
     public long UserId { get; private set; }
 

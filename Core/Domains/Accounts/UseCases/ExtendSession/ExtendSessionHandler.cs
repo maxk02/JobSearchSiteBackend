@@ -22,7 +22,7 @@ public class ExtendSessionHandler(ICurrentAccountService currentAccountService,
         
         var newExpirationTimeUtc = session.ExpiresUtc.AddDays(30);
         
-        var newUserSession = new UserSession(session.Token, session.UserId,
+        var newUserSession = new UserSession(session.TokenId, session.UserId,
             session.FirstTimeIssuedUtc, newExpirationTimeUtc);
         
         context.UserSessions.Add(newUserSession);

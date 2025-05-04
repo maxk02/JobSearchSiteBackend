@@ -44,11 +44,6 @@ public class GetApplicationsForJobIdHandler(
             return Result<GetApplicationsForJobIdResponse>.Forbidden();
 
         var query = context.JobApplications
-            // .Include(ja => ja.User!).ThenInclude(u => u.Cvs)!.ThenInclude(cv => cv.SalaryRecord)
-            // .Include(ja => ja.User!).ThenInclude(u => u.Cvs)!.ThenInclude(cv => cv.EmploymentTypeRecord)
-            // .Include(ja => ja.User!).ThenInclude(u => u.Cvs)!.ThenInclude(cv => cv.EducationRecords)
-            // .Include(ja => ja.User!).ThenInclude(u => u.Cvs)!.ThenInclude(cv => cv.WorkRecords)
-            // .Include(ja => ja.User!).ThenInclude(u => u.Cvs)!.ThenInclude(cv => cv.Skills)
             .Include(ja => ja.PersonalFiles)
             .Where(ja => ja.JobId == request.JobId);
         
@@ -59,19 +54,8 @@ public class GetApplicationsForJobIdHandler(
                 .SelectMany(ja => ja.PersonalFiles!).Select(pf => pf.Id)
                 .ToListAsync(cancellationToken);
             
-            // var cvIdsFromSql = await context.JobApplications
-            //     .Where(ja => ja.JobId == request.JobId)
-            //     .SelectMany(ja => ja.User!.Cvs!).Where(cv => cv.IsPublic).Select(cv => cv.Id)
-            //     .ToListAsync(cancellationToken);
-            
             var pfIdHits = await personalFileSearchRepository
                 .SearchFromIdsAsync(pfIdsFromSql, request.Query, cancellationToken);
-            
-            // var cvIdHits = await cvSearchRepository
-            //     .SearchFromIdsAsync(cvIdsFromSql, request.Query, cancellationToken);
-            
-            // query = query.Where(ja => ja.PersonalFiles!.Any(pf => pfIdHits.Contains(pf.Id)) 
-            //                           || ja.User!.Cvs!.Any(cv => cv.IsPublic && cvIdHits.Contains(cv.Id)));
             
             query = query.Where(ja => ja.PersonalFiles!.Any(pf => pfIdHits.Contains(pf.Id)));
         }

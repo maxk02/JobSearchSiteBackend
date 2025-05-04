@@ -181,27 +181,4 @@ public class ElasticLocationSearchRepository(IElasticClient client) : ILocationS
         
         return resultIds;
     }
-
-    public async Task AddOrUpdateManyAsync(ICollection<LocationSearchModel> searchModels,
-        CancellationToken cancellationToken = default)
-    {
-        var bulkResponse = await client
-            .BulkAsync(b => b.Index(IndexName).IndexMany(searchModels), cancellationToken
-        );
-
-        if (!bulkResponse.IsValid)
-            throw new InvalidDataException();
-    }
-
-    public async Task DeleteManyAsync(ICollection<long> searchModelIds, CancellationToken cancellationToken = default)
-    {
-        var bulkResponse = await client.BulkAsync(b => b
-                .Index(IndexName)
-                .DeleteMany<LocationSearchModel>(searchModelIds, (bd, id) => bd.Id(id)),
-            cancellationToken
-        );
-        
-        if (!bulkResponse.IsValid)
-            throw new InvalidDataException();
-    }
 }

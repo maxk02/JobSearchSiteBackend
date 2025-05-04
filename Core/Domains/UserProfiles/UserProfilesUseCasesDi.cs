@@ -1,7 +1,5 @@
-﻿using Core.Domains.UserProfiles.UseCases.AddCompanyBookmark;
-using Core.Domains.UserProfiles.UseCases.AddJobBookmark;
+﻿using Core.Domains.UserProfiles.UseCases.AddJobBookmark;
 using Core.Domains.UserProfiles.UseCases.AddUserProfile;
-using Core.Domains.UserProfiles.UseCases.DeleteCompanyBookmark;
 using Core.Domains.UserProfiles.UseCases.DeleteJobBookmark;
 using Core.Domains.UserProfiles.UseCases.GetBookmarkedJobs;
 using Core.Domains.UserProfiles.UseCases.GetJobApplications;
@@ -16,10 +14,8 @@ public static class UserProfilesUseCasesDi
 {
     public static void ConfigureUserProfileUseCases(this IServiceCollection serviceCollection)
     {
-        serviceCollection.AddScoped<AddCompanyBookmarkHandler>();
         serviceCollection.AddScoped<AddJobBookmarkHandler>();
         serviceCollection.AddScoped<AddUserProfileHandler>();
-        serviceCollection.AddScoped<DeleteCompanyBookmarkHandler>();
         serviceCollection.AddScoped<DeleteJobBookmarkHandler>();
         serviceCollection.AddScoped<GetBookmarkedJobsHandler>();
         serviceCollection.AddScoped<GetJobApplicationsHandler>();
