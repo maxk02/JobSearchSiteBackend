@@ -1,6 +1,6 @@
 ﻿using FluentValidation;
-using Shared.FluentValidationAddons;
-using Shared.FluentValidationAddons.StringFiltering;
+using JobSearchSiteBackend.Shared.FluentValidationAddons;
+using JobSearchSiteBackend.Shared.FluentValidationAddons.StringFiltering;
 
 namespace Core.Domains.Companies;
 

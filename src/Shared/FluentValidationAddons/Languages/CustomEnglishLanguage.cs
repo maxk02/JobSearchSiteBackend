@@ -1,4 +1,4 @@
-﻿namespace Shared.FluentValidationAddons.Languages;
+﻿namespace JobSearchSiteBackend.Shared.FluentValidationAddons.Languages;
 
 public static class CustomEnglishLanguage
 {

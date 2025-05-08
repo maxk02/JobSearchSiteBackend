@@ -1,6 +1,6 @@
 ﻿using System.Text.RegularExpressions;
 
-namespace Shared.FluentValidationAddons.StringFiltering;
+namespace JobSearchSiteBackend.Shared.FluentValidationAddons.StringFiltering;
 
 public class WhitelistPolicy : CustomStringPolicy
 {

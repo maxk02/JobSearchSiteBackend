@@ -1,5 +1,5 @@
 ﻿using FluentValidation;
-using Shared.FluentValidationAddons;
+using JobSearchSiteBackend.Shared.FluentValidationAddons;
 
 namespace Core.Domains.CompanyClaims;
 

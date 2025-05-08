@@ -1,8 +1,8 @@
 ﻿using System.Globalization;
 using FluentValidation.Resources;
-using Shared.FluentValidationAddons.Languages;
+using JobSearchSiteBackend.Shared.FluentValidationAddons.Languages;
 
-namespace Shared.FluentValidationAddons;
+namespace JobSearchSiteBackend.Shared.FluentValidationAddons;
 
 public class CustomLanguageManager : LanguageManager
 {

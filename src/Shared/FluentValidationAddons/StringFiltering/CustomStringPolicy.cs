@@ -1,4 +1,4 @@
-﻿namespace Shared.FluentValidationAddons.StringFiltering;
+﻿namespace JobSearchSiteBackend.Shared.FluentValidationAddons.StringFiltering;
 
 public class CustomStringPolicy
 {

@@ -1,7 +1,7 @@
 ﻿using FluentValidation;
-using Shared.FluentValidationAddons.StringFiltering;
+using JobSearchSiteBackend.Shared.FluentValidationAddons.StringFiltering;
 
-namespace Shared.FluentValidationAddons;
+namespace JobSearchSiteBackend.Shared.FluentValidationAddons;
 
 public static class FluentValidationExtensions
 {

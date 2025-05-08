@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace Shared.MyAppSettings;
+namespace JobSearchSiteBackend.Shared.MyAppSettings;
 
 public class MyJwtSettings
 {
