@@ -1,5 +1,84 @@
-bin/
-obj/
-/packages/
+## Ignore Visual Studio temporary files, build results, and
+## user-specific files
+
+.vs/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+## Build results
+[Bb]in/
+[Oo]bj/
+[Ll]og/
+*.log
+
+## NuGet
+*.nupkg
+*.snupkg
+.nuget/
+packages/
+project.lock.json
+project.fragment.lock.json
+artifacts/
+
+## ASP.NET
+project.lock.json
+project.fragment.lock.json
+**/wwwroot/lib/
+
+## Rider (JetBrains)
+.idea/
 riderModule.iml
 /_ReSharper.Caches/
+
+## VS Code
+.vscode/
+
+## Others
+*.dbmdl
+*.bak
+*.sql
+*.pdb
+*.cache
+*.config
+*.tmp
+*.svclog
+*.swp
+
+# Windows image file caches
+Thumbs.db
+ehthumbs.db
+
+# OS generated files
+.DS_Store
+*.DS_Store
+Icon?
+ehthumbs.db
+desktop.ini
+
+# Backup & IDE folders
+_ReSharper*/
+*.DotSettings.user
+
+# Test results
+TestResults/
+*.trx
+*.coverage
+*.coveragexml
+
+# Publishing
+publish/
+*.pubxml
+*.publishproj
+
+# Static analysis results
+*.sarif
+
+# Others
+*.vspscc
+*.vssscc
+*.ncrunch*
+*.build.cs
+*.pidb
+*.sln.cache
