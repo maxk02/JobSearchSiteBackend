@@ -5,7 +5,7 @@ VisualStudioVersion = 17.13.35931.197
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Core", "src\Core\Core.csproj", "{8E61A32A-E60C-4081-B6E5-C20491324C33}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JobSearchSiteBackend.Infrastructure", "src\Infrastructure\JobSearchSiteBackend.Infrastructure.csproj", "{AC53C651-07B3-4B16-9ACF-D488B8581AA0}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JobSearchSiteBackend.Infrastructure", "src\JobSearchSiteBackend.Infrastructure\JobSearchSiteBackend.Infrastructure.csproj", "{AC53C651-07B3-4B16-9ACF-D488B8581AA0}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JobSearchSiteBackend.Shared", "src\JobSearchSiteBackend.Shared\JobSearchSiteBackend.Shared.csproj", "{CB4F6839-DE45-4D05-BB9A-8F39E6CC3E65}"
 EndProject
