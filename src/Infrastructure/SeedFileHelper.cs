@@ -1,6 +1,6 @@
 ﻿using Newtonsoft.Json;
 
-namespace Infrastructure;
+namespace JobSearchSiteBackend.Infrastructure;
 
 public static class SeedFileHelper
 {

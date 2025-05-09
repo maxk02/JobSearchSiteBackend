@@ -1,7 +1,7 @@
 ﻿using Core.Domains.Locations.Search;
 using Nest;
 
-namespace Infrastructure.Search.Elasticsearch;
+namespace JobSearchSiteBackend.Infrastructure.Search.Elasticsearch;
 
 public class ElasticLocationSearchRepository(IElasticClient client) : ILocationSearchRepository
 {

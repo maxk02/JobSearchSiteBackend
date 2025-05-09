@@ -3,7 +3,7 @@ using Amazon.S3.Model;
 using Amazon.S3.Transfer;
 using Core.Services.FileStorage;
 
-namespace Infrastructure.FileStorage.AmazonS3;
+namespace JobSearchSiteBackend.Infrastructure.FileStorage.AmazonS3;
 
 public class AmazonS3FileStorageService(IAmazonS3 s3Client, string bucketName) : IFileStorageService
 {

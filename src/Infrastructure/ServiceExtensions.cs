@@ -14,13 +14,13 @@ using Core.Services.FileStorage;
 using Core.Services.TextExtraction;
 using Elasticsearch.Net;
 using Hangfire;
-using Infrastructure.Auth;
-using Infrastructure.BackgroundJobs.Hangfire;
-using Infrastructure.Caching;
-using Infrastructure.EmailSender.MailKit;
-using Infrastructure.FileStorage.AmazonS3;
-using Infrastructure.Search.Elasticsearch;
-using Infrastructure.TextExtraction;
+using JobSearchSiteBackend.Infrastructure.Auth;
+using JobSearchSiteBackend.Infrastructure.BackgroundJobs.Hangfire;
+using JobSearchSiteBackend.Infrastructure.Caching;
+using JobSearchSiteBackend.Infrastructure.EmailSender.MailKit;
+using JobSearchSiteBackend.Infrastructure.FileStorage.AmazonS3;
+using JobSearchSiteBackend.Infrastructure.Search.Elasticsearch;
+using JobSearchSiteBackend.Infrastructure.TextExtraction;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
@@ -30,7 +30,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using Nest;
 
-namespace Infrastructure;
+namespace JobSearchSiteBackend.Infrastructure;
 
 public static class ServiceExtensions
 {

@@ -2,7 +2,7 @@
 using Core.Services.BackgroundJobs;
 using Hangfire;
 
-namespace Infrastructure.BackgroundJobs.Hangfire;
+namespace JobSearchSiteBackend.Infrastructure.BackgroundJobs.Hangfire;
 
 public class HangfireBackgroundJobService : IBackgroundJobService
 {

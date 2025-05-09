@@ -3,7 +3,7 @@ using Core.Services.TextExtraction;
 using DocumentFormat.OpenXml.Packaging;
 using PdfSharp.Pdf.IO;
 
-namespace Infrastructure.TextExtraction;
+namespace JobSearchSiteBackend.Infrastructure.TextExtraction;
 
 public class TextExtractionService : ITextExtractionService
 {

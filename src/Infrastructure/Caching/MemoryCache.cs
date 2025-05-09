@@ -1,7 +1,7 @@
 ﻿using Core.Services.Caching;
 using Microsoft.Extensions.Caching.Memory;
 
-namespace Infrastructure.Caching;
+namespace JobSearchSiteBackend.Infrastructure.Caching;
 
 
 public class MemoryCache<TKey, TValue>(IMemoryCache memoryCache)

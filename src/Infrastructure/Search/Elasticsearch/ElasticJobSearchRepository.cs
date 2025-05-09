@@ -2,7 +2,7 @@
 using Elasticsearch.Net;
 using Nest;
 
-namespace Infrastructure.Search.Elasticsearch;
+namespace JobSearchSiteBackend.Infrastructure.Search.Elasticsearch;
 
 public class ElasticJobSearchRepository(IElasticClient client) : IJobSearchRepository
 {

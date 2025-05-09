@@ -2,9 +2,9 @@
 using MailKit.Net.Smtp;
 using Microsoft.Extensions.Options;
 using MimeKit;
-using Shared.MyAppSettings;
+using JobSearchSiteBackend.Shared.MyAppSettings;
 
-namespace Infrastructure.EmailSender.MailKit;
+namespace JobSearchSiteBackend.Infrastructure.EmailSender.MailKit;
 
 public class MailKitEmailSenderService(IOptions<MySmtpSettings> settings) : IEmailSenderService
 {
