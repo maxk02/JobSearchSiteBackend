@@ -1,5 +1,5 @@
 ﻿using System.Text;
-using Core.Services.TextExtraction;
+using JobSearchSiteBackend.Core.Services.TextExtraction;
 using DocumentFormat.OpenXml.Packaging;
 using PdfSharp.Pdf.IO;
 

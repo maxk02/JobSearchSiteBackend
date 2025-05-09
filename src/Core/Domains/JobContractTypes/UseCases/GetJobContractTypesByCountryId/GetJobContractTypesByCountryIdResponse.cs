@@ -1,5 +1,0 @@
-﻿// using Core.Domains.JobContractTypes.Dtos;
-//
-// namespace Core.Domains.JobContractTypes.UseCases.GetJobContractTypesByCountryId;
-//
-// public record GetJobContractTypesByCountryIdResponse(ICollection<JobContractTypeDto> JobContractTypeIdsWithNames);

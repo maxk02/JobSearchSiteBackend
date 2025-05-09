@@ -1,4 +1,4 @@
-﻿using Core.Domains.Accounts.Dtos;
+﻿using JobSearchSiteBackend.Core.Domains.Accounts.Dtos;
 
 namespace JobSearchSiteBackend.API.Controllers.Account;
 

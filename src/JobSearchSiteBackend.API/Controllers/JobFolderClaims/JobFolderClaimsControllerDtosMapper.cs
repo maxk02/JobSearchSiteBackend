@@ -1,7 +1,7 @@
 ﻿using JobSearchSiteBackend.API.Controllers.CompanyClaims;
 using AutoMapper;
-using Core.Domains.CompanyClaims.UseCases.UpdateCompanyClaimIdsForUser;
-using Core.Domains.JobFolderClaims.UseCases.UpdateJobFolderClaimIdsForUser;
+using JobSearchSiteBackend.Core.Domains.CompanyClaims.UseCases.UpdateCompanyClaimIdsForUser;
+using JobSearchSiteBackend.Core.Domains.JobFolderClaims.UseCases.UpdateJobFolderClaimIdsForUser;
 
 namespace JobSearchSiteBackend.API.Controllers.JobFolderClaims;
 

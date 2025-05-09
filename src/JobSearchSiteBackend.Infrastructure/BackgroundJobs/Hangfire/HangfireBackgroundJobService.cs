@@ -1,5 +1,5 @@
 ﻿using System.Linq.Expressions;
-using Core.Services.BackgroundJobs;
+using JobSearchSiteBackend.Core.Services.BackgroundJobs;
 using Hangfire;
 
 namespace JobSearchSiteBackend.Infrastructure.BackgroundJobs.Hangfire;

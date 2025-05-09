@@ -1,6 +1,6 @@
 ﻿using Ardalis.Result;
-using Core.Domains._Shared.UseCaseStructure;
-using Core.Domains.JobApplications.Enums;
+using JobSearchSiteBackend.Core.Domains._Shared.UseCaseStructure;
+using JobSearchSiteBackend.Core.Domains.JobApplications.Enums;
 
 namespace JobSearchSiteBackend.API.Controllers.JobApplications;
 

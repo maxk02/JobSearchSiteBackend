@@ -1,7 +1,7 @@
-﻿using Core.Domains.Accounts;
-using Core.Persistence;
-using Core.Services.Auth;
-using Core.Services.Caching;
+﻿using JobSearchSiteBackend.Core.Domains.Accounts;
+using JobSearchSiteBackend.Core.Persistence;
+using JobSearchSiteBackend.Core.Services.Auth;
+using JobSearchSiteBackend.Core.Services.Caching;
 using Microsoft.Extensions.Caching.Memory;
 
 namespace JobSearchSiteBackend.API.Middleware;

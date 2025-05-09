@@ -1,5 +1,5 @@
-﻿using Core.Domains.Locations;
-using Core.Persistence;
+﻿using JobSearchSiteBackend.Core.Domains.Locations;
+using JobSearchSiteBackend.Core.Persistence;
 
 namespace JobSearchSiteBackend.Infrastructure.Persistence;
 

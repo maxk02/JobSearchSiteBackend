@@ -1,5 +1,5 @@
 ﻿using Ardalis.Result;
-using Core.Domains._Shared.UseCaseStructure;
+using JobSearchSiteBackend.Core.Domains._Shared.UseCaseStructure;
 
 namespace JobSearchSiteBackend.API.Controllers.JobFolderClaims;
 

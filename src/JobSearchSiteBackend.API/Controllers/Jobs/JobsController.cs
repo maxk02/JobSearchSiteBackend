@@ -1,10 +1,10 @@
 ﻿using Ardalis.Result.AspNetCore;
 using AutoMapper;
-using Core.Domains.Jobs.UseCases.AddJob;
-using Core.Domains.Jobs.UseCases.DeleteJob;
-using Core.Domains.Jobs.UseCases.GetJobById;
-using Core.Domains.Jobs.UseCases.GetJobs;
-using Core.Domains.Jobs.UseCases.UpdateJob;
+using JobSearchSiteBackend.Core.Domains.Jobs.UseCases.AddJob;
+using JobSearchSiteBackend.Core.Domains.Jobs.UseCases.DeleteJob;
+using JobSearchSiteBackend.Core.Domains.Jobs.UseCases.GetJobById;
+using JobSearchSiteBackend.Core.Domains.Jobs.UseCases.GetJobs;
+using JobSearchSiteBackend.Core.Domains.Jobs.UseCases.UpdateJob;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 

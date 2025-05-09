@@ -1,5 +1,5 @@
 ﻿using Ardalis.Result.AspNetCore;
-using Core.Domains.Locations.UseCases.GetLocations;
+using JobSearchSiteBackend.Core.Domains.Locations.UseCases.GetLocations;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 

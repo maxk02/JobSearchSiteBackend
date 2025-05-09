@@ -1,9 +1,9 @@
 ﻿using Ardalis.Result.AspNetCore;
-using Core.Domains.JobApplications.UseCases.AddJobApplication;
-using Core.Domains.JobApplications.UseCases.DeleteJobApplication;
-using Core.Domains.JobApplications.UseCases.GetApplicationsForJobId;
-using Core.Domains.JobApplications.UseCases.UpdateJobApplication;
-using Core.Domains.JobApplications.UseCases.UpdateJobApplicationFiles;
+using JobSearchSiteBackend.Core.Domains.JobApplications.UseCases.AddJobApplication;
+using JobSearchSiteBackend.Core.Domains.JobApplications.UseCases.DeleteJobApplication;
+using JobSearchSiteBackend.Core.Domains.JobApplications.UseCases.GetApplicationsForJobId;
+using JobSearchSiteBackend.Core.Domains.JobApplications.UseCases.UpdateJobApplication;
+using JobSearchSiteBackend.Core.Domains.JobApplications.UseCases.UpdateJobApplicationFiles;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 

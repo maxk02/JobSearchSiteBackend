@@ -1,4 +1,4 @@
-﻿using Core.Domains.PersonalFiles.Search;
+﻿using JobSearchSiteBackend.Core.Domains.PersonalFiles.Search;
 using Elasticsearch.Net;
 using Nest;
 

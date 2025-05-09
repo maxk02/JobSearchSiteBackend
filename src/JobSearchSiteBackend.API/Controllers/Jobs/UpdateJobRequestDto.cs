@@ -1,6 +1,6 @@
 ﻿using Ardalis.Result;
-using Core.Domains._Shared.UseCaseStructure;
-using Core.Domains.Jobs.Dtos;
+using JobSearchSiteBackend.Core.Domains._Shared.UseCaseStructure;
+using JobSearchSiteBackend.Core.Domains.Jobs.Dtos;
 
 namespace JobSearchSiteBackend.API.Controllers.Jobs;
 

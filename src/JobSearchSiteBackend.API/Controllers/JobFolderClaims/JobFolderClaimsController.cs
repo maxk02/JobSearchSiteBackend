@@ -1,7 +1,7 @@
 ﻿using Ardalis.Result.AspNetCore;
 using AutoMapper;
-using Core.Domains.JobFolderClaims.UseCases.GetJobFolderClaimIdsForUser;
-using Core.Domains.JobFolderClaims.UseCases.UpdateJobFolderClaimIdsForUser;
+using JobSearchSiteBackend.Core.Domains.JobFolderClaims.UseCases.GetJobFolderClaimIdsForUser;
+using JobSearchSiteBackend.Core.Domains.JobFolderClaims.UseCases.UpdateJobFolderClaimIdsForUser;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 

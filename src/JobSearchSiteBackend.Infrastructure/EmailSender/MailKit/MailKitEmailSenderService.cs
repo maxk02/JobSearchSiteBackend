@@ -1,4 +1,4 @@
-﻿using Core.Services.EmailSender;
+﻿using JobSearchSiteBackend.Core.Services.EmailSender;
 using MailKit.Net.Smtp;
 using Microsoft.Extensions.Options;
 using MimeKit;

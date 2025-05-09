@@ -24,7 +24,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\Core\Core.csproj" />
+      <ProjectReference Include="..\JobSearchSiteBackend.Core\JobSearchSiteBackend.Core.csproj" />
       <ProjectReference Include="..\JobSearchSiteBackend.Infrastructure\JobSearchSiteBackend.Infrastructure.csproj" />
     </ItemGroup>
 

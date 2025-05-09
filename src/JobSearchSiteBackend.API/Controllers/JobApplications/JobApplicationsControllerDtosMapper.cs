@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
-using Core.Domains.JobApplications.UseCases.UpdateJobApplication;
-using Core.Domains.JobApplications.UseCases.UpdateJobApplicationFiles;
+using JobSearchSiteBackend.Core.Domains.JobApplications.UseCases.UpdateJobApplication;
+using JobSearchSiteBackend.Core.Domains.JobApplications.UseCases.UpdateJobApplicationFiles;
 
 namespace JobSearchSiteBackend.API.Controllers.JobApplications;
 

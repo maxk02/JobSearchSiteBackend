@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using Core.Domains.Accounts.UseCases.LogIn;
+using JobSearchSiteBackend.Core.Domains.Accounts.UseCases.LogIn;
 
 namespace JobSearchSiteBackend.API.Controllers.Account;
 

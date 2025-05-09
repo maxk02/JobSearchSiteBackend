@@ -1,10 +1,10 @@
 ﻿using Ardalis.Result.AspNetCore;
 using AutoMapper;
-using Core.Domains.Companies.UseCases.AddCompany;
-using Core.Domains.Companies.UseCases.DeleteCompany;
-using Core.Domains.Companies.UseCases.GetCompanies;
-using Core.Domains.Companies.UseCases.GetCompanyById;
-using Core.Domains.Companies.UseCases.UpdateCompany;
+using JobSearchSiteBackend.Core.Domains.Companies.UseCases.AddCompany;
+using JobSearchSiteBackend.Core.Domains.Companies.UseCases.DeleteCompany;
+using JobSearchSiteBackend.Core.Domains.Companies.UseCases.GetCompanies;
+using JobSearchSiteBackend.Core.Domains.Companies.UseCases.GetCompanyById;
+using JobSearchSiteBackend.Core.Domains.Companies.UseCases.UpdateCompany;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 

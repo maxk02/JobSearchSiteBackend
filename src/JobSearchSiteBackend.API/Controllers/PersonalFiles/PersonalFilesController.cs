@@ -1,8 +1,8 @@
 ﻿using Ardalis.Result.AspNetCore;
 using AutoMapper;
-using Core.Domains.PersonalFiles.UseCases.DeleteFile;
-using Core.Domains.PersonalFiles.UseCases.UpdateFile;
-using Core.Domains.PersonalFiles.UseCases.UploadFile;
+using JobSearchSiteBackend.Core.Domains.PersonalFiles.UseCases.DeleteFile;
+using JobSearchSiteBackend.Core.Domains.PersonalFiles.UseCases.UpdateFile;
+using JobSearchSiteBackend.Core.Domains.PersonalFiles.UseCases.UploadFile;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 

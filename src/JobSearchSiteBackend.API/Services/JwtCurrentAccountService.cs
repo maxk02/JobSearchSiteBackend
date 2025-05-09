@@ -1,7 +1,7 @@
 ﻿using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
-using Core.Services.Auth;
-using Core.Services.Auth.Exceptions;
+using JobSearchSiteBackend.Core.Services.Auth;
+using JobSearchSiteBackend.Core.Services.Auth.Exceptions;
 
 namespace JobSearchSiteBackend.API.Services;
 

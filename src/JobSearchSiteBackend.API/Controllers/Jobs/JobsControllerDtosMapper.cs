@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using Core.Domains.Jobs.UseCases.UpdateJob;
+using JobSearchSiteBackend.Core.Domains.Jobs.UseCases.UpdateJob;
 
 namespace JobSearchSiteBackend.API.Controllers.Jobs;
 

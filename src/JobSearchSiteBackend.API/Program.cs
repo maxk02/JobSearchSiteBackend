@@ -2,15 +2,15 @@ using System.Reflection;
 using System.Text.Json.Serialization;
 using JobSearchSiteBackend.API.Middleware;
 using JobSearchSiteBackend.API.Services;
-using Core;
-using Core.Persistence;
-using Core.Services.Auth;
-using Core.Services.Cookies;
-using Core.Services.Search;
+using JobSearchSiteBackend.Core;
+using JobSearchSiteBackend.Core.Persistence;
+using JobSearchSiteBackend.Core.Services.Auth;
+using JobSearchSiteBackend.Core.Services.Cookies;
+using JobSearchSiteBackend.Core.Services.Search;
 using DotNetEnv;
-using Infrastructure;
-using Infrastructure.Persistence;
-using Shared.MyAppSettings;
+using JobSearchSiteBackend.Infrastructure;
+using JobSearchSiteBackend.Infrastructure.Persistence;
+using JobSearchSiteBackend.Shared.MyAppSettings;
 
 var builder = WebApplication.CreateBuilder(args);
 

@@ -1,4 +1,4 @@
-﻿using Core.Services.Cookies;
+﻿using JobSearchSiteBackend.Core.Services.Cookies;
 
 namespace JobSearchSiteBackend.API.Services;
 

@@ -1,10 +1,10 @@
 ﻿using Ardalis.Result.AspNetCore;
 using AutoMapper;
-using Core.Domains.JobFolders.UseCases.AddJobFolder;
-using Core.Domains.JobFolders.UseCases.DeleteJobFolder;
-using Core.Domains.JobFolders.UseCases.GetChildFolders;
-using Core.Domains.JobFolders.UseCases.GetJobs;
-using Core.Domains.JobFolders.UseCases.UpdateJobFolder;
+using JobSearchSiteBackend.Core.Domains.JobFolders.UseCases.AddJobFolder;
+using JobSearchSiteBackend.Core.Domains.JobFolders.UseCases.DeleteJobFolder;
+using JobSearchSiteBackend.Core.Domains.JobFolders.UseCases.GetChildFolders;
+using JobSearchSiteBackend.Core.Domains.JobFolders.UseCases.GetJobs;
+using JobSearchSiteBackend.Core.Domains.JobFolders.UseCases.UpdateJobFolder;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 

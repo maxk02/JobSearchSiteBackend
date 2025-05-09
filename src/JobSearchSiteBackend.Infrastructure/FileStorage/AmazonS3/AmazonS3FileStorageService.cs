@@ -1,7 +1,7 @@
 ﻿using Amazon.S3;
 using Amazon.S3.Model;
 using Amazon.S3.Transfer;
-using Core.Services.FileStorage;
+using JobSearchSiteBackend.Core.Services.FileStorage;
 
 namespace JobSearchSiteBackend.Infrastructure.FileStorage.AmazonS3;
 

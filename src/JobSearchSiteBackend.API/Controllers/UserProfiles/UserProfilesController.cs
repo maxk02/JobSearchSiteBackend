@@ -1,13 +1,13 @@
 ﻿using Ardalis.Result.AspNetCore;
-using Core.Domains._Shared.Pagination;
-using Core.Domains.UserProfiles.UseCases.AddJobBookmark;
-using Core.Domains.UserProfiles.UseCases.AddUserProfile;
-using Core.Domains.UserProfiles.UseCases.DeleteJobBookmark;
-using Core.Domains.UserProfiles.UseCases.GetBookmarkedJobs;
-using Core.Domains.UserProfiles.UseCases.GetJobApplications;
-using Core.Domains.UserProfiles.UseCases.GetPersonalFiles;
-using Core.Domains.UserProfiles.UseCases.GetUserProfile;
-using Core.Domains.UserProfiles.UseCases.UpdateUserProfile;
+using JobSearchSiteBackend.Core.Domains._Shared.Pagination;
+using JobSearchSiteBackend.Core.Domains.UserProfiles.UseCases.AddJobBookmark;
+using JobSearchSiteBackend.Core.Domains.UserProfiles.UseCases.AddUserProfile;
+using JobSearchSiteBackend.Core.Domains.UserProfiles.UseCases.DeleteJobBookmark;
+using JobSearchSiteBackend.Core.Domains.UserProfiles.UseCases.GetBookmarkedJobs;
+using JobSearchSiteBackend.Core.Domains.UserProfiles.UseCases.GetJobApplications;
+using JobSearchSiteBackend.Core.Domains.UserProfiles.UseCases.GetPersonalFiles;
+using JobSearchSiteBackend.Core.Domains.UserProfiles.UseCases.GetUserProfile;
+using JobSearchSiteBackend.Core.Domains.UserProfiles.UseCases.UpdateUserProfile;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 

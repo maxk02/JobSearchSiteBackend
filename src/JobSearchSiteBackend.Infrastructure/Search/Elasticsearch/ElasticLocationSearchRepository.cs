@@ -1,4 +1,4 @@
-﻿using Core.Domains.Locations.Search;
+﻿using JobSearchSiteBackend.Core.Domains.Locations.Search;
 using Nest;
 
 namespace JobSearchSiteBackend.Infrastructure.Search.Elasticsearch;

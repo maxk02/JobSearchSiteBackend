@@ -1,4 +1,4 @@
-﻿using Core.Services.Caching;
+﻿using JobSearchSiteBackend.Core.Services.Caching;
 using Microsoft.Extensions.Caching.Memory;
 
 namespace JobSearchSiteBackend.Infrastructure.Caching;

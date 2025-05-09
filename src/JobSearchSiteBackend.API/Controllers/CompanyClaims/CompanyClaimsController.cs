@@ -1,7 +1,7 @@
 ﻿using Ardalis.Result.AspNetCore;
 using AutoMapper;
-using Core.Domains.CompanyClaims.UseCases.GetCompanyClaimIdsForUser;
-using Core.Domains.CompanyClaims.UseCases.UpdateCompanyClaimIdsForUser;
+using JobSearchSiteBackend.Core.Domains.CompanyClaims.UseCases.GetCompanyClaimIdsForUser;
+using JobSearchSiteBackend.Core.Domains.CompanyClaims.UseCases.UpdateCompanyClaimIdsForUser;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 

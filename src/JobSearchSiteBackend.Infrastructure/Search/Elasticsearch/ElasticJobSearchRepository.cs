@@ -1,4 +1,4 @@
-﻿using Core.Domains.Jobs.Search;
+﻿using JobSearchSiteBackend.Core.Domains.Jobs.Search;
 using Elasticsearch.Net;
 using Nest;
 

@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using Core.Domains.PersonalFiles.UseCases.UpdateFile;
+using JobSearchSiteBackend.Core.Domains.PersonalFiles.UseCases.UpdateFile;
 
 namespace JobSearchSiteBackend.API.Controllers.PersonalFiles;
 

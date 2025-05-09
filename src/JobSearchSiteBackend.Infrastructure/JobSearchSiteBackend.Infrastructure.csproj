@@ -19,7 +19,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\Core\Core.csproj" />
+      <ProjectReference Include="..\JobSearchSiteBackend.Core\JobSearchSiteBackend.Core.csproj" />
 	  <ProjectReference Include="..\JobSearchSiteBackend.Shared\JobSearchSiteBackend.Shared.csproj" />
     </ItemGroup>
 
