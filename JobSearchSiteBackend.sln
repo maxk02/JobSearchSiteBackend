@@ -9,7 +9,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JobSearchSiteBackend.Infras
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JobSearchSiteBackend.Shared", "src\JobSearchSiteBackend.Shared\JobSearchSiteBackend.Shared.csproj", "{CB4F6839-DE45-4D05-BB9A-8F39E6CC3E65}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "API", "src\API\API.csproj", "{628C2DF0-9E80-4B90-A10A-5D741DF222E6}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JobSearchSiteBackend.API", "src\JobSearchSiteBackend.API\JobSearchSiteBackend.API.csproj", "{628C2DF0-9E80-4B90-A10A-5D741DF222E6}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{B91B5E2B-2609-4D32-8F34-B9F5F5EB5424}"
 	ProjectSection(SolutionItems) = preProject
