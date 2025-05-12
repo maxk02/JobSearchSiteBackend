@@ -6,6 +6,10 @@ To repozytorium zawiera przykładowe API dla strony do poszukiwania pracy.
 Aplikację przedstawiono jako rozwiązanie C#/.NET 9 zawierające trzy projekty (Core, Infrastructure, API) reprezentujące uproszczoną interpretację Clean Architecture oraz projekt Shared, w którym umieszczono wspólne dla całego rozwiązania klasy konfiguracji oraz rozszerzeń.
 
 
+## Baza danych
+![Schemat bazy danych](https://raw.githubusercontent.com/maxk02/JobSearchSiteBackend/main/assets/mainDbSchema.png)
+
+
 ## Projekt Core
 Core jest projektem rdzennym aplikacji z zaimplementowanymi encjami, logiką biznesową oraz interfejsami usług zewnętrznych.
 
