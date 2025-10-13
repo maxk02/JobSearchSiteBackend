@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
+using JobSearchSiteBackend.Core.Domains.Jobs.Dtos;
 
-namespace JobSearchSiteBackend.Core.Domains.Jobs.Dtos;
+namespace JobSearchSiteBackend.Core.Domains.Jobs;
 
 public class JobDtoMappings : Profile
 {

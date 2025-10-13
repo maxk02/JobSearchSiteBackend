@@ -7,7 +7,7 @@ using JobSearchSiteBackend.Core.Services.Auth;
 using JobSearchSiteBackend.Core.Services.BackgroundJobs;
 using Microsoft.EntityFrameworkCore;
 
-namespace JobSearchSiteBackend.Core.Domains.Companies.UseCases.UpdateCompanyBalance;
+namespace JobSearchSiteBackend.Core.Domains.Companies.UseCases.TopUpCompanyBalance;
 
 public class TopUpCompanyBalanceHandler(
     ICurrentAccountService currentAccountService,
