@@ -165,25 +165,6 @@ public class UpdateJobHandler(
         
         await context.SaveChangesAsync(cancellationToken);
 
-        var jobSearchModel = new JobSearchModel(
-            job.Id,
-            countryId,
-            job.CategoryId,
-            job.Title,
-            job.Description,
-            job.Responsibilities!,
-            job.Requirements!,
-            job.NiceToHaves!
-        );
-
-        backgroundJobService.Enqueue(
-            () => jobSearchRepository
-                .AddOrUpdateIfNewestAsync(jobSearchModel, job.RowVersion, CancellationToken.None),
-            BackgroundJobQueues.JobSearch
-        );
-        
-        transaction.Complete();
-
         return Result.Success();
     }
 }

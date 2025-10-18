@@ -8,6 +8,11 @@ using JobSearchSiteBackend.Core.Services.Auth;
 using JobSearchSiteBackend.Core.Services.Cookies;
 using JobSearchSiteBackend.Core.Services.Search;
 using DotNetEnv;
+using JobSearchSiteBackend.Core.Domains.Companies.RecurringJobs;
+using JobSearchSiteBackend.Core.Domains.Companies.Search;
+using JobSearchSiteBackend.Core.Domains.Jobs.RecurringJobs;
+using JobSearchSiteBackend.Core.Domains.Jobs.Search;
+using JobSearchSiteBackend.Core.Services.BackgroundJobs;
 using JobSearchSiteBackend.Infrastructure;
 using JobSearchSiteBackend.Infrastructure.Persistence;
 using JobSearchSiteBackend.Shared.MyAppSettings;
@@ -133,6 +138,27 @@ using (var scope = app.Services.CreateScope())
             Console.WriteLine($"Error seeding {repoType.Name}: {ex.Message}");
             throw;
         }
+    }
+}
+
+// Registering recurring jobs
+using (var scope = app.Services.CreateScope())
+{
+    var services = scope.ServiceProvider;
+
+    try
+    {
+        var dbContext = services.GetRequiredService<MainDataContext>();
+        var backgroundJobService = services.GetRequiredService<IBackgroundJobService>();
+        var jobSearchRepository = services.GetRequiredService<IJobSearchRepository>();
+        var companySearchRepository = services.GetRequiredService<ICompanySearchRepository>();
+
+        await SyncJobsWithSearchRecurringJob.Register(dbContext, jobSearchRepository, backgroundJobService);
+        await SyncCompaniesWithSearchRecurringJob.Register(dbContext, companySearchRepository, backgroundJobService);
+    }
+    catch (Exception ex)
+    {
+        throw;
     }
 }
 

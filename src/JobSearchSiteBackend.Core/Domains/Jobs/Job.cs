@@ -9,7 +9,7 @@ using JobSearchSiteBackend.Core.Domains.UserProfiles;
 
 namespace JobSearchSiteBackend.Core.Domains.Jobs;
 
-public class Job : IEntityWithId, IEntityWithRowVersioning
+public class Job : IEntityWithId
 {
     public Job(long categoryId, long jobFolderId, string title, string description, bool isPublic,
         DateTime dateTimePublishedUtc,
@@ -32,7 +32,9 @@ public class Job : IEntityWithId, IEntityWithRowVersioning
     
     public long Id { get; private set; }
 
-    public byte[] RowVersion { get; set; } = [];
+    public DateTime? LastUpdatedUtc { get; private set; }
+    
+    public bool IsDeleted { get; private set; }
 
     public long CategoryId { get; set; }
 

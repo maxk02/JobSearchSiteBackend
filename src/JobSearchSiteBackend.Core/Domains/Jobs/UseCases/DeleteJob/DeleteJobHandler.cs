@@ -40,31 +40,10 @@ public class DeleteJobHandler(
             return Result.Forbidden();
 
         var countryId = job.JobFolder!.Company!.CountryId;
-        var jobRowVersion = job.RowVersion;
-        
-        var jobSearchModel = new JobSearchModel(
-            job.Id,
-            countryId,
-            job.CategoryId,
-            job.Title,
-            job.Description,
-            job.Responsibilities!,
-            job.Requirements!,
-            job.NiceToHaves!
-        );
         
         context.Jobs.Remove(job);
         
-        using var transaction = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled);
-        
         await context.SaveChangesAsync(cancellationToken);
-
-        backgroundJobService.Enqueue(
-            () => jobSearchRepository.SoftDeleteAsync(jobSearchModel, jobRowVersion, CancellationToken.None),
-            BackgroundJobQueues.JobSearch
-        );
-        
-        transaction.Complete();
 
         return Result.Success();
     }
