@@ -7,12 +7,14 @@ namespace JobSearchSiteBackend.Core.Domains.Jobs.RecurringJobs;
 
 public static class SyncJobsWithSearchRecurringJob
 {
+    public static int SyncPeriodMinutes = 2;
+    
     public static async Task Register(MainDataContext dbContext,
         IJobSearchRepository jobSearchRepository,
         IBackgroundJobService backgroundJobService)
     {
         backgroundJobService.AddOrUpdateRecurring("sql-search-sync-jobs", 
-            () => Run(dbContext, jobSearchRepository), "*/2 * * * *");
+            () => Run(dbContext, jobSearchRepository), $"*/{SyncPeriodMinutes} * * * *");
         
         await Task.CompletedTask;
     }
@@ -24,17 +26,23 @@ public static class SyncJobsWithSearchRecurringJob
                 .Where(x => x.CollectionName == "jobs")
                 .SingleOrDefaultAsync();
 
-        if (lastUpdateInfo == null || lastUpdateInfo.UpdatedUpToDateTimeUtc == null)
+        if (lastUpdateInfo == null)
         {
-            return;
+            throw new InvalidDataException();
         }
 
-        var recordsToUpdate = await dbContext.Jobs
+        // var vs this type??
+        IQueryable<Job> query = dbContext.Jobs
             .AsNoTracking()
             .Include(j => j.JobFolder)
-            .ThenInclude(jf => jf!.Company)
-            .Where(j => j.LastUpdatedUtc > lastUpdateInfo.UpdatedUpToDateTimeUtc)
-            .ToListAsync();
+            .ThenInclude(jf => jf!.Company);
+        
+        if (lastUpdateInfo.UpdatedUpToDateTimeUtc != null)
+        {
+            query = query.Where(j => j.LastUpdatedUtc > lastUpdateInfo.UpdatedUpToDateTimeUtc).OrderBy(x => x.LastUpdatedUtc);
+        }
+
+        var recordsToUpdate = await query.ToListAsync();
         
         var jobSearchModels = recordsToUpdate.Select(job => new JobSearchModel(
             job.Id,
@@ -48,6 +56,9 @@ public static class SyncJobsWithSearchRecurringJob
         ));
         
         // await jobSearchRepository
-        await Task.CompletedTask;
+        
+        lastUpdateInfo.UpdatedUpToDateTimeUtc = recordsToUpdate.Last().LastUpdatedUtc;
+        lastUpdateInfo.LastTimeSyncedUtc = DateTime.UtcNow;
+        await dbContext.SaveChangesAsync();
     }
 }

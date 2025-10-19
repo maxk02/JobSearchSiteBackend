@@ -13,7 +13,12 @@ public class SqlToSearchSyncInfo : IEntityWithId
     
     public long Id { get; private set; }
     public string CollectionName { get; private set; }
-    public DateTime? UpdatedUpToDateTimeUtc { get; private set; }
+    // take it from last db record sorted by date
+    // next update from > from that datetime
+    // need to insert date here inside db (maybe with trigger) after commit, not from asp.net
+    public DateTime? UpdatedUpToDateTimeUtc { get; set; }
+    // just logging from asp.net when was it synced last time
+    public DateTime? LastTimeSyncedUtc { get; set; }
     
     public SqlToSearchSyncInfo(long id, string collectionName, DateTime? updatedUpToDateTimeUtc = null)
     {
