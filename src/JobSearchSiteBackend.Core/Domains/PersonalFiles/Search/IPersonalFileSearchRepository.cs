@@ -3,4 +3,4 @@
 namespace JobSearchSiteBackend.Core.Domains.PersonalFiles.Search;
 
 public interface IPersonalFileSearchRepository : ISearchRepository<PersonalFileSearchModel>,
-    IConcurrentSearchRepository<PersonalFileSearchModel>;
+    IDeletableSearchRepository<PersonalFileSearchModel>;

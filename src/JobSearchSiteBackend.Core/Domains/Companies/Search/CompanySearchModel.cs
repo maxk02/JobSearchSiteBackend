@@ -7,5 +7,6 @@ public record CompanySearchModel(
     long CountryId,
     string Name,
     string? Description,
-    DateTime? DeletionDateTimeUtc = null
-) : ISearchModelWithId, ISearchModelWithDeletionDateTime;
+    DateTime DateTimeUpdatedUtc,
+    bool IsDeleted
+) : ISearchModelWithId, IUpdatableSearchModel;

@@ -11,6 +11,6 @@ public static class PersonalFileUseCasesDi
     {
         serviceCollection.AddScoped<DeleteFileHandler>();
         serviceCollection.AddScoped<UpdateFileHandler>();
-        serviceCollection.AddScoped<UploadFileHandler>();
+        // serviceCollection.AddScoped<UploadFileHandler>();
     }
 }

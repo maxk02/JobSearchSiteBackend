@@ -126,9 +126,9 @@ public static class ServiceExtensions
             return client;
         });
         
-        serviceCollection.AddSingleton<IJobSearchRepository, ElasticJobSearchRepository>();
+        // serviceCollection.AddSingleton<IJobSearchRepository, ElasticJobSearchRepository>();
         serviceCollection.AddSingleton<ILocationSearchRepository, ElasticLocationSearchRepository>();
-        serviceCollection.AddSingleton<IPersonalFileSearchRepository, ElasticPersonalFileSearchRepository>();
+        // serviceCollection.AddSingleton<IPersonalFileSearchRepository, ElasticPersonalFileSearchRepository>();
     }
     
     public static void ConfigureTextExtraction(this IServiceCollection serviceCollection)

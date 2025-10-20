@@ -13,17 +13,17 @@ namespace JobSearchSiteBackend.API.Controllers.PersonalFiles;
 [Authorize]
 public class PersonalFilesController(IMapper mapper) : ControllerBase
 {
-    [HttpPost]
-    public async Task<ActionResult> UploadFile(
-        [FromForm] IFormFile file,
-        [FromServices] UploadFileHandler handler,
-        CancellationToken cancellationToken)
-    {
-        var request = new UploadFileRequest(file);
-        var result = await handler.Handle(request, cancellationToken);
-        
-        return this.ToActionResult(result);
-    }
+    // [HttpPost]
+    // public async Task<ActionResult> UploadFile(
+    //     [FromForm] IFormFile file,
+    //     [FromServices] UploadFileHandler handler,
+    //     CancellationToken cancellationToken)
+    // {
+    //     var request = new UploadFileRequest(file);
+    //     var result = await handler.Handle(request, cancellationToken);
+    //     
+    //     return this.ToActionResult(result);
+    // }
     
     [HttpDelete("{id:long:min(1)}")]
     public async Task<ActionResult> DeleteFile(

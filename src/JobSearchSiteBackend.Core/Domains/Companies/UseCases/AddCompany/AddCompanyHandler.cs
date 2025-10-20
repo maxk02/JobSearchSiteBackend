@@ -13,8 +13,6 @@ namespace JobSearchSiteBackend.Core.Domains.Companies.UseCases.AddCompany;
 
 public class AddCompanyHandler(
     ICurrentAccountService currentAccountService,
-    ICompanySearchRepository companySearchRepository,
-    IBackgroundJobService backgroundJobService,
     MainDataContext context)
     : IRequestHandler<AddCompanyRequest, Result<AddCompanyResponse>>
 {
@@ -32,8 +30,14 @@ public class AddCompanyHandler(
         await context.Companies.AddAsync(company, cancellationToken);
         await context.SaveChangesAsync(cancellationToken);
 
-        var companySearchModel =
-            new CompanySearchModel(company.Id, company.CountryId, company.Name, company.Description);
+        var companySearchModel = new CompanySearchModel(
+            company.Id, 
+            company.CountryId,
+            company.Name,
+            company.Description,
+            new DateTime(), //company.DateTimeUpdatedUtc
+            false //company.isDeleted
+            );
 
         //adding full permission set to user
         company.UserCompanyClaims = CompanyClaim.AllIds
@@ -52,12 +56,6 @@ public class AddCompanyHandler(
 
         // saving changes
         await context.SaveChangesAsync(cancellationToken);
-
-        backgroundJobService
-            .Enqueue(
-                () => companySearchRepository.
-                    AddOrUpdateIfNewestAsync(companySearchModel, company.RowVersion, CancellationToken.None),
-                BackgroundJobQueues.CompanySearch);
         
         //committing transaction
         transaction.Complete();

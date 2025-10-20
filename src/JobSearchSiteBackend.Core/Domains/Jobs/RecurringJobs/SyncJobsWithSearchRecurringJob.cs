@@ -52,7 +52,9 @@ public static class SyncJobsWithSearchRecurringJob
             job.Description,
             job.Responsibilities ?? [],
             job.Requirements ?? [],
-            job.NiceToHaves ?? []
+            job.NiceToHaves ?? [],
+            new DateTime(), //job.DateTimeUpdatedUtc
+            false //job.IsDeleted
         ));
         
         // await jobSearchRepository

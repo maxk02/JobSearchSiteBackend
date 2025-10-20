@@ -44,21 +44,14 @@ public class DeleteCompanyHandler(
             companyWithPermissionIds.Company.Id,
             companyWithPermissionIds.Company.CountryId,
             companyWithPermissionIds.Company.Name,
-            companyWithPermissionIds.Company.Description
+            companyWithPermissionIds.Company.Description,
+            new DateTime(), //company.DateTimeUpdatedUtc
+            false //company.isDeleted
         );
 
         context.Companies.Remove(companyWithPermissionIds.Company);
-
-        using var transaction = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled);
         
         await context.SaveChangesAsync(cancellationToken);
-        
-        backgroundJobService.Enqueue(
-            () => companySearchRepository
-                .SoftDeleteAsync(companySearchModel, companyRowVersion, CancellationToken.None),
-            BackgroundJobQueues.CompanySearch);
-        
-        transaction.Complete();
 
         return Result.Success();
     }

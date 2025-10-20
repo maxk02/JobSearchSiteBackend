@@ -49,21 +49,14 @@ public class UpdateCompanyHandler(
             company.Id,
             company.CountryId,
             company.Name,
-            company.Description
+            company.Description,
+            new DateTime(), //company.DateTimeUpdatedUtc
+            false //company.isDeleted
         );
 
         context.Companies.Update(company);
-
-        using var transaction = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled);
         
         await context.SaveChangesAsync(cancellationToken);
-
-        backgroundJobService
-            .Enqueue(() => companySearchRepository
-                    .AddOrUpdateIfNewestAsync(companySearchModel, company.RowVersion, CancellationToken.None),
-                BackgroundJobQueues.CompanySearch);
-        
-        transaction.Complete();
 
         return Result.Success();
     }

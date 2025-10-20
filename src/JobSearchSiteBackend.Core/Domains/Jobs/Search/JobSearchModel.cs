@@ -12,5 +12,6 @@ public record JobSearchModel
     ICollection<string> Responsibilities,
     ICollection<string> Requirements,
     ICollection<string> NiceToHaves,
-    DateTime? DeletionDateTimeUtc = null
-) : ISearchModelWithId, ISearchModelWithDeletionDateTime;
+    DateTime DateTimeUpdatedUtc,
+    bool IsDeleted
+) : ISearchModelWithId, IUpdatableSearchModel;
