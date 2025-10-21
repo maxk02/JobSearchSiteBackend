@@ -17,14 +17,18 @@ public class ElasticJobSearchRepository(IElasticClient client) : IJobSearchRepos
             await CreateIndexAsync();
         }
     }
-
-    public async Task UpdateAsync(JobSearchModel searchModel,
+    
+    public async Task UpsertMultipleAsync(ICollection<JobSearchModel> searchModels,
         CancellationToken cancellationToken = default)
     {
         try
         {
-            await client.UpdateAsync<JobSearchModel>(searchModel.Id,
-                x => x, cancellationToken);
+            await client.BulkAsync(b => b
+                .Index(IndexName)
+                .UpdateMany(searchModels, (ud, p) => ud
+                    .Doc(p)
+                    .DocAsUpsert(true)),
+                cancellationToken);
         }
         catch (ElasticsearchClientException ex) when (ex.Response.HttpStatusCode == 409)
         {

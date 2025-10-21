@@ -2,5 +2,5 @@
 
 public interface IUpdatableSearchRepository<T> where T : ISearchModelWithId, IUpdatableSearchModel
 {
-    public Task UpdateAsync(T model, CancellationToken cancellationToken = default);
+    public Task UpsertMultipleAsync(ICollection<T> searchModels, CancellationToken cancellationToken = default);
 }

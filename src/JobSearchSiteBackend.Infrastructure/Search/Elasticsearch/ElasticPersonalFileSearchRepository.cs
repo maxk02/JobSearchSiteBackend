@@ -18,13 +18,17 @@ public class ElasticPersonalFileSearchRepository(IElasticClient client) : IPerso
         }
     }
 
-    public async Task UpdateAsync(PersonalFileSearchModel searchModel,
+    public async Task UpsertMultipleAsync(ICollection<PersonalFileSearchModel> searchModels,
         CancellationToken cancellationToken = default)
     {
         try
         {
-            await client.UpdateAsync<PersonalFileSearchModel>(searchModel.Id,
-                x => x, cancellationToken);
+            await client.BulkAsync(b => b
+                    .Index(IndexName)
+                    .UpdateMany(searchModels, (ud, p) => ud
+                        .Doc(p)
+                        .DocAsUpsert(true)),
+                cancellationToken);
         }
         catch (ElasticsearchClientException ex) when (ex.Response.HttpStatusCode == 409)
         {

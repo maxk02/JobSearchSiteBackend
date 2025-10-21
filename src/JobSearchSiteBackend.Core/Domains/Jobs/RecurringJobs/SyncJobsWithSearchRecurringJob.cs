@@ -7,7 +7,7 @@ namespace JobSearchSiteBackend.Core.Domains.Jobs.RecurringJobs;
 
 public static class SyncJobsWithSearchRecurringJob
 {
-    public static int SyncPeriodMinutes = 2;
+    public static readonly int SyncPeriodMinutes = 2;
     
     public static async Task Register(MainDataContext dbContext,
         IJobSearchRepository jobSearchRepository,
@@ -57,9 +57,9 @@ public static class SyncJobsWithSearchRecurringJob
             job.NiceToHaves ?? [],
             job.DateTimeUpdatedUtc,
             job.IsDeleted
-        ));
-        
-        // await jobSearchRepository
+        )).ToList();
+
+        await jobSearchRepository.UpsertMultipleAsync(jobSearchModels);
         
         lastUpdateInfo.UpdatedUpToDateTimeUtc = recordsToUpdate.Last().DateTimeUpdatedUtc;
         lastUpdateInfo.LastTimeSyncedUtc = DateTime.UtcNow;
