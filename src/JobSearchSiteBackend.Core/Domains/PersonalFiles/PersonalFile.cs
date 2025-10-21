@@ -6,7 +6,7 @@ using Ardalis.Result.FluentValidation;
 
 namespace JobSearchSiteBackend.Core.Domains.PersonalFiles;
 
-public class PersonalFile : IEntityWithId, IEntityWithGuid
+public class PersonalFile : IEntityWithId, IEntityWithGuid, IEntityWithUpdDelDate
 {
     public PersonalFile(long userId, string name, string extension, long size)
     {
@@ -19,6 +19,9 @@ public class PersonalFile : IEntityWithId, IEntityWithGuid
     public long Id { get; private set; }
     
     public Guid GuidIdentifier { get; private set; } = Guid.NewGuid();
+    
+    public DateTime DateTimeUpdatedUtc { get; set; }
+    public bool IsDeleted { get; set; }
     
     public long UserId { get; private set; }
     

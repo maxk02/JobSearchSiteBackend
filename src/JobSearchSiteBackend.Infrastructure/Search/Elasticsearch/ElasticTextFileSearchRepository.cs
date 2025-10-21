@@ -4,7 +4,7 @@ using Nest;
 
 namespace JobSearchSiteBackend.Infrastructure.Search.Elasticsearch;
 
-public class ElasticPersonalFileSearchRepository(IElasticClient client) : IPersonalFileSearchRepository
+public class ElasticTextFileSearchRepository(IElasticClient client) : ITextFileSearchRepository
 {
     public string IndexName => "personalFiles";
     
@@ -18,7 +18,7 @@ public class ElasticPersonalFileSearchRepository(IElasticClient client) : IPerso
         }
     }
 
-    public async Task UpsertMultipleAsync(ICollection<PersonalFileSearchModel> searchModels,
+    public async Task UpsertMultipleAsync(ICollection<TextFileSearchModel> searchModels,
         CancellationToken cancellationToken = default)
     {
         try
@@ -40,14 +40,14 @@ public class ElasticPersonalFileSearchRepository(IElasticClient client) : IPerso
         await client.Indices.CreateAsync(
             IndexName,
             index => index
-                .Map<PersonalFileSearchModel>(map => map
+                .Map<TextFileSearchModel>(map => map
                     .Properties(properties => properties
                         .Number(num => num
                             .Name(n => n.Id)
                             .Type(NumberType.Long)
                         )
                         .Text(t => t
-                            .Name(n => n.TextContent)
+                            .Name(n => n.Text)
                         )
                         .Date(d => d
                             .Name(n => n.DateTimeUpdatedUtc)
@@ -72,7 +72,7 @@ public class ElasticPersonalFileSearchRepository(IElasticClient client) : IPerso
     public async Task<ICollection<long>> SearchFromIdsAsync(ICollection<long> ids, string query,
         CancellationToken cancellationToken = default)
     {
-        var searchResponse = await client.SearchAsync<PersonalFileSearchModel>(s => s
+        var searchResponse = await client.SearchAsync<TextFileSearchModel>(s => s
             .Source(src => src.
                 Includes(i => i.
                     Field(f => f.Id)
@@ -89,7 +89,7 @@ public class ElasticPersonalFileSearchRepository(IElasticClient client) : IPerso
                     .Must(m => m
                         .Match(mt => mt
                             .Query(query)
-                            .Field(doc => doc.TextContent)
+                            .Field(doc => doc.Text)
                         )
                     )
                 )
@@ -107,7 +107,7 @@ public class ElasticPersonalFileSearchRepository(IElasticClient client) : IPerso
 
     public async Task<ICollection<long>> SearchFromAllAsync(string query, CancellationToken cancellationToken = default)
     {
-        var searchResponse = await client.SearchAsync<PersonalFileSearchModel>(s => s
+        var searchResponse = await client.SearchAsync<TextFileSearchModel>(s => s
             .Source(src => src.
                 Includes(i => i.
                     Field(doc => doc.Id)
@@ -116,7 +116,7 @@ public class ElasticPersonalFileSearchRepository(IElasticClient client) : IPerso
             .Query(q => q
                 .Match(mt => mt
                     .Query(query)
-                    .Field(doc => doc.TextContent)
+                    .Field(doc => doc.Text)
                 )
             )
             .Sort(sort => sort

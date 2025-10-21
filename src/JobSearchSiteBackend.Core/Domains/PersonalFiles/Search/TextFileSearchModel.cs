@@ -2,9 +2,9 @@
 
 namespace JobSearchSiteBackend.Core.Domains.PersonalFiles.Search;
 
-public record PersonalFileSearchModel(
+public record TextFileSearchModel(
     long Id,
-    string TextContent,
+    string Text,
     DateTime DateTimeUpdatedUtc,
     bool IsDeleted
 ) : ISearchModelWithId, IUpdatableSearchModel;

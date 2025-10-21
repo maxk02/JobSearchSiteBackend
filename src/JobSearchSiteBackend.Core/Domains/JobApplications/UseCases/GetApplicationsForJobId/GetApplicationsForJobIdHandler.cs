@@ -16,7 +16,7 @@ namespace JobSearchSiteBackend.Core.Domains.JobApplications.UseCases.GetApplicat
 
 public class GetApplicationsForJobIdHandler(
     ICurrentAccountService currentAccountService,
-    IPersonalFileSearchRepository personalFileSearchRepository,
+    ITextFileSearchRepository textFileSearchRepository,
     MainDataContext context,
     IMapper mapper) : IRequestHandler<GetApplicationsForJobIdRequest, Result<GetApplicationsForJobIdResponse>>
 {
@@ -54,7 +54,7 @@ public class GetApplicationsForJobIdHandler(
                 .SelectMany(ja => ja.PersonalFiles!).Select(pf => pf.Id)
                 .ToListAsync(cancellationToken);
             
-            var pfIdHits = await personalFileSearchRepository
+            var pfIdHits = await textFileSearchRepository
                 .SearchFromIdsAsync(pfIdsFromSql, request.Query, cancellationToken);
             
             query = query.Where(ja => ja.PersonalFiles!.Any(pf => pfIdHits.Contains(pf.Id)));
