@@ -39,7 +39,9 @@ public static class SyncJobsWithSearchRecurringJob
         
         if (lastUpdateInfo.UpdatedUpToDateTimeUtc != null)
         {
-            query = query.Where(j => j.LastUpdatedUtc > lastUpdateInfo.UpdatedUpToDateTimeUtc).OrderBy(x => x.LastUpdatedUtc);
+            query = query
+                .Where(j => j.DateTimeUpdatedUtc > lastUpdateInfo.UpdatedUpToDateTimeUtc)
+                .OrderBy(x => x.DateTimeUpdatedUtc);
         }
 
         var recordsToUpdate = await query.ToListAsync();
@@ -53,13 +55,13 @@ public static class SyncJobsWithSearchRecurringJob
             job.Responsibilities ?? [],
             job.Requirements ?? [],
             job.NiceToHaves ?? [],
-            new DateTime(), //job.DateTimeUpdatedUtc
-            false //job.IsDeleted
+            job.DateTimeUpdatedUtc,
+            job.IsDeleted
         ));
         
         // await jobSearchRepository
         
-        lastUpdateInfo.UpdatedUpToDateTimeUtc = recordsToUpdate.Last().LastUpdatedUtc;
+        lastUpdateInfo.UpdatedUpToDateTimeUtc = recordsToUpdate.Last().DateTimeUpdatedUtc;
         lastUpdateInfo.LastTimeSyncedUtc = DateTime.UtcNow;
         await dbContext.SaveChangesAsync();
     }

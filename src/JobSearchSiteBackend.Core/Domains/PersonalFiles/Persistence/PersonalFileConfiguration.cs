@@ -8,8 +8,6 @@ public class PersonalFileConfiguration : IEntityTypeConfiguration<PersonalFile>
     public void Configure(EntityTypeBuilder<PersonalFile> builder)
     {
         builder.HasKey(personalFile => personalFile.Id);
-        
-        builder.Property(personalFile => personalFile.RowVersion).IsRowVersion();
 
         builder.Property(personalFile => personalFile.Name).HasMaxLength(40);
         builder.Property(personalFile => personalFile.Extension).HasMaxLength(25);

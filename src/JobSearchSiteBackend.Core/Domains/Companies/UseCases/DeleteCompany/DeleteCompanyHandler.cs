@@ -38,8 +38,6 @@ public class DeleteCompanyHandler(
         if (!companyWithPermissionIds.PermissionIds.Contains(CompanyClaim.IsOwner.Id))
             return Result.Forbidden("Insufficient permissions for requested company deletion.");
         
-        var companyRowVersion = companyWithPermissionIds.Company.RowVersion;
-        
         var companySearchModel = new CompanySearchModel(
             companyWithPermissionIds.Company.Id,
             companyWithPermissionIds.Company.CountryId,

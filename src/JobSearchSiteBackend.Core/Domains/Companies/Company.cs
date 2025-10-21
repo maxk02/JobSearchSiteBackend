@@ -9,7 +9,7 @@ using Ardalis.Result.FluentValidation;
 
 namespace JobSearchSiteBackend.Core.Domains.Companies;
 
-public class Company : IEntityWithId, IEntityWithRowVersioning
+public class Company : IEntityWithId, IEntityWithUpdDelDate
 {
     public Company(string name, string? description, bool isPublic, long countryId, string? logoLink)
     {
@@ -22,7 +22,8 @@ public class Company : IEntityWithId, IEntityWithRowVersioning
     
     public long Id { get; set; }
     
-    public byte[] RowVersion { get; set; } =  [];
+    public DateTime DateTimeUpdatedUtc { get; set; }
+    public bool IsDeleted { get; set; }
     
     public long CountryId { get; set; }
     

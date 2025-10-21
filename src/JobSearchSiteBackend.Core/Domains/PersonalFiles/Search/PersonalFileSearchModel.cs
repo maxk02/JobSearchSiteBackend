@@ -5,5 +5,6 @@ namespace JobSearchSiteBackend.Core.Domains.PersonalFiles.Search;
 public record PersonalFileSearchModel(
     long Id,
     string TextContent,
+    DateTime DateTimeUpdatedUtc,
     bool IsDeleted
-) : ISearchModelWithId, IDeletableSearchModel;
+) : ISearchModelWithId, IUpdatableSearchModel;

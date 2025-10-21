@@ -9,8 +9,6 @@ public class CompanyConfiguration : IEntityTypeConfiguration<Company>
     {
         builder.HasKey(company => company.Id);
         
-        builder.Property(company => company.RowVersion).IsRowVersion();
-        
         builder
             .HasMany(company => company.JobFolders)
             .WithOne(jobFolder => jobFolder.Company)

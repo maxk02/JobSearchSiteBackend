@@ -6,7 +6,7 @@ using Ardalis.Result.FluentValidation;
 
 namespace JobSearchSiteBackend.Core.Domains.PersonalFiles;
 
-public class PersonalFile : IEntityWithId, IEntityWithGuid, IEntityWithRowVersioning
+public class PersonalFile : IEntityWithId, IEntityWithGuid
 {
     public PersonalFile(long userId, string name, string extension, long size)
     {
@@ -17,8 +17,6 @@ public class PersonalFile : IEntityWithId, IEntityWithGuid, IEntityWithRowVersio
     }
     
     public long Id { get; private set; }
-
-    public byte[] RowVersion { get; private set; } = [];
     
     public Guid GuidIdentifier { get; private set; } = Guid.NewGuid();
     
