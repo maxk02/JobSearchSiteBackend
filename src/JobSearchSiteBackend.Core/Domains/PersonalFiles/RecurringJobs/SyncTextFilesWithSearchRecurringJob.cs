@@ -12,16 +12,16 @@ public static class SyncTextFilesWithSearchRecurringJob
     public static readonly int SyncPeriodMinutes = 2;
     
     public static async Task Register(MainDataContext dbContext,
-        ITextFileSearchRepository textFileSearchRepository,
+        ICvOrCertificateFileSearchRepository cvOrCertificateFileSearchRepository,
         IBackgroundJobService backgroundJobService)
     {
         backgroundJobService.AddOrUpdateRecurring("sql-search-sync-text-files", 
-            () => Run(dbContext, textFileSearchRepository), $"*/{SyncPeriodMinutes} * * * *");
+            () => Run(dbContext, cvOrCertificateFileSearchRepository), $"*/{SyncPeriodMinutes} * * * *");
         
         await Task.CompletedTask;
     }
     
-    public static async Task Run(MainDataContext dbContext, ITextFileSearchRepository textFileSearchRepository)
+    public static async Task Run(MainDataContext dbContext, ICvOrCertificateFileSearchRepository cvOrCertificateFileSearchRepository)
     {
         var lastUpdateInfo = await dbContext
                 .SqlToSearchSyncInfos
@@ -34,26 +34,27 @@ public static class SyncTextFilesWithSearchRecurringJob
         }
 
         // var vs this type??
-        IQueryable<TextFile> query = dbContext.TextFiles
-            .AsNoTracking();
+        IQueryable<CvOrCertificateFile> query = dbContext.CvOrCertificateFiles
+            .AsNoTracking()
+            .Where(file => file.IsUploadedSuccessfully);
         
         if (lastUpdateInfo.UpdatedUpToDateTimeUtc != null)
         {
             query = query
-                .Where(j => j.DateTimeUpdatedUtc > lastUpdateInfo.UpdatedUpToDateTimeUtc)
+                .Where(file => file.DateTimeUpdatedUtc > lastUpdateInfo.UpdatedUpToDateTimeUtc)
                 .OrderBy(x => x.DateTimeUpdatedUtc);
         }
 
         var recordsToUpdate = await query.ToListAsync();
         
-        var textFileSearchModels = recordsToUpdate.Select(textFile => new TextFileSearchModel(
+        var textFileSearchModels = recordsToUpdate.Select(textFile => new CvOrCertificateFileSearchModel(
             textFile.Id,
             textFile.Text,
             textFile.DateTimeUpdatedUtc,
             textFile.IsDeleted
         )).ToList();
 
-        await textFileSearchRepository.UpsertMultipleAsync(textFileSearchModels);
+        await cvOrCertificateFileSearchRepository.UpsertMultipleAsync(textFileSearchModels);
         
         lastUpdateInfo.UpdatedUpToDateTimeUtc = recordsToUpdate.Last().DateTimeUpdatedUtc;
         lastUpdateInfo.LastTimeSyncedUtc = DateTime.UtcNow;

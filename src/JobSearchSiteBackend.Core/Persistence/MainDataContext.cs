@@ -26,7 +26,7 @@ public class MainDataContext : IdentityDbContext<MyIdentityUser, MyIdentityRole,
     public DbSet<JobContractType> ContractTypes { get; set; }
     public DbSet<Country> Countries { get; set; }
     public DbSet<PersonalFile> PersonalFiles { get; set; }
-    public DbSet<TextFile> TextFiles { get; set; }
+    public DbSet<CvOrCertificateFile> CvOrCertificateFiles { get; set; }
     public DbSet<JobApplication> JobApplications { get; set; }
     public DbSet<Job> Jobs { get; set; }
     public DbSet<Location> Locations { get; set; }

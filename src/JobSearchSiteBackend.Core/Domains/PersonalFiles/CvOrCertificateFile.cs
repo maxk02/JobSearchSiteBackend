@@ -1,8 +1,8 @@
 ﻿namespace JobSearchSiteBackend.Core.Domains.PersonalFiles;
 
-public class TextFile : PersonalFile
+public class CvOrCertificateFile : PersonalFile
 {
-    public TextFile(long userId, string name, string extension, long size, string text)
+    public CvOrCertificateFile(long userId, string name, string extension, long size, string text)
         : base(userId, name, extension, size)
     {
         Text = text;

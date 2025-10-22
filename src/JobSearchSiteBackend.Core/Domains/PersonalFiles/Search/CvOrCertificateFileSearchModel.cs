@@ -2,7 +2,7 @@
 
 namespace JobSearchSiteBackend.Core.Domains.PersonalFiles.Search;
 
-public record TextFileSearchModel(
+public record CvOrCertificateFileSearchModel(
     long Id,
     string Text,
     DateTime DateTimeUpdatedUtc,

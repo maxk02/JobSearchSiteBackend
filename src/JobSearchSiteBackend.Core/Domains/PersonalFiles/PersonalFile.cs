@@ -31,6 +31,8 @@ public class PersonalFile : IEntityWithId, IEntityWithGuid, IEntityWithUpdDelDat
     
     public long Size { get; private set; }
     
+    public bool IsUploadedSuccessfully { get; set; }
+    
     public UserProfile? User { get; set; }
     public ICollection<JobApplication>? JobApplications { get; set; }
 }

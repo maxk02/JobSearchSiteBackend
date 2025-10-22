@@ -4,7 +4,7 @@ using Nest;
 
 namespace JobSearchSiteBackend.Infrastructure.Search.Elasticsearch;
 
-public class ElasticTextFileSearchRepository(IElasticClient client) : ITextFileSearchRepository
+public class ElasticCvOrCertificateFileSearchRepository(IElasticClient client) : ICvOrCertificateFileSearchRepository
 {
     public string IndexName => "personalFiles";
     
@@ -18,7 +18,7 @@ public class ElasticTextFileSearchRepository(IElasticClient client) : ITextFileS
         }
     }
 
-    public async Task UpsertMultipleAsync(ICollection<TextFileSearchModel> searchModels,
+    public async Task UpsertMultipleAsync(ICollection<CvOrCertificateFileSearchModel> searchModels,
         CancellationToken cancellationToken = default)
     {
         try
@@ -40,7 +40,7 @@ public class ElasticTextFileSearchRepository(IElasticClient client) : ITextFileS
         await client.Indices.CreateAsync(
             IndexName,
             index => index
-                .Map<TextFileSearchModel>(map => map
+                .Map<CvOrCertificateFileSearchModel>(map => map
                     .Properties(properties => properties
                         .Number(num => num
                             .Name(n => n.Id)
@@ -72,7 +72,7 @@ public class ElasticTextFileSearchRepository(IElasticClient client) : ITextFileS
     public async Task<ICollection<long>> SearchFromIdsAsync(ICollection<long> ids, string query,
         CancellationToken cancellationToken = default)
     {
-        var searchResponse = await client.SearchAsync<TextFileSearchModel>(s => s
+        var searchResponse = await client.SearchAsync<CvOrCertificateFileSearchModel>(s => s
             .Source(src => src.
                 Includes(i => i.
                     Field(f => f.Id)
@@ -107,7 +107,7 @@ public class ElasticTextFileSearchRepository(IElasticClient client) : ITextFileS
 
     public async Task<ICollection<long>> SearchFromAllAsync(string query, CancellationToken cancellationToken = default)
     {
-        var searchResponse = await client.SearchAsync<TextFileSearchModel>(s => s
+        var searchResponse = await client.SearchAsync<CvOrCertificateFileSearchModel>(s => s
             .Source(src => src.
                 Includes(i => i.
                     Field(doc => doc.Id)
