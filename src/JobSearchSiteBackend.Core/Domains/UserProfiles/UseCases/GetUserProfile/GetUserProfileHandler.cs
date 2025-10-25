@@ -27,6 +27,6 @@ public class GetUserProfileHandler(ICurrentAccountService currentAccountService,
         if (user is null || email is null)
             return Result<GetUserProfileResponse>.Error();
 
-        return new GetUserProfileResponse(user.FirstName, user.LastName, email, user.Phone, user.AvatarLink);
+        return new GetUserProfileResponse(user.FirstName, user.LastName, email, user.Phone, ""); // todo avatar
     }
 }

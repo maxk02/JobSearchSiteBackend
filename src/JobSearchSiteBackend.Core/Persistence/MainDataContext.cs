@@ -23,10 +23,10 @@ public class MainDataContext : IdentityDbContext<MyIdentityUser, MyIdentityRole,
     
     public DbSet<Category> Categories { get; set; }
     public DbSet<Company> Companies { get; set; }
+    public DbSet<CompanyAvatar>  CompanyAvatars { get; set; }
     public DbSet<JobContractType> ContractTypes { get; set; }
     public DbSet<Country> Countries { get; set; }
     public DbSet<PersonalFile> PersonalFiles { get; set; }
-    public DbSet<CvOrCertificateFile> CvOrCertificateFiles { get; set; }
     public DbSet<JobApplication> JobApplications { get; set; }
     public DbSet<Job> Jobs { get; set; }
     public DbSet<Location> Locations { get; set; }
@@ -38,6 +38,7 @@ public class MainDataContext : IdentityDbContext<MyIdentityUser, MyIdentityRole,
     public DbSet<JobFolderClaim> JobFolderClaims { get; set; }
     public DbSet<UserJobFolderClaim> UserJobFolderClaims { get; set; }
     public DbSet<UserProfile> UserProfiles { get; set; }
+    public DbSet<UserAvatar>  UserAvatars { get; set; }
     public DbSet<UserSession> UserSessions { get; set; }
 
     //system entities

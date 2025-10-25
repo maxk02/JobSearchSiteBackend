@@ -6,14 +6,15 @@ using Ardalis.Result.FluentValidation;
 
 namespace JobSearchSiteBackend.Core.Domains.PersonalFiles;
 
-public class PersonalFile : IEntityWithId, IEntityWithGuid, IEntityWithUpdDelDate
+public class PersonalFile : IEntityWithId, IEntityWithGuid, IEntityWithUpdDelDate, IEntityWithUploadStatus
 {
-    public PersonalFile(long userId, string name, string extension, long size)
+    public PersonalFile(long userId, string name, string extension, long size, string text)
     {
         UserId = userId;
         Name = name;
         Extension = extension;
         Size = size;
+        Text = text;
     }
     
     public long Id { get; private set; }
@@ -32,6 +33,8 @@ public class PersonalFile : IEntityWithId, IEntityWithGuid, IEntityWithUpdDelDat
     public long Size { get; private set; }
     
     public bool IsUploadedSuccessfully { get; set; }
+    
+    public string Text { get; set; }
     
     public UserProfile? User { get; set; }
     public ICollection<JobApplication>? JobApplications { get; set; }

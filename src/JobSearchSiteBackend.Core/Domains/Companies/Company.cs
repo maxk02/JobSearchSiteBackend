@@ -11,10 +11,9 @@ namespace JobSearchSiteBackend.Core.Domains.Companies;
 
 public class Company : IEntityWithId, IEntityWithUpdDelDate
 {
-    public Company(string name, string? description, bool isPublic, long countryId, string? logoLink)
+    public Company(string name, string? description, bool isPublic, long countryId)
     {
         CountryId = countryId;
-        LogoLink = logoLink;
         Name = name;
         Description = description;
         IsPublic = isPublic;
@@ -26,8 +25,6 @@ public class Company : IEntityWithId, IEntityWithUpdDelDate
     public bool IsDeleted { get; set; }
     
     public long CountryId { get; set; }
-    
-    public string? LogoLink { get; set; }
     
     public string Name { get; set; }
     
@@ -44,4 +41,6 @@ public class Company : IEntityWithId, IEntityWithUpdDelDate
     
     public ICollection<UserProfile>? UsersWhoBookmarked { get; set; }
     public ICollection<UserCompanyClaim>? UserCompanyClaims { get; set; }
+    
+    public ICollection<CompanyAvatar>? CompanyAvatars { get; set; }
 }

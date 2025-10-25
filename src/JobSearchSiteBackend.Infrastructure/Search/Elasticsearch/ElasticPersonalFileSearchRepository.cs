@@ -4,7 +4,7 @@ using Nest;
 
 namespace JobSearchSiteBackend.Infrastructure.Search.Elasticsearch;
 
-public class ElasticCvOrCertificateFileSearchRepository(IElasticClient client) : ICvOrCertificateFileSearchRepository
+public class ElasticPersonalFileSearchRepository(IElasticClient client) : IPersonalFileSearchRepository
 {
     public string IndexName => "personalFiles";
     
@@ -18,7 +18,7 @@ public class ElasticCvOrCertificateFileSearchRepository(IElasticClient client) :
         }
     }
 
-    public async Task UpsertMultipleAsync(ICollection<CvOrCertificateFileSearchModel> searchModels,
+    public async Task UpsertMultipleAsync(ICollection<PersonalFileSearchModel> searchModels,
         CancellationToken cancellationToken = default)
     {
         try
@@ -40,7 +40,7 @@ public class ElasticCvOrCertificateFileSearchRepository(IElasticClient client) :
         await client.Indices.CreateAsync(
             IndexName,
             index => index
-                .Map<CvOrCertificateFileSearchModel>(map => map
+                .Map<PersonalFileSearchModel>(map => map
                     .Properties(properties => properties
                         .Number(num => num
                             .Name(n => n.Id)
@@ -72,7 +72,7 @@ public class ElasticCvOrCertificateFileSearchRepository(IElasticClient client) :
     public async Task<ICollection<long>> SearchFromIdsAsync(ICollection<long> ids, string query,
         CancellationToken cancellationToken = default)
     {
-        var searchResponse = await client.SearchAsync<CvOrCertificateFileSearchModel>(s => s
+        var searchResponse = await client.SearchAsync<PersonalFileSearchModel>(s => s
             .Source(src => src.
                 Includes(i => i.
                     Field(f => f.Id)
@@ -107,7 +107,7 @@ public class ElasticCvOrCertificateFileSearchRepository(IElasticClient client) :
 
     public async Task<ICollection<long>> SearchFromAllAsync(string query, CancellationToken cancellationToken = default)
     {
-        var searchResponse = await client.SearchAsync<CvOrCertificateFileSearchModel>(s => s
+        var searchResponse = await client.SearchAsync<PersonalFileSearchModel>(s => s
             .Source(src => src.
                 Includes(i => i.
                     Field(doc => doc.Id)

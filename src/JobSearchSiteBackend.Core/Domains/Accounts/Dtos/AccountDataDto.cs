@@ -6,5 +6,5 @@ public record AccountDataDto(
     long Id,
     string Email,
     string? FullName,
-    string? AvatarLink,
+    string? AvatarBase64,
     ICollection<CompanyDto> CompaniesManaged);

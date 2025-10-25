@@ -35,15 +35,15 @@ public class UploadFileHandler(
         var fileBytes = memoryStream.ToArray();
         var text = await textExtractionService.ExtractTextAsync(fileBytes, extension, CancellationToken.None);
         
-        var newFile = new CvOrCertificateFile(currentUserId, fileName, extension, memoryStream.Length, text);
+        var newFile = new PersonalFile(currentUserId, fileName, extension, memoryStream.Length, text);
         
-        context.CvOrCertificateFiles.Add(newFile);
+        context.PersonalFiles.Add(newFile);
         await context.SaveChangesAsync(cancellationToken);
 
         await fileStorageService.UploadFileAsync(memoryStream, newFile.GuidIdentifier, cancellationToken);
         
         newFile.IsUploadedSuccessfully = true;
-        context.CvOrCertificateFiles.Update(newFile);
+        context.PersonalFiles.Update(newFile);
         await context.SaveChangesAsync(cancellationToken);
 
         return Result.Success();

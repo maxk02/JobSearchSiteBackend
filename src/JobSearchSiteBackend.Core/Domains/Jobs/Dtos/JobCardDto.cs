@@ -4,7 +4,7 @@ namespace JobSearchSiteBackend.Core.Domains.Jobs.Dtos;
 
 public record JobCardDto(
     long Id,
-    string? CompanyLogoLink,
+    string? CompanyLogoBase64,
     string CompanyName,
     ICollection<LocationDto> Locations,
     string Title,

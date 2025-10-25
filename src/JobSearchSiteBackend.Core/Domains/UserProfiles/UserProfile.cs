@@ -12,14 +12,12 @@ namespace JobSearchSiteBackend.Core.Domains.UserProfiles;
 
 public class UserProfile : IEntityWithId
 {
-    public UserProfile(long accountId, string firstName, string lastName,
-        string? phone, string? avatarLink = null)
+    public UserProfile(long accountId, string firstName, string lastName, string? phone)
     {
         Id = accountId;
         FirstName = firstName;
         LastName = lastName;
         Phone = phone;
-        AvatarLink = avatarLink;
     }
     
     public long Id { get; private set; }
@@ -29,9 +27,6 @@ public class UserProfile : IEntityWithId
     public string LastName { get; set; }
     
     public string? Phone { get; set; }
-    
-    public string? AvatarLink { get; set; }
-    
     
     public MyIdentityUser? Account { get; set; }
     
@@ -49,4 +44,6 @@ public class UserProfile : IEntityWithId
     public ICollection<UserJobFolderClaim>? UserJobFolderClaims { get; set; }
     
     public ICollection<UserSession>? UserSessions { get; set; }
+    
+    public ICollection<UserAvatar>? UserAvatars { get; set; }
 }

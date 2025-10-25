@@ -4,7 +4,7 @@ namespace JobSearchSiteBackend.Core.Domains.Jobs.Dtos;
 
 public record JobDetailedDto(
     long Id,
-    string? CompanyLogoLink,
+    string? CompanyLogoBase64,
     string CompanyName,
     ICollection<LocationDto> Locations,
     long CategoryId,

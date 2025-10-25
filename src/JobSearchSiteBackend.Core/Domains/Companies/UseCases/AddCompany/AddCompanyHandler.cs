@@ -22,7 +22,7 @@ public class AddCompanyHandler(
         var currentUserId = currentAccountService.GetIdOrThrow();
 
         //creating company and checking result
-        var company = new Company(request.Name, request.Description, request.IsPublic, request.CountryId, request.LogoLink);
+        var company = new Company(request.Name, request.Description, request.IsPublic, request.CountryId);
 
         var transaction = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled);
 

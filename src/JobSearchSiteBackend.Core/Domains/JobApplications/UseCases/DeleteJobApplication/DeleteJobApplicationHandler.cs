@@ -10,7 +10,7 @@ namespace JobSearchSiteBackend.Core.Domains.JobApplications.UseCases.DeleteJobAp
 
 public class DeleteJobApplicationHandler(
     ICurrentAccountService currentAccountService,
-    ICvOrCertificateFileSearchRepository cvOrCertificateFileSearchRepository,
+    IPersonalFileSearchRepository personalFileSearchRepository,
     MainDataContext context,
     IBackgroundJobService backgroundJobService) : IRequestHandler<DeleteJobApplicationRequest, Result>
 {
