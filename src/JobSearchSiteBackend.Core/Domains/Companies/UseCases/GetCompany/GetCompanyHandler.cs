@@ -1,34 +1,34 @@
-﻿using JobSearchSiteBackend.Core.Domains._Shared.UseCaseStructure;
+﻿using Ardalis.Result;
+using AutoMapper;
+using JobSearchSiteBackend.Core.Domains._Shared.UseCaseStructure;
+using JobSearchSiteBackend.Core.Domains.Companies.Dtos;
 using JobSearchSiteBackend.Core.Domains.CompanyClaims;
+using JobSearchSiteBackend.Core.Persistence;
 using JobSearchSiteBackend.Core.Services.Auth;
 using Microsoft.EntityFrameworkCore;
-using Ardalis.Result;
-using AutoMapper;
-using JobSearchSiteBackend.Core.Domains.Companies.Dtos;
-using JobSearchSiteBackend.Core.Persistence;
 
-namespace JobSearchSiteBackend.Core.Domains.Companies.UseCases.GetCompanyById;
+namespace JobSearchSiteBackend.Core.Domains.Companies.UseCases.GetCompany;
 
-public class GetCompanyByIdHandler(
+public class GetCompanyHandler(
     ICurrentAccountService currentAccountService,
     MainDataContext context,
     IMapper mapper)
-    : IRequestHandler<GetCompanyByIdRequest, Result<GetCompanyByIdResponse>>
+    : IRequestHandler<GetCompanyRequest, Result<GetCompanyResponse>>
 {
-    public async Task<Result<GetCompanyByIdResponse>> Handle(GetCompanyByIdRequest request,
+    public async Task<Result<GetCompanyResponse>> Handle(GetCompanyRequest request,
         CancellationToken cancellationToken = default)
     {
         var company = await context.Companies.FindAsync([request.Id], cancellationToken);
 
         if (company is null)
-            return Result<GetCompanyByIdResponse>.NotFound();
+            return Result<GetCompanyResponse>.NotFound();
 
         if (!company.IsPublic)
         {
             var currentUserId = currentAccountService.GetId();
 
             if (currentUserId is null)
-                return Result<GetCompanyByIdResponse>.Forbidden("Requested company profile is private.");
+                return Result<GetCompanyResponse>.Forbidden("Requested company profile is private.");
             
             var canEditProfile = await context.UserCompanyClaims
                 .Where(
@@ -38,11 +38,11 @@ public class GetCompanyByIdHandler(
                 .AnyAsync(cancellationToken);
 
             if (!canEditProfile)
-                return Result<GetCompanyByIdResponse>.Forbidden("Requested company profile is private.");
+                return Result<GetCompanyResponse>.Forbidden("Requested company profile is private.");
         }
         
         var companyInfoDto = mapper.Map<CompanyDto>(company);
         
-        return new GetCompanyByIdResponse(companyInfoDto);
+        return new GetCompanyResponse(companyInfoDto);
     }
 }

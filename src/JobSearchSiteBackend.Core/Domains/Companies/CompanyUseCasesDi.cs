@@ -1,7 +1,7 @@
 ﻿using JobSearchSiteBackend.Core.Domains.Companies.UseCases.AddCompany;
 using JobSearchSiteBackend.Core.Domains.Companies.UseCases.DeleteCompany;
-using JobSearchSiteBackend.Core.Domains.Companies.UseCases.GetCompanies;
-using JobSearchSiteBackend.Core.Domains.Companies.UseCases.GetCompanyById;
+using JobSearchSiteBackend.Core.Domains.Companies.UseCases.GetCompany;
+// using JobSearchSiteBackend.Core.Domains.Companies.UseCases.GetCompanies;
 using JobSearchSiteBackend.Core.Domains.Companies.UseCases.UpdateCompany;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -13,8 +13,8 @@ public static class CompanyUseCasesDi
     {
         serviceCollection.AddScoped<AddCompanyHandler>();
         serviceCollection.AddScoped<DeleteCompanyHandler>();
-        serviceCollection.AddScoped<GetCompaniesHandler>();
-        serviceCollection.AddScoped<GetCompanyByIdHandler>();
+        // serviceCollection.AddScoped<GetCompaniesHandler>();
+        serviceCollection.AddScoped<GetCompanyHandler>();
         serviceCollection.AddScoped<UpdateCompanyHandler>();
     }
 }

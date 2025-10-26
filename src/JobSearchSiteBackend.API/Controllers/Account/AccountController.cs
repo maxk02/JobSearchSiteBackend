@@ -10,7 +10,6 @@ using JobSearchSiteBackend.Core.Domains.Accounts.UseCases.LogIn;
 using JobSearchSiteBackend.Core.Domains.Accounts.UseCases.LogOut;
 using JobSearchSiteBackend.Core.Domains.Accounts.UseCases.ResendEmailConfirmationLink;
 using JobSearchSiteBackend.Core.Domains.Accounts.UseCases.ResetForgottenPassword;
-using JobSearchSiteBackend.Core.Domains.Accounts.UseCases.ResetPassword;
 using JobSearchSiteBackend.Core.Domains.Accounts.UseCases.SendPasswordResetLink;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;

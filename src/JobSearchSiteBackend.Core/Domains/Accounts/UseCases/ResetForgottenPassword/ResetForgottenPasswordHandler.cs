@@ -1,10 +1,9 @@
-﻿using JobSearchSiteBackend.Core.Domains._Shared.UseCaseStructure;
+﻿using Ardalis.Result;
+using JobSearchSiteBackend.Core.Domains._Shared.UseCaseStructure;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using Ardalis.Result;
-using JobSearchSiteBackend.Core.Domains.Accounts.UseCases.ResetForgottenPassword;
 
-namespace JobSearchSiteBackend.Core.Domains.Accounts.UseCases.ResetPassword;
+namespace JobSearchSiteBackend.Core.Domains.Accounts.UseCases.ResetForgottenPassword;
 
 public class ResetForgottenPasswordHandler(UserManager<MyIdentityUser> userManager)
     : IRequestHandler<ResetForgottenPasswordRequest, Result>

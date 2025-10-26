@@ -9,6 +9,9 @@ public record PaginationResponse
     
     public PaginationResponse(int currentPage, int pageSize, int totalCount)
     {
+        CurrentPage = currentPage;
+        PageSize = pageSize;
+        TotalCount = totalCount;
         TotalPages = (int)Math.Ceiling(totalCount / (double)pageSize);
     }
 }

@@ -3,5 +3,5 @@ using Ardalis.Result;
 
 namespace JobSearchSiteBackend.Core.Domains.Companies.UseCases.AddCompany;
 
-public record AddCompanyRequest(string Name, string? Description, bool IsPublic,
-    long CountryId, string? LogoLink) : IRequest<Result<AddCompanyResponse>>;
+public record AddCompanyRequest(string Name, string? Description,
+    string Nip, long CountryId): IRequest<Result<AddCompanyResponse>>;
