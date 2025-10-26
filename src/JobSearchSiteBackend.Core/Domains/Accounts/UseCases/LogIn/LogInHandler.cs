@@ -47,7 +47,7 @@ public class LogInHandler(UserManager<MyIdentityUser> userManager,
             .SingleOrDefaultAsync(cancellationToken);
 
         var fullName = userProfileData is not null ? $"{userProfileData.FirstName} {userProfileData.LastName}" : null;
-        // var avatarLink = userProfileData?.AvatarLink; todo
+        var avatarLink = ""; // todo
         
         var companyInfoDtos = await context.Companies
             .Where(c => c.UserCompanyClaims!.Any(ucc => ucc.UserId == account.Id))
@@ -66,7 +66,7 @@ public class LogInHandler(UserManager<MyIdentityUser> userManager,
             .DistinctBy(c => c.Id)
             .ToList();
         
-        var accountDataDto = new AccountDataDto(account.Id, request.Email, fullName, "", combinedCompanyInfoDtos); // todo avatar
+        var accountDataDto = new AccountDataDto(account.Id, request.Email, fullName, avatarLink, combinedCompanyInfoDtos); // todo avatar
         
         
         // token generation + session adding
