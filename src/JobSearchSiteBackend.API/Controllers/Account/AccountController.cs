@@ -6,12 +6,11 @@ using JobSearchSiteBackend.Core.Domains.Accounts.UseCases.ChangePassword;
 using JobSearchSiteBackend.Core.Domains.Accounts.UseCases.ConfirmEmail;
 using JobSearchSiteBackend.Core.Domains.Accounts.UseCases.CreateAccount;
 using JobSearchSiteBackend.Core.Domains.Accounts.UseCases.DeleteAccount;
-using JobSearchSiteBackend.Core.Domains.Accounts.UseCases.ExtendSession;
-using JobSearchSiteBackend.Core.Domains.Accounts.UseCases.GetUserSessions;
 using JobSearchSiteBackend.Core.Domains.Accounts.UseCases.LogIn;
 using JobSearchSiteBackend.Core.Domains.Accounts.UseCases.LogOut;
+using JobSearchSiteBackend.Core.Domains.Accounts.UseCases.ResendEmailConfirmationLink;
+using JobSearchSiteBackend.Core.Domains.Accounts.UseCases.ResetForgottenPassword;
 using JobSearchSiteBackend.Core.Domains.Accounts.UseCases.ResetPassword;
-using JobSearchSiteBackend.Core.Domains.Accounts.UseCases.SendEmailConfirmationLink;
 using JobSearchSiteBackend.Core.Domains.Accounts.UseCases.SendPasswordResetLink;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -49,7 +48,6 @@ public class AccountController(IMapper mapper) : ControllerBase
     
     [HttpPost]
     [AllowAnonymous]
-    [Route("/create")]
     public async Task<ActionResult> CreateAccount(
         CreateAccountRequest request,
         [FromServices] CreateAccountHandler handler,
@@ -61,7 +59,6 @@ public class AccountController(IMapper mapper) : ControllerBase
     }
     
     [HttpPost]
-    [Route("/delete")]
     public async Task<ActionResult> DeleteAccount(
         DeleteAccountRequest request,
         [FromServices] DeleteAccountHandler handler,
@@ -72,29 +69,17 @@ public class AccountController(IMapper mapper) : ControllerBase
         return this.ToActionResult(result);
     }
     
-    [HttpPost]
-    [Route("/extend-session")]
-    public async Task<ActionResult<ExtendSessionResponse>> ExtendSession(
-        ExtendSessionRequest request,
-        [FromServices] ExtendSessionHandler handler,
-        CancellationToken cancellationToken)
-    {
-        var result = await handler.Handle(request, cancellationToken);
-        
-        return this.ToActionResult(result);
-    }
-    
-    [HttpGet]
-    [Route("/sessions")]
-    public async Task<ActionResult<GetUserSessionsResponse>> GetUserSessions(
-        GetUserSessionsRequest request,
-        [FromServices] GetUserSessionsHandler handler,
-        CancellationToken cancellationToken)
-    {
-        var result = await handler.Handle(request, cancellationToken);
-        
-        return this.ToActionResult(result);
-    }
+    // [HttpPost]
+    // [Route("/extend-session")]
+    // public async Task<ActionResult<ExtendSessionResponse>> ExtendSession(
+    //     ExtendSessionRequest request,
+    //     [FromServices] ExtendSessionHandler handler,
+    //     CancellationToken cancellationToken)
+    // {
+    //     var result = await handler.Handle(request, cancellationToken);
+    //     
+    //     return this.ToActionResult(result);
+    // }
     
     [HttpPost]
     [Route("/login")]
@@ -129,11 +114,11 @@ public class AccountController(IMapper mapper) : ControllerBase
     }
     
     [HttpPost]
-    [Route("/reset-password")]
+    [Route("/reset-forgotten-password")]
     [AllowAnonymous]
-    public async Task<ActionResult> ResetPassword(
-        ResetPasswordRequest request,
-        [FromServices] ResetPasswordHandler handler,
+    public async Task<ActionResult> ResetForgottenPassword(
+        ResetForgottenPasswordRequest request,
+        [FromServices] ResetForgottenPasswordHandler handler,
         CancellationToken cancellationToken)
     {
         var result = await handler.Handle(request, cancellationToken);
@@ -145,8 +130,8 @@ public class AccountController(IMapper mapper) : ControllerBase
     [Route("/send-email-confirmation-link")]
     [AllowUnconfirmedEmail]
     public async Task<ActionResult> SendEmailConfirmationLink(
-        SendEmailConfirmationLinkRequest request,
-        [FromServices] SendEmailConfirmationLinkHandler handler,
+        ResendEmailConfirmationLinkRequest request,
+        [FromServices] ResendEmailConfirmationLinkHandler handler,
         CancellationToken cancellationToken)
     {
         var result = await handler.Handle(request, cancellationToken);

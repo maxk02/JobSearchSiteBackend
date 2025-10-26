@@ -92,6 +92,6 @@ public class LogInHandler(UserManager<MyIdentityUser> userManager,
             AbsoluteExpiration = new DateTimeOffset(newUserSession.ExpiresUtc, TimeSpan.Zero),
         });
 
-        return new LogInResponse(accountDataDto, token, newTokenId.ToString());
+        return new LogInResponse(newTokenId.ToString(), accountDataDto);
     }
 }

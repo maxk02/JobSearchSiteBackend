@@ -2,13 +2,14 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Ardalis.Result;
+using JobSearchSiteBackend.Core.Domains.Accounts.UseCases.ResetForgottenPassword;
 
 namespace JobSearchSiteBackend.Core.Domains.Accounts.UseCases.ResetPassword;
 
-public class ResetPasswordHandler(UserManager<MyIdentityUser> userManager)
-    : IRequestHandler<ResetPasswordRequest, Result>
+public class ResetForgottenPasswordHandler(UserManager<MyIdentityUser> userManager)
+    : IRequestHandler<ResetForgottenPasswordRequest, Result>
 {
-    public async Task<Result> Handle(ResetPasswordRequest request, CancellationToken cancellationToken = default)
+    public async Task<Result> Handle(ResetForgottenPasswordRequest request, CancellationToken cancellationToken = default)
     {
         var user = await userManager.Users
             .SingleOrDefaultAsync(

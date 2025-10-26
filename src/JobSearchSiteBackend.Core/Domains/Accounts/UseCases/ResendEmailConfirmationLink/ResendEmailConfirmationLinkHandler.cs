@@ -1,23 +1,23 @@
-﻿using JobSearchSiteBackend.Core.Domains._Shared.UseCaseStructure;
+﻿using Ardalis.Result;
+using JobSearchSiteBackend.Core.Domains._Shared.UseCaseStructure;
 using JobSearchSiteBackend.Core.Domains.Accounts.EmailMessages;
 using JobSearchSiteBackend.Core.Services.Auth;
 using JobSearchSiteBackend.Core.Services.BackgroundJobs;
 using JobSearchSiteBackend.Core.Services.EmailSender;
+using JobSearchSiteBackend.Shared.MyAppSettings;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Options;
-using JobSearchSiteBackend.Shared.MyAppSettings;
-using Ardalis.Result;
 
-namespace JobSearchSiteBackend.Core.Domains.Accounts.UseCases.SendEmailConfirmationLink;
+namespace JobSearchSiteBackend.Core.Domains.Accounts.UseCases.ResendEmailConfirmationLink;
 
-public class SendEmailConfirmationLinkHandler(
+public class ResendEmailConfirmationLinkHandler(
     ICurrentAccountService currentAccountService,
     UserManager<MyIdentityUser> userManager,
     IBackgroundJobService backgroundJobService,
     IOptions<MyAppSettings> injectedAppSettings,
-    IEmailSenderService emailSenderService) : IRequestHandler<SendEmailConfirmationLinkRequest, Result>
+    IEmailSenderService emailSenderService) : IRequestHandler<ResendEmailConfirmationLinkRequest, Result>
 {
-    public async Task<Result> Handle(SendEmailConfirmationLinkRequest request,
+    public async Task<Result> Handle(ResendEmailConfirmationLinkRequest request,
         CancellationToken cancellationToken = default)
     {
         var currentUserId = currentAccountService.GetIdOrThrow();
