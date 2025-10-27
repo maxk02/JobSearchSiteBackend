@@ -26,9 +26,10 @@ public class JobFoldersController(IMapper mapper) : ControllerBase
         return this.ToActionResult(result);
     }
     
-    [HttpDelete("{id:long:min(1)}")]
+    [HttpDelete]
+    [Route("{id:long:min(1)}")]
     public async Task<ActionResult> DeleteJobFolder(
-        long id,
+        [FromRoute] long id,
         [FromServices] DeleteJobFolderHandler handler,
         CancellationToken cancellationToken)
     {
@@ -38,21 +39,10 @@ public class JobFoldersController(IMapper mapper) : ControllerBase
         return this.ToActionResult(result);
     }
     
-    [HttpGet("{id:long:min(1)}/jobs")]
-    public async Task<ActionResult<GetJobsResponse>> GetJobs(
-        long id,
-        [FromServices] GetJobsHandler handler,
-        CancellationToken cancellationToken)
-    {
-        var request = new GetJobsRequest(id);
-        var result = await handler.Handle(request, cancellationToken);
-        
-        return this.ToActionResult(result);
-    }
-    
-    [HttpGet("{id:long:min(1)}/child-folders")]
+    [HttpGet]
+    [Route("{id:long:min(1)}/child-folders")]
     public async Task<ActionResult<GetChildFoldersResponse>> GetChildFolders(
-        long id,
+        [FromRoute] long id,
         [FromServices] GetChildFoldersHandler handler,
         CancellationToken cancellationToken)
     {
@@ -62,9 +52,36 @@ public class JobFoldersController(IMapper mapper) : ControllerBase
         return this.ToActionResult(result);
     }
     
-    [HttpPatch("{id:long:min(1)}")]
+    // [HttpGet]
+    // [Route("{id:long:min(1)}")]
+    // public async Task<ActionResult<GetJobFolderResponse>> GetJobFolder(
+    //     [FromRoute] long id,
+    //     [FromServices] GetJobFolderHandler handler,
+    //     CancellationToken cancellationToken)
+    // {
+    //     var request = new GetJobFolderRequest(id);
+    //     var result = await handler.Handle(request, cancellationToken);
+    //     
+    //     return this.ToActionResult(result);
+    // }
+    
+    [HttpGet]
+    [Route("{id:long:min(1)}/jobs")]
+    public async Task<ActionResult<GetJobsResponse>> GetJobs(
+        [FromRoute] long id,
+        [FromServices] GetJobsHandler handler,
+        CancellationToken cancellationToken)
+    {
+        var request = new GetJobsRequest(id);
+        var result = await handler.Handle(request, cancellationToken);
+        
+        return this.ToActionResult(result);
+    }
+    
+    [HttpPatch]
+    [Route("{id:long:min(1)}")]
     public async Task<ActionResult> UpdateJobFolder(
-        long id,
+        [FromRoute] long id,
         [FromBody] UpdateJobFolderRequestDto requestDto,
         [FromServices] UpdateJobFolderHandler handler,
         CancellationToken cancellationToken)

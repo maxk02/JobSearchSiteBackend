@@ -1,9 +1,8 @@
 ﻿using Ardalis.Result.AspNetCore;
 using JobSearchSiteBackend.Core.Domains.JobApplications.UseCases.AddJobApplication;
 using JobSearchSiteBackend.Core.Domains.JobApplications.UseCases.DeleteJobApplication;
-using JobSearchSiteBackend.Core.Domains.JobApplications.UseCases.GetApplicationsForJobId;
-using JobSearchSiteBackend.Core.Domains.JobApplications.UseCases.UpdateJobApplication;
 using JobSearchSiteBackend.Core.Domains.JobApplications.UseCases.UpdateJobApplicationFiles;
+using JobSearchSiteBackend.Core.Domains.JobApplications.UseCases.UpdateJobApplicationStatus;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -25,9 +24,10 @@ public class JobApplicationsController : ControllerBase
         return this.ToActionResult(result);
     }
     
-    [HttpDelete("{id:long:min(1)}")]
+    [HttpDelete]
+    [Route("{id:long:min(1)}")]
     public async Task<ActionResult> DeleteJobApplication(
-        long id,
+        [FromRoute] long id,
         [FromServices] DeleteJobApplicationHandler handler,
         CancellationToken cancellationToken)
     {
@@ -37,35 +37,25 @@ public class JobApplicationsController : ControllerBase
         return this.ToActionResult(result);
     }
     
-    [HttpGet]
-    public async Task<ActionResult<GetApplicationsForJobIdResponse>> GetApplicationsForJobId(
-        [FromQuery] GetApplicationsForJobIdRequest request,
-        [FromServices] GetApplicationsForJobIdHandler handler,
-        CancellationToken cancellationToken)
-    {
-        var result = await handler.Handle(request, cancellationToken);
-        
-        return this.ToActionResult(result);
-    }
-    
-    [HttpPatch("{id:long:min(1)}")]
-    public async Task<ActionResult> UpdateJobApplication(
-        long id,
-        [FromBody] UpdateJobApplicationRequest request,
-        [FromServices] UpdateJobApplicationHandler handler,
-        CancellationToken cancellationToken)
-    {
-        var result = await handler.Handle(request, cancellationToken);
-        
-        return this.ToActionResult(result);
-    }
-    
-    [HttpPut("{id:long:min(1)}")]
-    [Route("/files")]
+    [HttpPut]
+    [Route("{id:long:min(1)}/files")]
     public async Task<ActionResult> UpdateJobApplicationFiles(
         long id,
         [FromBody] UpdateJobApplicationFilesRequest request,
         [FromServices] UpdateJobApplicationFilesHandler handler,
+        CancellationToken cancellationToken)
+    {
+        var result = await handler.Handle(request, cancellationToken);
+        
+        return this.ToActionResult(result);
+    }
+    
+    [HttpPut]
+    [Route("{id:long:min(1)}/status")]
+    public async Task<ActionResult> UpdateJobApplicationStatus(
+        [FromRoute] long id,
+        [FromBody] UpdateJobApplicationStatusRequest request,
+        [FromServices] UpdateJobApplicationStatusHandler handler,
         CancellationToken cancellationToken)
     {
         var result = await handler.Handle(request, cancellationToken);

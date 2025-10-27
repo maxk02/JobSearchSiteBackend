@@ -12,8 +12,22 @@ namespace JobSearchSiteBackend.API.Controllers.JobFolderClaims;
 [Authorize]
 public class JobFolderClaimsController(IMapper mapper) : ControllerBase
 {
+    // [HttpGet]
+    // [Route("folder/{folderId:long:min(1)}")]
+    // public async Task<ActionResult<GetJobFolderClaimsOverviewResponse>> GetJobFolderClaimsOverview(
+    //     [FromRoute] long folderId,
+    //     [FromServices] GetJobFolderClaimsOverviewHandler handler,
+    //     CancellationToken cancellationToken)
+    // {
+    //     var request = new GetJobFolderClaimsOverviewRequest(folderId);
+    //     
+    //     var result = await handler.Handle(request, cancellationToken);
+    //     
+    //     return this.ToActionResult(result);
+    // }
+    
     [HttpGet]
-    [Route("/job-folder/{folderId:long:min(1)}/user/{userId:long:min(1)}")]
+    [Route("folder/{folderId:long:min(1)}/user/{userId:long:min(1)}")]
     public async Task<ActionResult<ICollection<long>>> GetJobFolderClaimIdsForUser(
         [FromRoute] long folderId, [FromRoute] long userId,
         [FromServices] GetJobFolderClaimIdsForUserHandler handler,
@@ -26,7 +40,8 @@ public class JobFolderClaimsController(IMapper mapper) : ControllerBase
         return this.ToActionResult(result);
     }
     
-    [HttpPatch("/job-folder/{folderId:long:min(1)}/user/{userId:long:min(1)}")]
+    [HttpPut]
+    [Route("folder/{folderId:long:min(1)}/user/{userId:long:min(1)}")]
     public async Task<ActionResult> UpdateJobFolderClaimIdsForUser(
         [FromRoute] long folderId, [FromRoute] long userId,
         [FromBody] UpdateJobFolderClaimIdsForUserRequestDto requestDto,

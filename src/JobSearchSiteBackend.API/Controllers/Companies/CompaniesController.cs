@@ -157,7 +157,7 @@ public class CompaniesController(IMapper mapper) : ControllerBase
     //     return this.ToActionResult(result);
     // }
     //
-    // [HttpGet]
+    // [HttpGet] todo delete?
     // [Route("/{id:long:min(1)}/management/job-folders/{parentFolderId:long:min(1)}")]
     // public async Task<ActionResult<GetCompanySharedFoldersResponse>> GetCompanySharedFoldersChildren(
     //     [FromRoute] long id,

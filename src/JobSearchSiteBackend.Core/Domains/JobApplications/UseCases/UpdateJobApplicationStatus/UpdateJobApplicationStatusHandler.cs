@@ -1,18 +1,18 @@
-﻿using JobSearchSiteBackend.Core.Domains._Shared.UseCaseStructure;
+﻿using Ardalis.Result;
+using JobSearchSiteBackend.Core.Domains._Shared.UseCaseStructure;
 using JobSearchSiteBackend.Core.Domains.JobFolderClaims;
 using JobSearchSiteBackend.Core.Domains.JobFolders;
+using JobSearchSiteBackend.Core.Persistence;
 using JobSearchSiteBackend.Core.Services.Auth;
 using Microsoft.EntityFrameworkCore;
-using Ardalis.Result;
-using JobSearchSiteBackend.Core.Persistence;
 
-namespace JobSearchSiteBackend.Core.Domains.JobApplications.UseCases.UpdateJobApplication;
+namespace JobSearchSiteBackend.Core.Domains.JobApplications.UseCases.UpdateJobApplicationStatus;
 
-public class UpdateJobApplicationHandler(
+public class UpdateJobApplicationStatusHandler(
     ICurrentAccountService currentAccountService,
-    MainDataContext context) : IRequestHandler<UpdateJobApplicationRequest, Result>
+    MainDataContext context) : IRequestHandler<UpdateJobApplicationStatusRequest, Result>
 {
-    public async Task<Result> Handle(UpdateJobApplicationRequest request,
+    public async Task<Result> Handle(UpdateJobApplicationStatusRequest request,
         CancellationToken cancellationToken = default)
     {
         var currentUserId = currentAccountService.GetIdOrThrow();
