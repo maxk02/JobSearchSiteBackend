@@ -1,11 +1,20 @@
 ﻿using AutoMapper;
+using JobSearchSiteBackend.Core.Domains.JobApplications.Dtos;
 
-namespace JobSearchSiteBackend.Core.Domains.JobApplications.Dtos;
+namespace JobSearchSiteBackend.Core.Domains.JobApplications;
 
-public class JobApplicationInUserProfileDtoMapper : Profile
+public class JobApplicationDtosMapper : Profile
 {
-    public JobApplicationInUserProfileDtoMapper()
+    public JobApplicationDtosMapper()
     {
+        CreateMap<JobApplication, JobApplicationForManagersDto>()
+            .ForMember(dest => dest.UserFullName,
+                opt => opt.MapFrom(src => $"{src.User!.FirstName} {src.User!.LastName}"))
+            .ForMember(dest => dest.PersonalFiles,
+                opt => opt.MapFrom(src => src.PersonalFiles!))
+            .ForMember(dest => dest.DateTimeAppliedUtc,
+                opt => opt.MapFrom(src => src.DateTimeCreatedUtc));
+        
         CreateMap<JobApplication, JobApplicationInUserProfileDto>()
             .ForMember(dest => dest.CompanyId,
                 opt => opt.MapFrom(src => src.Job!.JobFolder!.CompanyId))

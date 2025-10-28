@@ -4,11 +4,13 @@ using JobSearchSiteBackend.Core.Domains.Jobs.Dtos;
 
 namespace JobSearchSiteBackend.Core.Domains.Jobs.UseCases.UpdateJob;
 
-public record UpdateJobRequest(long Id,
+public record UpdateJobRequest(
+    long Id,
     long? JobFolderId,
     long? CategoryId,
     string? Title,
     string? Description,
+    int TimeRangeOptionId,
     bool? IsPublic,
     DateTime? NewDateTimeExpiringUtc,
     ICollection<string>? Responsibilities,

@@ -15,6 +15,6 @@ public class JobDtoMappings : Profile
             .ForMember(dest => dest.EmploymentTypeIds,
                 opt => opt.MapFrom(src => src.EmploymentTypes!.Select(x => x.Id).ToList()));
         
-        
+        CreateMap<JobSalaryInfo, JobSalaryInfoDto>().ReverseMap();
     }
 }

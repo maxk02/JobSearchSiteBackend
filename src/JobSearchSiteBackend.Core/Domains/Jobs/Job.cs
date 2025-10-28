@@ -59,6 +59,8 @@ public class Job : IEntityWithId, IEntityWithUpdDelDate
     public ICollection<string>? NiceToHaves { get; set; }
 
     public bool IsPublic { get; set; }
+    
+    public int TimeRangeOptionId  { get; set; }
 
     public Category? Category { get; set; }
     public JobFolder? JobFolder { get; set; }

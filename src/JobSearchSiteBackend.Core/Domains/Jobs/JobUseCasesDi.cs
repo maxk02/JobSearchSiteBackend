@@ -1,6 +1,6 @@
 ﻿using JobSearchSiteBackend.Core.Domains.Jobs.UseCases.AddJob;
 using JobSearchSiteBackend.Core.Domains.Jobs.UseCases.DeleteJob;
-using JobSearchSiteBackend.Core.Domains.Jobs.UseCases.GetJobById;
+using JobSearchSiteBackend.Core.Domains.Jobs.UseCases.GetJob;
 using JobSearchSiteBackend.Core.Domains.Jobs.UseCases.GetJobs;
 using JobSearchSiteBackend.Core.Domains.Jobs.UseCases.UpdateJob;
 using Microsoft.Extensions.DependencyInjection;
@@ -13,7 +13,7 @@ public static class JobUseCasesDi
     {
         serviceCollection.AddScoped<AddJobHandler>();
         serviceCollection.AddScoped<DeleteJobHandler>();
-        serviceCollection.AddScoped<GetJobByIdHandler>();
+        serviceCollection.AddScoped<GetJobHandler>();
         serviceCollection.AddScoped<GetJobsHandler>();
         serviceCollection.AddScoped<UpdateJobHandler>();
     }

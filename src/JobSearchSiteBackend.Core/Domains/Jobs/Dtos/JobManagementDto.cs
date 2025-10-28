@@ -2,7 +2,7 @@
 
 namespace JobSearchSiteBackend.Core.Domains.Jobs.Dtos;
 
-public record JobDetailedDto(
+public record JobManagementDto(
     long Id,
     long CompanyId,
     string? CompanyLogoLink,
@@ -20,5 +20,9 @@ public record JobDetailedDto(
     JobSalaryInfoDto? SalaryInfo,
     ICollection<long>? EmploymentTypeIds,
     ICollection<long>? ContractTypeIds,
-    bool IsBookmarked,
-    long? ApplicationId);
+    //
+    long FolderId,
+    string FolderName,
+    ICollection<long> ClaimIds,
+    bool IsPublic,
+    int TimeRangeOptionId);

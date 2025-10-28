@@ -2,7 +2,9 @@
 using AutoMapper;
 using JobSearchSiteBackend.Core.Domains.Jobs.UseCases.AddJob;
 using JobSearchSiteBackend.Core.Domains.Jobs.UseCases.DeleteJob;
-using JobSearchSiteBackend.Core.Domains.Jobs.UseCases.GetJobById;
+using JobSearchSiteBackend.Core.Domains.Jobs.UseCases.GetApplicationsForJob;
+using JobSearchSiteBackend.Core.Domains.Jobs.UseCases.GetJob;
+using JobSearchSiteBackend.Core.Domains.Jobs.UseCases.GetJobManagementDto;
 using JobSearchSiteBackend.Core.Domains.Jobs.UseCases.GetJobs;
 using JobSearchSiteBackend.Core.Domains.Jobs.UseCases.UpdateJob;
 using Microsoft.AspNetCore.Authorization;
@@ -26,13 +28,53 @@ public class JobsController(IMapper mapper) : ControllerBase
         return this.ToActionResult(result);
     }
     
-    [HttpDelete("{id:long:min(1)}")]
+    [HttpDelete]
+    [Route("{id:long:min(1)}")]
     public async Task<ActionResult> DeleteJob(
-        long id,
+        [FromRoute] long id,
         [FromServices] DeleteJobHandler handler,
         CancellationToken cancellationToken)
     {
         var request = new DeleteJobRequest(id);
+        var result = await handler.Handle(request, cancellationToken);
+        
+        return this.ToActionResult(result);
+    }
+    
+    [HttpGet]
+    [AllowAnonymous]
+    public async Task<ActionResult<GetApplicationsForJobResponse>> GetApplicationsForJob(
+        [FromQuery] GetApplicationsForJobRequest request,
+        [FromServices] GetApplicationsForJobHandler handler,
+        CancellationToken cancellationToken)
+    {
+        var result = await handler.Handle(request, cancellationToken);
+        
+        return this.ToActionResult(result);
+    }
+    
+    [HttpGet]
+    [Route("{id:long:min(1)}")]
+    [AllowAnonymous]
+    public async Task<ActionResult<GetJobResponse>> GetJob(
+        [FromRoute] long id,
+        [FromServices] GetJobHandler handler,
+        CancellationToken cancellationToken)
+    {
+        var request = new GetJobRequest(id);
+        var result = await handler.Handle(request, cancellationToken);
+        
+        return this.ToActionResult(result);
+    }
+    
+    [HttpGet]
+    [Route("{id:long:min(1)}/management")]
+    public async Task<ActionResult<GetJobManagementDtoResponse>> GetJobManagementDto(
+        [FromRoute] long id,
+        [FromServices] GetJobManagementDtoHandler handler,
+        CancellationToken cancellationToken)
+    {
+        var request = new GetJobManagementDtoRequest(id);
         var result = await handler.Handle(request, cancellationToken);
         
         return this.ToActionResult(result);
@@ -50,22 +92,10 @@ public class JobsController(IMapper mapper) : ControllerBase
         return this.ToActionResult(result);
     }
     
-    [HttpGet("{id:long:min(1)}")]
-    [AllowAnonymous]
-    public async Task<ActionResult<GetJobByIdResponse>> GetJob(
-        long id,
-        [FromServices] GetJobByIdHandler handler,
-        CancellationToken cancellationToken)
-    {
-        var request = new GetJobByIdRequest(id);
-        var result = await handler.Handle(request, cancellationToken);
-        
-        return this.ToActionResult(result);
-    }
-    
-    [HttpPatch("{id:long:min(1)}")]
+    [HttpPatch]
+    [Route("{id:long:min(1)}")]
     public async Task<ActionResult> UpdateJob(
-        long id,
+        [FromRoute] long id,
         [FromBody] UpdateJobRequestDto requestDto,
         [FromServices] UpdateJobHandler handler,
         CancellationToken cancellationToken)
