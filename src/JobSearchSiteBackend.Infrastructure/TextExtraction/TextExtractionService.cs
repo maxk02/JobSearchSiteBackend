@@ -7,21 +7,20 @@ namespace JobSearchSiteBackend.Infrastructure.TextExtraction;
 
 public class TextExtractionService : ITextExtractionService
 {
-    public async Task<string> ExtractTextAsync(byte[] fileContent, string extension, CancellationToken cancellationToken = default)
+    public async Task<string> ExtractTextAsync(Stream fileStream, string extension, CancellationToken cancellationToken = default)
     {
-        if (fileContent == null || fileContent.Length == 0)
-            throw new ArgumentException("File content cannot be null or empty.", nameof(fileContent));
+        if (fileStream.Length == 0)
+            throw new ArgumentException("File content cannot be null or empty.");
 
         if (string.IsNullOrWhiteSpace(extension))
             throw new ArgumentException("File extension cannot be null or empty.", nameof(extension));
-
-        using var memoryStream = new MemoryStream(fileContent);
+        
         extension = extension.ToLowerInvariant();
 
         return extension switch
         {
-            ".docx" => await ExtractTextFromDocxAsync(memoryStream, cancellationToken),
-            ".pdf" => ExtractTextFromPdf(memoryStream),
+            ".docx" => await ExtractTextFromDocxAsync(fileStream, cancellationToken),
+            ".pdf" => ExtractTextFromPdf(fileStream),
             _ => throw new NotSupportedException($"The file format '{extension}' is not supported.")
         };
     }

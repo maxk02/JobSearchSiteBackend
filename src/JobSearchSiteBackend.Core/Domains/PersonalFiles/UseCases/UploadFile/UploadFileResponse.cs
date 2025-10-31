@@ -4,4 +4,4 @@ using Microsoft.AspNetCore.Http;
 
 namespace JobSearchSiteBackend.Core.Domains.PersonalFiles.UseCases.UploadFile;
 
-public record UploadFileRequest(Stream FileStream, string Name, string Extension, long Size) : IRequest<Result<UploadFileResponse>>;
+public record UploadFileResponse(long Id);

@@ -15,37 +15,27 @@ public class UploadFileHandler(
     ICurrentAccountService currentAccountService,
     IFileStorageService fileStorageService,
     ITextExtractionService textExtractionService,
-    MainDataContext context) : IRequestHandler<UploadFileRequest, Result>
+    MainDataContext context) : IRequestHandler<UploadFileRequest, Result<UploadFileResponse>>
 {
-    public async Task<Result> Handle(UploadFileRequest request, CancellationToken cancellationToken = default)
+    public async Task<Result<UploadFileResponse>> Handle(UploadFileRequest request, CancellationToken cancellationToken = default)
     {
         var currentUserId = currentAccountService.GetIdOrThrow();
         
-        if (request.FormFile is null || request.FormFile.Length == 0)
-        {
-            return Result.Invalid();
-        }
-
-        using var memoryStream = new MemoryStream();
-        await request.FormFile.CopyToAsync(memoryStream, cancellationToken);
+        var text = await textExtractionService.ExtractTextAsync(request.FileStream, request.Extension, cancellationToken);
         
-        var fileName = Path.GetFileNameWithoutExtension(request.FormFile.FileName);
-        var extension = Path.GetExtension(request.FormFile.FileName).TrimStart('.');
-        
-        var fileBytes = memoryStream.ToArray();
-        var text = await textExtractionService.ExtractTextAsync(fileBytes, extension, CancellationToken.None);
-        
-        var newFile = new PersonalFile(currentUserId, fileName, extension, memoryStream.Length, text);
+        var newFile = new PersonalFile(currentUserId, request.Name, request.Extension, request.Size, text);
         
         context.PersonalFiles.Add(newFile);
         await context.SaveChangesAsync(cancellationToken);
 
-        await fileStorageService.UploadFileAsync(memoryStream, newFile.GuidIdentifier, cancellationToken);
+        await fileStorageService.UploadFileAsync(request.FileStream, newFile.GuidIdentifier, cancellationToken);
         
         newFile.IsUploadedSuccessfully = true;
         context.PersonalFiles.Update(newFile);
         await context.SaveChangesAsync(cancellationToken);
 
-        return Result.Success();
+        var response = new UploadFileResponse(newFile.Id);
+        
+        return Result.Success(response);
     }
 }
