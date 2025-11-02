@@ -41,12 +41,9 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="Domains\Companies\UseCases\AddCompanyEmployee\" />
-      <Folder Include="Domains\Companies\UseCases\GetCompanyEmployees\" />
       <Folder Include="Domains\Companies\UseCases\GetCompanyJobs\" />
       <Folder Include="Domains\Companies\UseCases\GetCompanyManagementNavbarDto\" />
       <Folder Include="Domains\Companies\UseCases\GetCompanySharedFolders\" />
-      <Folder Include="Domains\Companies\UseCases\RemoveCompanyEmployee\" />
       <Folder Include="Domains\Companies\UseCases\RemoveCompanyLastVisitedFolders\" />
       <Folder Include="Domains\Companies\UseCases\RemoveCompanyLastVisitedJobs\" />
       <Folder Include="Domains\Companies\UseCases\SearchCompanySharedFolders\" />

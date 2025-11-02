@@ -28,7 +28,8 @@ public class UploadFileHandler(
         context.PersonalFiles.Add(newFile);
         await context.SaveChangesAsync(cancellationToken);
 
-        await fileStorageService.UploadFileAsync(request.FileStream, newFile.GuidIdentifier, cancellationToken);
+        await fileStorageService.UploadFileAsync(FileStorageBucketName.PersonalFiles,
+            request.FileStream, newFile.GuidIdentifier, newFile.Extension, cancellationToken);
         
         newFile.IsUploadedSuccessfully = true;
         context.PersonalFiles.Update(newFile);

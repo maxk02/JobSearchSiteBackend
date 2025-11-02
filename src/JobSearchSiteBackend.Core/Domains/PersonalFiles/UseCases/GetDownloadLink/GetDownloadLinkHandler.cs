@@ -30,7 +30,8 @@ public class GetDownloadLinkHandler(
         if (!fileSqlRecord.IsUploadedSuccessfully)
             return Result.Error();
 
-        var link = await fileStorageService.GetDownloadUrlAsync(fileSqlRecord.GuidIdentifier, cancellationToken);
+        var link = await fileStorageService.GetDownloadUrlAsync(FileStorageBucketName.PersonalFiles,
+            fileSqlRecord.GuidIdentifier, fileSqlRecord.Extension, cancellationToken);
 
         var response = new GetDownloadLinkResponse(link);
         

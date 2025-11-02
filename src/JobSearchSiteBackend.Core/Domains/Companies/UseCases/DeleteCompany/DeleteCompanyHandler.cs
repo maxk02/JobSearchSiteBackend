@@ -12,9 +12,7 @@ namespace JobSearchSiteBackend.Core.Domains.Companies.UseCases.DeleteCompany;
 
 public class DeleteCompanyHandler(
     ICurrentAccountService currentAccountService,
-    MainDataContext context,
-    ICompanySearchRepository companySearchRepository,
-    IBackgroundJobService backgroundJobService)
+    MainDataContext context)
     : IRequestHandler<DeleteCompanyRequest, Result>
 {
     public async Task<Result> Handle(DeleteCompanyRequest request, CancellationToken cancellationToken = default)
@@ -37,17 +35,17 @@ public class DeleteCompanyHandler(
 
         if (!companyWithPermissionIds.PermissionIds.Contains(CompanyClaim.IsOwner.Id))
             return Result.Forbidden("Insufficient permissions for requested company deletion.");
-        
-        var companySearchModel = new CompanySearchModel(
-            companyWithPermissionIds.Company.Id,
-            companyWithPermissionIds.Company.CountryId,
-            companyWithPermissionIds.Company.Name,
-            companyWithPermissionIds.Company.Description,
-            new DateTime(), //company.DateTimeUpdatedUtc
-            false //company.isDeleted
-        );
 
         context.Companies.Remove(companyWithPermissionIds.Company);
+
+        var companyAvatars = await context.CompanyAvatars
+            .Where(ca => ca.CompanyId == companyWithPermissionIds.Company.Id)
+            .ToListAsync(cancellationToken);
+        
+        foreach (var companyAvatar in companyAvatars)
+            companyAvatar.IsDeleted = true;
+
+        context.CompanyAvatars.UpdateRange(companyAvatars);
         
         await context.SaveChangesAsync(cancellationToken);
 

@@ -31,5 +31,15 @@ public class CompanyConfiguration : IEntityTypeConfiguration<Company>
             .HasMany(company => company.UsersWhoBookmarked)
             .WithMany(user => user.BookmarkedCompanies)
             .UsingEntity(junctionEntityBuilder => junctionEntityBuilder.ToTable("CompanyBookmarks"));
+
+        builder
+            .HasMany(company => company.CompanyAvatars)
+            .WithOne(companyAvatar => companyAvatar.Company)
+            .HasForeignKey(companyAvatar => companyAvatar.CompanyId)
+            .OnDelete(DeleteBehavior.NoAction);
+
+        builder
+            .HasMany(company => company.Employees)
+            .WithMany(profile => profile.CompaniesWhereEmployed);
     }
 }

@@ -29,18 +29,19 @@ public class Company : IEntityWithId, IEntityWithUpdDelDate
     public string Name { get; set; }
     
     public string? Description { get; set; }
-
-    public decimal Balance { get; set; } = decimal.Zero;
     
     public bool IsPublic { get; set; }
     
     public Country? Country { get; set; }
 
     public ICollection<JobFolder>? JobFolders { get; set; }
+    
     public ICollection<Job>? Jobs { get; set; }
     
     public ICollection<UserProfile>? UsersWhoBookmarked { get; set; }
     public ICollection<UserCompanyClaim>? UserCompanyClaims { get; set; }
     
     public ICollection<CompanyAvatar>? CompanyAvatars { get; set; }
+    
+    public ICollection<UserProfile>? Employees { get; set; }
 }

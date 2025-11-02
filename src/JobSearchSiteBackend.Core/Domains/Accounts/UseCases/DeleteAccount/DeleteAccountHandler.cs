@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Identity;
 using Ardalis.Result;
 using JobSearchSiteBackend.Core.Persistence;
 using JobSearchSiteBackend.Core.Services.Caching;
+using Microsoft.EntityFrameworkCore;
 
 namespace JobSearchSiteBackend.Core.Domains.Accounts.UseCases.DeleteAccount;
 
@@ -31,6 +32,15 @@ public class DeleteAccountHandler(
             return Result.Error();
         
         await sessionCache.RemoveAsync($"user_session_{currentUserTokenId}");
+        
+        var userAvatars = await context.UserAvatars
+            .Where(ua => ua.UserId == currentUserId)
+            .ToListAsync(cancellationToken);
+        
+        foreach (var userAvatar in userAvatars)
+            userAvatar.IsDeleted = true;
+
+        context.UserAvatars.UpdateRange(userAvatars);
         
         await transaction.CommitAsync(cancellationToken);
         

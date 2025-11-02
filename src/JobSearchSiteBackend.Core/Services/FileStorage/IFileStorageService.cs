@@ -2,12 +2,15 @@
 
 public interface IFileStorageService
 {
-    public Task BulkDeleteFilesAsync(ICollection<(Guid, string)> guidExtensionTuples,
+    public Task BulkDeleteFilesAsync(FileStorageBucketName bucketName, ICollection<(Guid, string)> guidExtensionTuples,
         CancellationToken cancellationToken = default);
-    public Task DeleteFileAsync(Guid guidIdentifier, CancellationToken cancellationToken = default);
-    public Task<Stream> GetDownloadStreamAsync(Guid guidIdentifier,
+    public Task DeleteFileAsync(FileStorageBucketName bucketName, Guid guidIdentifier, string extension,
         CancellationToken cancellationToken = default);
-    public Task<string> GetDownloadUrlAsync(Guid guidIdentifier, CancellationToken cancellationToken = default);
-    public Task<string> UploadFileAsync(Stream fileStream, Guid guidIdentifier,
+    public Task<Stream> GetDownloadStreamAsync(FileStorageBucketName bucketName, Guid guidIdentifier, string extension,
+        CancellationToken cancellationToken = default);
+    public Task<string> GetDownloadUrlAsync(FileStorageBucketName bucketName, Guid guidIdentifier,  string extension,
+        CancellationToken cancellationToken = default);
+    public Task<string> UploadFileAsync(FileStorageBucketName bucketName, Stream fileStream,
+        Guid guidIdentifier, string extension,
         CancellationToken cancellationToken = default);
 }

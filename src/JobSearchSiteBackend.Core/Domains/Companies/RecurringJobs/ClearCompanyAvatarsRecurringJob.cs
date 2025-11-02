@@ -28,7 +28,8 @@ public static class ClearCompanyAvatarsRecurringJob
             .Select(a => (a.GuidIdentifier, a.Extension))
             .ToList();
 
-        await fileStorageService.BulkDeleteFilesAsync(avatarsToClearGuidExtensionTuple);
+        await fileStorageService.BulkDeleteFilesAsync(FileStorageBucketName.CompanyAvatars,
+            avatarsToClearGuidExtensionTuple);
         
         dbContext.CompanyAvatars.RemoveRange(avatarsToClear);
         

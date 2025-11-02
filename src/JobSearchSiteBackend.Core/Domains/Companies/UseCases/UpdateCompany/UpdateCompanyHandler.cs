@@ -12,8 +12,6 @@ namespace JobSearchSiteBackend.Core.Domains.Companies.UseCases.UpdateCompany;
 
 public class UpdateCompanyHandler(
     ICurrentAccountService currentAccountService,
-    ICompanySearchRepository companySearchRepository,
-    IBackgroundJobService backgroundJobService,
     MainDataContext context) : IRequestHandler<UpdateCompanyRequest, Result>
 {
     public async Task<Result> Handle(UpdateCompanyRequest request, CancellationToken cancellationToken = default)

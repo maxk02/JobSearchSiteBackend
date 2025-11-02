@@ -69,5 +69,11 @@ public class UserProfileConfiguration : IEntityTypeConfiguration<UserProfile>
             .HasMany(userProfile => userProfile.BookmarkedJobApplications)
             .WithMany()
             .UsingEntity(junctionEntityBuilder => junctionEntityBuilder.ToTable("JobApplicationBookmarks"));
+        
+        builder
+            .HasMany(userProfile => userProfile.UserAvatars)
+            .WithOne(userAvatar => userAvatar.UserProfile)
+            .HasForeignKey(userAvatar => userAvatar.UserId)
+            .OnDelete(DeleteBehavior.NoAction);
     }
 }

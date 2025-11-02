@@ -5,20 +5,21 @@ using JobSearchSiteBackend.Core.Services.FileStorage;
 
 namespace JobSearchSiteBackend.Infrastructure.FileStorage.AmazonS3;
 
-public class AmazonS3FileStorageService(IAmazonS3 s3Client, string bucketName) : IFileStorageService
+public class AmazonS3FileStorageService(IAmazonS3 s3Client) : IFileStorageService
 {
     private readonly TimeSpan _preSignedUrlExpiry = TimeSpan.FromMinutes(30);
 
-    public async Task<string> UploadFileAsync(Stream fileStream, Guid guidIdentifier,
+    public async Task<string> UploadFileAsync(FileStorageBucketName bucketName,
+        Stream fileStream, Guid guidIdentifier,  string extension,
         CancellationToken cancellationToken = default)
     {
-        var key = guidIdentifier.ToString();
+        var key = $"{guidIdentifier}.{extension}";
 
         var uploadRequest = new TransferUtilityUploadRequest
         {
             InputStream = fileStream,
             Key = key,
-            BucketName = bucketName,
+            BucketName = bucketName.ToString(),
             ContentType = "application/octet-stream"
         };
 
@@ -28,13 +29,14 @@ public class AmazonS3FileStorageService(IAmazonS3 s3Client, string bucketName) :
         return key;
     }
 
-    public async Task<Stream> GetDownloadStreamAsync(Guid guidIdentifier, CancellationToken cancellationToken = default)
+    public async Task<Stream> GetDownloadStreamAsync(FileStorageBucketName bucketName,
+        Guid guidIdentifier, string extension, CancellationToken cancellationToken = default)
     {
-        var key = guidIdentifier.ToString();
+        var key = $"{guidIdentifier}.{extension}";
 
         var request = new GetObjectRequest
         {
-            BucketName = bucketName,
+            BucketName = bucketName.ToString(),
             Key = key
         };
 
@@ -42,13 +44,14 @@ public class AmazonS3FileStorageService(IAmazonS3 s3Client, string bucketName) :
         return response.ResponseStream;
     }
 
-    public async Task<string> GetDownloadUrlAsync(Guid guidIdentifier, CancellationToken cancellationToken = default)
+    public async Task<string> GetDownloadUrlAsync(FileStorageBucketName bucketName,
+        Guid guidIdentifier, string extension, CancellationToken cancellationToken = default)
     {
-        var key = guidIdentifier.ToString();
+        var key = $"{guidIdentifier}.{extension}";
 
         var request = new GetPreSignedUrlRequest
         {
-            BucketName = bucketName,
+            BucketName = bucketName.ToString(),
             Key = key,
             Expires = DateTime.UtcNow.Add(_preSignedUrlExpiry),
             Verb = HttpVerb.GET
@@ -58,7 +61,8 @@ public class AmazonS3FileStorageService(IAmazonS3 s3Client, string bucketName) :
         return url;
     }
 
-    public async Task BulkDeleteFilesAsync(ICollection<(Guid, string)> guidExtensionTuples,
+    public async Task BulkDeleteFilesAsync(FileStorageBucketName bucketName,
+        ICollection<(Guid, string)> guidExtensionTuples,
         CancellationToken cancellationToken = default)
     {
         var objects = guidExtensionTuples
@@ -66,20 +70,21 @@ public class AmazonS3FileStorageService(IAmazonS3 s3Client, string bucketName) :
         
         var deleteRequest = new DeleteObjectsRequest
         {
-            BucketName = bucketName,
+            BucketName = bucketName.ToString(),
             Objects = objects
         };
         
         await s3Client.DeleteObjectsAsync(deleteRequest, cancellationToken);
     }
 
-    public async Task DeleteFileAsync(Guid guidIdentifier, CancellationToken cancellationToken = default)
+    public async Task DeleteFileAsync(FileStorageBucketName bucketName,
+        Guid guidIdentifier, string extension, CancellationToken cancellationToken = default)
     {
-        var key = guidIdentifier.ToString();
+        var key = $"{guidIdentifier}.{extension}";
 
         var deleteRequest = new DeleteObjectRequest
         {
-            BucketName = bucketName,
+            BucketName = bucketName.ToString(),
             Key = key
         };
 

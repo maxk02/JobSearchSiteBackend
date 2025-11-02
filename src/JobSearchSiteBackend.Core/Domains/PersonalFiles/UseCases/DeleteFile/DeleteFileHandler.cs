@@ -29,7 +29,8 @@ public class DeleteFileHandler(
         await context.SaveChangesAsync(cancellationToken);
 
         backgroundJobService.Enqueue(
-            () => fileStorageService.DeleteFileAsync(personalFile.GuidIdentifier, CancellationToken.None),
+            () => fileStorageService.DeleteFileAsync(FileStorageBucketName.PersonalFiles,
+                personalFile.GuidIdentifier, personalFile.Extension, CancellationToken.None),
             BackgroundJobQueues.PersonalFileStorage);
 
         return Result.Success();

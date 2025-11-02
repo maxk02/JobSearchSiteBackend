@@ -2,10 +2,13 @@
 using Ardalis.Result.AspNetCore;
 using AutoMapper;
 using JobSearchSiteBackend.Core.Domains.Companies.UseCases.AddCompany;
+using JobSearchSiteBackend.Core.Domains.Companies.UseCases.AddCompanyEmployee;
 using JobSearchSiteBackend.Core.Domains.Companies.UseCases.DeleteCompany;
 using JobSearchSiteBackend.Core.Domains.Companies.UseCases.GetCompany;
+using JobSearchSiteBackend.Core.Domains.Companies.UseCases.GetCompanyEmployees;
 using JobSearchSiteBackend.Core.Domains.Companies.UseCases.GetCompanyLastVisitedFolders;
 using JobSearchSiteBackend.Core.Domains.Companies.UseCases.GetCompanyLastVisitedJobs;
+using JobSearchSiteBackend.Core.Domains.Companies.UseCases.RemoveCompanyEmployee;
 using JobSearchSiteBackend.Core.Domains.Companies.UseCases.UpdateCompany;
 using JobSearchSiteBackend.Core.Domains.Companies.UseCases.UploadCompanyAvatar;
 using JobSearchSiteBackend.Core.Domains.PersonalFiles.UseCases.UploadFile;
@@ -21,8 +24,7 @@ public class CompaniesController(IMapper mapper) : ControllerBase
 {
     [HttpPost]
     public async Task<ActionResult<AddCompanyResponse>> AddCompany(
-        [FromForm] AddCompanyRequest request,
-        [FromForm] IFormFile avatarFile,
+        [FromBody] AddCompanyRequest request,
         [FromServices] AddCompanyHandler handler,
         CancellationToken cancellationToken)
     {
@@ -31,18 +33,18 @@ public class CompaniesController(IMapper mapper) : ControllerBase
         return this.ToActionResult(result);
     }
     
-    // [HttpPost]
-    // [Route("/{companyId:long:min(1)}/management/users")]
-    // public async Task<ActionResult<AddCompanyResponse>> AddCompanyEmployee(
-    //     [FromRoute] long companyId,
-    //     [FromBody] AddCompanyEmployeeRequest request,
-    //     [FromServices] AddCompanyEmployeeHandler handler,
-    //     CancellationToken cancellationToken)
-    // {
-    //     var result = await handler.Handle(request, cancellationToken);
-    //
-    //     return this.ToActionResult(result);
-    // }
+    [HttpPost]
+    [Route("{companyId:long:min(1)}/management/employees")]
+    public async Task<ActionResult<AddCompanyResponse>> AddCompanyEmployee(
+        [FromRoute] long companyId,
+        [FromBody] AddCompanyEmployeeRequest request,
+        [FromServices] AddCompanyEmployeeHandler handler,
+        CancellationToken cancellationToken)
+    {
+        var result = await handler.Handle(request, cancellationToken);
+    
+        return this.ToActionResult(result);
+    }
 
     [HttpDelete("{id:long:min(1)}")]
     public async Task<ActionResult> DeleteCompany(
@@ -81,19 +83,19 @@ public class CompaniesController(IMapper mapper) : ControllerBase
         return this.ToActionResult(result);
     }
     
-    // [HttpGet]
-    // [Route("/{id:long:min(1)}/management/users")]
-    // public async Task<ActionResult<GetCompanyEmployeesResponse>> GetCompanyEmployees(
-    //     [FromRoute] long id,
-    //     [FromServices] GetCompanyEmployeesHandler handler,
-    //     CancellationToken cancellationToken)
-    // {
-    //     var request = new GetCompanyEmployeesRequest(id);
-    //     var result = await handler.Handle(request, cancellationToken);
-    //
-    //     return this.ToActionResult(result);
-    // }
-    //
+    [HttpGet]
+    [Route("{id:long:min(1)}/management/employees")]
+    public async Task<ActionResult<GetCompanyEmployeesResponse>> GetCompanyEmployees(
+        [FromRoute] long id,
+        [FromBody] GetCompanyEmployeesRequest request,
+        [FromServices] GetCompanyEmployeesHandler handler,
+        CancellationToken cancellationToken)
+    {
+        var result = await handler.Handle(request, cancellationToken);
+    
+        return this.ToActionResult(result);
+    }
+    
     // [HttpGet]
     // [Route("/{id:long:min(1)}/jobs")]
     // [AllowAnonymous]
@@ -227,19 +229,21 @@ public class CompaniesController(IMapper mapper) : ControllerBase
     //
     //     return this.ToActionResult(result);
     // }
-    //
-    // [HttpDelete]
-    // [Route("/{companyId:long:min(1)}/management/users/{userId:long:min(1)}")]
-    // public async Task<ActionResult> RemoveCompanyEmployee(
-    //     [FromRoute] long companyId,
-    //     [FromRoute] long userId,
-    //     [FromServices] RemoveCompanyEmployeeHandler handler,
-    //     CancellationToken cancellationToken)
-    // {
-    //     var result = await handler.Handle(request, cancellationToken);
-    //
-    //     return this.ToActionResult(result);
-    // }
+    
+    [HttpDelete]
+    [Route("{companyId:long:min(1)}/management/employees/{userId:long:min(1)}")]
+    public async Task<ActionResult> RemoveCompanyEmployee(
+        [FromRoute] long companyId,
+        [FromRoute] long userId,
+        [FromServices] RemoveCompanyEmployeeHandler handler,
+        CancellationToken cancellationToken)
+    {
+        var request = new RemoveCompanyEmployeeRequest(companyId, userId);
+        
+        var result = await handler.Handle(request, cancellationToken);
+    
+        return this.ToActionResult(result);
+    }
     //
     // [HttpGet]
     // [Route("/{id:long:min(1)}/management/job-folders/search")]

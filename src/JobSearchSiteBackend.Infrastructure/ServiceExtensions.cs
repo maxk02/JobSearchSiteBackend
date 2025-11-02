@@ -93,17 +93,17 @@ public static class ServiceExtensions
     
     public static void ConfigureFileStorage(this IServiceCollection serviceCollection, IConfiguration configuration)
     {
-        var bucketName = configuration["AWS:BucketName"];
-        
-        if (string.IsNullOrEmpty(bucketName))
-            throw new ArgumentNullException();
+        // var bucketName = configuration["AWS:BucketName"];
+        //
+        // if (string.IsNullOrEmpty(bucketName))
+        //     throw new ArgumentNullException();
         
         serviceCollection.AddDefaultAWSOptions(configuration.GetAWSOptions());
         
         serviceCollection.AddAWSService<IAmazonS3>();
         
         serviceCollection.AddSingleton<IFileStorageService, AmazonS3FileStorageService>(provider => 
-            new AmazonS3FileStorageService(provider.GetRequiredService<IAmazonS3>(), bucketName));
+            new AmazonS3FileStorageService(provider.GetRequiredService<IAmazonS3>()));
     }
     
     public static void ConfigureSearch(this IServiceCollection serviceCollection, IConfiguration configuration)
