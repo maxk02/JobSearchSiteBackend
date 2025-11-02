@@ -4,7 +4,7 @@ namespace JobSearchSiteBackend.Core.Domains.UserProfiles;
 
 public class UserAvatar : IEntityWithId, IEntityWithGuid, IEntityWithUpdDelDate, IEntityWithUploadStatus
 {
-    public UserAvatar(long userId, string extension, long size)
+    public UserAvatar(long? userId, string extension, long size)
     {
         UserId = userId;
         Extension = extension;
@@ -18,7 +18,7 @@ public class UserAvatar : IEntityWithId, IEntityWithGuid, IEntityWithUpdDelDate,
     public DateTime DateTimeUpdatedUtc { get; set; }
     public bool IsDeleted { get; set; }
     
-    public long UserId { get; private set; }
+    public long? UserId { get; set; }
     
     public string Extension { get; private set; }
     

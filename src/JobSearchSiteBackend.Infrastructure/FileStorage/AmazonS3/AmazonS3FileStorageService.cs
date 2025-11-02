@@ -58,6 +58,21 @@ public class AmazonS3FileStorageService(IAmazonS3 s3Client, string bucketName) :
         return url;
     }
 
+    public async Task BulkDeleteFilesAsync(ICollection<(Guid, string)> guidExtensionTuples,
+        CancellationToken cancellationToken = default)
+    {
+        var objects = guidExtensionTuples
+            .Select(tuple => new KeyVersion { Key = $"{tuple.Item1}.{tuple.Item2}" }).ToList();
+        
+        var deleteRequest = new DeleteObjectsRequest
+        {
+            BucketName = bucketName,
+            Objects = objects
+        };
+        
+        await s3Client.DeleteObjectsAsync(deleteRequest, cancellationToken);
+    }
+
     public async Task DeleteFileAsync(Guid guidIdentifier, CancellationToken cancellationToken = default)
     {
         var key = guidIdentifier.ToString();

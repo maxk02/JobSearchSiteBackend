@@ -1,4 +1,5 @@
-﻿using Ardalis.Result.AspNetCore;
+﻿using Ardalis.Result;
+using Ardalis.Result.AspNetCore;
 using JobSearchSiteBackend.Core.Domains._Shared.Pagination;
 using JobSearchSiteBackend.Core.Domains.UserProfiles.UseCases.AddJobBookmark;
 using JobSearchSiteBackend.Core.Domains.UserProfiles.UseCases.AddUserProfile;
@@ -8,6 +9,7 @@ using JobSearchSiteBackend.Core.Domains.UserProfiles.UseCases.GetJobApplications
 using JobSearchSiteBackend.Core.Domains.UserProfiles.UseCases.GetPersonalFiles;
 using JobSearchSiteBackend.Core.Domains.UserProfiles.UseCases.GetUserProfile;
 using JobSearchSiteBackend.Core.Domains.UserProfiles.UseCases.UpdateUserProfile;
+using JobSearchSiteBackend.Core.Domains.UserProfiles.UseCases.UploadUserAvatar;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -113,6 +115,31 @@ public class UserProfilesController : ControllerBase
     {
         var result = await handler.Handle(request, cancellationToken);
         
+        return this.ToActionResult(result);
+    }
+    
+    [HttpPut]
+    [Route("avatar")]
+    public async Task<ActionResult<UploadUserAvatarResponse>> UploadUserAvatar(
+        [FromRoute] long id,
+        [FromForm] IFormFile file,
+        [FromServices] UploadUserAvatarHandler handler,
+        CancellationToken cancellationToken)
+    {
+        if (file.Length == 0)
+        {
+            return this.ToActionResult(Result.Invalid());
+        }
+
+        await using var stream = file.OpenReadStream();
+        
+        var extension = Path.GetExtension(file.FileName).TrimStart('.');
+        var size = file.Length;
+        
+        var request = new UploadUserAvatarRequest(stream, extension, size, id);
+        
+        var result = await handler.Handle(request, cancellationToken);
+
         return this.ToActionResult(result);
     }
 }

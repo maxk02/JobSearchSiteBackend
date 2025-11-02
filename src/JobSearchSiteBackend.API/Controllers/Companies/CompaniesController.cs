@@ -1,4 +1,5 @@
-﻿using Ardalis.Result.AspNetCore;
+﻿using Ardalis.Result;
+using Ardalis.Result.AspNetCore;
 using AutoMapper;
 using JobSearchSiteBackend.Core.Domains.Companies.UseCases.AddCompany;
 using JobSearchSiteBackend.Core.Domains.Companies.UseCases.DeleteCompany;
@@ -6,6 +7,8 @@ using JobSearchSiteBackend.Core.Domains.Companies.UseCases.GetCompany;
 using JobSearchSiteBackend.Core.Domains.Companies.UseCases.GetCompanyLastVisitedFolders;
 using JobSearchSiteBackend.Core.Domains.Companies.UseCases.GetCompanyLastVisitedJobs;
 using JobSearchSiteBackend.Core.Domains.Companies.UseCases.UpdateCompany;
+using JobSearchSiteBackend.Core.Domains.Companies.UseCases.UploadCompanyAvatar;
+using JobSearchSiteBackend.Core.Domains.PersonalFiles.UseCases.UploadFile;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -280,4 +283,30 @@ public class CompaniesController(IMapper mapper) : ControllerBase
 
         return this.ToActionResult(result);
     }
+    
+    [HttpPut]
+    [Route("{id:long:min(1)}/avatar")]
+    public async Task<ActionResult<UploadCompanyAvatarResponse>> UploadCompanyAvatar(
+        [FromRoute] long id,
+        [FromForm] IFormFile file,
+        [FromServices] UploadCompanyAvatarHandler handler,
+        CancellationToken cancellationToken)
+    {
+        if (file.Length == 0)
+        {
+            return this.ToActionResult(Result.Invalid());
+        }
+
+        await using var stream = file.OpenReadStream();
+        
+        var extension = Path.GetExtension(file.FileName).TrimStart('.');
+        var size = file.Length;
+        
+        var request = new UploadCompanyAvatarRequest(stream, extension, size, id);
+        
+        var result = await handler.Handle(request, cancellationToken);
+
+        return this.ToActionResult(result);
+    }
+    
 }

@@ -2,6 +2,7 @@
 using JobSearchSiteBackend.Core.Services.Auth;
 using Ardalis.Result;
 using JobSearchSiteBackend.Core.Persistence;
+using Microsoft.EntityFrameworkCore;
 
 namespace JobSearchSiteBackend.Core.Domains.UserProfiles.UseCases.AddUserProfile;
 

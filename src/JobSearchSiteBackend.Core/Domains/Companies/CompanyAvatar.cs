@@ -5,7 +5,7 @@ namespace JobSearchSiteBackend.Core.Domains.Companies;
 
 public class CompanyAvatar : IEntityWithId, IEntityWithGuid, IEntityWithUpdDelDate, IEntityWithUploadStatus
 {
-    public CompanyAvatar(long companyId, string extension, long size)
+    public CompanyAvatar(long? companyId, string extension, long size)
     {
         CompanyId = companyId;
         Extension = extension;
@@ -19,7 +19,7 @@ public class CompanyAvatar : IEntityWithId, IEntityWithGuid, IEntityWithUpdDelDa
     public DateTime DateTimeUpdatedUtc { get; set; }
     public bool IsDeleted { get; set; }
     
-    public long CompanyId { get; private set; }
+    public long? CompanyId { get; set; }
     
     public string Extension { get; private set; }
     
