@@ -45,7 +45,9 @@ public class GetCompanyEmployeesHandler(
         
         var companyEmployeesQueryWithFiltersNJoins = companyEmployeesGeneralQuery
             .Include(employee => employee.Account)
-            .Include(employee => employee.UserAvatars)
+            .Include(employee => employee.UserAvatars!
+                .Where(a => !a.IsDeleted && a.IsUploadedSuccessfully)
+                .OrderBy(a => a.DateTimeUpdatedUtc))
             .Take(request.Size)
             .Skip((request.Page - 1) * request.Size);
 
@@ -60,13 +62,26 @@ public class GetCompanyEmployeesHandler(
         var companyEmployees = await companyEmployeesQueryWithFiltersNJoins
             .ToListAsync(cancellationToken);
 
-        var companyEmployeeDtos = companyEmployees
-            .Select(emp => new CompanyEmployeeDto(
-                    emp.Id,
-                    emp.Account!.Email!,
-                    $"{emp.FirstName} {emp.LastName}",
-                    "")
-            ).ToList();
+        List<CompanyEmployeeDto> companyEmployeeDtos = [];
+
+        foreach (var companyEmployee in companyEmployees)
+        {
+            var lastAvatar = companyEmployee.UserAvatars!.LastOrDefault();
+
+            string? url = null;
+            
+            if (lastAvatar is not null)
+            {
+                url = await fileStorageService.GetDownloadUrlAsync(FileStorageBucketName.UserAvatars,
+                    lastAvatar.GuidIdentifier, lastAvatar.Extension, cancellationToken);
+            }
+            
+            companyEmployeeDtos.Add(new CompanyEmployeeDto(
+                companyEmployee.Id,
+                companyEmployee.Account!.Email!,
+                $"{companyEmployee.FirstName} {companyEmployee.LastName}",
+                url));
+        }
         
         var paginationResponse = new PaginationResponse(request.Page, request.Size, count);
 

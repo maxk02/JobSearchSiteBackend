@@ -6,4 +6,6 @@ public interface IJobSearchRepository : ISearchRepository<JobSearchModel>, IUpda
 {
     Task<ICollection<long>> SearchFromCountriesAndCategoriesAsync(ICollection<long> countryIds,
         ICollection<long> categoryIds, string query, CancellationToken cancellationToken = default);
+    Task<ICollection<long>> SearchFromCompanyAsync(long companyId, string query,
+        CancellationToken cancellationToken = default);
 }

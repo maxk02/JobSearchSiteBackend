@@ -6,6 +6,7 @@ using JobSearchSiteBackend.Core.Domains.Companies.UseCases.AddCompanyEmployee;
 using JobSearchSiteBackend.Core.Domains.Companies.UseCases.DeleteCompany;
 using JobSearchSiteBackend.Core.Domains.Companies.UseCases.GetCompany;
 using JobSearchSiteBackend.Core.Domains.Companies.UseCases.GetCompanyEmployees;
+using JobSearchSiteBackend.Core.Domains.Companies.UseCases.GetCompanyJobs;
 using JobSearchSiteBackend.Core.Domains.Companies.UseCases.GetCompanyLastVisitedFolders;
 using JobSearchSiteBackend.Core.Domains.Companies.UseCases.GetCompanyLastVisitedJobs;
 using JobSearchSiteBackend.Core.Domains.Companies.UseCases.RemoveCompanyEmployee;
@@ -96,20 +97,20 @@ public class CompaniesController(IMapper mapper) : ControllerBase
         return this.ToActionResult(result);
     }
     
-    // [HttpGet]
-    // [Route("/{id:long:min(1)}/jobs")]
-    // [AllowAnonymous]
-    // public async Task<ActionResult<GetCompanyJobsResponse>> GetCompanyJobs(
-    //     [FromRoute] long id,
-    //     [FromServices] GetCompanyJobsHandler handler,
-    //     CancellationToken cancellationToken)
-    // {
-    //     var request = new GetCompanyJobsRequest(id);
-    //     var result = await handler.Handle(request, cancellationToken);
-    //
-    //     return this.ToActionResult(result);
-    // }
-    //
+    [HttpGet]
+    [Route("{id:long:min(1)}/jobs")]
+    [AllowAnonymous]
+    public async Task<ActionResult<GetCompanyJobsResponse>> GetCompanyJobs(
+        [FromRoute] long id,
+        [FromQuery] GetCompanyJobsRequest request,
+        [FromServices] GetCompanyJobsHandler handler,
+        CancellationToken cancellationToken)
+    {
+        var result = await handler.Handle(request, cancellationToken);
+    
+        return this.ToActionResult(result);
+    }
+    
     // [HttpGet]
     // [Route("/{id:long:min(1)}/management/last-visited-folders")]
     // public async Task<ActionResult<GetCompanyLastVisitedFoldersResponse>> GetCompanyLastVisitedFolders(

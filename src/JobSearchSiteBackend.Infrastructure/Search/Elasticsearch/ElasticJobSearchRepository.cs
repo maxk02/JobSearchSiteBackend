@@ -202,4 +202,10 @@ public class ElasticJobSearchRepository(IElasticClient client) : IJobSearchRepos
         
         return resultIds;
     }
+
+    public Task<ICollection<long>> SearchFromCompanyAsync(long companyId, string query,
+        CancellationToken cancellationToken = default)
+    {
+        throw new NotImplementedException();
+    }
 }
