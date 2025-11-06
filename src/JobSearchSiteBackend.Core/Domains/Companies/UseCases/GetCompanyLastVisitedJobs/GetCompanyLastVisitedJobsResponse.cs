@@ -1,3 +1,5 @@
-﻿namespace JobSearchSiteBackend.Core.Domains.Companies.UseCases.GetCompanyLastVisitedJobs;
+﻿using JobSearchSiteBackend.Core.Domains.Companies.Dtos;
 
-public record GetCompanyLastVisitedJobsResponse();
+namespace JobSearchSiteBackend.Core.Domains.Companies.UseCases.GetCompanyLastVisitedJobs;
+
+public record GetCompanyLastVisitedJobsResponse(ICollection<CompanyJobListItemDto> Jobs);

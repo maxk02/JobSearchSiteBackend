@@ -1,5 +1,6 @@
-﻿using JobSearchSiteBackend.Core.Domains._Shared.UseCaseStructure;
+﻿using Ardalis.Result;
+using JobSearchSiteBackend.Core.Domains._Shared.UseCaseStructure;
 
 namespace JobSearchSiteBackend.Core.Domains.Companies.UseCases.GetCompanyLastVisitedJobs;
 
-public record GetCompanyLastVisitedJobsRequest(): IRequest<GetCompanyLastVisitedJobsResponse>;
+public record GetCompanyLastVisitedJobsRequest(long CompanyId): IRequest<Result<GetCompanyLastVisitedJobsResponse>>;

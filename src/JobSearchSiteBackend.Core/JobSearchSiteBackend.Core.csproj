@@ -43,8 +43,6 @@
     <ItemGroup>
       <Folder Include="Domains\Companies\UseCases\RemoveCompanyLastVisitedFolders\" />
       <Folder Include="Domains\Companies\UseCases\RemoveCompanyLastVisitedJobs\" />
-      <Folder Include="Domains\Companies\UseCases\SearchCompanySharedFolders\" />
-      <Folder Include="Domains\Companies\UseCases\SearchCompanySharedJobs\" />
       <Folder Include="Domains\CompanyClaims\UseCases\GetCompanyClaimsOverview\" />
       <Folder Include="Domains\JobFolderClaims\UseCases\GetJobFolderClaimsOverview\" />
       <Folder Include="Domains\JobFolders\UseCases\GetJobFolder\" />

@@ -9,7 +9,11 @@ using JobSearchSiteBackend.Core.Domains.Companies.UseCases.GetCompanyEmployees;
 using JobSearchSiteBackend.Core.Domains.Companies.UseCases.GetCompanyJobs;
 using JobSearchSiteBackend.Core.Domains.Companies.UseCases.GetCompanyLastVisitedFolders;
 using JobSearchSiteBackend.Core.Domains.Companies.UseCases.GetCompanyLastVisitedJobs;
+using JobSearchSiteBackend.Core.Domains.Companies.UseCases.GetCompanyManagementNavbarDto;
+using JobSearchSiteBackend.Core.Domains.Companies.UseCases.GetCompanySharedFoldersRoot;
 using JobSearchSiteBackend.Core.Domains.Companies.UseCases.RemoveCompanyEmployee;
+using JobSearchSiteBackend.Core.Domains.Companies.UseCases.SearchCompanySharedFolders;
+using JobSearchSiteBackend.Core.Domains.Companies.UseCases.SearchCompanySharedJobs;
 using JobSearchSiteBackend.Core.Domains.Companies.UseCases.UpdateCompany;
 using JobSearchSiteBackend.Core.Domains.Companies.UseCases.UploadCompanyAvatar;
 using JobSearchSiteBackend.Core.Domains.PersonalFiles.UseCases.UploadFile;
@@ -111,58 +115,58 @@ public class CompaniesController(IMapper mapper) : ControllerBase
         return this.ToActionResult(result);
     }
     
-    // [HttpGet]
-    // [Route("/{id:long:min(1)}/management/last-visited-folders")]
-    // public async Task<ActionResult<GetCompanyLastVisitedFoldersResponse>> GetCompanyLastVisitedFolders(
-    //     [FromRoute] long id,
-    //     [FromServices] GetCompanyLastVisitedFoldersHandler handler,
-    //     CancellationToken cancellationToken)
-    // {
-    //     var request = new GetCompanyLastVisitedFoldersRequest(id);
-    //     var result = await handler.Handle(request, cancellationToken);
-    //
-    //     return this.ToActionResult(result);
-    // }
-    //
-    // [HttpGet]
-    // [Route("/{id:long:min(1)}/management/last-visited-jobs")]
-    // public async Task<ActionResult<GetCompanyLastVisitedJobsResponse>> GetCompanyLastVisitedJobs(
-    //     [FromRoute] long id,
-    //     [FromServices] GetCompanyLastVisitedJobsHandler handler,
-    //     CancellationToken cancellationToken)
-    // {
-    //     var request = new GetCompanyLastVisitedJobsRequest(id);
-    //     var result = await handler.Handle(request, cancellationToken);
-    //
-    //     return this.ToActionResult(result);
-    // }
-    //
-    // [HttpGet]
-    // [Route("/{id:long:min(1)}/management")]
-    // public async Task<ActionResult<GetCompanyManagementNavbarResponse>> GetCompanyManagementNavbarDto(
-    //     [FromRoute] long id,
-    //     [FromServices] GetCompanyManagementNavbarHandler handler,
-    //     CancellationToken cancellationToken)
-    // {
-    //     var request = new GetCompanyManagementNavbarRequest(id);
-    //     var result = await handler.Handle(request, cancellationToken);
-    //
-    //     return this.ToActionResult(result);
-    // }
-    //
-    // [HttpGet]
-    // [Route("/{id:long:min(1)}/management/job-folders")]
-    // public async Task<ActionResult<GetCompanySharedFoldersResponse>> GetCompanySharedFolders(
-    //     [FromRoute] long id,
-    //     [FromServices] GetCompanySharedFoldersHandler handler,
-    //     CancellationToken cancellationToken)
-    // {
-    //     var request = new GetCompanySharedFoldersRequest(id);
-    //     var result = await handler.Handle(request, cancellationToken);
-    //
-    //     return this.ToActionResult(result);
-    // }
-    //
+    [HttpGet]
+    [Route("{id:long:min(1)}/management/last-visited-folders")]
+    public async Task<ActionResult<GetCompanyLastVisitedFoldersResponse>> GetCompanyLastVisitedFolders(
+        [FromRoute] long id,
+        [FromServices] GetCompanyLastVisitedFoldersHandler handler,
+        CancellationToken cancellationToken)
+    {
+        var request = new GetCompanyLastVisitedFoldersRequest(id);
+        var result = await handler.Handle(request, cancellationToken);
+    
+        return this.ToActionResult(result);
+    }
+    
+    [HttpGet]
+    [Route("{id:long:min(1)}/management/last-visited-jobs")]
+    public async Task<ActionResult<GetCompanyLastVisitedJobsResponse>> GetCompanyLastVisitedJobs(
+        [FromRoute] long id,
+        [FromServices] GetCompanyLastVisitedJobsHandler handler,
+        CancellationToken cancellationToken)
+    {
+        var request = new GetCompanyLastVisitedJobsRequest(id);
+        var result = await handler.Handle(request, cancellationToken);
+    
+        return this.ToActionResult(result);
+    }
+    
+    [HttpGet]
+    [Route("{id:long:min(1)}/management")]
+    public async Task<ActionResult<GetCompanyManagementNavbarDtoResponse>> GetCompanyManagementNavbarDto(
+        [FromRoute] long id,
+        [FromServices] GetCompanyManagementNavbarDtoHandler handler,
+        CancellationToken cancellationToken)
+    {
+        var request = new GetCompanyManagementNavbarDtoRequest(id);
+        var result = await handler.Handle(request, cancellationToken);
+    
+        return this.ToActionResult(result);
+    }
+    
+    [HttpGet]
+    [Route("{id:long:min(1)}/management/job-folders")]
+    public async Task<ActionResult<GetCompanySharedFoldersRootResponse>> GetCompanySharedFoldersRoot(
+        [FromRoute] long id,
+        [FromServices] GetCompanySharedFoldersRootHandler handler,
+        CancellationToken cancellationToken)
+    {
+        var request = new GetCompanySharedFoldersRootRequest(id);
+        var result = await handler.Handle(request, cancellationToken);
+    
+        return this.ToActionResult(result);
+    }
+    
     // [HttpGet] todo delete?
     // [Route("/{id:long:min(1)}/management/job-folders/{parentFolderId:long:min(1)}")]
     // public async Task<ActionResult<GetCompanySharedFoldersResponse>> GetCompanySharedFoldersChildren(
@@ -176,7 +180,7 @@ public class CompaniesController(IMapper mapper) : ControllerBase
     //
     //     return this.ToActionResult(result);
     // }
-    //
+    
     // [HttpDelete]
     // [Route("/{id:long:min(1)}/management/last-visited-folders")]
     // public async Task<ActionResult> RemoveCompanyAllLastVisitedFolders(
@@ -245,32 +249,34 @@ public class CompaniesController(IMapper mapper) : ControllerBase
     
         return this.ToActionResult(result);
     }
-    //
-    // [HttpGet]
-    // [Route("/{id:long:min(1)}/management/job-folders/search")]
-    // public async Task<ActionResult<SearchCompanySharedFoldersResponse>> SearchCompanySharedFolders(
-    //     [FromRoute] long id,
-    //     [FromServices] SearchCompanySharedFoldersHandler handler,
-    //     CancellationToken cancellationToken)
-    // {
-    //     var request = new SearchCompanySharedFoldersRequest(id);
-    //     var result = await handler.Handle(request, cancellationToken);
-    //
-    //     return this.ToActionResult(result);
-    // }
-    //
-    // [HttpGet]
-    // [Route("/{id:long:min(1)}/management/jobs/search")]
-    // public async Task<ActionResult<SearchCompanySharedJobsResponse>> SearchCompanySharedJobs(
-    //     [FromRoute] long id,
-    //     [FromServices] SearchCompanySharedJobsHandler handler,
-    //     CancellationToken cancellationToken)
-    // {
-    //     var request = new SearchCompanySharedJobsRequest(id);
-    //     var result = await handler.Handle(request, cancellationToken);
-    //
-    //     return this.ToActionResult(result);
-    // }
+    
+    [HttpGet]
+    [Route("{id:long:min(1)}/management/job-folders/search")]
+    public async Task<ActionResult<SearchCompanySharedFoldersResponse>> SearchCompanySharedFolders(
+        [FromRoute] long id,
+        [FromQuery] string query,
+        [FromServices] SearchCompanySharedFoldersHandler handler,
+        CancellationToken cancellationToken)
+    {
+        var request = new SearchCompanySharedFoldersRequest(id, query);
+        var result = await handler.Handle(request, cancellationToken);
+    
+        return this.ToActionResult(result);
+    }
+    
+    [HttpGet]
+    [Route("{id:long:min(1)}/management/jobs/search")]
+    public async Task<ActionResult<SearchCompanySharedJobsResponse>> SearchCompanySharedJobs(
+        [FromRoute] long id,
+        [FromQuery] string query,
+        [FromServices] SearchCompanySharedJobsHandler handler,
+        CancellationToken cancellationToken)
+    {
+        var request = new SearchCompanySharedJobsRequest(id, query);
+        var result = await handler.Handle(request, cancellationToken);
+    
+        return this.ToActionResult(result);
+    }
 
     [HttpPatch("{id:long:min(1)}")]
     public async Task<ActionResult> UpdateCompany(

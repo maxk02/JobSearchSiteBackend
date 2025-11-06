@@ -1,10 +1,12 @@
-﻿using JobSearchSiteBackend.Core.Domains._Shared.UseCaseStructure;
+﻿using Ardalis.Result;
+using JobSearchSiteBackend.Core.Domains._Shared.UseCaseStructure;
 
 namespace JobSearchSiteBackend.Core.Domains.Companies.UseCases.GetCompanyLastVisitedFolders;
 
-public class GetCompanyLastVisitedFoldersHandler: IRequestHandler<GetCompanyLastVisitedFoldersRequest, GetCompanyLastVisitedFoldersResponse>
+public class GetCompanyLastVisitedFoldersHandler: IRequestHandler<GetCompanyLastVisitedFoldersRequest,
+    Result<GetCompanyLastVisitedFoldersResponse>>
 {
-    public async Task<GetCompanyLastVisitedFoldersResponse> Handle(GetCompanyLastVisitedFoldersRequest request,
+    public async Task<Result<GetCompanyLastVisitedFoldersResponse>> Handle(GetCompanyLastVisitedFoldersRequest request,
         CancellationToken cancellationToken = default)
     {
         throw new NotImplementedException();
