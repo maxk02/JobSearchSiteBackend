@@ -9,7 +9,7 @@ namespace JobSearchSiteBackend.API.Middleware;
 public class CheckUserTokenMiddleware(
     RequestDelegate next,
     ICurrentAccountService currentAccountService,
-    ICache<string, UserSession> sessionCache)
+    IUserSessionCacheRepository sessionCache)
 {
     public async Task InvokeAsync(HttpContext httpContext, MainDataContext dbContext)
     {
@@ -34,29 +34,15 @@ public class CheckUserTokenMiddleware(
         var tokenId = currentAccountService.GetTokenIdentifierOrThrow();
         var userId = currentAccountService.GetIdOrThrow();
 
-        var session = await sessionCache.GetAsync($"user_session_{tokenId}"); 
+        var expirationUtc = await sessionCache.GetSessionExpirationUtcAsync(userId.ToString(), tokenId); 
         
-        if (session is null)
-        {
-            session = await dbContext.UserSessions.FindAsync([tokenId], cancellationToken);
-
-            if (session is null)
-            {
-                httpContext.Response.StatusCode = StatusCodes.Status401Unauthorized;
-                return;
-            }
-            
-            await sessionCache.SetAsync($"user_session_{tokenId}", session, new CacheEntryOptions
-            {
-                AbsoluteExpiration = new DateTimeOffset(session.ExpiresUtc, TimeSpan.Zero),
-            });
-        }
-        
-        if (session.UserId != userId || DateTime.UtcNow > session.ExpiresUtc)
+        if (expirationUtc is null || expirationUtc <= DateTime.UtcNow)
         {
             httpContext.Response.StatusCode = StatusCodes.Status401Unauthorized;
             return;
         }
+        
+        await sessionCache.ProlongSessionAsync(userId.ToString(), tokenId, expirationUtc.Value.AddMonths(1));
         
         await next(httpContext);
     }

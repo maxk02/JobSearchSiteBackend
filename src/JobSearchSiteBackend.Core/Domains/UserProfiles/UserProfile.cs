@@ -43,7 +43,7 @@ public class UserProfile : IEntityWithId
     public ICollection<UserCompanyClaim>? UserCompanyClaims { get; set; }
     public ICollection<UserJobFolderClaim>? UserJobFolderClaims { get; set; }
     
-    public ICollection<UserSession>? UserSessions { get; set; }
+    // public ICollection<UserSession>? UserSessions { get; set; }
     
     public ICollection<UserAvatar>? UserAvatars { get; set; }
     

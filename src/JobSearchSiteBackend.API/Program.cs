@@ -79,7 +79,7 @@ builder.Services.AddAutoMapper(Assembly.GetExecutingAssembly());
 builder.Services.ConfigureJwtAuthentication(builder.Configuration);
 builder.Services.ConfigureJwtTokenGeneration();
 builder.Services.ConfigurePersistenceWithIdentity(builder.Configuration);
-builder.Services.ConfigureMemoryCache();
+builder.Services.ConfigureMemoryCache(builder.Configuration);
 builder.Services.ConfigureBackgroundJobScheduler();
 builder.Services.ConfigureFileStorage(builder.Configuration);
 builder.Services.ConfigureEmailSender();

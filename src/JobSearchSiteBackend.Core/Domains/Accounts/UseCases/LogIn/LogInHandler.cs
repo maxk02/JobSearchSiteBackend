@@ -17,7 +17,7 @@ public class LogInHandler(UserManager<MyIdentityUser> userManager,
     MainDataContext context,
     IJwtTokenGenerationService jwtTokenGenerationService,
     IMapper mapper,
-    ICache<string, UserSession> sessionCache,
+    IUserSessionCacheRepository sessionCache,
     ICurrentAccountService currentAccountService,
     ICookieService cookieService) 
     : IRequestHandler<LogInRequest, Result<LogInResponse>>
@@ -78,19 +78,10 @@ public class LogInHandler(UserManager<MyIdentityUser> userManager,
         var newTokenId = Guid.NewGuid();
         
         var token = jwtTokenGenerationService.Generate(accountData, newTokenId);
+
+        await sessionCache.AddSessionAsync(account.Id.ToString(), newTokenId.ToString(), DateTime.UtcNow.AddMonths(1));
         
-        var newUserSession = new UserSession(newTokenId.ToString(), account.Id, DateTime.UtcNow,
-            DateTime.UtcNow.Add(TimeSpan.FromDays(30)));
-        
-        context.UserSessions.Add(newUserSession);
-        await context.SaveChangesAsync(cancellationToken);
-        
-        cookieService.SetAuthCookie(newTokenId.ToString());
-        
-        await sessionCache.SetAsync($"user_session_{newTokenId}", newUserSession, new CacheEntryOptions
-        {
-            AbsoluteExpiration = new DateTimeOffset(newUserSession.ExpiresUtc, TimeSpan.Zero),
-        });
+        cookieService.SetAuthCookie(token);
 
         return new LogInResponse(newTokenId.ToString(), accountDataDto);
     }

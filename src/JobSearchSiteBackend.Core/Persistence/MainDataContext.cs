@@ -39,7 +39,7 @@ public class MainDataContext : IdentityDbContext<MyIdentityUser, MyIdentityRole,
     public DbSet<UserJobFolderClaim> UserJobFolderClaims { get; set; }
     public DbSet<UserProfile> UserProfiles { get; set; }
     public DbSet<UserAvatar>  UserAvatars { get; set; }
-    public DbSet<UserSession> UserSessions { get; set; }
+    // public DbSet<UserSession> UserSessions { get; set; }
 
     //system entities
     public DbSet<SqlToSearchSyncInfo> SqlToSearchSyncInfos { get; set; }

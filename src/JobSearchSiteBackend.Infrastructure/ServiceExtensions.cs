@@ -1,4 +1,5 @@
-﻿using System.Text;
+﻿using System.Security.Authentication;
+using System.Text;
 using Amazon.S3;
 using JobSearchSiteBackend.Core.Domains.Accounts;
 using JobSearchSiteBackend.Core.Domains.Companies.Search;
@@ -29,6 +30,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using Nest;
+using StackExchange.Redis;
 
 namespace JobSearchSiteBackend.Infrastructure;
 
@@ -152,8 +154,37 @@ public static class ServiceExtensions
         serviceCollection.AddTransient<IEmailSenderService, MailKitEmailSenderService>();
     }
     
-    public static void ConfigureMemoryCache(this IServiceCollection serviceCollection)
+    public static void ConfigureMemoryCache(this IServiceCollection serviceCollection, IConfiguration configuration)
     {
-        serviceCollection.AddSingleton(typeof(ICache<,>), typeof(MemoryCache<,>));
+        var options = new ConfigurationOptions
+        {
+            // Use your Redis server endpoint and port
+            EndPoints = { { configuration["REDIS_HOST"] ?? throw new NullReferenceException(), 6379 } }, 
+    
+            // 2. Enable TLS/SSL for encrypted communication
+            Ssl = true, 
+    
+            // Optionally specify the TLS version (recommended: Tls12 or Tls13)
+            SslProtocols = SslProtocols.Tls12, 
+    
+            // 3. Provide Authentication
+            // Use the password set in your redis.conf (requirepass) 
+            // or the password associated with an ACL user.
+            Password = configuration["REDIS_PASSWORD"] ?? throw new NullReferenceException(), 
+    
+            // If using Redis 6+ ACLs, specify the username
+            User = configuration["REDIS_USER"] ?? throw new NullReferenceException(), 
+    
+            // Optional: Only one connection is generally needed, use multiplexing.
+            AbortOnConnectFail = false 
+        };
+        
+        // 1. Register IConnectionMultiplexer as a Singleton
+        // This is the recommended approach: create a single connection and reuse it.
+        serviceCollection.AddSingleton<IConnectionMultiplexer>(sp => ConnectionMultiplexer.Connect(options));
+
+        // 2. Register your abstraction
+        serviceCollection.AddScoped<IGeneralCacheRepository, RedisGeneralCacheRepository>();
+        serviceCollection.AddScoped<IUserSessionCacheRepository, RedisUserSessionCacheRepository>();
     }
 }

@@ -8,24 +8,23 @@ using JobSearchSiteBackend.Core.Services.Cookies;
 namespace JobSearchSiteBackend.Core.Domains.Accounts.UseCases.LogOut;
 
 public class LogOutHandler(ICurrentAccountService currentAccountService,
-    MainDataContext context,
-    ICache<string, UserSession> sessionCache,
+    IUserSessionCacheRepository sessionCache,
     ICookieService cookieService) : IRequestHandler<LogOutRequest, Result>
 {
     public async Task<Result> Handle(LogOutRequest request, CancellationToken cancellationToken = default)
     {
-        var currentUserJwtId = currentAccountService.GetTokenIdentifierOrThrow();
+        var currentUserId = currentAccountService.GetIdOrThrow();
+        var currentUserTokenId = currentAccountService.GetTokenIdentifierOrThrow();
 
-        var currentSession = await context.UserSessions.FindAsync([currentUserJwtId], cancellationToken);
+        var currentSession =
+            await sessionCache.GetSessionExpirationUtcAsync(currentUserId.ToString(), currentUserTokenId);
+        
         if (currentSession is null)
             throw new Exception();
         
-        await sessionCache.RemoveAsync($"user_session_{currentUserJwtId}");
+        await sessionCache.DeleteSessionAsync(currentUserId.ToString(), currentUserTokenId);
         
-        cookieService.RemoveAuthCookie(currentUserJwtId);
-        
-        context.UserSessions.Remove(currentSession);
-        await context.SaveChangesAsync(cancellationToken);
+        cookieService.RemoveAuthCookie(currentUserTokenId);
         
         return Result.Success();
     }
