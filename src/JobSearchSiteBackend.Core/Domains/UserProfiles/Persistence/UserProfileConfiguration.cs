@@ -56,16 +56,6 @@ public class UserProfileConfiguration : IEntityTypeConfiguration<UserProfile>
             .UsingEntity(junctionEntityBuilder => junctionEntityBuilder.ToTable("CompanyBookmarks"));
         
         builder
-            .HasMany(userProfile => userProfile.LastManagedJobs)
-            .WithMany()
-            .UsingEntity(junctionEntityBuilder => junctionEntityBuilder.ToTable("LastManagedJobs"));
-        
-        builder
-            .HasMany(userProfile => userProfile.LastManagedJobFolders)
-            .WithMany()
-            .UsingEntity(junctionEntityBuilder => junctionEntityBuilder.ToTable("LastManagedJobFolders"));
-        
-        builder
             .HasMany(userProfile => userProfile.BookmarkedJobApplications)
             .WithMany()
             .UsingEntity(junctionEntityBuilder => junctionEntityBuilder.ToTable("JobApplicationBookmarks"));

@@ -36,8 +36,6 @@ public class UserProfile : IEntityWithId
     public ICollection<Job>? BookmarkedJobs { get; set; }
     public ICollection<Company>? BookmarkedCompanies { get; set; }
     
-    public ICollection<Job>? LastManagedJobs { get; set; }
-    public ICollection<JobFolder>? LastManagedJobFolders { get; set; }
     public ICollection<JobApplication>? BookmarkedJobApplications { get; set; }
 
     public ICollection<UserCompanyClaim>? UserCompanyClaims { get; set; }

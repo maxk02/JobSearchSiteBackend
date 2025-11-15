@@ -48,7 +48,7 @@ public class GetCompanyManagementNavbarDtoHandler(
             company.Description,
             company.CountryId,
             companyLogoLink,
-            "",
+            "", //todo
             company.UserCompanyClaims!.Select(x => x.ClaimId).ToList()
             );
 

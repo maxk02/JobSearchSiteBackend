@@ -12,6 +12,8 @@ using JobSearchSiteBackend.Core.Domains.Companies.UseCases.GetCompanyLastVisited
 using JobSearchSiteBackend.Core.Domains.Companies.UseCases.GetCompanyManagementNavbarDto;
 using JobSearchSiteBackend.Core.Domains.Companies.UseCases.GetCompanySharedFoldersRoot;
 using JobSearchSiteBackend.Core.Domains.Companies.UseCases.RemoveCompanyEmployee;
+using JobSearchSiteBackend.Core.Domains.Companies.UseCases.RemoveCompanyLastVisitedFolders;
+using JobSearchSiteBackend.Core.Domains.Companies.UseCases.RemoveCompanyLastVisitedJobs;
 using JobSearchSiteBackend.Core.Domains.Companies.UseCases.SearchCompanySharedFolders;
 using JobSearchSiteBackend.Core.Domains.Companies.UseCases.SearchCompanySharedJobs;
 using JobSearchSiteBackend.Core.Domains.Companies.UseCases.UpdateCompany;
@@ -181,59 +183,59 @@ public class CompaniesController(IMapper mapper) : ControllerBase
     //     return this.ToActionResult(result);
     // }
     
-    // [HttpDelete]
-    // [Route("/{id:long:min(1)}/management/last-visited-folders")]
-    // public async Task<ActionResult> RemoveCompanyAllLastVisitedFolders(
-    //     [FromRoute] long id,
-    //     [FromServices] RemoveCompanyLastVisitedFoldersHandler handler,
-    //     CancellationToken cancellationToken)
-    // {
-    //     var request = new RemoveCompanyLastVisitedFoldersRequest(id);
-    //     var result = await handler.Handle(request, cancellationToken);
-    //
-    //     return this.ToActionResult(result);
-    // }
-    //
-    // [HttpDelete]
-    // [Route("/{id:long:min(1)}/management/last-visited-folders/{folderId:long:min(1)}")]
-    // public async Task<ActionResult> RemoveCompanyLastVisitedFolder(
-    //     [FromRoute] long id,
-    //     [FromRoute] long folderId,
-    //     [FromServices] RemoveCompanyLastVisitedFoldersHandler handler,
-    //     CancellationToken cancellationToken)
-    // {
-    //     var request = new RemoveCompanyLastVisitedFoldersRequest(id, folderId);
-    //     var result = await handler.Handle(request, cancellationToken);
-    //
-    //     return this.ToActionResult(result);
-    // }
-    //
-    // [HttpDelete]
-    // [Route("/{id:long:min(1)}/management/last-visited-jobs")]
-    // public async Task<ActionResult> RemoveCompanyAllLastVisitedJobs(
-    //     [FromRoute] long id,
-    //     [FromServices] RemoveCompanyLastVisitedJobsHandler handler,
-    //     CancellationToken cancellationToken)
-    // {
-    //     var request = new RemoveCompanyLastVisitedJobsRequest(id);
-    //     var result = await handler.Handle(request, cancellationToken);
-    //
-    //     return this.ToActionResult(result);
-    // }
-    //
-    // [HttpDelete]
-    // [Route("/{id:long:min(1)}/management/last-visited-jobs/{jobId:long:min(1)}")]
-    // public async Task<ActionResult> RemoveCompanyLastVisitedJob(
-    //     [FromRoute] long id,
-    //     [FromRoute] long jobId,
-    //     [FromServices] RemoveCompanyLastVisitedJobsHandler handler,
-    //     CancellationToken cancellationToken)
-    // {
-    //     var request = new RemoveCompanyLastVisitedJobsRequest(id, jobId);
-    //     var result = await handler.Handle(request, cancellationToken);
-    //
-    //     return this.ToActionResult(result);
-    // }
+    [HttpDelete]
+    [Route("/{id:long:min(1)}/management/last-visited-folders")]
+    public async Task<ActionResult> RemoveCompanyAllLastVisitedFolders(
+        [FromRoute] long id,
+        [FromServices] RemoveCompanyLastVisitedFoldersHandler handler,
+        CancellationToken cancellationToken)
+    {
+        var request = new RemoveCompanyLastVisitedFoldersRequest(id);
+        var result = await handler.Handle(request, cancellationToken);
+    
+        return this.ToActionResult(result);
+    }
+    
+    [HttpDelete]
+    [Route("/{id:long:min(1)}/management/last-visited-folders/{folderId:long:min(1)}")]
+    public async Task<ActionResult> RemoveCompanyLastVisitedFolder(
+        [FromRoute] long id,
+        [FromRoute] long folderId,
+        [FromServices] RemoveCompanyLastVisitedFoldersHandler handler,
+        CancellationToken cancellationToken)
+    {
+        var request = new RemoveCompanyLastVisitedFoldersRequest(id, folderId);
+        var result = await handler.Handle(request, cancellationToken);
+    
+        return this.ToActionResult(result);
+    }
+    
+    [HttpDelete]
+    [Route("/{id:long:min(1)}/management/last-visited-jobs")]
+    public async Task<ActionResult> RemoveCompanyAllLastVisitedJobs(
+        [FromRoute] long id,
+        [FromServices] RemoveCompanyLastVisitedJobsHandler handler,
+        CancellationToken cancellationToken)
+    {
+        var request = new RemoveCompanyLastVisitedJobsRequest(id);
+        var result = await handler.Handle(request, cancellationToken);
+    
+        return this.ToActionResult(result);
+    }
+    
+    [HttpDelete]
+    [Route("/{id:long:min(1)}/management/last-visited-jobs/{jobId:long:min(1)}")]
+    public async Task<ActionResult> RemoveCompanyLastVisitedJob(
+        [FromRoute] long id,
+        [FromRoute] long jobId,
+        [FromServices] RemoveCompanyLastVisitedJobsHandler handler,
+        CancellationToken cancellationToken)
+    {
+        var request = new RemoveCompanyLastVisitedJobsRequest(id, jobId);
+        var result = await handler.Handle(request, cancellationToken);
+    
+        return this.ToActionResult(result);
+    }
     
     [HttpDelete]
     [Route("{companyId:long:min(1)}/management/employees/{userId:long:min(1)}")]
@@ -319,5 +321,4 @@ public class CompaniesController(IMapper mapper) : ControllerBase
 
         return this.ToActionResult(result);
     }
-    
 }
