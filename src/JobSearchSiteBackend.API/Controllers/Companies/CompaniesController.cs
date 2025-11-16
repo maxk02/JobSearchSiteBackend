@@ -16,6 +16,7 @@ using JobSearchSiteBackend.Core.Domains.Companies.UseCases.RemoveCompanyLastVisi
 using JobSearchSiteBackend.Core.Domains.Companies.UseCases.RemoveCompanyLastVisitedJobs;
 using JobSearchSiteBackend.Core.Domains.Companies.UseCases.SearchCompanySharedFolders;
 using JobSearchSiteBackend.Core.Domains.Companies.UseCases.SearchCompanySharedJobs;
+using JobSearchSiteBackend.Core.Domains.Companies.UseCases.TopUpCompanyBalance;
 using JobSearchSiteBackend.Core.Domains.Companies.UseCases.UpdateCompany;
 using JobSearchSiteBackend.Core.Domains.Companies.UseCases.UploadCompanyAvatar;
 using JobSearchSiteBackend.Core.Domains.PersonalFiles.UseCases.UploadFile;
@@ -319,6 +320,19 @@ public class CompaniesController(IMapper mapper) : ControllerBase
         
         var result = await handler.Handle(request, cancellationToken);
 
+        return this.ToActionResult(result);
+    }
+    
+    [HttpPost]
+    [Route("{companyId:long:min(1)}/management/balance-transactions")]
+    public async Task<ActionResult<AddCompanyResponse>> TopUpCompanyBalance(
+        [FromRoute] long companyId,
+        [FromBody] TopUpCompanyBalanceRequest request,
+        [FromServices] TopUpCompanyBalanceHandler handler,
+        CancellationToken cancellationToken)
+    {
+        var result = await handler.Handle(request, cancellationToken);
+    
         return this.ToActionResult(result);
     }
 }

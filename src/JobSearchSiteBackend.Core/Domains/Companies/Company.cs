@@ -43,5 +43,7 @@ public class Company : IEntityWithId, IEntityWithUpdDelDate
     
     public ICollection<CompanyAvatar>? CompanyAvatars { get; set; }
     
+    public ICollection<CompanyBalanceTransaction>? CompanyBalanceTransactions { get; set; }
+    
     public ICollection<UserProfile>? Employees { get; set; }
 }

@@ -37,6 +37,12 @@ public class CompanyConfiguration : IEntityTypeConfiguration<Company>
             .WithOne(companyAvatar => companyAvatar.Company)
             .HasForeignKey(companyAvatar => companyAvatar.CompanyId)
             .OnDelete(DeleteBehavior.NoAction);
+        
+        builder
+            .HasMany(company => company.CompanyBalanceTransactions)
+            .WithOne(companyBalanceTransaction => companyBalanceTransaction.Company)
+            .HasForeignKey(companyBalanceTransaction => companyBalanceTransaction.CompanyId)
+            .OnDelete(DeleteBehavior.NoAction);
 
         builder
             .HasMany(company => company.Employees)

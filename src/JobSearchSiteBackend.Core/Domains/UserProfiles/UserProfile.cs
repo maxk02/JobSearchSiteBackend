@@ -46,4 +46,6 @@ public class UserProfile : IEntityWithId
     public ICollection<UserAvatar>? UserAvatars { get; set; }
     
     public ICollection<Company>? CompaniesWhereEmployed { get; set; }
+    
+    public ICollection<CompanyBalanceTransaction>? CompanyBalanceTransactions { get; set; }
 }

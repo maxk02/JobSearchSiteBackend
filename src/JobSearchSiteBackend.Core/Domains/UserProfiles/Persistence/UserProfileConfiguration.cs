@@ -65,5 +65,11 @@ public class UserProfileConfiguration : IEntityTypeConfiguration<UserProfile>
             .WithOne(userAvatar => userAvatar.UserProfile)
             .HasForeignKey(userAvatar => userAvatar.UserId)
             .OnDelete(DeleteBehavior.NoAction);
+        
+        builder
+            .HasMany(userProfile => userProfile.CompanyBalanceTransactions)
+            .WithOne(companyBalanceTransaction => companyBalanceTransaction.UserProfile)
+            .HasForeignKey(companyBalanceTransaction => companyBalanceTransaction.UserProfileId)
+            .OnDelete(DeleteBehavior.NoAction);
     }
 }
