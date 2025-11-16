@@ -36,7 +36,7 @@ public class GetChildFoldersHandler(
         var childJobFolderDtos = await context.JobFolderRelations
             .Where(jfc => jfc.AncestorId == request.Id)
             .Where(jfc => jfc.Depth == 1)
-            .ProjectTo<JobFolderDto>(mapper.ConfigurationProvider)
+            .ProjectTo<JobFolderMinimalDto>(mapper.ConfigurationProvider)
             .ToListAsync(cancellationToken);
 
         return new GetChildFoldersResponse(childJobFolderDtos);

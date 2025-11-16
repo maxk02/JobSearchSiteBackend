@@ -2,4 +2,4 @@
 
 namespace JobSearchSiteBackend.Core.Domains.Companies.UseCases.GetCompanySharedFoldersRoot;
 
-public record GetCompanySharedFoldersRootResponse(ICollection<JobFolderDto> Folders);
+public record GetCompanySharedFoldersRootResponse(ICollection<JobFolderMinimalDto> Folders);

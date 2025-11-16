@@ -34,7 +34,7 @@ public class GetCompanySharedFoldersRootHandler(
             .Where(jf =>
                 !jf.RelationsWhereThisIsDescendant!.Any(r =>
                     jobFolderIdsWherePermissionPresent.Contains(r.AncestorId)))
-            .ProjectTo<JobFolderDto>(mapper.ConfigurationProvider)
+            .ProjectTo<JobFolderMinimalDto>(mapper.ConfigurationProvider)
             .ToListAsync(cancellationToken); // cutting folders whose ancestor is already present in output
         
         var response = new GetCompanySharedFoldersRootResponse(jobFolderDtosWithoutDescendants);

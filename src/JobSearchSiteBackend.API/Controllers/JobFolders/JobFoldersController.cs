@@ -3,6 +3,7 @@ using AutoMapper;
 using JobSearchSiteBackend.Core.Domains.JobFolders.UseCases.AddJobFolder;
 using JobSearchSiteBackend.Core.Domains.JobFolders.UseCases.DeleteJobFolder;
 using JobSearchSiteBackend.Core.Domains.JobFolders.UseCases.GetChildFolders;
+using JobSearchSiteBackend.Core.Domains.JobFolders.UseCases.GetJobFolder;
 using JobSearchSiteBackend.Core.Domains.JobFolders.UseCases.GetJobs;
 using JobSearchSiteBackend.Core.Domains.JobFolders.UseCases.UpdateJobFolder;
 using Microsoft.AspNetCore.Authorization;
@@ -52,18 +53,18 @@ public class JobFoldersController(IMapper mapper) : ControllerBase
         return this.ToActionResult(result);
     }
     
-    // [HttpGet]
-    // [Route("{id:long:min(1)}")]
-    // public async Task<ActionResult<GetJobFolderResponse>> GetJobFolder(
-    //     [FromRoute] long id,
-    //     [FromServices] GetJobFolderHandler handler,
-    //     CancellationToken cancellationToken)
-    // {
-    //     var request = new GetJobFolderRequest(id);
-    //     var result = await handler.Handle(request, cancellationToken);
-    //     
-    //     return this.ToActionResult(result);
-    // }
+    [HttpGet]
+    [Route("{id:long:min(1)}")]
+    public async Task<ActionResult<GetJobFolderResponse>> GetJobFolder(
+        [FromRoute] long id,
+        [FromServices] GetJobFolderHandler handler,
+        CancellationToken cancellationToken)
+    {
+        var request = new GetJobFolderRequest(id);
+        var result = await handler.Handle(request, cancellationToken);
+        
+        return this.ToActionResult(result);
+    }
     
     [HttpGet]
     [Route("{id:long:min(1)}/jobs")]
