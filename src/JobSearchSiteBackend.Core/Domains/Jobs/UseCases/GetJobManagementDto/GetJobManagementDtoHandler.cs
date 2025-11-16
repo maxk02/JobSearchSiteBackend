@@ -7,6 +7,8 @@ using JobSearchSiteBackend.Core.Domains.Jobs.Dtos;
 using JobSearchSiteBackend.Core.Domains.Locations.Dtos;
 using JobSearchSiteBackend.Core.Persistence;
 using JobSearchSiteBackend.Core.Services.Auth;
+using JobSearchSiteBackend.Core.Services.Caching;
+using JobSearchSiteBackend.Core.Services.FileStorage;
 using Microsoft.EntityFrameworkCore;
 
 namespace JobSearchSiteBackend.Core.Domains.Jobs.UseCases.GetJobManagementDto;
@@ -14,21 +16,23 @@ namespace JobSearchSiteBackend.Core.Domains.Jobs.UseCases.GetJobManagementDto;
 public class GetJobManagementDtoHandler(
     ICurrentAccountService currentAccountService,
     MainDataContext context,
+    IFileStorageService fileStorageService,
+    ICompanyLastVisitedJobsCacheRepository cacheRepo,
     IMapper mapper) : IRequestHandler<GetJobManagementDtoRequest, Result<GetJobManagementDtoResponse>>
 {
     public async Task<Result<GetJobManagementDtoResponse>> Handle(GetJobManagementDtoRequest request,
         CancellationToken cancellationToken = default)
     {
-        var currentUserId = currentAccountService.GetId();
-
-        if (currentUserId is null)
-            return Result.Forbidden();
+        var currentUserId = currentAccountService.GetIdOrThrow();
         
         var job = await context.Jobs
             .AsNoTracking()
             .Where(j => j.Id == request.Id)
             .Include(job => job.JobFolder)
             .ThenInclude(jf => jf!.Company)
+            .ThenInclude(c => c!.CompanyAvatars!
+                .Where(a => !a.IsDeleted && a.IsUploadedSuccessfully)
+                .OrderBy(a => a.DateTimeUpdatedUtc))
             .Include(job => job.SalaryInfo)
             .Include(job => job.EmploymentTypes)
             .Include(job => job.Responsibilities)
@@ -42,16 +46,28 @@ public class GetJobManagementDtoHandler(
             return Result<GetJobManagementDtoResponse>.NotFound();
 
         var claimIdsForCurrentUser = context.JobFolderRelations
-            .GetClaimIdsForThisAndAncestors(job.JobFolderId, currentUserId.Value)
+            .GetClaimIdsForThisAndAncestors(job.JobFolderId, currentUserId)
             .ToList();
 
         if (!claimIdsForCurrentUser.Contains(JobFolderClaim.CanEditJobs.Id))
             return Result.Forbidden();
+        
+        await cacheRepo.AddLastVisitedAsync(currentUserId.ToString(),
+            job.JobFolder!.CompanyId.ToString(), job.Id.ToString());
+        
+        var lastAvatar = job.JobFolder.Company!.CompanyAvatars!.LastOrDefault();
+        string? companyLogoLink = null;
+        
+        if (lastAvatar is not null)
+        {
+            companyLogoLink = await fileStorageService.GetDownloadUrlAsync(FileStorageBucketName.CompanyAvatars,
+                lastAvatar.GuidIdentifier, lastAvatar.Extension, cancellationToken);
+        }
 
         var jobManagementDto = new JobManagementDto(
             job.Id,
             job.JobFolder!.CompanyId,
-            "", // todo
+            companyLogoLink,
             job.JobFolder!.Company!.Name,
             job.JobFolder.Company.Description,
             mapper.Map<IList<LocationDto>>(job.Locations),

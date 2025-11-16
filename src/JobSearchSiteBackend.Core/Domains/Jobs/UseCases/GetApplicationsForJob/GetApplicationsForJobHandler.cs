@@ -6,6 +6,7 @@ using JobSearchSiteBackend.Core.Domains.JobFolderClaims;
 using JobSearchSiteBackend.Core.Domains.JobFolders;
 using JobSearchSiteBackend.Core.Persistence;
 using JobSearchSiteBackend.Core.Services.Auth;
+using JobSearchSiteBackend.Core.Services.Caching;
 using Microsoft.EntityFrameworkCore;
 
 namespace JobSearchSiteBackend.Core.Domains.Jobs.UseCases.GetApplicationsForJob;
@@ -13,17 +14,16 @@ namespace JobSearchSiteBackend.Core.Domains.Jobs.UseCases.GetApplicationsForJob;
 public class GetApplicationsForJobHandler(
     ICurrentAccountService currentAccountService,
     MainDataContext context,
+    ICompanyLastVisitedJobsCacheRepository cacheRepo,
     IMapper mapper) : IRequestHandler<GetApplicationsForJobRequest, Result<GetApplicationsForJobResponse>>
 {
     public async Task<Result<GetApplicationsForJobResponse>> Handle(GetApplicationsForJobRequest request,
         CancellationToken cancellationToken = default)
     {
-        var currentUserId = currentAccountService.GetId();
-
-        if (currentUserId is null)
-            return Result.Forbidden();
+        var currentUserId = currentAccountService.GetIdOrThrow();
         
         var jobWithApplications = await context.Jobs
+            .Include(j => j.JobFolder)
             .Include(j => j.JobApplications)
             .AsNoTracking()
             .Where(j => j.Id == request.Id)
@@ -33,12 +33,15 @@ public class GetApplicationsForJobHandler(
             return Result.NotFound();
         
         var canEdit = await context.JobFolderRelations
-            .GetThisOrAncestorWhereUserHasClaim(jobWithApplications.JobFolderId, currentUserId.Value,
+            .GetThisOrAncestorWhereUserHasClaim(jobWithApplications.JobFolderId, currentUserId,
                 JobFolderClaim.CanManageApplications.Id)
             .AnyAsync(cancellationToken);
 
         if (!canEdit)
             return Result.Forbidden();
+        
+        await cacheRepo.AddLastVisitedAsync(currentUserId.ToString(),
+            jobWithApplications.JobFolder!.CompanyId.ToString(), jobWithApplications.Id.ToString());
 
         if (jobWithApplications.JobApplications!.Count == 0)
             return Result<GetApplicationsForJobResponse>.NoContent();
