@@ -5,6 +5,7 @@ using JobSearchSiteBackend.Core.Domains.Companies.UseCases.AddCompany;
 using JobSearchSiteBackend.Core.Domains.Companies.UseCases.AddCompanyEmployee;
 using JobSearchSiteBackend.Core.Domains.Companies.UseCases.DeleteCompany;
 using JobSearchSiteBackend.Core.Domains.Companies.UseCases.GetCompany;
+using JobSearchSiteBackend.Core.Domains.Companies.UseCases.GetCompanyBalance;
 using JobSearchSiteBackend.Core.Domains.Companies.UseCases.GetCompanyEmployees;
 using JobSearchSiteBackend.Core.Domains.Companies.UseCases.GetCompanyJobs;
 using JobSearchSiteBackend.Core.Domains.Companies.UseCases.GetCompanyLastVisitedFolders;
@@ -86,6 +87,18 @@ public class CompaniesController(IMapper mapper) : ControllerBase
         CancellationToken cancellationToken)
     {
         var request = new GetCompanyRequest(id);
+        var result = await handler.Handle(request, cancellationToken);
+
+        return this.ToActionResult(result);
+    }
+    
+    [HttpGet("{companyId:long:min(1)}/management/balance")]
+    public async Task<ActionResult<GetCompanyBalanceResponse>> GetCompanyBalance(
+        [FromRoute] long companyId,
+        [FromServices] GetCompanyBalanceHandler handler,
+        CancellationToken cancellationToken)
+    {
+        var request = new GetCompanyBalanceRequest(companyId);
         var result = await handler.Handle(request, cancellationToken);
 
         return this.ToActionResult(result);
@@ -324,7 +337,7 @@ public class CompaniesController(IMapper mapper) : ControllerBase
     }
     
     [HttpPost]
-    [Route("{companyId:long:min(1)}/management/balance-transactions")]
+    [Route("{companyId:long:min(1)}/management/balance/top-ups")]
     public async Task<ActionResult<AddCompanyResponse>> TopUpCompanyBalance(
         [FromRoute] long companyId,
         [FromBody] TopUpCompanyBalanceRequest request,
