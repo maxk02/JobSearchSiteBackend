@@ -15,7 +15,8 @@ public class CreateAccountHandler(
     IOptions<MyAppSettings> settings,
     UserManager<MyIdentityUser> userManager,
     IBackgroundJobService backgroundJobService,
-    IEmailSenderService emailSenderService) 
+    IEmailSenderService emailSenderService,
+    StandardEmailRenderer emailRenderer) 
     : IRequestHandler<CreateAccountRequest, Result>
 {
     public async Task<Result> Handle(CreateAccountRequest request,
@@ -41,10 +42,12 @@ public class CreateAccountHandler(
 
         var link = $"https://{domainName}/account/confirm-email/{token}";
         
-        var emailToSend = new EmailConfirmationEmail(link);
+        var emailTemplate = new EmailConfirmationEmail(link);
+
+        var renderedEmail = await emailRenderer.RenderAsync(emailTemplate);
 
         backgroundJobService.Enqueue(() => emailSenderService
-                .SendEmailAsync(request.Email, emailToSend.Subject, emailToSend.Content, CancellationToken.None),
+                .SendEmailAsync(request.Email, renderedEmail.Subject, renderedEmail.Content, CancellationToken.None),
             BackgroundJobQueues.EmailSending);
         
         transaction.Complete();

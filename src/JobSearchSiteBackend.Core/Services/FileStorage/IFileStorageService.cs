@@ -8,7 +8,9 @@ public interface IFileStorageService
         CancellationToken cancellationToken = default);
     public Task<Stream> GetDownloadStreamAsync(FileStorageBucketName bucketName, Guid guidIdentifier, string extension,
         CancellationToken cancellationToken = default);
-    public Task<string> GetDownloadUrlAsync(FileStorageBucketName bucketName, Guid guidIdentifier,  string extension,
+    public Task<string> GetDownloadUrlAsync(FileStorageBucketName bucketName, Guid guidIdentifier, string extension,
+        CancellationToken cancellationToken = default);
+    public Task<string> GetPublicAssetUrlAsync(Guid guidIdentifier, string extension,
         CancellationToken cancellationToken = default);
     public Task<string> UploadFileAsync(FileStorageBucketName bucketName, Stream fileStream,
         Guid guidIdentifier, string extension,

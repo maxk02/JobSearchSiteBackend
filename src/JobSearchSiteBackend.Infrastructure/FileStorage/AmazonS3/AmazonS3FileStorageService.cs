@@ -8,25 +8,35 @@ namespace JobSearchSiteBackend.Infrastructure.FileStorage.AmazonS3;
 public class AmazonS3FileStorageService(IAmazonS3 s3Client) : IFileStorageService
 {
     private readonly TimeSpan _preSignedUrlExpiry = TimeSpan.FromMinutes(30);
-
-    public async Task<string> UploadFileAsync(FileStorageBucketName bucketName,
-        Stream fileStream, Guid guidIdentifier,  string extension,
+    
+    public async Task BulkDeleteFilesAsync(FileStorageBucketName bucketName,
+        ICollection<(Guid, string)> guidExtensionTuples,
         CancellationToken cancellationToken = default)
+    {
+        var objects = guidExtensionTuples
+            .Select(tuple => new KeyVersion { Key = $"{tuple.Item1}.{tuple.Item2}" }).ToList();
+        
+        var deleteRequest = new DeleteObjectsRequest
+        {
+            BucketName = bucketName.ToString(),
+            Objects = objects
+        };
+        
+        await s3Client.DeleteObjectsAsync(deleteRequest, cancellationToken);
+    }
+    
+    public async Task DeleteFileAsync(FileStorageBucketName bucketName,
+        Guid guidIdentifier, string extension, CancellationToken cancellationToken = default)
     {
         var key = $"{guidIdentifier}.{extension}";
 
-        var uploadRequest = new TransferUtilityUploadRequest
+        var deleteRequest = new DeleteObjectRequest
         {
-            InputStream = fileStream,
-            Key = key,
             BucketName = bucketName.ToString(),
-            ContentType = "application/octet-stream"
+            Key = key
         };
 
-        var transferUtility = new TransferUtility(s3Client);
-        await transferUtility.UploadAsync(uploadRequest, cancellationToken);
-
-        return key;
+        await s3Client.DeleteObjectAsync(deleteRequest, cancellationToken);
     }
 
     public async Task<Stream> GetDownloadStreamAsync(FileStorageBucketName bucketName,
@@ -60,34 +70,29 @@ public class AmazonS3FileStorageService(IAmazonS3 s3Client) : IFileStorageServic
         var url = await s3Client.GetPreSignedURLAsync(request);
         return url;
     }
-
-    public async Task BulkDeleteFilesAsync(FileStorageBucketName bucketName,
-        ICollection<(Guid, string)> guidExtensionTuples,
-        CancellationToken cancellationToken = default)
+    
+    public Task<string> GetPublicAssetUrlAsync(Guid guidIdentifier, string extension, CancellationToken cancellationToken = default)
     {
-        var objects = guidExtensionTuples
-            .Select(tuple => new KeyVersion { Key = $"{tuple.Item1}.{tuple.Item2}" }).ToList();
-        
-        var deleteRequest = new DeleteObjectsRequest
-        {
-            BucketName = bucketName.ToString(),
-            Objects = objects
-        };
-        
-        await s3Client.DeleteObjectsAsync(deleteRequest, cancellationToken);
+        throw new NotImplementedException();
     }
-
-    public async Task DeleteFileAsync(FileStorageBucketName bucketName,
-        Guid guidIdentifier, string extension, CancellationToken cancellationToken = default)
+    
+    public async Task<string> UploadFileAsync(FileStorageBucketName bucketName,
+        Stream fileStream, Guid guidIdentifier,  string extension,
+        CancellationToken cancellationToken = default)
     {
         var key = $"{guidIdentifier}.{extension}";
 
-        var deleteRequest = new DeleteObjectRequest
+        var uploadRequest = new TransferUtilityUploadRequest
         {
+            InputStream = fileStream,
+            Key = key,
             BucketName = bucketName.ToString(),
-            Key = key
+            ContentType = "application/octet-stream"
         };
 
-        await s3Client.DeleteObjectAsync(deleteRequest, cancellationToken);
+        var transferUtility = new TransferUtility(s3Client);
+        await transferUtility.UploadAsync(uploadRequest, cancellationToken);
+
+        return key;
     }
 }

@@ -13,7 +13,8 @@ public class SendPasswordResetLinkHandler(
     UserManager<MyIdentityUser> userManager,
     IOptions<MyAppSettings> injectedAppSettings,
     IEmailSenderService emailSenderService,
-    IBackgroundJobService backgroundJobService) : IRequestHandler<SendPasswordResetLinkRequest, Result>
+    IBackgroundJobService backgroundJobService,
+    StandardEmailRenderer emailRenderer) : IRequestHandler<SendPasswordResetLinkRequest, Result>
 {
     public async Task<Result> Handle(SendPasswordResetLinkRequest request, CancellationToken cancellationToken = default)
     {
@@ -27,10 +28,12 @@ public class SendPasswordResetLinkHandler(
         
         var link = $"https://{domainName}/account/reset-password/{token}";
 
-        var emailToSend = new ResetPasswordEmail(link);
+        var emailTemplate = new ResetPasswordEmail(link);
+        
+        var renderedEmail = await emailRenderer.RenderAsync(emailTemplate);
 
         backgroundJobService.Enqueue(() => emailSenderService
-                .SendEmailAsync(request.Email, emailToSend.Subject, emailToSend.Content, CancellationToken.None),
+                .SendEmailAsync(request.Email, renderedEmail.Subject, renderedEmail.Content, CancellationToken.None),
             BackgroundJobQueues.EmailSending);
 
         return Result.Success();

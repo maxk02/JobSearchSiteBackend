@@ -4,5 +4,7 @@ public enum FileStorageBucketName
 {
     UserAvatars,
     CompanyAvatars,
-    PersonalFiles
+    PersonalFiles,
+    
+    PublicAssets
 }

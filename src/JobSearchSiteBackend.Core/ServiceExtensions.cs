@@ -10,6 +10,7 @@ using JobSearchSiteBackend.Core.Domains.Jobs;
 using JobSearchSiteBackend.Core.Domains.Locations;
 using JobSearchSiteBackend.Core.Domains.PersonalFiles;
 using JobSearchSiteBackend.Core.Domains.UserProfiles;
+using JobSearchSiteBackend.Core.Services.EmailSender;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace JobSearchSiteBackend.Core;
@@ -34,5 +35,10 @@ public static class ServiceExtensions
         services.ConfigureLocationUseCases();
         services.ConfigurePersonalFileUseCases();
         services.ConfigureUserProfileUseCases();
+    }
+
+    public static void ConfigureEmailRenderers(this IServiceCollection services)
+    {
+        services.AddScoped<StandardEmailRenderer>();
     }
 }

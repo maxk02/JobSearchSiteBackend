@@ -89,6 +89,7 @@ builder.Services.ConfigureTextExtraction();
 // Core services
 builder.Services.ConfigureCoreAutoMapper();
 builder.Services.ConfigureUseCases();
+builder.Services.ConfigureEmailRenderers();
 
 builder.WebHost.ConfigureKestrel(options =>
 {

@@ -15,7 +15,8 @@ public class ResendEmailConfirmationLinkHandler(
     UserManager<MyIdentityUser> userManager,
     IBackgroundJobService backgroundJobService,
     IOptions<MyAppSettings> injectedAppSettings,
-    IEmailSenderService emailSenderService) : IRequestHandler<ResendEmailConfirmationLinkRequest, Result>
+    IEmailSenderService emailSenderService,
+    StandardEmailRenderer emailRenderer) : IRequestHandler<ResendEmailConfirmationLinkRequest, Result>
 {
     public async Task<Result> Handle(ResendEmailConfirmationLinkRequest request,
         CancellationToken cancellationToken = default)
@@ -43,10 +44,12 @@ public class ResendEmailConfirmationLinkHandler(
         
         var link = $"https://{domainName}/account/confirm-email/{token}";
 
-        var emailToSend = new EmailConfirmationEmail(link);
+        var emailTemplate = new EmailConfirmationEmail(link);
+
+        var renderedEmail = await emailRenderer.RenderAsync(emailTemplate);
 
         backgroundJobService.Enqueue(() => emailSenderService
-                .SendEmailAsync(email, emailToSend.Subject, emailToSend.Content, CancellationToken.None),
+                .SendEmailAsync(email, renderedEmail.Subject, renderedEmail.Content, CancellationToken.None),
             BackgroundJobQueues.EmailSending);
 
         return Result.Success();

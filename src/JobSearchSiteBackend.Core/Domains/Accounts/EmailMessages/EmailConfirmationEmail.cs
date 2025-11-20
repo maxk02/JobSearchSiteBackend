@@ -1,14 +1,20 @@
-﻿using JobSearchSiteBackend.Core.Domains._Shared.Email;
+﻿using JobSearchSiteBackend.Core.Services.EmailSender;
 
 namespace JobSearchSiteBackend.Core.Domains.Accounts.EmailMessages;
 
-public class EmailConfirmationEmail(string confirmationLink) : IEmailModel
+public class EmailConfirmationEmail(string confirmationLink) : IEmailTemplate
 {
     public string Subject => 
         "Aktywacja konta";
-
+    
     public string Content =>
-        $"Witamy, dziękujemy za rejestrację w serwisie znadjzprace.pl." +
-        $" Prosimy o podtwierdzenie adresu e-mail poprzez kliknięcie w link poniżej w celu" +
-        $" aktywacji konta:<br><a href='{confirmationLink}'>link</a>";
+        $"""
+         <p>
+            Witamy, dziękujemy za rejestrację w serwisie znadjzprace.pl.
+            <br><br>
+            Prosimy o podtwierdzenie adresu e-mail poprzez kliknięcie w link poniżej w celu aktywacji konta:
+            <br>
+            <a href='{confirmationLink}'>link</a>
+         </p>
+         """;
 }
