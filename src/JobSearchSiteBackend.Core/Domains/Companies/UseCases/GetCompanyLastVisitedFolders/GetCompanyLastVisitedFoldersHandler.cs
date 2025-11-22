@@ -16,19 +16,19 @@ public class GetCompanyLastVisitedFoldersHandler(
     MainDataContext context,
     IMapper mapper,
     ICompanyLastVisitedFoldersCacheRepository cacheRepo
-    ) : IRequestHandler<GetCompanyLastVisitedFoldersRequest,
-    Result<GetCompanyLastVisitedFoldersResponse>>
+    ) : IRequestHandler<GetCompanyLastVisitedFoldersQuery,
+    Result<GetCompanyLastVisitedFoldersResult>>
 {
-    public async Task<Result<GetCompanyLastVisitedFoldersResponse>> Handle(GetCompanyLastVisitedFoldersRequest request,
+    public async Task<Result<GetCompanyLastVisitedFoldersResult>> Handle(GetCompanyLastVisitedFoldersQuery query,
         CancellationToken cancellationToken = default)
     {
         var currentUserId = currentAccountService.GetIdOrThrow();
 
         var idListFromCache = await cacheRepo
-            .GetLastVisitedAsync(currentUserId.ToString(), request.CompanyId.ToString());
+            .GetLastVisitedAsync(currentUserId.ToString(), query.CompanyId.ToString());
         
         var jobFolderListItemDtos = await context.JobFolders
-            .Where(jf => jf.CompanyId == request.CompanyId)
+            .Where(jf => jf.CompanyId == query.CompanyId)
             .Where(jf =>
                 jf.UserJobFolderClaims!.Any(jfc =>
                     jfc.ClaimId == JobFolderClaim.CanReadJobs.Id && jfc.UserId == currentUserId))
@@ -36,7 +36,7 @@ public class GetCompanyLastVisitedFoldersHandler(
             .ProjectTo<CompanyJobFolderListItemDto>(mapper.ConfigurationProvider)
             .ToListAsync(cancellationToken);
 
-        var response = new GetCompanyLastVisitedFoldersResponse(jobFolderListItemDtos);
+        var response = new GetCompanyLastVisitedFoldersResult(jobFolderListItemDtos);
 
         return Result.Success(response);
     }

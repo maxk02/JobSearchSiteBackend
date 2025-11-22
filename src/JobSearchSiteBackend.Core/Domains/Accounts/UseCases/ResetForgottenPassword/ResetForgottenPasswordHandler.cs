@@ -6,21 +6,21 @@ using Microsoft.EntityFrameworkCore;
 namespace JobSearchSiteBackend.Core.Domains.Accounts.UseCases.ResetForgottenPassword;
 
 public class ResetForgottenPasswordHandler(UserManager<MyIdentityUser> userManager)
-    : IRequestHandler<ResetForgottenPasswordRequest, Result>
+    : IRequestHandler<ResetForgottenPasswordCommand, Result>
 {
-    public async Task<Result> Handle(ResetForgottenPasswordRequest request, CancellationToken cancellationToken = default)
+    public async Task<Result> Handle(ResetForgottenPasswordCommand command, CancellationToken cancellationToken = default)
     {
         var user = await userManager.Users
             .SingleOrDefaultAsync(
                 u => userManager
-                    .VerifyUserTokenAsync(u, TokenOptions.DefaultProvider, "ResetPassword", request.Token).Result,
+                    .VerifyUserTokenAsync(u, TokenOptions.DefaultProvider, "ResetPassword", command.Token).Result,
                 cancellationToken
             );
 
         if (user is null)
             return Result.NotFound();
 
-        var aspNetIdentityResult = await userManager.ResetPasswordAsync(user, request.Token, request.NewPassword);
+        var aspNetIdentityResult = await userManager.ResetPasswordAsync(user, command.Token, command.NewPassword);
 
         return aspNetIdentityResult.Succeeded ? Result.Success() : Result.Error();
     }

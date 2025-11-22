@@ -12,9 +12,9 @@ public class DeleteAccountHandler(
     ICurrentAccountService currentAccountService,
     UserManager<MyIdentityUser> userManager,
     MainDataContext context,
-    IUserSessionCacheRepository sessionCache) : IRequestHandler<DeleteAccountRequest, Result>
+    IUserSessionCacheRepository sessionCache) : IRequestHandler<DeleteAccountCommand, Result>
 {
-    public async Task<Result> Handle(DeleteAccountRequest request, CancellationToken cancellationToken = default)
+    public async Task<Result> Handle(DeleteAccountCommand command, CancellationToken cancellationToken = default)
     {
         var currentUserId = currentAccountService.GetIdOrThrow();
         

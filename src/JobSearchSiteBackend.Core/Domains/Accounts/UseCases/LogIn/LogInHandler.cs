@@ -20,24 +20,24 @@ public class LogInHandler(UserManager<MyIdentityUser> userManager,
     IUserSessionCacheRepository sessionCache,
     ICurrentAccountService currentAccountService,
     ICookieService cookieService) 
-    : IRequestHandler<LogInRequest, Result<LogInResponse>>
+    : IRequestHandler<LogInCommand, Result<LogInResult>>
 {
-    public async Task<Result<LogInResponse>> Handle(LogInRequest request, CancellationToken cancellationToken = default)
+    public async Task<Result<LogInResult>> Handle(LogInCommand command, CancellationToken cancellationToken = default)
     {
         if (currentAccountService.IsLoggedIn())
         {
             return Result.Forbidden();
         }
         
-        var account = await userManager.FindByEmailAsync(request.Email);
+        var account = await userManager.FindByEmailAsync(command.Email);
 
         if (account is null)
-            return Result<LogInResponse>.NotFound();
+            return Result<LogInResult>.NotFound();
 
-        var isPasswordCorrect = await userManager.CheckPasswordAsync(account, request.Password);
+        var isPasswordCorrect = await userManager.CheckPasswordAsync(account, command.Password);
 
         if (!isPasswordCorrect)
-            return Result<LogInResponse>.Unauthorized();
+            return Result<LogInResult>.Unauthorized();
         
         var isEmailConfirmed = await userManager.IsEmailConfirmedAsync(account);
 
@@ -66,7 +66,7 @@ public class LogInHandler(UserManager<MyIdentityUser> userManager,
             .DistinctBy(c => c.Id)
             .ToList();
         
-        var accountDataDto = new AccountDataDto(account.Id, request.Email, fullName, avatarLink, combinedCompanyInfoDtos); // todo avatar
+        var accountDataDto = new AccountDataDto(account.Id, command.Email, fullName, avatarLink, combinedCompanyInfoDtos); // todo avatar
         
         
         // token generation + session adding
@@ -83,6 +83,6 @@ public class LogInHandler(UserManager<MyIdentityUser> userManager,
         
         cookieService.SetAuthCookie(token);
 
-        return new LogInResponse(newTokenId.ToString(), accountDataDto);
+        return new LogInResult(newTokenId.ToString(), accountDataDto);
     }
 }

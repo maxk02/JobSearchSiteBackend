@@ -1,6 +1,7 @@
 ﻿using Ardalis.Result;
 using Ardalis.Result.AspNetCore;
 using AutoMapper;
+using JobSearchSiteBackend.API.Controllers.Companies.Dtos;
 using JobSearchSiteBackend.Core.Domains.Companies.UseCases.AddCompany;
 using JobSearchSiteBackend.Core.Domains.Companies.UseCases.AddCompanyEmployee;
 using JobSearchSiteBackend.Core.Domains.Companies.UseCases.DeleteCompany;
@@ -20,7 +21,6 @@ using JobSearchSiteBackend.Core.Domains.Companies.UseCases.SearchCompanySharedJo
 using JobSearchSiteBackend.Core.Domains.Companies.UseCases.TopUpCompanyBalance;
 using JobSearchSiteBackend.Core.Domains.Companies.UseCases.UpdateCompany;
 using JobSearchSiteBackend.Core.Domains.Companies.UseCases.UploadCompanyAvatar;
-using JobSearchSiteBackend.Core.Domains.PersonalFiles.UseCases.UploadFile;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -37,9 +37,10 @@ public class CompaniesController(IMapper mapper) : ControllerBase
         [FromServices] AddCompanyHandler handler,
         CancellationToken cancellationToken)
     {
-        var result = await handler.Handle(request, cancellationToken);
+        var mappedCommand = mapper.Map<AddCompanyCommand>(request);
+        var result = await handler.Handle(mappedCommand, cancellationToken);
 
-        return this.ToActionResult(result);
+        return this.ToActionResult(result.Map(x => mapper.Map<AddCompanyResponse>(x)));
     }
     
     [HttpPost]
@@ -50,7 +51,8 @@ public class CompaniesController(IMapper mapper) : ControllerBase
         [FromServices] AddCompanyEmployeeHandler handler,
         CancellationToken cancellationToken)
     {
-        var result = await handler.Handle(request, cancellationToken);
+        var mappedCommand = mapper.Map<AddCompanyEmployeeCommand>(request);
+        var result = await handler.Handle(mappedCommand, cancellationToken);
     
         return this.ToActionResult(result);
     }
@@ -61,23 +63,11 @@ public class CompaniesController(IMapper mapper) : ControllerBase
         [FromServices] DeleteCompanyHandler handler,
         CancellationToken cancellationToken)
     {
-        var request = new DeleteCompanyRequest(id);
-        var result = await handler.Handle(request, cancellationToken);
+        var command = new DeleteCompanyCommand(id);
+        var result = await handler.Handle(command, cancellationToken);
 
         return this.ToActionResult(result);
     }
-
-    // [HttpGet]
-    // [AllowAnonymous]
-    // public async Task<ActionResult<GetCompaniesResponse>> GetCompanies(
-    //     [FromQuery] GetCompaniesRequest request,
-    //     [FromServices] GetCompaniesHandler handler,
-    //     CancellationToken cancellationToken)
-    // {
-    //     var result = await handler.Handle(request, cancellationToken);
-    //
-    //     return this.ToActionResult(result);
-    // }
 
     [HttpGet("{id:long:min(1)}")]
     [AllowAnonymous]
@@ -86,10 +76,10 @@ public class CompaniesController(IMapper mapper) : ControllerBase
         [FromServices] GetCompanyHandler handler,
         CancellationToken cancellationToken)
     {
-        var request = new GetCompanyRequest(id);
-        var result = await handler.Handle(request, cancellationToken);
+        var query = new GetCompanyQuery(id);
+        var result = await handler.Handle(query, cancellationToken);
 
-        return this.ToActionResult(result);
+        return this.ToActionResult(result.Map(x => mapper.Map<GetCompanyResponse>(x)));
     }
     
     [HttpGet("{companyId:long:min(1)}/management/balance")]
@@ -98,10 +88,10 @@ public class CompaniesController(IMapper mapper) : ControllerBase
         [FromServices] GetCompanyBalanceHandler handler,
         CancellationToken cancellationToken)
     {
-        var request = new GetCompanyBalanceRequest(companyId);
+        var request = new GetCompanyBalanceQuery(companyId);
         var result = await handler.Handle(request, cancellationToken);
 
-        return this.ToActionResult(result);
+        return this.ToActionResult(result.Map(x => mapper.Map<GetCompanyBalanceResponse>(x)));
     }
     
     [HttpGet]
@@ -112,9 +102,10 @@ public class CompaniesController(IMapper mapper) : ControllerBase
         [FromServices] GetCompanyEmployeesHandler handler,
         CancellationToken cancellationToken)
     {
-        var result = await handler.Handle(request, cancellationToken);
+        var mappedQuery = mapper.Map<GetCompanyEmployeesQuery>(request);
+        var result = await handler.Handle(mappedQuery, cancellationToken);
     
-        return this.ToActionResult(result);
+        return this.ToActionResult(result.Map(x => mapper.Map<GetCompanyEmployeesResponse>(x)));
     }
     
     [HttpGet]
@@ -126,9 +117,10 @@ public class CompaniesController(IMapper mapper) : ControllerBase
         [FromServices] GetCompanyJobsHandler handler,
         CancellationToken cancellationToken)
     {
-        var result = await handler.Handle(request, cancellationToken);
+        var mappedQuery = mapper.Map<GetCompanyJobsQuery>(request);
+        var result = await handler.Handle(mappedQuery, cancellationToken);
     
-        return this.ToActionResult(result);
+        return this.ToActionResult(result.Map(x => mapper.Map<GetCompanyJobsResponse>(x)));
     }
     
     [HttpGet]
@@ -138,10 +130,10 @@ public class CompaniesController(IMapper mapper) : ControllerBase
         [FromServices] GetCompanyLastVisitedFoldersHandler handler,
         CancellationToken cancellationToken)
     {
-        var request = new GetCompanyLastVisitedFoldersRequest(id);
-        var result = await handler.Handle(request, cancellationToken);
+        var query = new GetCompanyLastVisitedFoldersQuery(id);
+        var result = await handler.Handle(query, cancellationToken);
     
-        return this.ToActionResult(result);
+        return this.ToActionResult(result.Map(x =>  mapper.Map<GetCompanyLastVisitedFoldersResponse>(x)));
     }
     
     [HttpGet]
@@ -151,10 +143,10 @@ public class CompaniesController(IMapper mapper) : ControllerBase
         [FromServices] GetCompanyLastVisitedJobsHandler handler,
         CancellationToken cancellationToken)
     {
-        var request = new GetCompanyLastVisitedJobsRequest(id);
-        var result = await handler.Handle(request, cancellationToken);
+        var query = new GetCompanyLastVisitedJobsQuery(id);
+        var result = await handler.Handle(query, cancellationToken);
     
-        return this.ToActionResult(result);
+        return this.ToActionResult(result.Map(x =>  mapper.Map<GetCompanyLastVisitedJobsResponse>(x)));
     }
     
     [HttpGet]
@@ -164,10 +156,10 @@ public class CompaniesController(IMapper mapper) : ControllerBase
         [FromServices] GetCompanyManagementNavbarDtoHandler handler,
         CancellationToken cancellationToken)
     {
-        var request = new GetCompanyManagementNavbarDtoRequest(id);
-        var result = await handler.Handle(request, cancellationToken);
+        var query = new GetCompanyManagementNavbarDtoQuery(id);
+        var result = await handler.Handle(query, cancellationToken);
     
-        return this.ToActionResult(result);
+        return this.ToActionResult(result.Map(x => mapper.Map<GetCompanyManagementNavbarDtoResponse>(x)));
     }
     
     [HttpGet]
@@ -177,25 +169,11 @@ public class CompaniesController(IMapper mapper) : ControllerBase
         [FromServices] GetCompanySharedFoldersRootHandler handler,
         CancellationToken cancellationToken)
     {
-        var request = new GetCompanySharedFoldersRootRequest(id);
-        var result = await handler.Handle(request, cancellationToken);
+        var query = new GetCompanySharedFoldersRootQuery(id);
+        var result = await handler.Handle(query, cancellationToken);
     
-        return this.ToActionResult(result);
+        return this.ToActionResult(result.Map(x => mapper.Map<GetCompanySharedFoldersRootResponse>(x)));
     }
-    
-    // [HttpGet] todo delete?
-    // [Route("/{id:long:min(1)}/management/job-folders/{parentFolderId:long:min(1)}")]
-    // public async Task<ActionResult<GetCompanySharedFoldersResponse>> GetCompanySharedFoldersChildren(
-    //     [FromRoute] long id,
-    //     [FromRoute] long parentFolderId,
-    //     [FromServices] GetCompanySharedFoldersHandler handler,
-    //     CancellationToken cancellationToken)
-    // {
-    //     var request = new GetCompanySharedFoldersRequest(id, parentFolderId);
-    //     var result = await handler.Handle(request, cancellationToken);
-    //
-    //     return this.ToActionResult(result);
-    // }
     
     [HttpDelete]
     [Route("/{id:long:min(1)}/management/last-visited-folders")]
@@ -204,8 +182,8 @@ public class CompaniesController(IMapper mapper) : ControllerBase
         [FromServices] RemoveCompanyLastVisitedFoldersHandler handler,
         CancellationToken cancellationToken)
     {
-        var request = new RemoveCompanyLastVisitedFoldersRequest(id);
-        var result = await handler.Handle(request, cancellationToken);
+        var command = new RemoveCompanyLastVisitedFoldersCommand(id);
+        var result = await handler.Handle(command, cancellationToken);
     
         return this.ToActionResult(result);
     }
@@ -218,8 +196,8 @@ public class CompaniesController(IMapper mapper) : ControllerBase
         [FromServices] RemoveCompanyLastVisitedFoldersHandler handler,
         CancellationToken cancellationToken)
     {
-        var request = new RemoveCompanyLastVisitedFoldersRequest(id, folderId);
-        var result = await handler.Handle(request, cancellationToken);
+        var command = new RemoveCompanyLastVisitedFoldersCommand(id, folderId);
+        var result = await handler.Handle(command, cancellationToken);
     
         return this.ToActionResult(result);
     }
@@ -231,8 +209,8 @@ public class CompaniesController(IMapper mapper) : ControllerBase
         [FromServices] RemoveCompanyLastVisitedJobsHandler handler,
         CancellationToken cancellationToken)
     {
-        var request = new RemoveCompanyLastVisitedJobsRequest(id);
-        var result = await handler.Handle(request, cancellationToken);
+        var command = new RemoveCompanyLastVisitedJobsCommand(id);
+        var result = await handler.Handle(command, cancellationToken);
     
         return this.ToActionResult(result);
     }
@@ -245,8 +223,8 @@ public class CompaniesController(IMapper mapper) : ControllerBase
         [FromServices] RemoveCompanyLastVisitedJobsHandler handler,
         CancellationToken cancellationToken)
     {
-        var request = new RemoveCompanyLastVisitedJobsRequest(id, jobId);
-        var result = await handler.Handle(request, cancellationToken);
+        var command = new RemoveCompanyLastVisitedJobsCommand(id, jobId);
+        var result = await handler.Handle(command, cancellationToken);
     
         return this.ToActionResult(result);
     }
@@ -259,9 +237,9 @@ public class CompaniesController(IMapper mapper) : ControllerBase
         [FromServices] RemoveCompanyEmployeeHandler handler,
         CancellationToken cancellationToken)
     {
-        var request = new RemoveCompanyEmployeeRequest(companyId, userId);
+        var command = new RemoveCompanyEmployeeCommand(companyId, userId);
         
-        var result = await handler.Handle(request, cancellationToken);
+        var result = await handler.Handle(command, cancellationToken);
     
         return this.ToActionResult(result);
     }
@@ -274,10 +252,10 @@ public class CompaniesController(IMapper mapper) : ControllerBase
         [FromServices] SearchCompanySharedFoldersHandler handler,
         CancellationToken cancellationToken)
     {
-        var request = new SearchCompanySharedFoldersRequest(id, query);
-        var result = await handler.Handle(request, cancellationToken);
+        var mappedQuery = new SearchCompanySharedFoldersQuery(id, query);
+        var result = await handler.Handle(mappedQuery, cancellationToken);
     
-        return this.ToActionResult(result);
+        return this.ToActionResult(result.Map(x => mapper.Map<SearchCompanySharedFoldersResponse>(x)));
     }
     
     [HttpGet]
@@ -288,25 +266,25 @@ public class CompaniesController(IMapper mapper) : ControllerBase
         [FromServices] SearchCompanySharedJobsHandler handler,
         CancellationToken cancellationToken)
     {
-        var request = new SearchCompanySharedJobsRequest(id, query);
-        var result = await handler.Handle(request, cancellationToken);
+        var mappedQuery = new SearchCompanySharedJobsQuery(id, query);
+        var result = await handler.Handle(mappedQuery, cancellationToken);
     
-        return this.ToActionResult(result);
+        return this.ToActionResult(result.Map(x => mapper.Map<SearchCompanySharedJobsResponse>(x)));
     }
 
     [HttpPatch("{id:long:min(1)}")]
     public async Task<ActionResult> UpdateCompany(
         [FromRoute] long id,
-        [FromBody] UpdateCompanyRequestDto requestDto,
+        [FromBody] UpdateCompanyRequest request,
         [FromServices] UpdateCompanyHandler handler,
         CancellationToken cancellationToken)
     {
-        var request = mapper.Map<UpdateCompanyRequest>(requestDto, opt =>
+        var mappedCommand = mapper.Map<UpdateCompanyCommand>(request, opt =>
         {
             opt.Items["Id"] = id;
         });
         
-        var result = await handler.Handle(request, cancellationToken);
+        var result = await handler.Handle(mappedCommand, cancellationToken);
 
         return this.ToActionResult(result);
     }
@@ -329,11 +307,11 @@ public class CompaniesController(IMapper mapper) : ControllerBase
         var extension = Path.GetExtension(file.FileName).TrimStart('.');
         var size = file.Length;
         
-        var request = new UploadCompanyAvatarRequest(stream, extension, size, id);
+        var request = new UploadCompanyAvatarCommand(stream, extension, size, id);
         
         var result = await handler.Handle(request, cancellationToken);
 
-        return this.ToActionResult(result);
+        return this.ToActionResult(result.Map(x => mapper.Map<UploadCompanyAvatarResponse>(x)));
     }
     
     [HttpPost]
@@ -344,7 +322,8 @@ public class CompaniesController(IMapper mapper) : ControllerBase
         [FromServices] TopUpCompanyBalanceHandler handler,
         CancellationToken cancellationToken)
     {
-        var result = await handler.Handle(request, cancellationToken);
+        var mappedCommand = mapper.Map<TopUpCompanyBalanceCommand>(request);
+        var result = await handler.Handle(mappedCommand, cancellationToken);
     
         return this.ToActionResult(result);
     }

@@ -10,9 +10,9 @@ namespace JobSearchSiteBackend.Core.Domains.Companies.UseCases.AddCompanyEmploye
 public class AddCompanyEmployeeHandler(
     ICurrentAccountService currentAccountService,
     MainDataContext context)
-    : IRequestHandler<AddCompanyEmployeeRequest, Result>
+    : IRequestHandler<AddCompanyEmployeeCommand, Result>
 {
-    public async Task<Result> Handle(AddCompanyEmployeeRequest request,
+    public async Task<Result> Handle(AddCompanyEmployeeCommand command,
         CancellationToken cancellationToken = default)
     {
         var currentUserId = currentAccountService.GetIdOrThrow();
@@ -21,7 +21,7 @@ public class AddCompanyEmployeeHandler(
             from dbCompany in context.Companies
             join dbUcc in context.UserCompanyClaims on dbCompany.Id equals dbUcc.CompanyId into ucpGroup
             from dbUcc in ucpGroup.DefaultIfEmpty()
-            where dbCompany.Id == request.CompanyId && dbUcc.UserId == currentUserId
+            where dbCompany.Id == command.CompanyId && dbUcc.UserId == currentUserId
             group dbUcc.ClaimId by new { Company = dbCompany, UserId = dbUcc.UserId }
             into grouped
             select new { grouped.Key.Company, PermissionIds = grouped.ToList() };

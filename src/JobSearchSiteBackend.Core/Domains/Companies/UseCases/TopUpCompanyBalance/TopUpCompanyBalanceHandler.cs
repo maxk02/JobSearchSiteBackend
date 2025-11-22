@@ -9,9 +9,9 @@ namespace JobSearchSiteBackend.Core.Domains.Companies.UseCases.TopUpCompanyBalan
 
 public class TopUpCompanyBalanceHandler(
     ICurrentAccountService currentAccountService,
-    MainDataContext context) : IRequestHandler<TopUpCompanyBalanceRequest, Result>
+    MainDataContext context) : IRequestHandler<TopUpCompanyBalanceCommand, Result>
 {
-    public async Task<Result> Handle(TopUpCompanyBalanceRequest request, CancellationToken cancellationToken = default)
+    public async Task<Result> Handle(TopUpCompanyBalanceCommand command, CancellationToken cancellationToken = default)
     {
         var currentUserId = currentAccountService.GetIdOrThrow();
 
@@ -34,8 +34,8 @@ public class TopUpCompanyBalanceHandler(
             return Result.Forbidden();
         }
 
-        var companyBalanceTransaction = new CompanyBalanceTransaction(request.Id, request.Amount,
-            request.CurrencyCode, currentUserId);
+        var companyBalanceTransaction = new CompanyBalanceTransaction(command.Id, command.Amount,
+            command.CurrencyCode, currentUserId);
 
         context.CompanyBalanceTransactions.Add(companyBalanceTransaction);
         

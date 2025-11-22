@@ -12,15 +12,15 @@ namespace JobSearchSiteBackend.Core.Domains.Companies.UseCases.GetCompanyBalance
 public class GetCompanyBalanceHandler(
     ICurrentAccountService currentAccountService,
     MainDataContext context)
-    : IRequestHandler<GetCompanyBalanceRequest, Result<GetCompanyBalanceResponse>>
+    : IRequestHandler<GetCompanyBalanceQuery, Result<GetCompanyBalanceResult>>
 {
-    public async Task<Result<GetCompanyBalanceResponse>> Handle(GetCompanyBalanceRequest request,
+    public async Task<Result<GetCompanyBalanceResult>> Handle(GetCompanyBalanceQuery query,
         CancellationToken cancellationToken = default)
     {
         var currentAccountId = currentAccountService.GetIdOrThrow();
 
         var hasPermission = await context.UserCompanyClaims
-            .Where(ucc => ucc.CompanyId == request.Id
+            .Where(ucc => ucc.CompanyId == query.Id
                           && ucc.UserId == currentAccountId
                           && ucc.ClaimId == CompanyClaim.CanManageBalance.Id)
             .AnyAsync(cancellationToken);
@@ -31,14 +31,14 @@ public class GetCompanyBalanceHandler(
         }
         
         var companyWithBalance = await context.Companies
-            .Where(c => c.Id == request.Id)
+            .Where(c => c.Id == query.Id)
             .Select(c => new { Company = c, Balance = c.CompanyBalanceTransactions!.Select(cbt => cbt.Amount).Sum() })
             .SingleOrDefaultAsync(cancellationToken);
 
         if (companyWithBalance is null)
-            return Result<GetCompanyBalanceResponse>.NotFound();
+            return Result<GetCompanyBalanceResult>.NotFound();
         
         
-        return new GetCompanyBalanceResponse("PLN",  companyWithBalance.Balance);
+        return new GetCompanyBalanceResult("PLN",  companyWithBalance.Balance);
     }
 }

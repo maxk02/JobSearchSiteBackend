@@ -8,21 +8,21 @@ namespace JobSearchSiteBackend.Core.Domains.Companies.UseCases.RemoveCompanyLast
 public class RemoveCompanyLastVisitedJobsHandler(
     ICurrentAccountService currentAccountService,
     ICompanyLastVisitedJobsCacheRepository cacheRepo
-    ) : IRequestHandler<RemoveCompanyLastVisitedJobsRequest, Result>
+    ) : IRequestHandler<RemoveCompanyLastVisitedJobsCommand, Result>
 {
-    public async Task<Result> Handle(RemoveCompanyLastVisitedJobsRequest request,
+    public async Task<Result> Handle(RemoveCompanyLastVisitedJobsCommand command,
         CancellationToken cancellationToken = default)
     {
         var currentUserId = currentAccountService.GetIdOrThrow();
 
-        if (request.SingleJobId.HasValue)
+        if (command.SingleJobId.HasValue)
         {
             await cacheRepo.DeleteOneLastVisitedAsync(currentUserId.ToString(),
-                request.CompanyId.ToString(), request.SingleJobId.Value.ToString());
+                command.CompanyId.ToString(), command.SingleJobId.Value.ToString());
         }
         else
         {
-            await cacheRepo.DeleteAllLastVisitedAsync(currentUserId.ToString(), request.CompanyId.ToString());
+            await cacheRepo.DeleteAllLastVisitedAsync(currentUserId.ToString(), command.CompanyId.ToString());
         }
 
         return Result.Success();

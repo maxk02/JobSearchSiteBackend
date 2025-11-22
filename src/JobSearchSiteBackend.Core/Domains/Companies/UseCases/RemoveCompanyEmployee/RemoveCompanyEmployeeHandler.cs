@@ -11,9 +11,9 @@ namespace JobSearchSiteBackend.Core.Domains.Companies.UseCases.RemoveCompanyEmpl
 public class RemoveCompanyEmployeeHandler(
     ICurrentAccountService currentAccountService,
     MainDataContext context)
-    : IRequestHandler<RemoveCompanyEmployeeRequest, Result>
+    : IRequestHandler<RemoveCompanyEmployeeCommand, Result>
 {
-    public async Task<Result> Handle(RemoveCompanyEmployeeRequest request,
+    public async Task<Result> Handle(RemoveCompanyEmployeeCommand command,
         CancellationToken cancellationToken = default)
     {
         var currentUserId = currentAccountService.GetIdOrThrow();
@@ -22,7 +22,7 @@ public class RemoveCompanyEmployeeHandler(
             from dbCompany in context.Companies
             join dbUcc in context.UserCompanyClaims on dbCompany.Id equals dbUcc.CompanyId into ucpGroup
             from dbUcc in ucpGroup.DefaultIfEmpty()
-            where dbCompany.Id == request.CompanyId && dbUcc.UserId == currentUserId
+            where dbCompany.Id == command.CompanyId && dbUcc.UserId == currentUserId
             group dbUcc.ClaimId by new { Company = dbCompany, UserId = dbUcc.UserId }
             into grouped
             select new { grouped.Key.Company, PermissionIds = grouped.ToList() };
@@ -50,7 +50,7 @@ public class RemoveCompanyEmployeeHandler(
         userProfile.CompaniesWhereEmployed!
             .Remove(userProfile
                 .CompaniesWhereEmployed
-                .Single(c => c.Id == request.CompanyId));
+                .Single(c => c.Id == command.CompanyId));
         context.UserProfiles.Update(userProfile);
         
         // saving changes

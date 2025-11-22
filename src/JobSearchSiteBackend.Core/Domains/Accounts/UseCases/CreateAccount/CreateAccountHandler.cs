@@ -17,21 +17,21 @@ public class CreateAccountHandler(
     IBackgroundJobService backgroundJobService,
     IEmailSenderService emailSenderService,
     StandardEmailRenderer emailRenderer) 
-    : IRequestHandler<CreateAccountRequest, Result>
+    : IRequestHandler<CreateAccountCommand, Result>
 {
-    public async Task<Result> Handle(CreateAccountRequest request,
+    public async Task<Result> Handle(CreateAccountCommand command,
         CancellationToken cancellationToken = default)
     {
-        var userFromDb = await userManager.FindByEmailAsync(request.Email);
+        var userFromDb = await userManager.FindByEmailAsync(command.Email);
 
         if (userFromDb is not null)
             return Result.Conflict();
 
-        var user = new MyIdentityUser { Email = request.Email };
+        var user = new MyIdentityUser { Email = command.Email };
 
         using var transaction = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled);
         
-        var aspNetIdentityResult = await userManager.CreateAsync(user, request.Password);
+        var aspNetIdentityResult = await userManager.CreateAsync(user, command.Password);
 
         if (!aspNetIdentityResult.Succeeded)
             return Result.Error();
@@ -47,7 +47,7 @@ public class CreateAccountHandler(
         var renderedEmail = await emailRenderer.RenderAsync(emailTemplate);
 
         backgroundJobService.Enqueue(() => emailSenderService
-                .SendEmailAsync(request.Email, renderedEmail.Subject, renderedEmail.Content, CancellationToken.None),
+                .SendEmailAsync(command.Email, renderedEmail.Subject, renderedEmail.Content, CancellationToken.None),
             BackgroundJobQueues.EmailSending);
         
         transaction.Complete();

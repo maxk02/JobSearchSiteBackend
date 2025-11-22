@@ -16,9 +16,9 @@ public class ResendEmailConfirmationLinkHandler(
     IBackgroundJobService backgroundJobService,
     IOptions<MyAppSettings> injectedAppSettings,
     IEmailSenderService emailSenderService,
-    StandardEmailRenderer emailRenderer) : IRequestHandler<ResendEmailConfirmationLinkRequest, Result>
+    StandardEmailRenderer emailRenderer) : IRequestHandler<ResendEmailConfirmationLinkCommand, Result>
 {
-    public async Task<Result> Handle(ResendEmailConfirmationLinkRequest request,
+    public async Task<Result> Handle(ResendEmailConfirmationLinkCommand command,
         CancellationToken cancellationToken = default)
     {
         var currentUserId = currentAccountService.GetIdOrThrow();

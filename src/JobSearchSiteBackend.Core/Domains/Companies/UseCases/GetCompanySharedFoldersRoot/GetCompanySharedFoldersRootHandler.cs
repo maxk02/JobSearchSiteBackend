@@ -15,15 +15,15 @@ namespace JobSearchSiteBackend.Core.Domains.Companies.UseCases.GetCompanySharedF
 public class GetCompanySharedFoldersRootHandler(
     ICurrentAccountService currentAccountService,
     MainDataContext context,
-    IMapper mapper) : IRequestHandler<GetCompanySharedFoldersRootRequest, Result<GetCompanySharedFoldersRootResponse>>
+    IMapper mapper) : IRequestHandler<GetCompanySharedFoldersRootQuery, Result<GetCompanySharedFoldersRootResult>>
 {
-    public async Task<Result<GetCompanySharedFoldersRootResponse>> Handle(GetCompanySharedFoldersRootRequest request,
+    public async Task<Result<GetCompanySharedFoldersRootResult>> Handle(GetCompanySharedFoldersRootQuery query,
         CancellationToken cancellationToken = default)
     {
         var currentUserId = currentAccountService.GetIdOrThrow();
 
         var jobFolderIdsWherePermissionPresent = context.JobFolders
-            .Where(jf  => jf.CompanyId == request.CompanyId)
+            .Where(jf  => jf.CompanyId == query.CompanyId)
             .Where(jf =>
                 jf.UserJobFolderClaims!.Any(jfc =>
                     jfc.ClaimId == JobFolderClaim.CanReadJobs.Id && jfc.UserId == currentUserId))
@@ -37,7 +37,7 @@ public class GetCompanySharedFoldersRootHandler(
             .ProjectTo<JobFolderMinimalDto>(mapper.ConfigurationProvider)
             .ToListAsync(cancellationToken); // cutting folders whose ancestor is already present in output
         
-        var response = new GetCompanySharedFoldersRootResponse(jobFolderDtosWithoutDescendants);
+        var response = new GetCompanySharedFoldersRootResult(jobFolderDtosWithoutDescendants);
         
         return Result.Success(response);
     }

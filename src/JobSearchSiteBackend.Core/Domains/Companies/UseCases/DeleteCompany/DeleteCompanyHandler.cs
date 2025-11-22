@@ -13,9 +13,9 @@ namespace JobSearchSiteBackend.Core.Domains.Companies.UseCases.DeleteCompany;
 public class DeleteCompanyHandler(
     ICurrentAccountService currentAccountService,
     MainDataContext context)
-    : IRequestHandler<DeleteCompanyRequest, Result>
+    : IRequestHandler<DeleteCompanyCommand, Result>
 {
-    public async Task<Result> Handle(DeleteCompanyRequest request, CancellationToken cancellationToken = default)
+    public async Task<Result> Handle(DeleteCompanyCommand command, CancellationToken cancellationToken = default)
     {
         var currentUserId = currentAccountService.GetIdOrThrow();
 
@@ -23,7 +23,7 @@ public class DeleteCompanyHandler(
             from company in context.Companies
             join ucp in context.UserCompanyClaims on company.Id equals ucp.CompanyId into ucpGroup
             from ucp in ucpGroup.DefaultIfEmpty()
-            where company.Id == request.Id && ucp.UserId == currentUserId
+            where company.Id == command.Id && ucp.UserId == currentUserId
             group ucp.ClaimId by new { Company = company, UserId = ucp.UserId }
             into grouped
             select new { grouped.Key.Company, PermissionIds = grouped.ToList() };

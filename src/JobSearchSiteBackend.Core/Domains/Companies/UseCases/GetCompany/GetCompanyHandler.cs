@@ -13,22 +13,22 @@ public class GetCompanyHandler(
     ICurrentAccountService currentAccountService,
     MainDataContext context,
     IMapper mapper)
-    : IRequestHandler<GetCompanyRequest, Result<GetCompanyResponse>>
+    : IRequestHandler<GetCompanyQuery, Result<GetCompanyResult>>
 {
-    public async Task<Result<GetCompanyResponse>> Handle(GetCompanyRequest request,
+    public async Task<Result<GetCompanyResult>> Handle(GetCompanyQuery query,
         CancellationToken cancellationToken = default)
     {
-        var company = await context.Companies.FindAsync([request.Id], cancellationToken);
+        var company = await context.Companies.FindAsync([query.Id], cancellationToken);
 
         if (company is null)
-            return Result<GetCompanyResponse>.NotFound();
+            return Result<GetCompanyResult>.NotFound();
 
         if (!company.IsPublic)
         {
             var currentUserId = currentAccountService.GetId();
 
             if (currentUserId is null)
-                return Result<GetCompanyResponse>.Forbidden("Requested company profile is private.");
+                return Result<GetCompanyResult>.Forbidden("Requested company profile is private.");
             
             var canEditProfile = await context.UserCompanyClaims
                 .Where(
@@ -38,11 +38,11 @@ public class GetCompanyHandler(
                 .AnyAsync(cancellationToken);
 
             if (!canEditProfile)
-                return Result<GetCompanyResponse>.Forbidden("Requested company profile is private.");
+                return Result<GetCompanyResult>.Forbidden("Requested company profile is private.");
         }
         
         var companyInfoDto = mapper.Map<CompanyDto>(company);
         
-        return new GetCompanyResponse(companyInfoDto);
+        return new GetCompanyResult(companyInfoDto);
     }
 }

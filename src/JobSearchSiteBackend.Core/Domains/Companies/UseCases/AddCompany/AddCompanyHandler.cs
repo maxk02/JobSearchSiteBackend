@@ -11,15 +11,15 @@ namespace JobSearchSiteBackend.Core.Domains.Companies.UseCases.AddCompany;
 public class AddCompanyHandler(
     ICurrentAccountService currentAccountService,
     MainDataContext context)
-    : IRequestHandler<AddCompanyRequest, Result<AddCompanyResponse>>
+    : IRequestHandler<AddCompanyCommand, Result<AddCompanyResult>>
 {
-    public async Task<Result<AddCompanyResponse>> Handle(AddCompanyRequest request,
+    public async Task<Result<AddCompanyResult>> Handle(AddCompanyCommand command,
         CancellationToken cancellationToken = default)
     {
         var currentUserId = currentAccountService.GetIdOrThrow();
 
         //creating company and checking result
-        var company = new Company(request.Name, request.Description, true, request.CountryId);
+        var company = new Company(command.Name, command.Description, true, command.CountryId);
 
         await using var transaction = await context.Database.BeginTransactionAsync(cancellationToken);
 
@@ -50,6 +50,6 @@ public class AddCompanyHandler(
         //committing transaction
         await transaction.CommitAsync(cancellationToken);
 
-        return new AddCompanyResponse(company.Id);
+        return new AddCompanyResult(company.Id);
     }
 }

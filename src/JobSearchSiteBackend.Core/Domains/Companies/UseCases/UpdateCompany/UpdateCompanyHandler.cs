@@ -12,9 +12,9 @@ namespace JobSearchSiteBackend.Core.Domains.Companies.UseCases.UpdateCompany;
 
 public class UpdateCompanyHandler(
     ICurrentAccountService currentAccountService,
-    MainDataContext context) : IRequestHandler<UpdateCompanyRequest, Result>
+    MainDataContext context) : IRequestHandler<UpdateCompanyCommand, Result>
 {
-    public async Task<Result> Handle(UpdateCompanyRequest request, CancellationToken cancellationToken = default)
+    public async Task<Result> Handle(UpdateCompanyCommand command, CancellationToken cancellationToken = default)
     {
         var currentUserId = currentAccountService.GetIdOrThrow();
 
@@ -22,7 +22,7 @@ public class UpdateCompanyHandler(
             from dbCompany in context.Companies
             join dbUcc in context.UserCompanyClaims on dbCompany.Id equals dbUcc.CompanyId into ucpGroup
             from dbUcc in ucpGroup.DefaultIfEmpty()
-            where dbCompany.Id == request.Id && dbUcc.UserId == currentUserId
+            where dbCompany.Id == command.Id && dbUcc.UserId == currentUserId
             group dbUcc.ClaimId by new { Company = dbCompany, UserId = dbUcc.UserId }
             into grouped
             select new { grouped.Key.Company, PermissionIds = grouped.ToList() };
@@ -39,9 +39,9 @@ public class UpdateCompanyHandler(
 
         var company = companyWithClaimIds.Company;
 
-        if (request.Name is not null) company.Name = request.Name;
-        if (request.Description is not null) company.Description = request.Description;
-        if (request.IsPublic is not null) company.IsPublic = request.IsPublic.Value;
+        if (command.Name is not null) company.Name = command.Name;
+        if (command.Description is not null) company.Description = command.Description;
+        if (command.IsPublic is not null) company.IsPublic = command.IsPublic.Value;
 
         var companySearchModel = new CompanySearchModel(
             company.Id,

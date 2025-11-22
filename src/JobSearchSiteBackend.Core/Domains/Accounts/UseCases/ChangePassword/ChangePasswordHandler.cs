@@ -8,9 +8,9 @@ namespace JobSearchSiteBackend.Core.Domains.Accounts.UseCases.ChangePassword;
 
 public class ChangePasswordHandler(ICurrentAccountService currentAccountService,
     IUserSessionCacheRepository sessionCache,
-    UserManager<MyIdentityUser> userManager) : IRequestHandler<ChangePasswordRequest, Result>
+    UserManager<MyIdentityUser> userManager) : IRequestHandler<ChangePasswordCommand, Result>
 {
-    public async Task<Result> Handle(ChangePasswordRequest request, CancellationToken cancellationToken = default)
+    public async Task<Result> Handle(ChangePasswordCommand command, CancellationToken cancellationToken = default)
     {
         var currentUserId = currentAccountService.GetIdOrThrow();
         var currentTokenId = currentAccountService.GetTokenIdentifierOrThrow();
@@ -19,7 +19,7 @@ public class ChangePasswordHandler(ICurrentAccountService currentAccountService,
         if (user is null)
             return Result.NotFound();
 
-        var aspNetIdentityResult = await userManager.ChangePasswordAsync(user, request.OldPassword, request.NewPassword);
+        var aspNetIdentityResult = await userManager.ChangePasswordAsync(user, command.OldPassword, command.NewPassword);
 
         await sessionCache.DeleteAllSessionsExceptCurrentAsync(currentUserId.ToString(), currentTokenId);
 

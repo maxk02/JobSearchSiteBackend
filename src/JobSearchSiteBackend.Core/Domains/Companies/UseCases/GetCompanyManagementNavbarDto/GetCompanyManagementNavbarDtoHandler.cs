@@ -13,9 +13,9 @@ public class GetCompanyManagementNavbarDtoHandler(
     ICurrentAccountService currentAccountService,
     IFileStorageService fileStorageService,
     MainDataContext context,
-    IMapper mapper) : IRequestHandler<GetCompanyManagementNavbarDtoRequest, Result<GetCompanyManagementNavbarDtoResponse>>
+    IMapper mapper) : IRequestHandler<GetCompanyManagementNavbarDtoQuery, Result<GetCompanyManagementNavbarDtoResult>>
 {
-    public async Task<Result<GetCompanyManagementNavbarDtoResponse>> Handle(GetCompanyManagementNavbarDtoRequest request,
+    public async Task<Result<GetCompanyManagementNavbarDtoResult>> Handle(GetCompanyManagementNavbarDtoQuery query,
         CancellationToken cancellationToken = default)
     {
         var currentAccountId = currentAccountService.GetIdOrThrow();
@@ -24,7 +24,7 @@ public class GetCompanyManagementNavbarDtoHandler(
             .AsNoTracking()
             .Include(c => c.UserCompanyClaims!.Where(ucc => ucc.UserId == currentAccountId))
             .Include(c => c.CompanyAvatars!.Where(a => !a.IsDeleted && a.IsUploadedSuccessfully).OrderBy(a => a.DateTimeUpdatedUtc))
-            .Where(c => c.Id == request.CompanyId)
+            .Where(c => c.Id == query.CompanyId)
             .FirstOrDefaultAsync(cancellationToken);
 
         if (company is null)
@@ -52,7 +52,7 @@ public class GetCompanyManagementNavbarDtoHandler(
             company.UserCompanyClaims!.Select(x => x.ClaimId).ToList()
             );
 
-        var response = new GetCompanyManagementNavbarDtoResponse(companyNavbarDto);
+        var response = new GetCompanyManagementNavbarDtoResult(companyNavbarDto);
 
         return response;
     }

@@ -17,19 +17,19 @@ public class GetCompanyLastVisitedJobsHandler(
     MainDataContext context,
     IMapper mapper,
     ICompanyLastVisitedJobsCacheRepository cacheRepo
-    ): IRequestHandler<GetCompanyLastVisitedJobsRequest,
-    Result<GetCompanyLastVisitedJobsResponse>>
+    ): IRequestHandler<GetCompanyLastVisitedJobsQuery,
+    Result<GetCompanyLastVisitedJobsResult>>
 {
-    public async Task<Result<GetCompanyLastVisitedJobsResponse>> Handle(GetCompanyLastVisitedJobsRequest request,
+    public async Task<Result<GetCompanyLastVisitedJobsResult>> Handle(GetCompanyLastVisitedJobsQuery query,
         CancellationToken cancellationToken = default)
     {
         var currentUserId = currentAccountService.GetIdOrThrow();
 
         var idListFromCache = await cacheRepo
-            .GetLastVisitedAsync(currentUserId.ToString(), request.CompanyId.ToString());
+            .GetLastVisitedAsync(currentUserId.ToString(), query.CompanyId.ToString());
         
         var jobListItemDtos = await context.JobFolders
-            .Where(jf => jf.CompanyId == request.CompanyId)
+            .Where(jf => jf.CompanyId == query.CompanyId)
             .Where(jf =>
                 jf.UserJobFolderClaims!.Any(jfc =>
                     jfc.ClaimId == JobFolderClaim.CanReadJobs.Id && jfc.UserId == currentUserId))
@@ -38,7 +38,7 @@ public class GetCompanyLastVisitedJobsHandler(
             .ProjectTo<CompanyJobListItemDto>(mapper.ConfigurationProvider)
             .ToListAsync(cancellationToken);
 
-        var response = new GetCompanyLastVisitedJobsResponse(jobListItemDtos);
+        var response = new GetCompanyLastVisitedJobsResult(jobListItemDtos);
 
         return Result.Success(response);
     }

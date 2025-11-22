@@ -1,5 +1,0 @@
-﻿using JobSearchSiteBackend.Core.Domains.Companies.Dtos;
-
-namespace JobSearchSiteBackend.Core.Domains.Companies.UseCases.GetCompanyLastVisitedFolders;
-
-public record GetCompanyLastVisitedFoldersResponse(ICollection<CompanyJobFolderListItemDto> JobFolders);

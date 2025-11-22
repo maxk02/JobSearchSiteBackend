@@ -9,9 +9,9 @@ namespace JobSearchSiteBackend.Core.Domains.Accounts.UseCases.LogOut;
 
 public class LogOutHandler(ICurrentAccountService currentAccountService,
     IUserSessionCacheRepository sessionCache,
-    ICookieService cookieService) : IRequestHandler<LogOutRequest, Result>
+    ICookieService cookieService) : IRequestHandler<LogOutCommand, Result>
 {
-    public async Task<Result> Handle(LogOutRequest request, CancellationToken cancellationToken = default)
+    public async Task<Result> Handle(LogOutCommand command, CancellationToken cancellationToken = default)
     {
         var currentUserId = currentAccountService.GetIdOrThrow();
         var currentUserTokenId = currentAccountService.GetTokenIdentifierOrThrow();

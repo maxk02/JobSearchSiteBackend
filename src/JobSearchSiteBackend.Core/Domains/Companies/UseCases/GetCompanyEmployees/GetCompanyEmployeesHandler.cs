@@ -18,16 +18,16 @@ public class GetCompanyEmployeesHandler(
     IFileStorageService  fileStorageService,
     MainDataContext context,
     IMapper mapper)
-    : IRequestHandler<GetCompanyEmployeesRequest, Result<GetCompanyEmployeesResponse>>
+    : IRequestHandler<GetCompanyEmployeesQuery, Result<GetCompanyEmployeesResult>>
 {
-    public async Task<Result<GetCompanyEmployeesResponse>> Handle(GetCompanyEmployeesRequest request,
+    public async Task<Result<GetCompanyEmployeesResult>> Handle(GetCompanyEmployeesQuery query,
         CancellationToken cancellationToken = default)
     {
         var currentUserId = currentAccountService.GetIdOrThrow();
 
         var hasPermission = await context.UserCompanyClaims
             .Where(ucc => ucc.UserId == currentUserId
-                          && ucc.CompanyId == request.CompanyId
+                          && ucc.CompanyId == query.CompanyId
                           && ucc.ClaimId == CompanyClaim.IsAdmin.Id)
             .AnyAsync(cancellationToken);
 
@@ -38,7 +38,7 @@ public class GetCompanyEmployeesHandler(
 
         var companyEmployeesGeneralQuery = context.Companies
             .AsNoTracking()
-            .Where(c => c.Id == request.CompanyId)
+            .Where(c => c.Id == query.CompanyId)
             .SelectMany(c => c.Employees!);
         
         var count = await companyEmployeesGeneralQuery.CountAsync(cancellationToken);
@@ -48,15 +48,15 @@ public class GetCompanyEmployeesHandler(
             .Include(employee => employee.UserAvatars!
                 .Where(a => !a.IsDeleted && a.IsUploadedSuccessfully)
                 .OrderBy(a => a.DateTimeUpdatedUtc))
-            .Take(request.Size)
-            .Skip((request.Page - 1) * request.Size);
+            .Take(query.Size)
+            .Skip((query.Page - 1) * query.Size);
 
-        if (!string.IsNullOrWhiteSpace(request.Query))
+        if (!string.IsNullOrWhiteSpace(query.Query))
         {
             companyEmployeesQueryWithFiltersNJoins = companyEmployeesQueryWithFiltersNJoins
-                .Where(employee => employee.Account!.Email!.Contains(request.Query)
-                || employee.FirstName.Contains(request.Query)
-                || employee.LastName.Contains(request.Query));
+                .Where(employee => employee.Account!.Email!.Contains(query.Query)
+                || employee.FirstName.Contains(query.Query)
+                || employee.LastName.Contains(query.Query));
         }
 
         var companyEmployees = await companyEmployeesQueryWithFiltersNJoins
@@ -83,9 +83,9 @@ public class GetCompanyEmployeesHandler(
                 url));
         }
         
-        var paginationResponse = new PaginationResponse(request.Page, request.Size, count);
+        var paginationResponse = new PaginationResponse(query.Page, query.Size, count);
 
-        var response = new GetCompanyEmployeesResponse(companyEmployeeDtos, paginationResponse);
+        var response = new GetCompanyEmployeesResult(companyEmployeeDtos, paginationResponse);
         
         return Result.Success(response);
     }
