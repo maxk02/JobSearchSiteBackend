@@ -1,5 +1,7 @@
-﻿using Ardalis.Result.AspNetCore;
+﻿using Ardalis.Result;
+using Ardalis.Result.AspNetCore;
 using AutoMapper;
+using JobSearchSiteBackend.API.Controllers.JobFolders.Dtos;
 using JobSearchSiteBackend.Core.Domains.JobFolders.UseCases.AddJobFolder;
 using JobSearchSiteBackend.Core.Domains.JobFolders.UseCases.DeleteJobFolder;
 using JobSearchSiteBackend.Core.Domains.JobFolders.UseCases.GetChildFolders;
@@ -17,12 +19,14 @@ namespace JobSearchSiteBackend.API.Controllers.JobFolders;
 public class JobFoldersController(IMapper mapper) : ControllerBase
 {
     [HttpPost]
-    public async Task<ActionResult<long>> CreateJobFolder(
+    public async Task<ActionResult<long>> AddJobFolder(
         [FromBody] AddJobFolderRequest request,
         [FromServices] AddJobFolderHandler handler,
         CancellationToken cancellationToken)
     {
-        var result = await handler.Handle(request, cancellationToken);
+        var mappedCommand = mapper.Map<AddJobFolderCommand>(request);
+        
+        var result = await handler.Handle(mappedCommand, cancellationToken);
         
         return this.ToActionResult(result);
     }
@@ -34,8 +38,9 @@ public class JobFoldersController(IMapper mapper) : ControllerBase
         [FromServices] DeleteJobFolderHandler handler,
         CancellationToken cancellationToken)
     {
-        var request = new DeleteJobFolderRequest(id);
-        var result = await handler.Handle(request, cancellationToken);
+        var mappedCommand = new DeleteJobFolderCommand(id);
+        
+        var result = await handler.Handle(mappedCommand, cancellationToken);
         
         return this.ToActionResult(result);
     }
@@ -47,10 +52,11 @@ public class JobFoldersController(IMapper mapper) : ControllerBase
         [FromServices] GetChildFoldersHandler handler,
         CancellationToken cancellationToken)
     {
-        var request = new GetChildFoldersRequest(id);
-        var result = await handler.Handle(request, cancellationToken);
+        var mappedQuery = new GetChildFoldersQuery(id);
         
-        return this.ToActionResult(result);
+        var result = await handler.Handle(mappedQuery, cancellationToken);
+        
+        return this.ToActionResult(result.Map(x => mapper.Map<GetChildFoldersResponse>(x)));
     }
     
     [HttpGet]
@@ -60,10 +66,11 @@ public class JobFoldersController(IMapper mapper) : ControllerBase
         [FromServices] GetJobFolderHandler handler,
         CancellationToken cancellationToken)
     {
-        var request = new GetJobFolderRequest(id);
-        var result = await handler.Handle(request, cancellationToken);
+        var mappedQuery = new GetJobFolderQuery(id);
         
-        return this.ToActionResult(result);
+        var result = await handler.Handle(mappedQuery, cancellationToken);
+        
+        return this.ToActionResult(result.Map(x => mapper.Map<GetJobFolderResponse>(x)));
     }
     
     [HttpGet]
@@ -73,26 +80,27 @@ public class JobFoldersController(IMapper mapper) : ControllerBase
         [FromServices] GetJobsHandler handler,
         CancellationToken cancellationToken)
     {
-        var request = new GetJobsRequest(id);
-        var result = await handler.Handle(request, cancellationToken);
+        var mappedQuery = new GetJobsQuery(id);
         
-        return this.ToActionResult(result);
+        var result = await handler.Handle(mappedQuery, cancellationToken);
+        
+        return this.ToActionResult(result.Map(x => mapper.Map<GetJobsResponse>(x)));
     }
     
     [HttpPatch]
     [Route("{id:long:min(1)}")]
     public async Task<ActionResult> UpdateJobFolder(
         [FromRoute] long id,
-        [FromBody] UpdateJobFolderRequestDto requestDto,
+        [FromBody] UpdateJobFolderRequest request,
         [FromServices] UpdateJobFolderHandler handler,
         CancellationToken cancellationToken)
     {
-        var request = mapper.Map<UpdateJobFolderRequest>(requestDto, opt =>
+        var mappedCommand = mapper.Map<UpdateJobFolderCommand>(request, opt =>
         {
             opt.Items["Id"] = id;
         });
         
-        var result = await handler.Handle(request, cancellationToken);
+        var result = await handler.Handle(mappedCommand, cancellationToken);
         
         return this.ToActionResult(result);
     }

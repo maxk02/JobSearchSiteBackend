@@ -15,31 +15,31 @@ public class GetBookmarkedJobsHandler(
     ICurrentAccountService currentAccountService,
     MainDataContext context,
     IMapper mapper)
-    : IRequestHandler<GetBookmarkedJobsRequest, Result<GetBookmarkedJobsResponse>>
+    : IRequestHandler<GetBookmarkedJobsQuery, Result<GetBookmarkedJobsResult>>
 {
-    public async Task<Result<GetBookmarkedJobsResponse>> Handle(GetBookmarkedJobsRequest request,
+    public async Task<Result<GetBookmarkedJobsResult>> Handle(GetBookmarkedJobsQuery query,
         CancellationToken cancellationToken)
     {
         var currentAccountId = currentAccountService.GetIdOrThrow();
 
-        var query = context.UserProfiles
+        var dbQuery = context.UserProfiles
             .Include(u => u.BookmarkedJobs)!
             .ThenInclude(job => job.JobFolder)
             .Where(u => u.Id == currentAccountId)
             .SelectMany(u => u.BookmarkedJobs ?? new List<Job>());
 
-        var count = await query.CountAsync(cancellationToken);
+        var count = await dbQuery.CountAsync(cancellationToken);
 
-        var bookmarkedJobCardDtos = await query
-            .Skip((request.PaginationSpec.PageNumber - 1) * request.PaginationSpec.PageSize)
-            .Take(request.PaginationSpec.PageSize)
+        var bookmarkedJobCardDtos = await dbQuery
+            .Skip((query.Page - 1) * query.Size)
+            .Take(query.Size)
             .ProjectTo<JobCardDto>(mapper.ConfigurationProvider)
             .ToListAsync(cancellationToken);
 
-        var paginationResponse = new PaginationResponse(request.PaginationSpec.PageNumber,
-            request.PaginationSpec.PageSize, count);
+        var paginationResponse = new PaginationResponse(query.Page,
+            query.Size, count);
 
-        var response = new GetBookmarkedJobsResponse(bookmarkedJobCardDtos, paginationResponse);
+        var response = new GetBookmarkedJobsResult(bookmarkedJobCardDtos, paginationResponse);
 
         return response;
     }

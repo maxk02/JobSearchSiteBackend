@@ -11,13 +11,13 @@ public class DeleteFileHandler(
     ICurrentAccountService currentAccountService,
     IFileStorageService fileStorageService,
     IBackgroundJobService backgroundJobService,
-    MainDataContext context) : IRequestHandler<DeleteFileRequest, Result>
+    MainDataContext context) : IRequestHandler<DeleteFileCommand, Result>
 {
-    public async Task<Result> Handle(DeleteFileRequest request, CancellationToken cancellationToken = default)
+    public async Task<Result> Handle(DeleteFileCommand command, CancellationToken cancellationToken = default)
     {
         var currentUserId = currentAccountService.GetIdOrThrow();
         
-        var personalFile = await context.PersonalFiles.FindAsync([request.Id], cancellationToken);
+        var personalFile = await context.PersonalFiles.FindAsync([command.Id], cancellationToken);
 
         if (personalFile is null)
             return Result.NotFound();

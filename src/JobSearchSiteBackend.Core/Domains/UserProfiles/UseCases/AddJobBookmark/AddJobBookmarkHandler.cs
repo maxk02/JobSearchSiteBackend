@@ -7,9 +7,9 @@ using JobSearchSiteBackend.Core.Persistence;
 namespace JobSearchSiteBackend.Core.Domains.UserProfiles.UseCases.AddJobBookmark;
 
 public class AddJobBookmarkHandler(ICurrentAccountService currentAccountService,
-    MainDataContext context) : IRequestHandler<AddJobBookmarkRequest, Result>
+    MainDataContext context) : IRequestHandler<AddJobBookmarkCommand, Result>
 {
-    public async Task<Result> Handle(AddJobBookmarkRequest request, CancellationToken cancellationToken = default)
+    public async Task<Result> Handle(AddJobBookmarkCommand command, CancellationToken cancellationToken = default)
     {
         var currentAccountId = currentAccountService.GetIdOrThrow();
 
@@ -21,7 +21,7 @@ public class AddJobBookmarkHandler(ICurrentAccountService currentAccountService,
             return Result.Error();
         
         var job = await context.Jobs
-            .FirstOrDefaultAsync(c => c.Id == request.JobId, cancellationToken);
+            .FirstOrDefaultAsync(c => c.Id == command.JobId, cancellationToken);
         
         if (job is null)
             return Result.Error();

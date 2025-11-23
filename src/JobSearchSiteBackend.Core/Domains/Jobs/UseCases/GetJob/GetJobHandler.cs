@@ -15,14 +15,14 @@ public class GetJobHandler(
     ICurrentAccountService currentAccountService,
     MainDataContext context,
     IPageVisitCacheRepository cacheRepo,
-    IMapper mapper) : IRequestHandler<GetJobRequest, Result<GetJobResponse>>
+    IMapper mapper) : IRequestHandler<GetJobQuery, Result<GetJobResult>>
 {
-    public async Task<Result<GetJobResponse>> Handle(GetJobRequest request,
+    public async Task<Result<GetJobResult>> Handle(GetJobQuery query,
         CancellationToken cancellationToken = default)
     {
         var job = await context.Jobs
             .AsNoTracking()
-            .Where(j => j.Id == request.Id)
+            .Where(j => j.Id == query.Id)
             .Include(j => j.JobFolder)
             .Include(job => job.SalaryInfo)
             .Include(job => job.EmploymentTypes)
@@ -34,7 +34,7 @@ public class GetJobHandler(
             .SingleOrDefaultAsync(cancellationToken);
 
         if (job is null)
-            return Result<GetJobResponse>.NotFound();
+            return Result<GetJobResult>.NotFound();
         
         if (!job.IsPublic)
             return Result.Forbidden();
@@ -43,6 +43,6 @@ public class GetJobHandler(
         
         var jobDetailedDto = mapper.Map<JobDetailedDto>(job);
         
-        return new GetJobResponse(jobDetailedDto);
+        return new GetJobResult(jobDetailedDto);
     }
 }

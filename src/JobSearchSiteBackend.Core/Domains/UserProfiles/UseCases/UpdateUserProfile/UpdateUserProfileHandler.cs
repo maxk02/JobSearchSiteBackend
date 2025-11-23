@@ -7,9 +7,9 @@ using JobSearchSiteBackend.Core.Persistence;
 namespace JobSearchSiteBackend.Core.Domains.UserProfiles.UseCases.UpdateUserProfile;
 
 public class UpdateUserProfileHandler(ICurrentAccountService currentAccountService,
-    MainDataContext context) : IRequestHandler<UpdateUserProfileRequest, Result>
+    MainDataContext context) : IRequestHandler<UpdateUserProfileCommand, Result>
 {
-    public async Task<Result> Handle(UpdateUserProfileRequest request,
+    public async Task<Result> Handle(UpdateUserProfileCommand command,
         CancellationToken cancellationToken = default)
     {
         var currentAccountId = currentAccountService.GetIdOrThrow();
@@ -19,9 +19,9 @@ public class UpdateUserProfileHandler(ICurrentAccountService currentAccountServi
         if (user is null)
             return Result.NotFound();
         
-        if (request.FirstName is not null) user.FirstName = request.FirstName;
-        if (request.LastName is not null) user.LastName = request.LastName;
-        if (request.Phone is not null) user.Phone = request.Phone;
+        if (command.FirstName is not null) user.FirstName = command.FirstName;
+        if (command.LastName is not null) user.LastName = command.LastName;
+        if (command.Phone is not null) user.Phone = command.Phone;
             
         context.UserProfiles.Update(user);
         await context.SaveChangesAsync(cancellationToken);

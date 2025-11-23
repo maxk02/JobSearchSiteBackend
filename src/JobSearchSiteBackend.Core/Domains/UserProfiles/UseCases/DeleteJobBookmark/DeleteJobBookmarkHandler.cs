@@ -7,9 +7,9 @@ using JobSearchSiteBackend.Core.Persistence;
 namespace JobSearchSiteBackend.Core.Domains.UserProfiles.UseCases.DeleteJobBookmark;
 
 public class DeleteJobBookmarkHandler(ICurrentAccountService currentAccountService,
-    MainDataContext context) : IRequestHandler<DeleteJobBookmarkRequest, Result>
+    MainDataContext context) : IRequestHandler<DeleteJobBookmarkCommand, Result>
 {
-    public async Task<Result> Handle(DeleteJobBookmarkRequest request, CancellationToken cancellationToken = default)
+    public async Task<Result> Handle(DeleteJobBookmarkCommand command, CancellationToken cancellationToken = default)
     {
         var currentAccountId = currentAccountService.GetIdOrThrow();
 
@@ -21,7 +21,7 @@ public class DeleteJobBookmarkHandler(ICurrentAccountService currentAccountServi
             return Result.Error();
         
         var job = await context.Jobs
-            .FirstOrDefaultAsync(c => c.Id == request.JobId, cancellationToken);
+            .FirstOrDefaultAsync(c => c.Id == command.JobId, cancellationToken);
         
         if (job is null)
             return Result.Error();

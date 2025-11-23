@@ -15,9 +15,9 @@ public class GetApplicationsForJobHandler(
     ICurrentAccountService currentAccountService,
     MainDataContext context,
     ICompanyLastVisitedJobsCacheRepository cacheRepo,
-    IMapper mapper) : IRequestHandler<GetApplicationsForJobRequest, Result<GetApplicationsForJobResponse>>
+    IMapper mapper) : IRequestHandler<GetApplicationsForJobQuery, Result<GetApplicationsForJobResult>>
 {
-    public async Task<Result<GetApplicationsForJobResponse>> Handle(GetApplicationsForJobRequest request,
+    public async Task<Result<GetApplicationsForJobResult>> Handle(GetApplicationsForJobQuery query,
         CancellationToken cancellationToken = default)
     {
         var currentUserId = currentAccountService.GetIdOrThrow();
@@ -26,7 +26,7 @@ public class GetApplicationsForJobHandler(
             .Include(j => j.JobFolder)
             .Include(j => j.JobApplications)
             .AsNoTracking()
-            .Where(j => j.Id == request.Id)
+            .Where(j => j.Id == query.Id)
             .SingleOrDefaultAsync(cancellationToken);
 
         if (jobWithApplications is null)
@@ -44,10 +44,10 @@ public class GetApplicationsForJobHandler(
             jobWithApplications.JobFolder!.CompanyId.ToString(), jobWithApplications.Id.ToString());
 
         if (jobWithApplications.JobApplications!.Count == 0)
-            return Result<GetApplicationsForJobResponse>.NoContent();
+            return Result<GetApplicationsForJobResult>.NoContent();
         
         var jobApplicationDtos = mapper.Map<List<JobApplicationForManagersDto>>(jobWithApplications.JobApplications);
         
-        return new GetApplicationsForJobResponse(jobApplicationDtos);
+        return new GetApplicationsForJobResult(jobApplicationDtos);
     }
 }

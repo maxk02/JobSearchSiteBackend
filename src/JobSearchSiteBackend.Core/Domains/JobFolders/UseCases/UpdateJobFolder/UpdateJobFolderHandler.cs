@@ -8,29 +8,29 @@ using JobSearchSiteBackend.Core.Persistence;
 namespace JobSearchSiteBackend.Core.Domains.JobFolders.UseCases.UpdateJobFolder;
 
 public class UpdateJobFolderHandler(ICurrentAccountService currentAccountService,
-    MainDataContext context) : IRequestHandler<UpdateJobFolderRequest, Result>
+    MainDataContext context) : IRequestHandler<UpdateJobFolderCommand, Result>
 {
-    public async Task<Result> Handle(UpdateJobFolderRequest request, CancellationToken cancellationToken = default)
+    public async Task<Result> Handle(UpdateJobFolderCommand command, CancellationToken cancellationToken = default)
     {
         var currentUserId = currentAccountService.GetIdOrThrow();
 
         var hasEditInfoClaim = await context.JobFolderRelations
-            .GetThisOrAncestorWhereUserHasClaim(request.Id, currentUserId,
+            .GetThisOrAncestorWhereUserHasClaim(command.Id, currentUserId,
                 JobFolderClaim.CanEditInfo.Id)
             .AnyAsync(cancellationToken);
 
         if (!hasEditInfoClaim)
             return Result.Forbidden();
         
-        var jobFolder = await context.JobFolders.FindAsync([request.Id], cancellationToken);
+        var jobFolder = await context.JobFolders.FindAsync([command.Id], cancellationToken);
         if (jobFolder is null)
             return Result.NotFound();
         
-        if (request.Name is not null)
-            jobFolder.Name = request.Name;
+        if (command.Name is not null)
+            jobFolder.Name = command.Name;
         
-        if (request.Description is not null)
-            jobFolder.Description = request.Description;
+        if (command.Description is not null)
+            jobFolder.Description = command.Description;
 
         context.JobFolders.Update(jobFolder);
         await context.SaveChangesAsync(cancellationToken);

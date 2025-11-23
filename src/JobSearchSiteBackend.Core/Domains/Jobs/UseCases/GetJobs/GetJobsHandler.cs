@@ -12,57 +12,57 @@ namespace JobSearchSiteBackend.Core.Domains.Jobs.UseCases.GetJobs;
 public class GetJobsHandler(
     IJobSearchRepository jobSearchRepository,
     MainDataContext context,
-    IMapper mapper) : IRequestHandler<GetJobsRequest, Result<GetJobsResponse>>
+    IMapper mapper) : IRequestHandler<GetJobsQuery, Result<GetJobsResult>>
 {
-    public async Task<Result<GetJobsResponse>> Handle(GetJobsRequest request,
+    public async Task<Result<GetJobsResult>> Handle(GetJobsQuery query,
         CancellationToken cancellationToken = default)
     {
         var hitIds = await jobSearchRepository
-            .SearchFromCountriesAndCategoriesAsync(request.CountryIds ?? [], request.CategoryIds ?? [],
-                request.Query, cancellationToken);
+            .SearchFromCountriesAndCategoriesAsync(query.CountryIds ?? [], query.CategoryIds ?? [],
+                query.Query, cancellationToken);
 
-        var query = context.Jobs
+        var dbQuery = context.Jobs
             .Include(j => j.EmploymentTypes)
             .AsNoTracking()
             .Where(job => job.DateTimeExpiringUtc > DateTime.UtcNow)
             .Where(job => job.IsPublic)
             .Where(job => hitIds.Contains(job.Id));
 
-        if (request.MustHaveSalaryRecord is not null && request.MustHaveSalaryRecord.Value)
-            query = query.Where(job => job.SalaryInfo != null);
+        if (query.MustHaveSalaryRecord is not null && query.MustHaveSalaryRecord.Value)
+            dbQuery = dbQuery.Where(job => job.SalaryInfo != null);
 
-        if (request.EmploymentTypeIds is not null)
-            query = query.Where(job => job.EmploymentTypes!.Any(x => request.EmploymentTypeIds.Contains(x.Id)));
+        if (query.EmploymentTypeIds is not null)
+            dbQuery = dbQuery.Where(job => job.EmploymentTypes!.Any(x => query.EmploymentTypeIds.Contains(x.Id)));
 
-        if (request.CategoryIds is not null && request.CategoryIds.Count != 0)
-            query = query.Where(job => request.CategoryIds.Contains(job.CategoryId));
+        if (query.CategoryIds is not null && query.CategoryIds.Count != 0)
+            dbQuery = dbQuery.Where(job => query.CategoryIds.Contains(job.CategoryId));
 
-        if (request.CountryIds is not null && request.CountryIds.Count != 0)
-            query = query.Where(job => request.CountryIds.Contains(job.JobFolder!.Company!.CountryId));
+        if (query.CountryIds is not null && query.CountryIds.Count != 0)
+            dbQuery = dbQuery.Where(job => query.CountryIds.Contains(job.JobFolder!.Company!.CountryId));
 
-        if (request.ContractTypeIds is not null && request.ContractTypeIds.Count != 0)
-            query = query.Where(job => job.JobContractTypes!.Any(jct => request.ContractTypeIds.Contains(jct.Id)));
+        if (query.ContractTypeIds is not null && query.ContractTypeIds.Count != 0)
+            dbQuery = dbQuery.Where(job => job.JobContractTypes!.Any(jct => query.ContractTypeIds.Contains(jct.Id)));
 
-        var count = await query.CountAsync(cancellationToken);
+        var count = await dbQuery.CountAsync(cancellationToken);
 
-        var jobs = await query
+        var jobs = await dbQuery
             .OrderByDescending(job => job.DateTimePublishedUtc)
-            .Skip((request.PaginationSpec.PageNumber - 1) * request.PaginationSpec.PageSize)
-            .Take(request.PaginationSpec.PageSize)
+            .Skip((query.PaginationSpec.PageNumber - 1) * query.PaginationSpec.PageSize)
+            .Take(query.PaginationSpec.PageSize)
             .ToListAsync(cancellationToken);
         
         // list with logo links
-        var companyLogoLinks = jobs.Select(x => x.Id).Select(x => "").ToList();
+        var companyLogoLinks = jobs.Select(x => x.Id).Select(x => "").ToList(); //todo
 
-        var paginationResponse = new PaginationResponse(request.PaginationSpec.PageNumber,
-            request.PaginationSpec.PageSize, count);
+        var paginationResponse = new PaginationResponse(query.PaginationSpec.PageNumber,
+            query.PaginationSpec.PageSize, count);
 
         var jobCardDtos = jobs
             .Select((x, i) =>
                 mapper.Map<JobCardDto>(x, opt => { opt.State = companyLogoLinks[i]; }))
             .ToList();
 
-        var response = new GetJobsResponse(jobCardDtos, paginationResponse);
+        var response = new GetJobsResult(jobCardDtos, paginationResponse);
 
         return response;
     }

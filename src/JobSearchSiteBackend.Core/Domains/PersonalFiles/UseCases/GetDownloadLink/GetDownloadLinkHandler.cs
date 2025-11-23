@@ -12,14 +12,14 @@ public class GetDownloadLinkHandler(
     IMapper mapper,
     ICurrentAccountService currentAccountService,
     IFileStorageService fileStorageService)
-    : IRequestHandler<GetDownloadLinkRequest, Result<GetDownloadLinkResponse>>
+    : IRequestHandler<GetDownloadLinkQuery, Result<GetDownloadLinkResult>>
 {
-    public async Task<Result<GetDownloadLinkResponse>> Handle(GetDownloadLinkRequest request,
+    public async Task<Result<GetDownloadLinkResult>> Handle(GetDownloadLinkQuery query,
         CancellationToken cancellationToken = default)
     {
         var currentUserId = currentAccountService.GetIdOrThrow();
         
-        var fileSqlRecord = await context.PersonalFiles.FindAsync([request.FileId], cancellationToken);
+        var fileSqlRecord = await context.PersonalFiles.FindAsync([query.FileId], cancellationToken);
         
         if (fileSqlRecord is null)
             return Result.NotFound();
@@ -33,7 +33,7 @@ public class GetDownloadLinkHandler(
         var link = await fileStorageService.GetDownloadUrlAsync(FileStorageBucketName.PersonalFiles,
             fileSqlRecord.GuidIdentifier, fileSqlRecord.Extension, cancellationToken);
 
-        var response = new GetDownloadLinkResponse(link);
+        var response = new GetDownloadLinkResult(link);
         
         return Result.Success(response);
     }

@@ -18,16 +18,16 @@ public class GetJobManagementDtoHandler(
     MainDataContext context,
     IFileStorageService fileStorageService,
     ICompanyLastVisitedJobsCacheRepository cacheRepo,
-    IMapper mapper) : IRequestHandler<GetJobManagementDtoRequest, Result<GetJobManagementDtoResponse>>
+    IMapper mapper) : IRequestHandler<GetJobManagementDtoQuery, Result<GetJobManagementDtoResult>>
 {
-    public async Task<Result<GetJobManagementDtoResponse>> Handle(GetJobManagementDtoRequest request,
+    public async Task<Result<GetJobManagementDtoResult>> Handle(GetJobManagementDtoQuery query,
         CancellationToken cancellationToken = default)
     {
         var currentUserId = currentAccountService.GetIdOrThrow();
         
         var job = await context.Jobs
             .AsNoTracking()
-            .Where(j => j.Id == request.Id)
+            .Where(j => j.Id == query.Id)
             .Include(job => job.JobFolder)
             .ThenInclude(jf => jf!.Company)
             .ThenInclude(c => c!.CompanyAvatars!
@@ -43,7 +43,7 @@ public class GetJobManagementDtoHandler(
             .SingleOrDefaultAsync(cancellationToken);
 
         if (job is null)
-            return Result<GetJobManagementDtoResponse>.NotFound();
+            return Result<GetJobManagementDtoResult>.NotFound();
 
         var claimIdsForCurrentUser = context.JobFolderRelations
             .GetClaimIdsForThisAndAncestors(job.JobFolderId, currentUserId)
@@ -89,6 +89,6 @@ public class GetJobManagementDtoHandler(
             job.TimeRangeOptionId
             );
         
-        return new GetJobManagementDtoResponse(jobManagementDto);
+        return new GetJobManagementDtoResult(jobManagementDto);
     }
 }

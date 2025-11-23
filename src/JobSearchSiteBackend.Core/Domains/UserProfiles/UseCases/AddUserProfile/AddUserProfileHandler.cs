@@ -7,19 +7,19 @@ using Microsoft.EntityFrameworkCore;
 namespace JobSearchSiteBackend.Core.Domains.UserProfiles.UseCases.AddUserProfile;
 
 public class AddUserProfileHandler(ICurrentAccountService currentAccountService,
-    MainDataContext context) : IRequestHandler<AddUserProfileRequest, Result<AddUserProfileResponse>>
+    MainDataContext context) : IRequestHandler<AddUserProfileCommand, Result<AddUserProfileResult>>
 {
-    public async Task<Result<AddUserProfileResponse>> Handle(AddUserProfileRequest request,
+    public async Task<Result<AddUserProfileResult>> Handle(AddUserProfileCommand command,
         CancellationToken cancellationToken = default)
     {
         var currentAccountId = currentAccountService.GetIdOrThrow();
         
-        var newUser = new UserProfile(currentAccountId, request.FirstName,
-            request.LastName, request.Phone);
+        var newUser = new UserProfile(currentAccountId, command.FirstName,
+            command.LastName, command.Phone);
         
         await context.UserProfiles.AddAsync(newUser, cancellationToken);
         await context.SaveChangesAsync(cancellationToken);
         
-        return new AddUserProfileResponse(newUser.Id);
+        return new AddUserProfileResult(newUser.Id);
     }
 }

@@ -13,23 +13,23 @@ public class GetLocationsHandler(
     MainDataContext context,
     ILocationSearchRepository locationSearchRepository,
     IMapper mapper)
-    : IRequestHandler<GetLocationsRequest, Result<GetLocationsResponse>>
+    : IRequestHandler<GetLocationsQuery, Result<GetLocationsResult>>
 {
-    public async Task<Result<GetLocationsResponse>> Handle(GetLocationsRequest request,
+    public async Task<Result<GetLocationsResult>> Handle(GetLocationsQuery query,
         CancellationToken cancellationToken = default)
     {
         var hitIds = await locationSearchRepository
-            .SearchFromCountryIdAsync(request.CountryId, request.Query, cancellationToken);
+            .SearchFromCountryIdAsync(query.CountryId, query.Query, cancellationToken);
 
-        var query = context.Locations
+        var dbQuery = context.Locations
             .Where(l => hitIds.Contains(l.Id))
             .Take(10);
 
-        var locationDtos = await query
+        var locationDtos = await dbQuery
             .ProjectTo<LocationDto>(mapper.ConfigurationProvider)
             .ToListAsync(cancellationToken);
 
-        var response = new GetLocationsResponse(locationDtos);
+        var response = new GetLocationsResult(locationDtos);
 
         return response;
     }

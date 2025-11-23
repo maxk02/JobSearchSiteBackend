@@ -19,25 +19,25 @@ public class AddJobHandler(
     IJobSearchRepository jobSearchRepository,
     IBackgroundJobService backgroundJobService,
     MainDataContext context,
-    IMapper mapper) : IRequestHandler<AddJobRequest, Result>
+    IMapper mapper) : IRequestHandler<AddJobCommand, Result>
 {
-    public async Task<Result> Handle(AddJobRequest request, CancellationToken cancellationToken = default)
+    public async Task<Result> Handle(AddJobCommand command, CancellationToken cancellationToken = default)
     {
         var currentUserId = currentAccountService.GetIdOrThrow();
         
         var job = new Job(
-            request.CategoryId,
-            request.JobFolderId,
-            request.Title,
-            request.Description,
-            request.IsPublic,
+            command.CategoryId,
+            command.JobFolderId,
+            command.Title,
+            command.Description,
+            command.IsPublic,
             DateTime.UtcNow,
             DateTime.UtcNow.AddDays(30),
-            request.Responsibilities,
-            request.Requirements,
-            request.NiceToHaves,
-            mapper.Map<JobSalaryInfo>(request.JobSalaryInfoDto),
-            EmploymentOption.AllValues.Where(x => request.EmploymentTypeIds.Contains(x.Id)).ToList());
+            command.Responsibilities,
+            command.Requirements,
+            command.NiceToHaves,
+            mapper.Map<JobSalaryInfo>(command.JobSalaryInfoDto),
+            EmploymentOption.AllValues.Where(x => command.EmploymentTypeIds.Contains(x.Id)).ToList());
 
         var validator = new JobValidator();
 
@@ -46,13 +46,13 @@ public class AddJobHandler(
         if (!validationResult.IsValid)
             return Result.Error();
 
-        if (!Category.AllIds.Contains(request.CategoryId))
+        if (!Category.AllIds.Contains(command.CategoryId))
             return Result.Error();
 
         var jobFolder = await context.JobFolders
             .AsNoTracking()
             .Include(jobFolder => jobFolder.Company)
-            .Where(jf => jf.Id == request.JobFolderId)
+            .Where(jf => jf.Id == command.JobFolderId)
             .SingleOrDefaultAsync(cancellationToken);
 
         if (jobFolder is null)
@@ -62,7 +62,7 @@ public class AddJobHandler(
 
         var hasPermissionInRequestedFolderOrAncestors =
             await context.JobFolderRelations
-                .GetThisOrAncestorWhereUserHasClaim(request.JobFolderId, currentUserId,
+                .GetThisOrAncestorWhereUserHasClaim(command.JobFolderId, currentUserId,
                     JobFolderClaim.CanEditJobs.Id)
                 .AnyAsync(cancellationToken);
 
@@ -72,11 +72,11 @@ public class AddJobHandler(
 
         var contractTypes = await context.ContractTypes
             .AsNoTracking()
-            .Where(jobContractType => request.ContractTypeIds.Contains(jobContractType.Id))
+            .Where(jobContractType => command.ContractTypeIds.Contains(jobContractType.Id))
             .ToListAsync(cancellationToken);
 
         var nonExistentContractTypeIds =
-            request.ContractTypeIds.Except(contractTypes.Select(contractType => contractType.Id));
+            command.ContractTypeIds.Except(contractTypes.Select(contractType => contractType.Id));
 
         if (nonExistentContractTypeIds.Any())
             return Result.Error();
@@ -86,11 +86,11 @@ public class AddJobHandler(
 
         var locations = await context.Locations
             .AsNoTracking()
-            .Where(location => request.LocationIds.Contains(location.Id))
+            .Where(location => command.LocationIds.Contains(location.Id))
             .ToListAsync(cancellationToken);
 
         var nonExistentLocationIds =
-            request.LocationIds.Except(locations.Select(location => location.Id));
+            command.LocationIds.Except(locations.Select(location => location.Id));
 
         if (nonExistentLocationIds.Any())
             return Result.Error();

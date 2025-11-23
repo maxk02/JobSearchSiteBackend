@@ -8,28 +8,28 @@ namespace JobSearchSiteBackend.Core.Domains.UserProfiles.UseCases.UploadUserAvat
 public class UploadUserAvatarHandler(
     ICurrentAccountService currentAccountService,
     MainDataContext context)
-    : IRequestHandler<UploadUserAvatarRequest, Result<UploadUserAvatarResponse>>
+    : IRequestHandler<UploadUserAvatarCommand, Result<UploadUserAvatarResult>>
 {
-    public async Task<Result<UploadUserAvatarResponse>> Handle(UploadUserAvatarRequest request,
+    public async Task<Result<UploadUserAvatarResult>> Handle(UploadUserAvatarCommand command,
         CancellationToken cancellationToken = default)
     {
         var currentUserId = currentAccountService.GetId();
 
-        if (currentUserId != request.UserId) 
+        if (currentUserId != command.UserId) 
             return Result.Forbidden();
         
-        var existingAvatars = context.UserAvatars.Where(a => a.UserId == request.UserId).ToList();
+        var existingAvatars = context.UserAvatars.Where(a => a.UserId == command.UserId).ToList();
         foreach (var existingAvatar in existingAvatars)
         {
             existingAvatar.IsDeleted = true;
         }
         
-        var userAvatar = new UserAvatar(request.UserId, request.Extension, request.Size);
+        var userAvatar = new UserAvatar(command.UserId, command.Extension, command.Size);
         
         context.UserAvatars.Add(userAvatar);
         context.UserAvatars.UpdateRange(existingAvatars);
         await context.SaveChangesAsync(cancellationToken);
         
-        return new UploadUserAvatarResponse(userAvatar.Id);
+        return new UploadUserAvatarResult(userAvatar.Id);
     }
 }

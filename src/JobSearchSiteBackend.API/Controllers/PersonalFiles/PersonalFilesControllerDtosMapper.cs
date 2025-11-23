@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using JobSearchSiteBackend.API.Controllers.PersonalFiles.Dtos;
 using JobSearchSiteBackend.Core.Domains.PersonalFiles.UseCases.UpdateFile;
 
 namespace JobSearchSiteBackend.API.Controllers.PersonalFiles;
@@ -7,7 +8,7 @@ public class PersonalFilesControllerDtosMapper : Profile
 {
     public PersonalFilesControllerDtosMapper()
     {
-        CreateMap<UpdateFileRequestDto, UpdateFileRequest>()
+        CreateMap<UpdateFileRequest, UpdateFileCommand>()
             .ForMember(dest => dest.Id, opt => opt.MapFrom((_, _, _, context) =>
             {
                 if (context.Items.TryGetValue("Id", out var id))

@@ -16,9 +16,9 @@ public class GetJobFolderHandler(
     MainDataContext context,
     IFileStorageService fileStorageService,
     ICompanyLastVisitedFoldersCacheRepository cacheRepo,
-    IMapper mapper) : IRequestHandler<GetJobFolderRequest, Result<GetJobFolderResponse>>
+    IMapper mapper) : IRequestHandler<GetJobFolderQuery, Result<GetJobFolderResult>>
 {
-    public async Task<Result<GetJobFolderResponse>> Handle(GetJobFolderRequest request,
+    public async Task<Result<GetJobFolderResult>> Handle(GetJobFolderQuery query,
         CancellationToken cancellationToken = default)
     {
         var currentUserId = currentAccountService.GetIdOrThrow();
@@ -32,18 +32,18 @@ public class GetJobFolderHandler(
             .Include(jf => jf.RelationsWhereThisIsDescendant!.Where(x => x.Depth == 1))
             .Include(jf => jf.RelationsWhereThisIsAncestor!.Where(x => x.Depth == 1))
             .ThenInclude(rel => rel.Descendant)
-            .Where(jf => jf.Id == request.Id)
+            .Where(jf => jf.Id == query.Id)
             .SingleOrDefaultAsync(cancellationToken);
         
         if (jobFolder is null)
-            return Result<GetJobFolderResponse>.NotFound();
+            return Result<GetJobFolderResult>.NotFound();
 
         var claimIdList = await context.JobFolderRelations
-            .GetClaimIdsForThisAndAncestors(request.Id, currentUserId)
+            .GetClaimIdsForThisAndAncestors(query.Id, currentUserId)
             .ToListAsync(cancellationToken);
 
         if (!claimIdList.Contains(JobFolderClaim.CanReadJobs.Id))
-            return Result<GetJobFolderResponse>.Forbidden();
+            return Result<GetJobFolderResult>.Forbidden();
         
         await cacheRepo.AddLastVisitedAsync(currentUserId.ToString(),
             jobFolder.CompanyId.ToString(), jobFolder.Id.ToString());
@@ -70,7 +70,7 @@ public class GetJobFolderHandler(
             mapper.Map<List<JobFolderMinimalDto>>(jobFolder.RelationsWhereThisIsAncestor!.Select(rel => rel.Descendant))
             );
 
-        var response = new GetJobFolderResponse(jobFolderDetailedDto);
+        var response = new GetJobFolderResult(jobFolderDetailedDto);
 
         return Result.Success(response);
     }

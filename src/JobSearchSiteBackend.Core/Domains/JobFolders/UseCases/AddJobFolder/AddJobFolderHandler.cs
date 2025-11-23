@@ -9,28 +9,28 @@ namespace JobSearchSiteBackend.Core.Domains.JobFolders.UseCases.AddJobFolder;
 
 public class AddJobFolderHandler(
     ICurrentAccountService currentAccountService,
-    MainDataContext context) : IRequestHandler<AddJobFolderRequest, Result<long>>
+    MainDataContext context) : IRequestHandler<AddJobFolderCommand, Result<long>>
 {
-    public async Task<Result<long>> Handle(AddJobFolderRequest request, CancellationToken cancellationToken = default)
+    public async Task<Result<long>> Handle(AddJobFolderCommand command, CancellationToken cancellationToken = default)
     {
         var currentUserId = currentAccountService.GetIdOrThrow();
 
         var currentUserClaimIdsForParentAndAncestors = await context.JobFolderRelations
-            .GetClaimIdsForThisAndAncestors(request.ParentId, currentUserId)
+            .GetClaimIdsForThisAndAncestors(command.ParentId, currentUserId)
             .ToListAsync(cancellationToken);
 
         if (!currentUserClaimIdsForParentAndAncestors.Contains(JobFolderClaim.CanEditJobs.Id))
             return Result<long>.Forbidden();
 
         var parentFolderCompanyId = await context.JobFolders
-            .Where(jf => jf.Id == request.ParentId)
+            .Where(jf => jf.Id == command.ParentId)
             .Select(jf => jf.CompanyId)
             .SingleOrDefaultAsync(cancellationToken);
 
-        if (parentFolderCompanyId != request.CompanyId)
+        if (parentFolderCompanyId != command.CompanyId)
             return Result<long>.Error();
 
-        var jobFolder = new JobFolder(request.CompanyId, request.Name, request.Description);
+        var jobFolder = new JobFolder(command.CompanyId, command.Name, command.Description);
 
         await using var transaction = await context.Database.BeginTransactionAsync(cancellationToken);
 
@@ -38,7 +38,7 @@ public class AddJobFolderHandler(
         await context.SaveChangesAsync(cancellationToken);
 
         var parentClosures = await context.JobFolderRelations
-            .Where(c => c.DescendantId == request.ParentId)
+            .Where(c => c.DescendantId == command.ParentId)
             .ToListAsync(cancellationToken);
 
         var newClosures = parentClosures

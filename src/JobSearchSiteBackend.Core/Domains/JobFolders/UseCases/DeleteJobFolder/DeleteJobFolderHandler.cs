@@ -8,18 +8,18 @@ using JobSearchSiteBackend.Core.Persistence;
 namespace JobSearchSiteBackend.Core.Domains.JobFolders.UseCases.DeleteJobFolder;
 
 public class DeleteJobFolderHandler(ICurrentAccountService currentAccountService,
-    MainDataContext context) : IRequestHandler<DeleteJobFolderRequest, Result>
+    MainDataContext context) : IRequestHandler<DeleteJobFolderCommand, Result>
 {
-    public async Task<Result> Handle(DeleteJobFolderRequest request, CancellationToken cancellationToken = default)
+    public async Task<Result> Handle(DeleteJobFolderCommand command, CancellationToken cancellationToken = default)
     {
         var currentUserId = currentAccountService.GetIdOrThrow();
         
-        var jobFolder = await context.JobFolders.FindAsync([request.Id], cancellationToken);
+        var jobFolder = await context.JobFolders.FindAsync([command.Id], cancellationToken);
         if (jobFolder is null)
             return Result.NotFound();
         
         var hasEditClaim = await context.JobFolderRelations
-            .GetThisOrAncestorWhereUserHasClaim(request.Id, currentUserId,
+            .GetThisOrAncestorWhereUserHasClaim(command.Id, currentUserId,
                 JobFolderClaim.CanEditJobs.Id)
             .AnyAsync(cancellationToken);
 
@@ -27,7 +27,7 @@ public class DeleteJobFolderHandler(ICurrentAccountService currentAccountService
             return Result.Forbidden();
         
         var thisAndDescendants = await context.JobFolderRelations
-            .Where(jfr => jfr.AncestorId == request.Id)
+            .Where(jfr => jfr.AncestorId == command.Id)
             .Select(jfr => new { Relation = jfr, JobFolder = jfr.Descendant! })
             .ToListAsync(cancellationToken);
         

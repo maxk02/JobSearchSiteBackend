@@ -7,9 +7,9 @@ using Microsoft.EntityFrameworkCore;
 namespace JobSearchSiteBackend.Core.Domains.UserProfiles.UseCases.GetUserProfile;
 
 public class GetUserProfileHandler(ICurrentAccountService currentAccountService,
-    MainDataContext context) : IRequestHandler<GetUserProfileRequest, Result<GetUserProfileResponse>>
+    MainDataContext context) : IRequestHandler<GetUserProfileQuery, Result<GetUserProfileResult>>
 {
-    public async Task<Result<GetUserProfileResponse>> Handle(GetUserProfileRequest request,
+    public async Task<Result<GetUserProfileResult>> Handle(GetUserProfileQuery query,
         CancellationToken cancellationToken = default)
     {
         var currentAccountId = currentAccountService.GetIdOrThrow();
@@ -25,8 +25,8 @@ public class GetUserProfileHandler(ICurrentAccountService currentAccountService,
         var email = userWithEmail?.Email;
 
         if (user is null || email is null)
-            return Result<GetUserProfileResponse>.Error();
+            return Result<GetUserProfileResult>.Error();
 
-        return new GetUserProfileResponse(user.FirstName, user.LastName, email, user.Phone, ""); // todo avatar
+        return new GetUserProfileResult(user.FirstName, user.LastName, email, user.Phone, ""); // todo avatar
     }
 }

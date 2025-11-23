@@ -15,27 +15,27 @@ public class UploadFileHandler(
     ICurrentAccountService currentAccountService,
     IFileStorageService fileStorageService,
     ITextExtractionService textExtractionService,
-    MainDataContext context) : IRequestHandler<UploadFileRequest, Result<UploadFileResponse>>
+    MainDataContext context) : IRequestHandler<UploadFileCommand, Result<UploadFileResult>>
 {
-    public async Task<Result<UploadFileResponse>> Handle(UploadFileRequest request, CancellationToken cancellationToken = default)
+    public async Task<Result<UploadFileResult>> Handle(UploadFileCommand command, CancellationToken cancellationToken = default)
     {
         var currentUserId = currentAccountService.GetIdOrThrow();
         
-        var text = await textExtractionService.ExtractTextAsync(request.FileStream, request.Extension, cancellationToken);
+        var text = await textExtractionService.ExtractTextAsync(command.FileStream, command.Extension, cancellationToken);
         
-        var newFile = new PersonalFile(currentUserId, request.Name, request.Extension, request.Size, text);
+        var newFile = new PersonalFile(currentUserId, command.Name, command.Extension, command.Size, text);
         
         context.PersonalFiles.Add(newFile);
         await context.SaveChangesAsync(cancellationToken);
 
         await fileStorageService.UploadFileAsync(FileStorageBucketName.PersonalFiles,
-            request.FileStream, newFile.GuidIdentifier, newFile.Extension, cancellationToken);
+            command.FileStream, newFile.GuidIdentifier, newFile.Extension, cancellationToken);
         
         newFile.IsUploadedSuccessfully = true;
         context.PersonalFiles.Update(newFile);
         await context.SaveChangesAsync(cancellationToken);
 
-        var response = new UploadFileResponse(newFile.Id);
+        var response = new UploadFileResult(newFile.Id);
         
         return Result.Success(response);
     }

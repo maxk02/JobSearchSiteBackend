@@ -15,16 +15,16 @@ public class DeleteJobHandler(
     ICurrentAccountService currentAccountService,
     IJobSearchRepository jobSearchRepository,
     IBackgroundJobService backgroundJobService,
-    MainDataContext context) : IRequestHandler<DeleteJobRequest, Result>
+    MainDataContext context) : IRequestHandler<DeleteJobCommand, Result>
 {
-    public async Task<Result> Handle(DeleteJobRequest request, CancellationToken cancellationToken = default)
+    public async Task<Result> Handle(DeleteJobCommand command, CancellationToken cancellationToken = default)
     {
         var currentUserId = currentAccountService.GetIdOrThrow();
 
         var job = await context.Jobs
             .Include(job => job.JobFolder)
             .ThenInclude(jf => jf!.Company)
-            .Where(job => job.Id == request.Id)
+            .Where(job => job.Id == command.Id)
             .SingleOrDefaultAsync(cancellationToken);
 
         if (job is null)

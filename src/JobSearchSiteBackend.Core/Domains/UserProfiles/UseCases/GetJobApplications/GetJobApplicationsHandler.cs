@@ -14,29 +14,29 @@ public class GetJobApplicationsHandler(
     ICurrentAccountService currentAccountService,
     MainDataContext context,
     IMapper mapper)
-    : IRequestHandler<GetJobApplicationsRequest, Result<GetJobApplicationsResponse>>
+    : IRequestHandler<GetJobApplicationsQuery, Result<GetJobApplicationsResult>>
 {
-    public async Task<Result<GetJobApplicationsResponse>> Handle(GetJobApplicationsRequest request,
+    public async Task<Result<GetJobApplicationsResult>> Handle(GetJobApplicationsQuery query,
         CancellationToken cancellationToken = default)
     {
         var currentAccountId = currentAccountService.GetIdOrThrow();
 
-        var query = context.JobApplications
+        var dbQuery = context.JobApplications
             .AsNoTracking()
             .Where(jobApplication => jobApplication.UserId == currentAccountId);
 
-        var count = await query.CountAsync(cancellationToken);
+        var count = await dbQuery.CountAsync(cancellationToken);
 
-        var jobApplicationDtos = await query
-            .Skip((request.PaginationSpec.PageNumber - 1) * request.PaginationSpec.PageSize)
-            .Take(request.PaginationSpec.PageSize)
+        var jobApplicationDtos = await dbQuery
+            .Skip((query.Page - 1) * query.Size)
+            .Take(query.Size)
             .ProjectTo<JobApplicationInUserProfileDto>(mapper.ConfigurationProvider)
             .ToListAsync(cancellationToken);
         
-        var paginationResponse = new PaginationResponse(request.PaginationSpec.PageNumber,
-            request.PaginationSpec.PageSize, count);
+        var paginationResponse = new PaginationResponse(query.Page,
+            query.Size, count);
 
-        var response = new GetJobApplicationsResponse(jobApplicationDtos, paginationResponse);
+        var response = new GetJobApplicationsResult(jobApplicationDtos, paginationResponse);
 
         return response;
     }

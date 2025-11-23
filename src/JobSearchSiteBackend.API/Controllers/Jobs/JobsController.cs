@@ -1,5 +1,7 @@
-﻿using Ardalis.Result.AspNetCore;
+﻿using Ardalis.Result;
+using Ardalis.Result.AspNetCore;
 using AutoMapper;
+using JobSearchSiteBackend.API.Controllers.Jobs.Dtos;
 using JobSearchSiteBackend.Core.Domains.Jobs.UseCases.AddJob;
 using JobSearchSiteBackend.Core.Domains.Jobs.UseCases.DeleteJob;
 using JobSearchSiteBackend.Core.Domains.Jobs.UseCases.GetApplicationsForJob;
@@ -23,7 +25,9 @@ public class JobsController(IMapper mapper) : ControllerBase
         [FromServices] AddJobHandler handler,
         CancellationToken cancellationToken)
     {
-        var result = await handler.Handle(request, cancellationToken);
+        var mappedCommand = mapper.Map<AddJobCommand>(request);
+        
+        var result = await handler.Handle(mappedCommand, cancellationToken);
         
         return this.ToActionResult(result);
     }
@@ -35,22 +39,29 @@ public class JobsController(IMapper mapper) : ControllerBase
         [FromServices] DeleteJobHandler handler,
         CancellationToken cancellationToken)
     {
-        var request = new DeleteJobRequest(id);
-        var result = await handler.Handle(request, cancellationToken);
+        var mappedCommand = new DeleteJobCommand(id);
+        
+        var result = await handler.Handle(mappedCommand, cancellationToken);
         
         return this.ToActionResult(result);
     }
     
     [HttpGet]
-    [AllowAnonymous]
+    [Route("{id:long:min(1)}/applications")]
     public async Task<ActionResult<GetApplicationsForJobResponse>> GetApplicationsForJob(
+        [FromRoute] long id,
         [FromQuery] GetApplicationsForJobRequest request,
         [FromServices] GetApplicationsForJobHandler handler,
         CancellationToken cancellationToken)
     {
-        var result = await handler.Handle(request, cancellationToken);
+        var mappedQuery = mapper.Map<GetApplicationsForJobQuery>(request, opt =>
+        {
+            opt.Items["Id"] = id;
+        });
         
-        return this.ToActionResult(result);
+        var result = await handler.Handle(mappedQuery, cancellationToken);
+        
+        return this.ToActionResult(result.Map(x => mapper.Map<GetApplicationsForJobResponse>(x)));
     }
     
     [HttpGet]
@@ -61,10 +72,11 @@ public class JobsController(IMapper mapper) : ControllerBase
         [FromServices] GetJobHandler handler,
         CancellationToken cancellationToken)
     {
-        var request = new GetJobRequest(id);
-        var result = await handler.Handle(request, cancellationToken);
+        var mappedQuery = new GetJobQuery(id);
         
-        return this.ToActionResult(result);
+        var result = await handler.Handle(mappedQuery, cancellationToken);
+        
+        return this.ToActionResult(result.Map(x => mapper.Map<GetJobResponse>(x)));
     }
     
     [HttpGet]
@@ -74,10 +86,11 @@ public class JobsController(IMapper mapper) : ControllerBase
         [FromServices] GetJobManagementDtoHandler handler,
         CancellationToken cancellationToken)
     {
-        var request = new GetJobManagementDtoRequest(id);
-        var result = await handler.Handle(request, cancellationToken);
+        var mappedQuery = new GetJobManagementDtoQuery(id);
         
-        return this.ToActionResult(result);
+        var result = await handler.Handle(mappedQuery, cancellationToken);
+        
+        return this.ToActionResult(result.Map(x => mapper.Map<GetJobManagementDtoResponse>(x)));
     }
     
     [HttpGet]
@@ -87,25 +100,27 @@ public class JobsController(IMapper mapper) : ControllerBase
         [FromServices] GetJobsHandler handler,
         CancellationToken cancellationToken)
     {
-        var result = await handler.Handle(request, cancellationToken);
+        var mappedQuery = mapper.Map<GetJobsQuery>(request);
         
-        return this.ToActionResult(result);
+        var result = await handler.Handle(mappedQuery, cancellationToken);
+        
+        return this.ToActionResult(result.Map(x => mapper.Map<GetJobsResponse>(x)));
     }
     
     [HttpPatch]
     [Route("{id:long:min(1)}")]
     public async Task<ActionResult> UpdateJob(
         [FromRoute] long id,
-        [FromBody] UpdateJobRequestDto requestDto,
+        [FromBody] UpdateJobRequest requestDto,
         [FromServices] UpdateJobHandler handler,
         CancellationToken cancellationToken)
     {
-        var request = mapper.Map<UpdateJobRequest>(requestDto, opt =>
+        var mappedCommand = mapper.Map<UpdateJobCommand>(requestDto, opt =>
         {
             opt.Items["Id"] = id;
         });
         
-        var result = await handler.Handle(request, cancellationToken);
+        var result = await handler.Handle(mappedCommand, cancellationToken);
         
         return this.ToActionResult(result);
     }

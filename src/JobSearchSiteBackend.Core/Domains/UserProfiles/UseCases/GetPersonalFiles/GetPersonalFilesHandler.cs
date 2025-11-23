@@ -14,28 +14,28 @@ public class GetPersonalFilesHandler(
     ICurrentAccountService currentAccountService,
     MainDataContext context,
     IMapper mapper) 
-    : IRequestHandler<GetPersonalFilesRequest, Result<GetPersonalFilesResponse>>
+    : IRequestHandler<GetPersonalFilesQuery, Result<GetPersonalFilesResult>>
 {
-    public async Task<Result<GetPersonalFilesResponse>> Handle(GetPersonalFilesRequest request,
+    public async Task<Result<GetPersonalFilesResult>> Handle(GetPersonalFilesQuery query,
         CancellationToken cancellationToken)
     {
         var currentAccountId = currentAccountService.GetIdOrThrow();
 
-        var query = context.PersonalFiles
+        var dbQuery = context.PersonalFiles
             .Where(pf => pf.UserId == currentAccountId);
         
-        var count = await query.CountAsync(cancellationToken);
+        var count = await dbQuery.CountAsync(cancellationToken);
         
-        var personalFileInfoDtos = await query
-            .Skip((request.PaginationSpec.PageNumber - 1) * request.PaginationSpec.PageSize)
-            .Take(request.PaginationSpec.PageSize)
+        var personalFileInfoDtos = await dbQuery
+            .Skip((query.Page - 1) * query.Size)
+            .Take(query.Size)
             .ProjectTo<PersonalFileInfoDto>(mapper.ConfigurationProvider)
             .ToListAsync(cancellationToken);
 
-        var paginationResponse = new PaginationResponse(request.PaginationSpec.PageNumber,
-            request.PaginationSpec.PageSize, count);
+        var paginationResponse = new PaginationResponse(query.Page,
+            query.Size, count);
         
-        var response = new GetPersonalFilesResponse(personalFileInfoDtos, paginationResponse);
+        var response = new GetPersonalFilesResult(personalFileInfoDtos, paginationResponse);
 
         return response;
     }

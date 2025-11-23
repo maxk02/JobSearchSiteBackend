@@ -1,6 +1,7 @@
 ﻿using Ardalis.Result;
 using Ardalis.Result.AspNetCore;
 using AutoMapper;
+using JobSearchSiteBackend.API.Controllers.PersonalFiles.Dtos;
 using JobSearchSiteBackend.Core.Domains.PersonalFiles.UseCases.DeleteFile;
 using JobSearchSiteBackend.Core.Domains.PersonalFiles.UseCases.GetDownloadLink;
 using JobSearchSiteBackend.Core.Domains.PersonalFiles.UseCases.UpdateFile;
@@ -21,8 +22,9 @@ public class PersonalFilesController(IMapper mapper) : ControllerBase
         [FromServices] DeleteFileHandler handler,
         CancellationToken cancellationToken)
     {
-        var request = new DeleteFileRequest(id);
-        var result = await handler.Handle(request, cancellationToken);
+        var mappedCommand = new DeleteFileCommand(id);
+        
+        var result = await handler.Handle(mappedCommand, cancellationToken);
         
         return this.ToActionResult(result);
     }
@@ -34,20 +36,21 @@ public class PersonalFilesController(IMapper mapper) : ControllerBase
         [FromServices] GetDownloadLinkHandler handler,
         CancellationToken cancellationToken)
     {
-        var request = new GetDownloadLinkRequest(id);
-        var result = await handler.Handle(request, cancellationToken);
+        var mappedQuery = new GetDownloadLinkQuery(id);
         
-        return this.ToActionResult(result);
+        var result = await handler.Handle(mappedQuery, cancellationToken);
+        
+        return this.ToActionResult(result.Map(x => mapper.Map<GetDownloadLinkResponse>(x)));
     }
     
     [HttpPatch("{id:long:min(1)}")]
     public async Task<ActionResult> UpdateFile(
         [FromRoute] long id,
-        [FromBody] UpdateFileRequestDto requestDto,
+        [FromBody] UpdateFileRequest requestDto,
         [FromServices] UpdateFileHandler handler,
         CancellationToken cancellationToken)
     {
-        var request = mapper.Map<UpdateFileRequest>(requestDto, opt =>
+        var request = mapper.Map<UpdateFileCommand>(requestDto, opt =>
         {
             opt.Items["Id"] = id;
         });
@@ -74,9 +77,9 @@ public class PersonalFilesController(IMapper mapper) : ControllerBase
         var extension = Path.GetExtension(file.FileName).TrimStart('.');
         var size = file.Length;
         
-        var request = new UploadFileRequest(stream, name, extension, size);
+        var request = new UploadFileCommand(stream, name, extension, size);
         var result = await handler.Handle(request, cancellationToken);
         
-        return this.ToActionResult(result);
+        return this.ToActionResult(result.Map(x => mapper.Map<UploadFileResponse>(x)));
     }
 }

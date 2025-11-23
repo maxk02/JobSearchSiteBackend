@@ -14,31 +14,31 @@ namespace JobSearchSiteBackend.Core.Domains.JobFolders.UseCases.GetChildFolders;
 public class GetChildFoldersHandler(
     ICurrentAccountService currentAccountService,
     MainDataContext context,
-    IMapper mapper) : IRequestHandler<GetChildFoldersRequest, Result<GetChildFoldersResponse>>
+    IMapper mapper) : IRequestHandler<GetChildFoldersQuery, Result<GetChildFoldersResult>>
 {
-    public async Task<Result<GetChildFoldersResponse>> Handle(GetChildFoldersRequest request,
+    public async Task<Result<GetChildFoldersResult>> Handle(GetChildFoldersQuery query,
         CancellationToken cancellationToken = default)
     {
         var currentUserId = currentAccountService.GetIdOrThrow();
 
-        var jobFolder = await context.JobFolders.FindAsync([request.Id], cancellationToken);
+        var jobFolder = await context.JobFolders.FindAsync([query.Id], cancellationToken);
         if (jobFolder is null)
-            return Result<GetChildFoldersResponse>.NotFound();
+            return Result<GetChildFoldersResult>.NotFound();
 
         var hasReadClaim = await context.JobFolderRelations
-            .GetThisOrAncestorWhereUserHasClaim(request.Id, currentUserId,
+            .GetThisOrAncestorWhereUserHasClaim(query.Id, currentUserId,
                 JobFolderClaim.CanReadJobs.Id)
             .AnyAsync(cancellationToken);
 
         if (!hasReadClaim)
-            return Result<GetChildFoldersResponse>.Forbidden();
+            return Result<GetChildFoldersResult>.Forbidden();
 
         var childJobFolderDtos = await context.JobFolderRelations
-            .Where(jfc => jfc.AncestorId == request.Id)
+            .Where(jfc => jfc.AncestorId == query.Id)
             .Where(jfc => jfc.Depth == 1)
             .ProjectTo<JobFolderMinimalDto>(mapper.ConfigurationProvider)
             .ToListAsync(cancellationToken);
 
-        return new GetChildFoldersResponse(childJobFolderDtos);
+        return new GetChildFoldersResult(childJobFolderDtos);
     }
 }
