@@ -1,4 +1,7 @@
-﻿using Ardalis.Result.AspNetCore;
+﻿using Ardalis.Result;
+using Ardalis.Result.AspNetCore;
+using AutoMapper;
+using JobSearchSiteBackend.API.Controllers.JobApplications.Dtos;
 using JobSearchSiteBackend.Core.Domains.JobApplications.UseCases.AddJobApplication;
 using JobSearchSiteBackend.Core.Domains.JobApplications.UseCases.DeleteJobApplication;
 using JobSearchSiteBackend.Core.Domains.JobApplications.UseCases.UpdateJobApplicationFiles;
@@ -11,7 +14,7 @@ namespace JobSearchSiteBackend.API.Controllers.JobApplications;
 [ApiController]
 [Route("api/job-applications")]
 [Authorize]
-public class JobApplicationsController : ControllerBase
+public class JobApplicationsController(IMapper mapper) : ControllerBase
 {
     [HttpPost]
     public async Task<ActionResult<AddJobApplicationResponse>> AddJobApplication(
@@ -19,9 +22,11 @@ public class JobApplicationsController : ControllerBase
         [FromServices] AddJobApplicationHandler handler,
         CancellationToken cancellationToken)
     {
-        var result = await handler.Handle(request, cancellationToken);
+        var mappedCommand = mapper.Map<AddJobApplicationCommand>(request);
         
-        return this.ToActionResult(result);
+        var result = await handler.Handle(mappedCommand, cancellationToken);
+        
+        return this.ToActionResult(result.Map(x => mapper.Map<AddJobApplicationResponse>(x)));
     }
     
     [HttpDelete]
@@ -31,8 +36,8 @@ public class JobApplicationsController : ControllerBase
         [FromServices] DeleteJobApplicationHandler handler,
         CancellationToken cancellationToken)
     {
-        var request = new DeleteJobApplicationRequest(id);
-        var result = await handler.Handle(request, cancellationToken);
+        var mappedCommand = new DeleteJobApplicationCommand(id);
+        var result = await handler.Handle(mappedCommand, cancellationToken);
         
         return this.ToActionResult(result);
     }
@@ -45,7 +50,9 @@ public class JobApplicationsController : ControllerBase
         [FromServices] UpdateJobApplicationFilesHandler handler,
         CancellationToken cancellationToken)
     {
-        var result = await handler.Handle(request, cancellationToken);
+        var mappedCommand = mapper.Map<UpdateJobApplicationFilesCommand>(request);
+        
+        var result = await handler.Handle(mappedCommand, cancellationToken);
         
         return this.ToActionResult(result);
     }
@@ -58,7 +65,9 @@ public class JobApplicationsController : ControllerBase
         [FromServices] UpdateJobApplicationStatusHandler handler,
         CancellationToken cancellationToken)
     {
-        var result = await handler.Handle(request, cancellationToken);
+        var mappedCommand = mapper.Map<UpdateJobApplicationStatusCommand>(request);
+        
+        var result = await handler.Handle(mappedCommand, cancellationToken);
         
         return this.ToActionResult(result);
     }

@@ -12,23 +12,23 @@ namespace JobSearchSiteBackend.Core.Domains.JobApplications.UseCases.AddJobAppli
 public class AddJobApplicationHandler(
     ICurrentAccountService currentAccountService,
     MainDataContext context)
-    : IRequestHandler<AddJobApplicationRequest, Result<AddJobApplicationResponse>>
+    : IRequestHandler<AddJobApplicationCommand, Result<AddJobApplicationResult>>
 {
-    public async Task<Result<AddJobApplicationResponse>> Handle(AddJobApplicationRequest request,
+    public async Task<Result<AddJobApplicationResult>> Handle(AddJobApplicationCommand command,
         CancellationToken cancellationToken = default)
     {
         var currentUserId = currentAccountService.GetIdOrThrow();
 
-        if (request.UserId != currentUserId)
+        if (command.UserId != currentUserId)
             return Result.Forbidden();
 
-        var jobApplication = new JobApplication(request.UserId, request.JobId, JobApplicationStatus.Submitted);
+        var jobApplication = new JobApplication(command.UserId, command.JobId, JobApplicationStatus.Submitted);
 
         var requestedPersonalFilesOfUser = await context.PersonalFiles
-            .Where(pf => request.PersonalFileIds.Contains(pf.Id) && pf.UserId == currentUserId)
+            .Where(pf => command.PersonalFileIds.Contains(pf.Id) && pf.UserId == currentUserId)
             .ToListAsync(cancellationToken);
 
-        if (!request.PersonalFileIds.All(requestedPersonalFilesOfUser.Select(x => x.Id).Contains))
+        if (!command.PersonalFileIds.All(requestedPersonalFilesOfUser.Select(x => x.Id).Contains))
         {
             return Result.Error();
         }
@@ -38,6 +38,6 @@ public class AddJobApplicationHandler(
         await context.JobApplications.AddAsync(jobApplication, cancellationToken);
         await context.SaveChangesAsync(cancellationToken);
         
-        return Result<AddJobApplicationResponse>.Success(new AddJobApplicationResponse(jobApplication.Id));
+        return Result<AddJobApplicationResult>.Success(new AddJobApplicationResult(jobApplication.Id));
     }
 }

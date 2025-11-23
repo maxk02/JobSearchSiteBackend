@@ -10,15 +10,15 @@ namespace JobSearchSiteBackend.Core.Domains.JobApplications.UseCases.UpdateJobAp
 
 public class UpdateJobApplicationStatusHandler(
     ICurrentAccountService currentAccountService,
-    MainDataContext context) : IRequestHandler<UpdateJobApplicationStatusRequest, Result>
+    MainDataContext context) : IRequestHandler<UpdateJobApplicationStatusCommand, Result>
 {
-    public async Task<Result> Handle(UpdateJobApplicationStatusRequest request,
+    public async Task<Result> Handle(UpdateJobApplicationStatusCommand command,
         CancellationToken cancellationToken = default)
     {
         var currentUserId = currentAccountService.GetIdOrThrow();
 
         var jobApplicationWithJobFolderId = await context.JobApplications
-            .Where(ja => ja.Id == request.Id)
+            .Where(ja => ja.Id == command.Id)
             .Select(ja => new { JobApplication = ja, JobFolderId = ja.Job!.JobFolderId })
             .SingleOrDefaultAsync(cancellationToken);
 
@@ -40,7 +40,7 @@ public class UpdateJobApplicationStatusHandler(
         
         context.JobApplications.Attach(jobApplication);
 
-        jobApplication.Status = request.Status;
+        jobApplication.Status = command.Status;
 
         context.JobApplications.Update(jobApplication);
         await context.SaveChangesAsync(cancellationToken);

@@ -9,27 +9,27 @@ namespace JobSearchSiteBackend.Core.Domains.CompanyClaims.UseCases.GetCompanyCla
 public class GetCompanyClaimIdsForUserHandler(
     ICurrentAccountService currentAccountService,
     MainDataContext context)
-    : IRequestHandler<GetCompanyClaimIdsForUserRequest, Result<ICollection<long>>>
+    : IRequestHandler<GetCompanyClaimIdsForUserQuery, Result<ICollection<long>>>
 {
-    public async Task<Result<ICollection<long>>> Handle(GetCompanyClaimIdsForUserRequest request,
+    public async Task<Result<ICollection<long>>> Handle(GetCompanyClaimIdsForUserQuery query,
         CancellationToken cancellationToken = default)
     {
         var currentUserId = currentAccountService.GetIdOrThrow();
 
         var currentUserClaimIds = await context.UserCompanyClaims
-            .Where(ucp => ucp.UserId == currentUserId && ucp.CompanyId == request.CompanyId)
+            .Where(ucp => ucp.UserId == currentUserId && ucp.CompanyId == query.CompanyId)
             .Select(ucp => ucp.Id)
             .ToListAsync(cancellationToken);
         
-        if (request.UserId == currentUserId)
+        if (query.UserId == currentUserId)
             return currentUserClaimIds;
         
         if (!currentUserClaimIds.Contains(CompanyClaim.IsAdmin.Id))
             return Result<ICollection<long>>.Forbidden();
         
         var targetUserClaimIds = await context.UserCompanyClaims
-            .Where(ucp => ucp.UserId == request.UserId && ucp.CompanyId == request.CompanyId)
-            .Select(ucp => ucp.Id)
+            .Where(ucp => ucp.UserId == query.UserId && ucp.CompanyId == query.CompanyId)
+            .Select(ucp => ucp.ClaimId)
             .ToListAsync(cancellationToken);
 
         var visibleClaimIds = currentUserClaimIds

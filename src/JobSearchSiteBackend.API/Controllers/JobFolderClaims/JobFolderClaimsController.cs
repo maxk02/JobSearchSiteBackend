@@ -1,5 +1,6 @@
 ﻿using Ardalis.Result.AspNetCore;
 using AutoMapper;
+using JobSearchSiteBackend.API.Controllers.JobFolderClaims.Dtos;
 using JobSearchSiteBackend.Core.Domains.JobFolderClaims.UseCases.GetJobFolderClaimIdsForUser;
 using JobSearchSiteBackend.Core.Domains.JobFolderClaims.UseCases.UpdateJobFolderClaimIdsForUser;
 using Microsoft.AspNetCore.Authorization;
@@ -29,13 +30,14 @@ public class JobFolderClaimsController(IMapper mapper) : ControllerBase
     [HttpGet]
     [Route("folder/{folderId:long:min(1)}/user/{userId:long:min(1)}")]
     public async Task<ActionResult<ICollection<long>>> GetJobFolderClaimIdsForUser(
-        [FromRoute] long folderId, [FromRoute] long userId,
+        [FromRoute] long folderId,
+        [FromRoute] long userId,
         [FromServices] GetJobFolderClaimIdsForUserHandler handler,
         CancellationToken cancellationToken)
     {
-        var request = new GetJobFolderClaimIdsForUserRequest(userId, folderId);
+        var mappedQuery = new GetJobFolderClaimIdsForUserQuery(userId, folderId);
         
-        var result = await handler.Handle(request, cancellationToken);
+        var result = await handler.Handle(mappedQuery, cancellationToken);
         
         return this.ToActionResult(result);
     }
@@ -43,18 +45,19 @@ public class JobFolderClaimsController(IMapper mapper) : ControllerBase
     [HttpPut]
     [Route("folder/{folderId:long:min(1)}/user/{userId:long:min(1)}")]
     public async Task<ActionResult> UpdateJobFolderClaimIdsForUser(
-        [FromRoute] long folderId, [FromRoute] long userId,
-        [FromBody] UpdateJobFolderClaimIdsForUserRequestDto requestDto,
+        [FromRoute] long folderId,
+        [FromRoute] long userId,
+        [FromBody] UpdateJobFolderClaimIdsForUserRequest request,
         [FromServices] UpdateJobFolderClaimIdsForUserHandler handler,
         CancellationToken cancellationToken)
     {
-        var request = mapper.Map<UpdateJobFolderClaimIdsForUserRequest>(requestDto, opt =>
+        var mappedCommand = mapper.Map<UpdateJobFolderClaimIdsForUserCommand>(request, opt =>
         {
             opt.Items["FolderId"] = folderId;
             opt.Items["UserId"] = userId;
         });
         
-        var result = await handler.Handle(request, cancellationToken);
+        var result = await handler.Handle(mappedCommand, cancellationToken);
         
         return this.ToActionResult(result);
     }

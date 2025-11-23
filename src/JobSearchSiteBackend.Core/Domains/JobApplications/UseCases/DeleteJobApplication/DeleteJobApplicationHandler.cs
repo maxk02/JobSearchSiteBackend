@@ -12,15 +12,15 @@ public class DeleteJobApplicationHandler(
     ICurrentAccountService currentAccountService,
     IPersonalFileSearchRepository personalFileSearchRepository,
     MainDataContext context,
-    IBackgroundJobService backgroundJobService) : IRequestHandler<DeleteJobApplicationRequest, Result>
+    IBackgroundJobService backgroundJobService) : IRequestHandler<DeleteJobApplicationCommand, Result>
 {
-    public async Task<Result> Handle(DeleteJobApplicationRequest request, CancellationToken cancellationToken = default)
+    public async Task<Result> Handle(DeleteJobApplicationCommand command, CancellationToken cancellationToken = default)
     {
         var currentUserId = currentAccountService.GetIdOrThrow();
 
         var jobApplication = await context.JobApplications
             .Include(ja => ja.PersonalFiles)
-            .Where(ja => ja.Id == request.Id)
+            .Where(ja => ja.Id == command.Id)
             .SingleOrDefaultAsync(cancellationToken);
 
         if (jobApplication is null)

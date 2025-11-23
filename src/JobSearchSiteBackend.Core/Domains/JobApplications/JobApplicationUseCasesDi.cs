@@ -1,5 +1,4 @@
-﻿using JobSearchSiteBackend.Core.Domains.JobApplications.UseCases._GetApplicationsForJobId;
-using JobSearchSiteBackend.Core.Domains.JobApplications.UseCases.AddJobApplication;
+﻿using JobSearchSiteBackend.Core.Domains.JobApplications.UseCases.AddJobApplication;
 using JobSearchSiteBackend.Core.Domains.JobApplications.UseCases.DeleteJobApplication;
 using JobSearchSiteBackend.Core.Domains.JobApplications.UseCases.UpdateJobApplicationFiles;
 using JobSearchSiteBackend.Core.Domains.JobApplications.UseCases.UpdateJobApplicationStatus;
@@ -13,7 +12,6 @@ public static class JobApplicationUseCasesDi
     {
         serviceCollection.AddScoped<AddJobApplicationHandler>();
         serviceCollection.AddScoped<DeleteJobApplicationHandler>();
-        serviceCollection.AddScoped<GetApplicationsForJobIdHandler>();
         serviceCollection.AddScoped<UpdateJobApplicationStatusHandler>();
         serviceCollection.AddScoped<UpdateJobApplicationFilesHandler>();
     }

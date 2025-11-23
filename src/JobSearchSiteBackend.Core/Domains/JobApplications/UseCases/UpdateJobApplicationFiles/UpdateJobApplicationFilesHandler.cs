@@ -10,16 +10,16 @@ namespace JobSearchSiteBackend.Core.Domains.JobApplications.UseCases.UpdateJobAp
 
 public class UpdateJobApplicationFilesHandler(
     ICurrentAccountService currentAccountService,
-    MainDataContext context) : IRequestHandler<UpdateJobApplicationFilesRequest, Result>
+    MainDataContext context) : IRequestHandler<UpdateJobApplicationFilesCommand, Result>
 {
-    public async Task<Result> Handle(UpdateJobApplicationFilesRequest request,
+    public async Task<Result> Handle(UpdateJobApplicationFilesCommand command,
         CancellationToken cancellationToken = default)
     {
         var currentUserId = currentAccountService.GetIdOrThrow();
 
         var jobApplication = await context.JobApplications
             .Include(ja => ja.PersonalFiles)
-            .Where(ja => ja.Id == request.Id)
+            .Where(ja => ja.Id == command.Id)
             .SingleOrDefaultAsync(cancellationToken);
 
         if (jobApplication is null)
@@ -29,10 +29,10 @@ public class UpdateJobApplicationFilesHandler(
             return Result.Forbidden();
 
         var newPersonalFiles = await context.PersonalFiles
-            .Where(pf => request.PersonalFileIds.Contains(pf.Id))
+            .Where(pf => command.PersonalFileIds.Contains(pf.Id))
             .ToListAsync(cancellationToken);
 
-        if (!request.PersonalFileIds.All(newPersonalFiles.Select(x => x.Id).Contains) ||
+        if (!command.PersonalFileIds.All(newPersonalFiles.Select(x => x.Id).Contains) ||
             newPersonalFiles.Any(x => x.UserId != currentUserId))
         {
             return Result.Error();

@@ -1,6 +1,9 @@
-﻿using Ardalis.Result.AspNetCore;
+﻿using Ardalis.Result;
+using Ardalis.Result.AspNetCore;
 using AutoMapper;
+using JobSearchSiteBackend.API.Controllers.CompanyClaims.Dtos;
 using JobSearchSiteBackend.Core.Domains.CompanyClaims.UseCases.GetCompanyClaimIdsForUser;
+using JobSearchSiteBackend.Core.Domains.CompanyClaims.UseCases.GetCompanyClaimsOverview;
 using JobSearchSiteBackend.Core.Domains.CompanyClaims.UseCases.UpdateCompanyClaimIdsForUser;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -12,48 +15,54 @@ namespace JobSearchSiteBackend.API.Controllers.CompanyClaims;
 [Authorize]
 public class CompanyClaimsController(IMapper mapper) : ControllerBase
 {
-    // [HttpGet]
-    // [Route("/company/{companyId:long:min(1)}")]
-    // public async Task<ActionResult<GetCompanyClaimsOverviewResponse>> GetCompanyClaimsOverview(
-    //     [FromRoute] long companyId,
-    //     [FromServices] GetCompanyClaimsOverviewHandler handler,
-    //     CancellationToken cancellationToken)
-    // {
-    //     var request = new GetCompanyClaimsOverviewRequest(companyId);
-    //     
-    //     var result = await handler.Handle(request, cancellationToken);
-    //     
-    //     return this.ToActionResult(result);
-    // }
+    [HttpGet]
+    [Route("/company/{companyId:long:min(1)}/claims-overview")]
+    public async Task<ActionResult<GetCompanyClaimsOverviewResponse>> GetCompanyClaimsOverview(
+        [FromRoute] long companyId,
+        [FromQuery] GetCompanyClaimsOverviewRequest request,
+        [FromServices] GetCompanyClaimsOverviewHandler handler,
+        CancellationToken cancellationToken)
+    {
+        var mappedQuery = mapper.Map<GetCompanyClaimsOverviewQuery>(request, opt =>
+        {
+            opt.Items["CompanyId"] = companyId;
+        });
+        
+        var result = await handler.Handle(mappedQuery, cancellationToken);
+        
+        return this.ToActionResult(result.Map(x => mapper.Map<GetCompanyClaimsOverviewResponse>(x)));
+    }
     
     [HttpGet]
-    [Route("/company/{companyId:long:min(1)}/user/{userId:long:min(1)}")]
+    [Route("/company/{companyId:long:min(1)}/user/{userId:long:min(1)}/claim-ids")]
     public async Task<ActionResult<ICollection<long>>> GetCompanyClaimIdsForUser(
-        [FromRoute] long companyId, [FromRoute] long userId,
+        [FromRoute] long companyId,
+        [FromRoute] long userId,
         [FromServices] GetCompanyClaimIdsForUserHandler handler,
         CancellationToken cancellationToken)
     {
-        var request = new GetCompanyClaimIdsForUserRequest(userId, companyId);
+        var mappedQuery = new GetCompanyClaimIdsForUserQuery(userId, companyId);
         
-        var result = await handler.Handle(request, cancellationToken);
+        var result = await handler.Handle(mappedQuery, cancellationToken);
         
         return this.ToActionResult(result);
     }
     
     [HttpPut]
-    [Route("/company/{companyId:long:min(1)}/user/{userId:long:min(1)}")]
+    [Route("/company/{companyId:long:min(1)}/user/{userId:long:min(1)}/claim-ids")]
     public async Task<ActionResult> UpdateCompanyClaimIdsForUser(
-        [FromRoute] long companyId, [FromRoute] long userId,
-        [FromBody] UpdateCompanyClaimIdsForUserRequestDto requestDto,
+        [FromRoute] long companyId,
+        [FromRoute] long userId,
+        [FromBody] UpdateCompanyClaimIdsForUserRequest request,
         [FromServices] UpdateCompanyClaimIdsForUserHandler handler,
         CancellationToken cancellationToken)
     {
-        var request = mapper.Map<UpdateCompanyClaimIdsForUserRequest>(requestDto, opt =>
+        var mappedCommand = mapper.Map<UpdateCompanyClaimIdsForUserCommand>(request, opt =>
         {
             opt.Items["CompanyId"] = companyId;
             opt.Items["UserId"] = userId;
         });
-        var result = await handler.Handle(request, cancellationToken);
+        var result = await handler.Handle(mappedCommand, cancellationToken);
         
         return this.ToActionResult(result);
     }

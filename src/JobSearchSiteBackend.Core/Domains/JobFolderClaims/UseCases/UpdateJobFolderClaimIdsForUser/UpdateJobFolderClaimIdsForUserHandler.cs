@@ -9,28 +9,28 @@ using JobSearchSiteBackend.Core.Persistence;
 namespace JobSearchSiteBackend.Core.Domains.JobFolderClaims.UseCases.UpdateJobFolderClaimIdsForUser;
 
 public class UpdateJobFolderClaimIdsForUserHandler(ICurrentAccountService currentAccountService,
-    MainDataContext context) : IRequestHandler<UpdateJobFolderClaimIdsForUserRequest, Result>
+    MainDataContext context) : IRequestHandler<UpdateJobFolderClaimIdsForUserCommand, Result>
 {
-    public async Task<Result> Handle(UpdateJobFolderClaimIdsForUserRequest request,
+    public async Task<Result> Handle(UpdateJobFolderClaimIdsForUserCommand command,
         CancellationToken cancellationToken = default)
     {
         var currentUserId = currentAccountService.GetIdOrThrow();
         
-        if (request.UserId == currentUserId)
+        if (command.UserId == currentUserId)
             return Result.Error();
         
         var currentUserClaimIdsForThisAndAncestors = await context.JobFolderRelations
-            .GetClaimIdsForThisAndAncestors(request.FolderId, currentUserId)
+            .GetClaimIdsForThisAndAncestors(command.FolderId, currentUserId)
             .ToListAsync(cancellationToken);
         
         if (!currentUserClaimIdsForThisAndAncestors.Contains(JobFolderClaim.IsAdmin.Id))
             return Result.Forbidden("Current user is not a folder admin.");
         
-        if (request.JobFolderClaimIds.Except(currentUserClaimIdsForThisAndAncestors).Any())
+        if (command.JobFolderClaimIds.Except(currentUserClaimIdsForThisAndAncestors).Any())
             return Result.Forbidden();
         
         var targetUserClaimIdsForThisAndAncestors = await context.JobFolderRelations
-            .GetClaimIdsForThisAndAncestors(request.FolderId, request.UserId)
+            .GetClaimIdsForThisAndAncestors(command.FolderId, command.UserId)
             .ToListAsync(cancellationToken);
         
         if (targetUserClaimIdsForThisAndAncestors.Contains(JobFolderClaim.IsOwner.Id))
@@ -41,8 +41,8 @@ public class UpdateJobFolderClaimIdsForUserHandler(ICurrentAccountService curren
             return Result.Forbidden();
         
         var targetUserClaimIdsForThis = await context.UserJobFolderClaims
-            .Where(ujfc => ujfc.UserId == request.UserId)
-            .Where(ujfc => ujfc.FolderId == request.FolderId)
+            .Where(ujfc => ujfc.UserId == command.UserId)
+            .Where(ujfc => ujfc.FolderId == command.FolderId)
             .Select(ujfc => ujfc.ClaimId)
             .ToListAsync(cancellationToken);
 
@@ -53,14 +53,14 @@ public class UpdateJobFolderClaimIdsForUserHandler(ICurrentAccountService curren
 
         var claimIdsThatTargetUserAlreadyHasAtAncestors =
             claimIdsForAncestors
-                .Intersect(request.JobFolderClaimIds);
+                .Intersect(command.JobFolderClaimIds);
         
         if (claimIdsThatTargetUserAlreadyHasAtAncestors.Any())
             return Result.Error();
 
         var claimIdsForAncestorsWithRequestedClaimsConcated = 
             claimIdsForAncestors
-                .Concat(request.JobFolderClaimIds)
+                .Concat(command.JobFolderClaimIds)
                 .ToList();
         
         var permissionsValidator = new JobFolderClaimIdCollectionValidator();
@@ -71,19 +71,19 @@ public class UpdateJobFolderClaimIdsForUserHandler(ICurrentAccountService curren
         
         var claimIdsToRemove = 
             currentUserClaimIdsForThisAndAncestors
-            .Except(request.JobFolderClaimIds)
+            .Except(command.JobFolderClaimIds)
             .ToList();
 
         var targetUserFolderClaimsToRemove = 
             await context.UserJobFolderClaims
-            .Where(ujfc => ujfc.FolderId == request.FolderId 
-                           && ujfc.UserId == request.UserId
+            .Where(ujfc => ujfc.FolderId == command.FolderId 
+                           && ujfc.UserId == command.UserId
                            && claimIdsToRemove.Contains(ujfc.ClaimId))
             .ToListAsync(cancellationToken);
         
         context.UserJobFolderClaims.RemoveRange(targetUserFolderClaimsToRemove);
-        context.UserJobFolderClaims.AddRange(request.JobFolderClaimIds
-            .Select(id => new UserJobFolderClaim(request.UserId, request.FolderId, id)));
+        context.UserJobFolderClaims.AddRange(command.JobFolderClaimIds
+            .Select(id => new UserJobFolderClaim(command.UserId, command.FolderId, id)));
         await context.SaveChangesAsync(cancellationToken);
         
         return Result.Success();
