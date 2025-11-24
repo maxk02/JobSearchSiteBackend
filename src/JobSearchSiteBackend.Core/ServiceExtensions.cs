@@ -27,7 +27,6 @@ public static class ServiceExtensions
         services.ConfigureAccountUseCases();
         services.ConfigureCompanyUseCases();
         services.ConfigureCompanyClaimUseCases();
-        services.ConfigureCountryUseCases();
         services.ConfigureJobApplicationUseCases();
         services.ConfigureJobFolderClaimUseCases();
         services.ConfigureJobFolderUseCases();

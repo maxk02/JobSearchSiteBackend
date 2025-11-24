@@ -40,8 +40,4 @@
       <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="8.7.0" />
     </ItemGroup>
 
-    <ItemGroup>
-      <Folder Include="Domains\JobFolderClaims\UseCases\GetJobFolderClaimsOverview\" />
-    </ItemGroup>
-
 </Project>

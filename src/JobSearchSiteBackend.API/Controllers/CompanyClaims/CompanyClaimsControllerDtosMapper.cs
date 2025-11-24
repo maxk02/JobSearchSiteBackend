@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using JobSearchSiteBackend.API.Controllers.CompanyClaims.Dtos;
+using JobSearchSiteBackend.Core.Domains.CompanyClaims.UseCases.GetCompanyClaimsOverview;
 using JobSearchSiteBackend.Core.Domains.CompanyClaims.UseCases.UpdateCompanyClaimIdsForUser;
 
 namespace JobSearchSiteBackend.API.Controllers.CompanyClaims;
@@ -8,6 +9,17 @@ public class CompanyClaimsControllerDtosMapper : Profile
 {
     public CompanyClaimsControllerDtosMapper()
     {
+        CreateMap<GetCompanyClaimsOverviewRequest, GetCompanyClaimsOverviewQuery>()
+            .ForMember(dest => dest.CompanyId, opt => opt.MapFrom((_, _, _, context) =>
+            {
+                if (context.Items.TryGetValue("CompanyId", out var companyId))
+                {
+                    return (long)companyId;
+                }
+
+                return 0;
+            }));
+        
         CreateMap<UpdateCompanyClaimIdsForUserRequest, UpdateCompanyClaimIdsForUserRequest>()
             .ForMember(dest => dest.CompanyId, opt => opt.MapFrom((_, _, _, context) =>
             {

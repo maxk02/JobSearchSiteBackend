@@ -1,4 +1,5 @@
 ﻿using JobSearchSiteBackend.Core.Domains.JobFolderClaims.UseCases.GetJobFolderClaimIdsForUser;
+using JobSearchSiteBackend.Core.Domains.JobFolderClaims.UseCases.GetJobFolderClaimsOverview;
 using JobSearchSiteBackend.Core.Domains.JobFolderClaims.UseCases.UpdateJobFolderClaimIdsForUser;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -9,6 +10,7 @@ public static class JobFolderClaimUseCasesDi
     public static void ConfigureJobFolderClaimUseCases(this IServiceCollection serviceCollection)
     {
         serviceCollection.AddScoped<GetJobFolderClaimIdsForUserHandler>();
+        serviceCollection.AddScoped<GetJobFolderClaimsOverviewHandler>();
         serviceCollection.AddScoped<UpdateJobFolderClaimIdsForUserHandler>();
     }
 }

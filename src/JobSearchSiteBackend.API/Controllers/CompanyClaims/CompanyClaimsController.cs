@@ -16,7 +16,7 @@ namespace JobSearchSiteBackend.API.Controllers.CompanyClaims;
 public class CompanyClaimsController(IMapper mapper) : ControllerBase
 {
     [HttpGet]
-    [Route("/company/{companyId:long:min(1)}/claims-overview")]
+    [Route("/company/{companyId:long:min(1)}")]
     public async Task<ActionResult<GetCompanyClaimsOverviewResponse>> GetCompanyClaimsOverview(
         [FromRoute] long companyId,
         [FromQuery] GetCompanyClaimsOverviewRequest request,
