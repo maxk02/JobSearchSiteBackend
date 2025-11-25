@@ -75,16 +75,16 @@ public class JobFoldersController(IMapper mapper) : ControllerBase
     
     [HttpGet]
     [Route("{id:long:min(1)}/jobs")]
-    public async Task<ActionResult<GetJobsResponse>> GetJobs(
+    public async Task<ActionResult<GetFolderJobsResponse>> GetJobs(
         [FromRoute] long id,
-        [FromServices] GetJobsHandler handler,
+        [FromServices] GetFolderJobsHandler handler,
         CancellationToken cancellationToken)
     {
-        var mappedQuery = new GetJobsQuery(id);
+        var mappedQuery = new GetFolderJobsQuery(id);
         
         var result = await handler.Handle(mappedQuery, cancellationToken);
         
-        return this.ToActionResult(result.Map(x => mapper.Map<GetJobsResponse>(x)));
+        return this.ToActionResult(result.Map(x => mapper.Map<GetFolderJobsResponse>(x)));
     }
     
     [HttpPatch]

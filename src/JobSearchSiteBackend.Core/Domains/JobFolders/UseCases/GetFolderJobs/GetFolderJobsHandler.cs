@@ -11,20 +11,20 @@ using Microsoft.EntityFrameworkCore;
 
 namespace JobSearchSiteBackend.Core.Domains.JobFolders.UseCases.GetJobs;
 
-public class GetJobsHandler(
+public class GetFolderJobsHandler(
     ICurrentAccountService currentAccountService,
     MainDataContext context,
     IMapper mapper,
-    ICompanyLastVisitedFoldersCacheRepository cacheRepo) : IRequestHandler<GetJobsQuery, Result<GetJobsResult>>
+    ICompanyLastVisitedFoldersCacheRepository cacheRepo) : IRequestHandler<GetFolderJobsQuery, Result<GetFolderJobsResult>>
 {
-    public async Task<Result<GetJobsResult>> Handle(GetJobsQuery query,
+    public async Task<Result<GetFolderJobsResult>> Handle(GetFolderJobsQuery query,
         CancellationToken cancellationToken = default)
     {
         var currentUserId = currentAccountService.GetIdOrThrow();
 
         var jobFolder = await context.JobFolders.FindAsync([query.Id], cancellationToken);
         if (jobFolder is null)
-            return Result<GetJobsResult>.NotFound();
+            return Result<GetFolderJobsResult>.NotFound();
 
         var hasReadClaim = await context.JobFolderRelations
             .GetThisOrAncestorWhereUserHasClaim(query.Id, currentUserId,
@@ -32,7 +32,7 @@ public class GetJobsHandler(
             .AnyAsync(cancellationToken);
 
         if (!hasReadClaim)
-            return Result<GetJobsResult>.Forbidden();
+            return Result<GetFolderJobsResult>.Forbidden();
 
         await cacheRepo.AddLastVisitedAsync(currentUserId.ToString(),
             jobFolder.CompanyId.ToString(), jobFolder.Id.ToString());
@@ -42,6 +42,6 @@ public class GetJobsHandler(
             .ProjectTo<JobCardDto>(mapper.ConfigurationProvider)
             .ToListAsync(cancellationToken);
 
-        return new GetJobsResult(childJobInfoDtos);
+        return new GetFolderJobsResult(childJobInfoDtos);
     }
 }

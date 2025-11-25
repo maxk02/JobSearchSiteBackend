@@ -3,4 +3,4 @@ using JobSearchSiteBackend.Core.Domains._Shared.UseCaseStructure;
 
 namespace JobSearchSiteBackend.Core.Domains.JobFolders.UseCases.GetJobs;
 
-public record GetJobsQuery(long Id) : IRequest<Result<GetJobsResult>>;
+public record GetFolderJobsQuery(long Id) : IRequest<Result<GetFolderJobsResult>>;

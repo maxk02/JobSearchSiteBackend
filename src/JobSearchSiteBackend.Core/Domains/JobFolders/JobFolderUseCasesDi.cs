@@ -14,7 +14,7 @@ public static class JobFolderUseCasesDi
         serviceCollection.AddScoped<AddJobFolderHandler>();
         serviceCollection.AddScoped<DeleteJobFolderHandler>();
         serviceCollection.AddScoped<GetChildFoldersHandler>();
-        serviceCollection.AddScoped<GetJobsHandler>();
+        serviceCollection.AddScoped<GetFolderJobsHandler>();
         serviceCollection.AddScoped<UpdateJobFolderHandler>();
     }
 }
