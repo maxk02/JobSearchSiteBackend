@@ -3,4 +3,4 @@ using Ardalis.Result;
 
 namespace JobSearchSiteBackend.Core.Domains.Accounts.UseCases.CreateAccount;
 
-public record CreateAccountCommand(string Email, string Password) : IRequest<Result<CreateAccountResult>>;
+public record CreateAccountResult(long Id);

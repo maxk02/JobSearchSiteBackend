@@ -25,7 +25,7 @@ public class AccountController(IMapper mapper) : ControllerBase
     [HttpPost]
     [Route("/change-password")]
     public async Task<ActionResult> ChangePassword(
-        ChangePasswordRequest request,
+        [FromBody] ChangePasswordRequest request,
         [FromServices] ChangePasswordHandler handler,
         CancellationToken cancellationToken)
     {
@@ -38,7 +38,7 @@ public class AccountController(IMapper mapper) : ControllerBase
     [HttpPost]
     [Route("/confirm-email")]
     public async Task<ActionResult> ConfirmEmail(
-        ConfirmEmailRequest request,
+        [FromBody] ConfirmEmailRequest request,
         [FromServices] ConfirmEmailHandler handler,
         CancellationToken cancellationToken)
     {
@@ -50,15 +50,15 @@ public class AccountController(IMapper mapper) : ControllerBase
     
     [HttpPost]
     [AllowAnonymous]
-    public async Task<ActionResult> CreateAccount(
-        CreateAccountRequest request,
+    public async Task<ActionResult<CreateAccountResponse>> CreateAccount(
+        [FromBody] CreateAccountRequest request,
         [FromServices] CreateAccountHandler handler,
         CancellationToken cancellationToken)
     {
         var mappedCommand = mapper.Map<CreateAccountCommand>(request);
         var result = await handler.Handle(mappedCommand, cancellationToken);
         
-        return this.ToActionResult(result);
+        return this.ToActionResult(result.Map(x => mapper.Map<CreateAccountResponse>(x)));
     }
     
     [HttpPost]
@@ -76,7 +76,7 @@ public class AccountController(IMapper mapper) : ControllerBase
     [Route("/login")]
     [AllowAnonymous]
     public async Task<ActionResult<LogInResponse>> LogIn(
-        LogInRequest request,
+        [FromBody] LogInRequest request,
         [FromServices] LogInHandler handler,
         CancellationToken cancellationToken)
     {
@@ -109,7 +109,7 @@ public class AccountController(IMapper mapper) : ControllerBase
     [Route("/reset-forgotten-password")]
     [AllowAnonymous]
     public async Task<ActionResult> ResetForgottenPassword(
-        ResetForgottenPasswordRequest request,
+        [FromBody] ResetForgottenPasswordRequest request,
         [FromServices] ResetForgottenPasswordHandler handler,
         CancellationToken cancellationToken)
     {
@@ -136,7 +136,7 @@ public class AccountController(IMapper mapper) : ControllerBase
     [Route("/send-password-reset-link")]
     [AllowAnonymous]
     public async Task<ActionResult> SendPasswordResetLink(
-        SendPasswordResetLinkRequest request,
+        [FromBody] SendPasswordResetLinkRequest request,
         [FromServices] SendPasswordResetLinkHandler handler,
         CancellationToken cancellationToken)
     {

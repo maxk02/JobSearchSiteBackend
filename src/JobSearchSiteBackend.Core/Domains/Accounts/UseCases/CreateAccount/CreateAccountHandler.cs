@@ -8,18 +8,20 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Options;
 using JobSearchSiteBackend.Shared.MyAppSettings;
 using Ardalis.Result;
+using JobSearchSiteBackend.Core.Persistence;
 
 namespace JobSearchSiteBackend.Core.Domains.Accounts.UseCases.CreateAccount;
 
 public class CreateAccountHandler(
     IOptions<MyAppSettings> settings,
     UserManager<MyIdentityUser> userManager,
+    MainDataContext context,
     IBackgroundJobService backgroundJobService,
     IEmailSenderService emailSenderService,
     StandardEmailRenderer emailRenderer) 
-    : IRequestHandler<CreateAccountCommand, Result>
+    : IRequestHandler<CreateAccountCommand, Result<CreateAccountResult>>
 {
-    public async Task<Result> Handle(CreateAccountCommand command,
+    public async Task<Result<CreateAccountResult>> Handle(CreateAccountCommand command,
         CancellationToken cancellationToken = default)
     {
         var userFromDb = await userManager.FindByEmailAsync(command.Email);
@@ -29,7 +31,7 @@ public class CreateAccountHandler(
 
         var user = new MyIdentityUser { Email = command.Email };
 
-        using var transaction = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled);
+        await using var transaction = await context.Database.BeginTransactionAsync(cancellationToken);
         
         var aspNetIdentityResult = await userManager.CreateAsync(user, command.Password);
 
@@ -50,8 +52,10 @@ public class CreateAccountHandler(
                 .SendEmailAsync(command.Email, renderedEmail.Subject, renderedEmail.Content, CancellationToken.None),
             BackgroundJobQueues.EmailSending);
         
-        transaction.Complete();
+        await transaction.CommitAsync(cancellationToken);
 
-        return Result.Success();
+        var result = new CreateAccountResult(user.Id);
+        
+        return Result.Success(result);
     }
 }

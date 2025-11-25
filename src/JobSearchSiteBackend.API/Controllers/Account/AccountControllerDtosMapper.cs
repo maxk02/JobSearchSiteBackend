@@ -8,6 +8,6 @@ public class AccountControllerDtosMapper : Profile
 {
     public AccountControllerDtosMapper()
     {
-        CreateMap<LogInResponse, LogInResponseDto>();
+        
     }
 }
