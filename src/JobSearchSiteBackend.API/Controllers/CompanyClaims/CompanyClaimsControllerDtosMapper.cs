@@ -20,7 +20,7 @@ public class CompanyClaimsControllerDtosMapper : Profile
                 return 0;
             }));
         
-        CreateMap<UpdateCompanyClaimIdsForUserRequest, UpdateCompanyClaimIdsForUserRequest>()
+        CreateMap<UpdateCompanyClaimIdsForUserRequest, UpdateCompanyClaimIdsForUserCommand>()
             .ForMember(dest => dest.CompanyId, opt => opt.MapFrom((_, _, _, context) =>
             {
                 if (context.Items.TryGetValue("CompanyId", out var companyId))
