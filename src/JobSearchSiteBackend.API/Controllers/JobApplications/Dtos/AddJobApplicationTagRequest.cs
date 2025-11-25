@@ -1,3 +1,3 @@
 ﻿namespace JobSearchSiteBackend.API.Controllers.JobApplications.Dtos;
 
-public record UpdateJobApplicationStatusRequest(long StatusId);
+public record AddJobApplicationTagRequest(string Name); //todo
