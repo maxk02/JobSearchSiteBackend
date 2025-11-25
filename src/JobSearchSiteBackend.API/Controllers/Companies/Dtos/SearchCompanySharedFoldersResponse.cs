@@ -2,4 +2,4 @@
 
 namespace JobSearchSiteBackend.API.Controllers.Companies.Dtos;
 
-public record SearchCompanySharedFoldersResponse(ICollection<CompanyJobFolderListItemDto> Folders);
+public record SearchCompanySharedFoldersResponse(ICollection<CompanyJobFolderListItemDto> Folders); //todo

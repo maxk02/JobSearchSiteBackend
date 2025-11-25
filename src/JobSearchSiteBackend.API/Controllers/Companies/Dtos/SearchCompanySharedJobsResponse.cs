@@ -2,4 +2,4 @@
 
 namespace JobSearchSiteBackend.API.Controllers.Companies.Dtos;
 
-public record SearchCompanySharedJobsResponse(ICollection<CompanyJobListItemDto> Jobs);
+public record SearchCompanySharedJobsResponse(ICollection<CompanyJobListItemDto> Jobs); //todo
