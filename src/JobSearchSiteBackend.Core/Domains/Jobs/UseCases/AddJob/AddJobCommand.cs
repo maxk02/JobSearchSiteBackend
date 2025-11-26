@@ -17,4 +17,4 @@ public record AddJobCommand(
     JobSalaryInfoDto? JobSalaryInfoDto,
     ICollection<long> EmploymentTypeIds,
     ICollection<long> ContractTypeIds,
-    ICollection<long> LocationIds) : IRequest<Result>;
+    ICollection<long> LocationIds) : IRequest<Result<AddJobResult>>;

@@ -24,7 +24,7 @@ public class GetCompanyJobsHandler(
             .SearchFromCompanyAsync(query.CompanyId, query.Query, cancellationToken);
 
         var dbQuery = context.Jobs
-            .Include(j => j.EmploymentTypes)
+            .Include(j => j.EmploymentOptions)
             .Include(j => j.JobFolder)
             .AsNoTracking()
             .Where(job => job.JobFolder!.CompanyId == query.CompanyId)
@@ -36,7 +36,7 @@ public class GetCompanyJobsHandler(
             dbQuery = dbQuery.Where(job => job.SalaryInfo != null);
 
         if (query.EmploymentTypeIds is not null)
-            dbQuery = dbQuery.Where(job => job.EmploymentTypes!.Any(x => query.EmploymentTypeIds.Contains(x.Id)));
+            dbQuery = dbQuery.Where(job => job.EmploymentOptions!.Any(x => query.EmploymentTypeIds.Contains(x.Id)));
 
         if (query.CategoryIds is not null && query.CategoryIds.Count != 0)
             dbQuery = dbQuery.Where(job => query.CategoryIds.Contains(job.CategoryId));

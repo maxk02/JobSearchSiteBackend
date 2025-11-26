@@ -13,7 +13,7 @@ public class EmploymentOptionConfiguration : IEntityTypeConfiguration<Employment
 
         builder
             .HasMany(employmentType => employmentType.Jobs)
-            .WithMany(job => job.EmploymentTypes);
+            .WithMany(job => job.EmploymentOptions);
 
         builder.HasData(EmploymentOption.AllValues);
     }

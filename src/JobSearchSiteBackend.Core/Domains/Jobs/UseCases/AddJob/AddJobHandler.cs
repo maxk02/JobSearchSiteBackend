@@ -1,27 +1,22 @@
-﻿using System.Transactions;
+﻿using Ardalis.Result;
+using AutoMapper;
 using JobSearchSiteBackend.Core.Domains._Shared.UseCaseStructure;
 using JobSearchSiteBackend.Core.Domains.Categories;
+using JobSearchSiteBackend.Core.Domains.EmploymentOptions;
 using JobSearchSiteBackend.Core.Domains.JobFolderClaims;
 using JobSearchSiteBackend.Core.Domains.JobFolders;
-using JobSearchSiteBackend.Core.Domains.Jobs.Search;
-using JobSearchSiteBackend.Core.Services.Auth;
-using JobSearchSiteBackend.Core.Services.BackgroundJobs;
-using Microsoft.EntityFrameworkCore;
-using Ardalis.Result;
-using AutoMapper;
-using JobSearchSiteBackend.Core.Domains.EmploymentOptions;
 using JobSearchSiteBackend.Core.Persistence;
+using JobSearchSiteBackend.Core.Services.Auth;
+using Microsoft.EntityFrameworkCore;
 
 namespace JobSearchSiteBackend.Core.Domains.Jobs.UseCases.AddJob;
 
 public class AddJobHandler(
     ICurrentAccountService currentAccountService,
-    IJobSearchRepository jobSearchRepository,
-    IBackgroundJobService backgroundJobService,
     MainDataContext context,
-    IMapper mapper) : IRequestHandler<AddJobCommand, Result>
+    IMapper mapper) : IRequestHandler<AddJobCommand, Result<AddJobResult>>
 {
-    public async Task<Result> Handle(AddJobCommand command, CancellationToken cancellationToken = default)
+    public async Task<Result<AddJobResult>> Handle(AddJobCommand command, CancellationToken cancellationToken = default)
     {
         var currentUserId = currentAccountService.GetIdOrThrow();
         
@@ -96,11 +91,13 @@ public class AddJobHandler(
             return Result.Error();
 
         job.Locations = locations;
-
+        
         context.Jobs.Add(job);
 
         await context.SaveChangesAsync(cancellationToken);
 
-        return Result.Success();
+        var result = new AddJobResult(job.Id);
+        
+        return Result.Success(result);
     }
 }

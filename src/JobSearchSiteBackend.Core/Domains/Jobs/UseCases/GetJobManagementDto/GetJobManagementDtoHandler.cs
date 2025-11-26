@@ -34,7 +34,7 @@ public class GetJobManagementDtoHandler(
                 .Where(a => !a.IsDeleted && a.IsUploadedSuccessfully)
                 .OrderBy(a => a.DateTimeUpdatedUtc))
             .Include(job => job.SalaryInfo)
-            .Include(job => job.EmploymentTypes)
+            .Include(job => job.EmploymentOptions)
             .Include(job => job.Responsibilities)
             .Include(job => job.Requirements)
             .Include(job => job.NiceToHaves)
@@ -80,7 +80,7 @@ public class GetJobManagementDtoHandler(
             job.Requirements!,
             job.NiceToHaves!,
             mapper.Map<JobSalaryInfoDto>(job.SalaryInfo),
-            job.EmploymentTypes!.Select(x => x.Id).ToList(),
+            job.EmploymentOptions!.Select(x => x.Id).ToList(),
             job.JobContractTypes!.Select(x => x.Id).ToList(),
             job.JobFolderId,
             job.JobFolder.Name!,

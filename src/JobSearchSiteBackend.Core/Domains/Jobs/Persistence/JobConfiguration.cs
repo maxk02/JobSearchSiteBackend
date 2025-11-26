@@ -47,7 +47,7 @@ public class JobConfiguration : IEntityTypeConfiguration<Job>
             .OnDelete(DeleteBehavior.Cascade);
 
         builder
-            .HasMany(job => job.EmploymentTypes)
+            .HasMany(job => job.EmploymentOptions)
             .WithMany(employmentType => employmentType.Jobs);
         
         builder.Property(job => job.Responsibilities).HasColumnType("nvarchar(max)");

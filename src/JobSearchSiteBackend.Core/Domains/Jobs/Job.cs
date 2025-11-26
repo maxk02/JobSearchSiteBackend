@@ -14,7 +14,7 @@ public class Job : IEntityWithId, IEntityWithUpdDelDate
     public Job(long categoryId, long jobFolderId, string title, string description, bool isPublic,
         DateTime dateTimePublishedUtc,
         DateTime dateTimeExpiringUtc, ICollection<string> responsibilities, ICollection<string> requirements,
-        ICollection<string> niceToHaves, JobSalaryInfo? salaryInfo, ICollection<EmploymentOption> employmentTypes)
+        ICollection<string> niceToHaves, JobSalaryInfo? salaryInfo, ICollection<EmploymentOption> employmentOptions)
     {
         CategoryId = categoryId;
         JobFolderId = jobFolderId;
@@ -27,7 +27,7 @@ public class Job : IEntityWithId, IEntityWithUpdDelDate
         Requirements = requirements.ToList();
         NiceToHaves = niceToHaves.ToList();
         SalaryInfo = salaryInfo;
-        EmploymentTypes = employmentTypes;
+        EmploymentOptions = employmentOptions;
     }
     
     public long Id { get; private set; }
@@ -50,7 +50,7 @@ public class Job : IEntityWithId, IEntityWithUpdDelDate
 
     public JobSalaryInfo? SalaryInfo { get; set; }
 
-    public ICollection<EmploymentOption>? EmploymentTypes { get; set; }
+    public ICollection<EmploymentOption>? EmploymentOptions { get; set; }
 
     public ICollection<string>? Responsibilities { get; set; }
 

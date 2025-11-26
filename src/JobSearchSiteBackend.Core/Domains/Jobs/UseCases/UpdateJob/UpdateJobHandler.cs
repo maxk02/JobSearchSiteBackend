@@ -119,7 +119,7 @@ public class UpdateJobHandler(
             if (nonExistentEmploymentTypeIds.Any())
                 return Result.Error();
 
-            job.EmploymentTypes = employmentTypes;
+            job.EmploymentOptions = employmentTypes;
         }
 
         if (command.ContractTypeIds is not null)

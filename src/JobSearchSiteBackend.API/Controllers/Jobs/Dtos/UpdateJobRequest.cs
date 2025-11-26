@@ -3,17 +3,17 @@
 namespace JobSearchSiteBackend.API.Controllers.Jobs.Dtos;
 
 public record UpdateJobRequest(
-    long? JobFolderId,
-    long? CategoryId,
     string? Title,
+    long? FolderId,
+    long? CategoryId,
     string? Description,
-    int TimeRangeOptionId,
+    int? TimeRangeOptionId,
     bool? IsPublic,
-    DateTime? NewDateTimeExpiringUtc,
+    DateTime? DateTimeExpiringUtc,
     ICollection<string>? Responsibilities,
     ICollection<string>? Requirements,
-    ICollection<string>? Advantages,
+    ICollection<string>? NiceToHaves,
     JobSalaryInfoDto? SalaryInfo,
-    ICollection<long>? EmploymentTypeIds,
+    ICollection<long>? EmploymentOptionIds,
     ICollection<long>? ContractTypeIds,
     ICollection<long>? LocationIds);

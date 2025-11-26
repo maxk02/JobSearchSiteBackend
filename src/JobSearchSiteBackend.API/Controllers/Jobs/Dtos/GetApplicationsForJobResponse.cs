@@ -1,5 +1,7 @@
-﻿using JobSearchSiteBackend.Core.Domains.JobApplications.Dtos;
+﻿using JobSearchSiteBackend.Core.Domains._Shared.Pagination;
+using JobSearchSiteBackend.Core.Domains.JobApplications.Dtos;
 
 namespace JobSearchSiteBackend.API.Controllers.Jobs.Dtos;
 
-public record GetApplicationsForJobResponse(ICollection<JobApplicationForManagersDto> JobApplications);
+public record GetApplicationsForJobResponse(ICollection<JobApplicationForManagersDto> JobApplications,
+    PaginationResponse PaginationResponse);

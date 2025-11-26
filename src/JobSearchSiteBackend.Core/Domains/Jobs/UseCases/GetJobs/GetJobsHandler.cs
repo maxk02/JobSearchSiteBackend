@@ -22,7 +22,7 @@ public class GetJobsHandler(
                 query.Query, cancellationToken);
 
         var dbQuery = context.Jobs
-            .Include(j => j.EmploymentTypes)
+            .Include(j => j.EmploymentOptions)
             .AsNoTracking()
             .Where(job => job.DateTimeExpiringUtc > DateTime.UtcNow)
             .Where(job => job.IsPublic)
@@ -32,7 +32,7 @@ public class GetJobsHandler(
             dbQuery = dbQuery.Where(job => job.SalaryInfo != null);
 
         if (query.EmploymentTypeIds is not null)
-            dbQuery = dbQuery.Where(job => job.EmploymentTypes!.Any(x => query.EmploymentTypeIds.Contains(x.Id)));
+            dbQuery = dbQuery.Where(job => job.EmploymentOptions!.Any(x => query.EmploymentTypeIds.Contains(x.Id)));
 
         if (query.CategoryIds is not null && query.CategoryIds.Count != 0)
             dbQuery = dbQuery.Where(job => query.CategoryIds.Contains(job.CategoryId));

@@ -27,7 +27,7 @@ public class JobApplicationDtosMapper : Profile
             .ForMember(dest => dest.JobSalaryInfoDto,
                 opt => opt.MapFrom(src => src.Job!.SalaryInfo))
             .ForMember(dest => dest.EmploymentTypeIds,
-                opt => opt.MapFrom(src => src.Job!.EmploymentTypes!.Select(x => x.Id)))
+                opt => opt.MapFrom(src => src.Job!.EmploymentOptions!.Select(x => x.Id)))
             .ForMember(dest => dest.DateTimeAppliedUtc,
                 opt => opt.MapFrom(src => src.DateTimeCreatedUtc));
     }

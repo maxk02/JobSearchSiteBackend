@@ -13,7 +13,7 @@ public class JobDtoMappings : Profile
             // .ForMember(dest => dest.CompanyLogoLink,
                 // opt => opt.MapFrom(src => src.JobFolder!.Company!.LogoLink))
             .ForMember(dest => dest.EmploymentTypeIds,
-                opt => opt.MapFrom(src => src.EmploymentTypes!.Select(x => x.Id).ToList()));
+                opt => opt.MapFrom(src => src.EmploymentOptions!.Select(x => x.Id).ToList()));
         
         CreateMap<JobSalaryInfo, JobSalaryInfoDto>().ReverseMap();
     }

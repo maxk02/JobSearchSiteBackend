@@ -20,7 +20,7 @@ namespace JobSearchSiteBackend.API.Controllers.Jobs;
 public class JobsController(IMapper mapper) : ControllerBase
 {
     [HttpPost]
-    public async Task<ActionResult> AddJob(
+    public async Task<ActionResult<AddJobResponse>> AddJob(
         [FromBody] AddJobRequest request,
         [FromServices] AddJobHandler handler,
         CancellationToken cancellationToken)
@@ -29,7 +29,7 @@ public class JobsController(IMapper mapper) : ControllerBase
         
         var result = await handler.Handle(mappedCommand, cancellationToken);
         
-        return this.ToActionResult(result);
+        return this.ToActionResult(result.Map(x => mapper.Map<AddJobResponse>(x)));
     }
     
     [HttpDelete]

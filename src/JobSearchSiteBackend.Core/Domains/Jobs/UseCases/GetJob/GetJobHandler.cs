@@ -25,7 +25,7 @@ public class GetJobHandler(
             .Where(j => j.Id == query.Id)
             .Include(j => j.JobFolder)
             .Include(job => job.SalaryInfo)
-            .Include(job => job.EmploymentTypes)
+            .Include(job => job.EmploymentOptions)
             .Include(job => job.Responsibilities)
             .Include(job => job.Requirements)
             .Include(job => job.NiceToHaves)
