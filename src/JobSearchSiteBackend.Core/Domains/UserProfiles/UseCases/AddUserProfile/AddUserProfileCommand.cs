@@ -3,5 +3,4 @@ using JobSearchSiteBackend.Core.Domains._Shared.UseCaseStructure;
 
 namespace JobSearchSiteBackend.Core.Domains.UserProfiles.UseCases.AddUserProfile;
 
-public sealed record AddUserProfileCommand(string FirstName, string LastName, 
-    string Email, string? Phone) : IRequest<Result<AddUserProfileResult>>;
+public sealed record AddUserProfileCommand(string FirstName, string LastName, string? Phone) : IRequest<Result<AddUserProfileResult>>;

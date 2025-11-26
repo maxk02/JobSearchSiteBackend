@@ -2,7 +2,7 @@
 
 namespace JobSearchSiteBackend.Core.Domains.JobFolders;
 
-public static class JobFolderQueries
+public static class JobFolderLinqQueries
 {
     public static IQueryable<JobFolderRelation> GetThisOrAncestorsWhereUserHasClaims(
         this DbSet<JobFolderRelation> dbSet,

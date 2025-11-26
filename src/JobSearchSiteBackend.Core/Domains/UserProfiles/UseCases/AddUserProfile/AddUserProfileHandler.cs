@@ -15,7 +15,7 @@ public class AddUserProfileHandler(ICurrentAccountService currentAccountService,
         var currentAccountId = currentAccountService.GetIdOrThrow();
         
         var newUser = new UserProfile(currentAccountId, command.FirstName,
-            command.LastName, command.Phone);
+            command.LastName, command.Phone, true);
         
         await context.UserProfiles.AddAsync(newUser, cancellationToken);
         await context.SaveChangesAsync(cancellationToken);

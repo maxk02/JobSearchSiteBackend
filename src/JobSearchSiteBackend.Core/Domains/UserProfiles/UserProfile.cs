@@ -12,12 +12,14 @@ namespace JobSearchSiteBackend.Core.Domains.UserProfiles;
 
 public class UserProfile : IEntityWithId
 {
-    public UserProfile(long accountId, string firstName, string lastName, string? phone)
+    public UserProfile(long accountId, string firstName, string lastName,
+        string? phone, bool isReceivingApplicationStatusUpdates)
     {
         Id = accountId;
         FirstName = firstName;
         LastName = lastName;
         Phone = phone;
+        IsReceivingApplicationStatusUpdates = isReceivingApplicationStatusUpdates;
     }
     
     public long Id { get; private set; }
@@ -27,6 +29,8 @@ public class UserProfile : IEntityWithId
     public string LastName { get; set; }
     
     public string? Phone { get; set; }
+    
+    public bool IsReceivingApplicationStatusUpdates { get; set; }
     
     public MyIdentityUser? Account { get; set; }
     

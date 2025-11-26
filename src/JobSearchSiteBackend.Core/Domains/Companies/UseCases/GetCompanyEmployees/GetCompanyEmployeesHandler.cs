@@ -66,7 +66,8 @@ public class GetCompanyEmployeesHandler(
 
         foreach (var companyEmployee in companyEmployees)
         {
-            var lastAvatar = companyEmployee.UserAvatars!.LastOrDefault();
+            var lastAvatar = companyEmployee.UserAvatars!
+                .LastOrDefault();
 
             string? url = null;
             
