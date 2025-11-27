@@ -5,7 +5,7 @@ namespace JobSearchSiteBackend.Core.Domains.CompanyClaims.UseCases.GetCompanyCla
 
 public record GetCompanyClaimsOverviewQuery(
     long CompanyId,
-    ICollection<long> CompanyClaimIds,
-    string UserQuery,
+    ICollection<long>? CompanyClaimIds,
+    string? UserQuery,
     int Page,
     int Size) : IRequest<Result<GetCompanyClaimsOverviewResult>>;

@@ -36,7 +36,7 @@ public class GetCompanyClaimsOverviewHandler(
                 ||  ucp.User!.LastName.ToLower().Contains(query.UserQuery.ToLower()));
         }
 
-        if (query.CompanyClaimIds.Count > 0)
+        if (query.CompanyClaimIds is not null && query.CompanyClaimIds.Count > 0)
         {
             dbQuery = dbQuery
                 .Where(ucp => query.CompanyClaimIds.Contains(ucp.ClaimId));

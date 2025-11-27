@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using JobSearchSiteBackend.API.Controllers.CompanyClaims.Dtos;
+using JobSearchSiteBackend.Core.Domains.CompanyClaims.UseCases.GetCompanyClaimIdsForUser;
 using JobSearchSiteBackend.Core.Domains.CompanyClaims.UseCases.GetCompanyClaimsOverview;
 using JobSearchSiteBackend.Core.Domains.CompanyClaims.UseCases.UpdateCompanyClaimIdsForUser;
 
@@ -9,35 +10,7 @@ public class CompanyClaimsControllerDtosMapper : Profile
 {
     public CompanyClaimsControllerDtosMapper()
     {
-        CreateMap<GetCompanyClaimsOverviewRequest, GetCompanyClaimsOverviewQuery>()
-            .ForMember(dest => dest.CompanyId, opt => opt.MapFrom((_, _, _, context) =>
-            {
-                if (context.Items.TryGetValue("CompanyId", out var companyId))
-                {
-                    return (long)companyId;
-                }
-
-                return 0;
-            }));
-        
-        CreateMap<UpdateCompanyClaimIdsForUserRequest, UpdateCompanyClaimIdsForUserCommand>()
-            .ForMember(dest => dest.CompanyId, opt => opt.MapFrom((_, _, _, context) =>
-            {
-                if (context.Items.TryGetValue("CompanyId", out var companyId))
-                {
-                    return (long)companyId;
-                }
-
-                return 0;
-            }))
-            .ForMember(dest => dest.UserId, opt => opt.MapFrom((_, _, _, context) =>
-            {
-                if (context.Items.TryGetValue("UserId", out var userId))
-                {
-                    return (long)userId;
-                }
-
-                return 0;
-            }));
+        CreateMap<GetCompanyClaimIdsForUserResult, GetCompanyClaimIdsForUserResponse>();
+        CreateMap<GetCompanyClaimsOverviewResult, GetCompanyClaimsOverviewResponse>();
     }
 }
