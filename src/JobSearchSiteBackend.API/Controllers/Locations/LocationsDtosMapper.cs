@@ -8,6 +8,6 @@ public class LocationsDtosMapper : Profile
 {
     public LocationsDtosMapper()
     {
-        CreateMap<GetLocationsRequest, GetLocationsQuery>();
+        CreateMap<GetLocationsResult, GetLocationsResponse>();
     }
 }

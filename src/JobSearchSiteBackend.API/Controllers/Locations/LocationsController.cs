@@ -20,7 +20,7 @@ public class LocationsController(IMapper mapper) : ControllerBase
         [FromServices] GetLocationsHandler handler,
         CancellationToken cancellationToken)
     {
-        var mappedQuery = mapper.Map<GetLocationsQuery>(request);
+        var mappedQuery = new GetLocationsQuery(request.CountryId, request.Query);
         
         var result = await handler.Handle(mappedQuery, cancellationToken);
         
