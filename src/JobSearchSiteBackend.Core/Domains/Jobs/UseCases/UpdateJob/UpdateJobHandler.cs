@@ -101,20 +101,20 @@ public class UpdateJobHandler(
         if (command.Requirements is not null)
             job.Requirements = command.Requirements;
 
-        if (command.Advantages is not null)
-            job.NiceToHaves = command.Advantages;
+        if (command.NiceToHaves is not null)
+            job.NiceToHaves = command.NiceToHaves;
 
         if (command.SalaryInfo is not null)
             job.SalaryInfo = mapper.Map<JobSalaryInfo>(command.SalaryInfo);
         
-        if (command.EmploymentTypeIds is not null)
+        if (command.EmploymentOptionIds is not null)
         {
             var employmentTypes = EmploymentOption.AllValues
-                .Where(employmentType => command.EmploymentTypeIds.Contains(employmentType.Id))
+                .Where(employmentType => command.EmploymentOptionIds.Contains(employmentType.Id))
                 .ToList();
 
             var nonExistentEmploymentTypeIds =
-                command.EmploymentTypeIds.Except(employmentTypes.Select(employmentType => employmentType.Id));
+                command.EmploymentOptionIds.Except(employmentTypes.Select(employmentType => employmentType.Id));
 
             if (nonExistentEmploymentTypeIds.Any())
                 return Result.Error();

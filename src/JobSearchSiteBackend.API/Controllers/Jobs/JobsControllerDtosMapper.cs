@@ -1,4 +1,10 @@
 ﻿using AutoMapper;
+using JobSearchSiteBackend.API.Controllers.Jobs.Dtos;
+using JobSearchSiteBackend.Core.Domains.Jobs.UseCases.AddJob;
+using JobSearchSiteBackend.Core.Domains.Jobs.UseCases.GetApplicationsForJob;
+using JobSearchSiteBackend.Core.Domains.Jobs.UseCases.GetJob;
+using JobSearchSiteBackend.Core.Domains.Jobs.UseCases.GetJobManagementDto;
+using JobSearchSiteBackend.Core.Domains.Jobs.UseCases.GetJobs;
 using JobSearchSiteBackend.Core.Domains.Jobs.UseCases.UpdateJob;
 using UpdateJobRequest = JobSearchSiteBackend.API.Controllers.Jobs.Dtos.UpdateJobRequest;
 
@@ -8,15 +14,14 @@ public class JobsControllerDtosMapper : Profile
 {
     public JobsControllerDtosMapper()
     {
-        CreateMap<UpdateJobRequest, UpdateJobCommand>()
-            .ForMember(dest => dest.Id, opt => opt.MapFrom((_, _, _, context) =>
-            {
-                if (context.Items.TryGetValue("Id", out var id))
-                {
-                    return (long)id;
-                }
-
-                return 0;
-            }));
+        CreateMap<AddJobResult, AddJobResponse>();
+        
+        CreateMap<GetApplicationsForJobResult, GetApplicationsForJobResponse>();
+        
+        CreateMap<GetJobManagementDtoResult, GetJobManagementDtoResponse>();
+        
+        CreateMap<GetJobResult, GetJobResponse>();
+        
+        CreateMap<GetJobsResult, GetJobsResponse>();
     }
 }

@@ -10,13 +10,13 @@ public record UpdateJobCommand(
     long? CategoryId,
     string? Title,
     string? Description,
-    int TimeRangeOptionId,
+    int? TimeRangeOptionId, //todo use time range option check
     bool? IsPublic,
     DateTime? NewDateTimeExpiringUtc,
     ICollection<string>? Responsibilities,
     ICollection<string>? Requirements,
-    ICollection<string>? Advantages,
+    ICollection<string>? NiceToHaves,
     JobSalaryInfoDto? SalaryInfo,
-    ICollection<long>? EmploymentTypeIds,
+    ICollection<long>? EmploymentOptionIds,
     ICollection<long>? ContractTypeIds,
     ICollection<long>? LocationIds) : IRequest<Result>;

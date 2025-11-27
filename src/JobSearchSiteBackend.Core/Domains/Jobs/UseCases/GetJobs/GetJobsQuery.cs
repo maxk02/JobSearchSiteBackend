@@ -1,12 +1,12 @@
-﻿using JobSearchSiteBackend.Core.Domains._Shared.Pagination;
+﻿using Ardalis.Result;
 using JobSearchSiteBackend.Core.Domains._Shared.UseCaseStructure;
-using Ardalis.Result;
 
 namespace JobSearchSiteBackend.Core.Domains.Jobs.UseCases.GetJobs;
 
 public record GetJobsQuery(
-    string Query,
-    PaginationSpec PaginationSpec,
+    string? Query,
+    int Page,
+    int Size,
     bool? MustHaveSalaryRecord,
     ICollection<long>? EmploymentTypeIds,
     ICollection<long>? CountryIds,

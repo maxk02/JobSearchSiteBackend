@@ -32,7 +32,7 @@ public class AddJobHandler(
             command.Requirements,
             command.NiceToHaves,
             mapper.Map<JobSalaryInfo>(command.JobSalaryInfoDto),
-            EmploymentOption.AllValues.Where(x => command.EmploymentTypeIds.Contains(x.Id)).ToList());
+            EmploymentOption.AllValues.Where(x => command.EmploymentOptionIds.Contains(x.Id)).ToList());
 
         var validator = new JobValidator();
 

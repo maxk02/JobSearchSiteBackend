@@ -17,16 +17,21 @@ public class GetJobsHandler(
     public async Task<Result<GetJobsResult>> Handle(GetJobsQuery query,
         CancellationToken cancellationToken = default)
     {
-        var hitIds = await jobSearchRepository
-            .SearchFromCountriesAndCategoriesAsync(query.CountryIds ?? [], query.CategoryIds ?? [],
-                query.Query, cancellationToken);
-
         var dbQuery = context.Jobs
             .Include(j => j.EmploymentOptions)
             .AsNoTracking()
             .Where(job => job.DateTimeExpiringUtc > DateTime.UtcNow)
-            .Where(job => job.IsPublic)
-            .Where(job => hitIds.Contains(job.Id));
+            .Where(job => job.IsPublic);
+
+        if (!string.IsNullOrEmpty(query.Query))
+        {
+            var hitIds = await jobSearchRepository
+                .SearchFromCountriesAndCategoriesAsync(query.CountryIds ?? [], query.CategoryIds ?? [],
+                    query.Query, cancellationToken);
+
+            dbQuery = dbQuery
+                .Where(job => hitIds.Contains(job.Id));
+        }
 
         if (query.MustHaveSalaryRecord is not null && query.MustHaveSalaryRecord.Value)
             dbQuery = dbQuery.Where(job => job.SalaryInfo != null);
@@ -47,15 +52,14 @@ public class GetJobsHandler(
 
         var jobs = await dbQuery
             .OrderByDescending(job => job.DateTimePublishedUtc)
-            .Skip((query.PaginationSpec.PageNumber - 1) * query.PaginationSpec.PageSize)
-            .Take(query.PaginationSpec.PageSize)
+            .Skip((query.Page - 1) * query.Size)
+            .Take(query.Size)
             .ToListAsync(cancellationToken);
         
         // list with logo links
         var companyLogoLinks = jobs.Select(x => x.Id).Select(x => "").ToList(); //todo
 
-        var paginationResponse = new PaginationResponse(query.PaginationSpec.PageNumber,
-            query.PaginationSpec.PageSize, count);
+        var paginationResponse = new PaginationResponse(query.Page, query.Size, count);
 
         var jobCardDtos = jobs
             .Select((x, i) =>
