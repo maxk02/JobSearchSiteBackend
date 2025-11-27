@@ -1,6 +1,17 @@
 ﻿using AutoMapper;
-using JobSearchSiteBackend.Core.Domains.Companies.UseCases.UpdateCompany;
-using UpdateCompanyRequest = JobSearchSiteBackend.API.Controllers.Companies.Dtos.UpdateCompanyRequest;
+using JobSearchSiteBackend.API.Controllers.Companies.Dtos;
+using JobSearchSiteBackend.Core.Domains.Companies.UseCases.AddCompany;
+using JobSearchSiteBackend.Core.Domains.Companies.UseCases.GetCompany;
+using JobSearchSiteBackend.Core.Domains.Companies.UseCases.GetCompanyBalance;
+using JobSearchSiteBackend.Core.Domains.Companies.UseCases.GetCompanyEmployees;
+using JobSearchSiteBackend.Core.Domains.Companies.UseCases.GetCompanyJobs;
+using JobSearchSiteBackend.Core.Domains.Companies.UseCases.GetCompanyLastVisitedFolders;
+using JobSearchSiteBackend.Core.Domains.Companies.UseCases.GetCompanyLastVisitedJobs;
+using JobSearchSiteBackend.Core.Domains.Companies.UseCases.GetCompanyManagementNavbarDto;
+using JobSearchSiteBackend.Core.Domains.Companies.UseCases.GetCompanySharedFoldersRoot;
+using JobSearchSiteBackend.Core.Domains.Companies.UseCases.SearchCompanySharedFolders;
+using JobSearchSiteBackend.Core.Domains.Companies.UseCases.SearchCompanySharedJobs;
+using JobSearchSiteBackend.Core.Domains.Companies.UseCases.UploadCompanyAvatar;
 
 namespace JobSearchSiteBackend.API.Controllers.Companies;
 
@@ -8,15 +19,28 @@ public class CompaniesControllerDtosMapper : Profile
 {
     public CompaniesControllerDtosMapper()
     {
-        CreateMap<UpdateCompanyRequest, UpdateCompanyCommand>()
-            .ForMember(dest => dest.Id, opt => opt.MapFrom((_, _, _, context) =>
-            {
-                if (context.Items.TryGetValue("Id", out var id))
-                {
-                    return (long)id;
-                }
+        CreateMap<AddCompanyResult, AddCompanyResponse>();
 
-                return 0;
-            }));
+        CreateMap<GetCompanyBalanceResult, GetCompanyBalanceResponse>();
+        
+        CreateMap<GetCompanyEmployeesResult, GetCompanyEmployeesResponse>();
+        
+        CreateMap<GetCompanyJobsResult, GetCompanyJobsResponse>();
+        
+        CreateMap<GetCompanyLastVisitedFoldersResult, GetCompanyLastVisitedFoldersResponse>();
+        
+        CreateMap<GetCompanyLastVisitedJobsResult, GetCompanyLastVisitedJobsResponse>();
+        
+        CreateMap<GetCompanyManagementNavbarDtoResult, GetCompanyManagementNavbarDtoResponse>();
+        
+        CreateMap<GetCompanyResult, GetCompanyResponse>();
+        
+        CreateMap<GetCompanySharedFoldersRootResult, GetCompanySharedFoldersRootResponse>();
+        
+        CreateMap<SearchCompanySharedFoldersResult, SearchCompanySharedFoldersResponse>();
+        
+        CreateMap<SearchCompanySharedJobsResult, SearchCompanySharedJobsResponse>();
+
+        CreateMap<UploadCompanyAvatarResult, UploadCompanyAvatarResponse>();
     }
 }

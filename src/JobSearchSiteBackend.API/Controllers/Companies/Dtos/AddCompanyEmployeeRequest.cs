@@ -3,4 +3,4 @@ using JobSearchSiteBackend.Core.Domains._Shared.UseCaseStructure;
 
 namespace JobSearchSiteBackend.API.Controllers.Companies.Dtos;
 
-public record AddCompanyEmployeeRequest(long CompanyId, long UserId); //todo
+public record AddCompanyEmployeeRequest(long UserId); //todo

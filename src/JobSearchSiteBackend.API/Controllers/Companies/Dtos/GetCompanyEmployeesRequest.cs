@@ -1,6 +1,3 @@
-﻿using Ardalis.Result;
-using JobSearchSiteBackend.Core.Domains._Shared.UseCaseStructure;
-
-namespace JobSearchSiteBackend.API.Controllers.Companies.Dtos;
+﻿namespace JobSearchSiteBackend.API.Controllers.Companies.Dtos;
 
 public record GetCompanyEmployeesRequest(string? Query, int Page, int Size);

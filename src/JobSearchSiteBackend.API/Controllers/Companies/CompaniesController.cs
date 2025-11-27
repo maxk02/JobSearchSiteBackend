@@ -51,8 +51,8 @@ public class CompaniesController(IMapper mapper) : ControllerBase
         [FromServices] AddCompanyEmployeeHandler handler,
         CancellationToken cancellationToken)
     {
-        var mappedCommand = mapper.Map<AddCompanyEmployeeCommand>(request);
-        var result = await handler.Handle(mappedCommand, cancellationToken);
+        var command = new AddCompanyEmployeeCommand(companyId, request.UserId);
+        var result = await handler.Handle(command, cancellationToken);
     
         return this.ToActionResult(result);
     }
@@ -102,8 +102,8 @@ public class CompaniesController(IMapper mapper) : ControllerBase
         [FromServices] GetCompanyEmployeesHandler handler,
         CancellationToken cancellationToken)
     {
-        var mappedQuery = mapper.Map<GetCompanyEmployeesQuery>(request);
-        var result = await handler.Handle(mappedQuery, cancellationToken);
+        var query = new GetCompanyEmployeesQuery(id, request.Query, request.Page, request.Size);
+        var result = await handler.Handle(query, cancellationToken);
     
         return this.ToActionResult(result.Map(x => mapper.Map<GetCompanyEmployeesResponse>(x)));
     }
@@ -117,7 +117,8 @@ public class CompaniesController(IMapper mapper) : ControllerBase
         [FromServices] GetCompanyJobsHandler handler,
         CancellationToken cancellationToken)
     {
-        var mappedQuery = mapper.Map<GetCompanyJobsQuery>(request);
+        var mappedQuery = new GetCompanyJobsQuery(id, request.Query, request.Page, request.Size,
+            request.MustHaveSalaryRecord, request.EmploymentTypeIds, request.CategoryIds, request.ContractTypeIds);
         var result = await handler.Handle(mappedQuery, cancellationToken);
     
         return this.ToActionResult(result.Map(x => mapper.Map<GetCompanyJobsResponse>(x)));
@@ -248,12 +249,13 @@ public class CompaniesController(IMapper mapper) : ControllerBase
     [Route("{id:long:min(1)}/management/job-folders/search")]
     public async Task<ActionResult<SearchCompanySharedFoldersResponse>> SearchCompanySharedFolders(
         [FromRoute] long id,
-        [FromQuery] string query,
+        [FromQuery] SearchCompanySharedFoldersRequest request,
         [FromServices] SearchCompanySharedFoldersHandler handler,
         CancellationToken cancellationToken)
     {
-        var mappedQuery = new SearchCompanySharedFoldersQuery(id, query);
-        var result = await handler.Handle(mappedQuery, cancellationToken);
+        var query = new SearchCompanySharedFoldersQuery(id, request.Query);
+        
+        var result = await handler.Handle(query, cancellationToken);
     
         return this.ToActionResult(result.Map(x => mapper.Map<SearchCompanySharedFoldersResponse>(x)));
     }
@@ -262,12 +264,13 @@ public class CompaniesController(IMapper mapper) : ControllerBase
     [Route("{id:long:min(1)}/management/jobs/search")]
     public async Task<ActionResult<SearchCompanySharedJobsResponse>> SearchCompanySharedJobs(
         [FromRoute] long id,
-        [FromQuery] string query,
+        [FromQuery] SearchCompanySharedJobsRequest request,
         [FromServices] SearchCompanySharedJobsHandler handler,
         CancellationToken cancellationToken)
     {
-        var mappedQuery = new SearchCompanySharedJobsQuery(id, query);
-        var result = await handler.Handle(mappedQuery, cancellationToken);
+        var query = new SearchCompanySharedJobsQuery(id, request.Query);
+        
+        var result = await handler.Handle(query, cancellationToken);
     
         return this.ToActionResult(result.Map(x => mapper.Map<SearchCompanySharedJobsResponse>(x)));
     }
@@ -279,12 +282,9 @@ public class CompaniesController(IMapper mapper) : ControllerBase
         [FromServices] UpdateCompanyHandler handler,
         CancellationToken cancellationToken)
     {
-        var mappedCommand = mapper.Map<UpdateCompanyCommand>(request, opt =>
-        {
-            opt.Items["Id"] = id;
-        });
+        var command = new UpdateCompanyCommand(id, request.Name, request.Description, request.IsPublic);
         
-        var result = await handler.Handle(mappedCommand, cancellationToken);
+        var result = await handler.Handle(command, cancellationToken);
 
         return this.ToActionResult(result);
     }
@@ -307,9 +307,9 @@ public class CompaniesController(IMapper mapper) : ControllerBase
         var extension = Path.GetExtension(file.FileName).TrimStart('.');
         var size = file.Length;
         
-        var request = new UploadCompanyAvatarCommand(stream, extension, size, id);
+        var command = new UploadCompanyAvatarCommand(stream, extension, size, id);
         
-        var result = await handler.Handle(request, cancellationToken);
+        var result = await handler.Handle(command, cancellationToken);
 
         return this.ToActionResult(result.Map(x => mapper.Map<UploadCompanyAvatarResponse>(x)));
     }
@@ -322,8 +322,9 @@ public class CompaniesController(IMapper mapper) : ControllerBase
         [FromServices] TopUpCompanyBalanceHandler handler,
         CancellationToken cancellationToken)
     {
-        var mappedCommand = mapper.Map<TopUpCompanyBalanceCommand>(request);
-        var result = await handler.Handle(mappedCommand, cancellationToken);
+        var command = new TopUpCompanyBalanceCommand(companyId, request.Amount, request.CurrencyCode);
+        
+        var result = await handler.Handle(command, cancellationToken);
     
         return this.ToActionResult(result);
     }

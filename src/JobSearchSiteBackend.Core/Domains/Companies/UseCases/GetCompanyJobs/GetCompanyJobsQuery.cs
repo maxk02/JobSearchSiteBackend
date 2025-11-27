@@ -7,7 +7,7 @@ namespace JobSearchSiteBackend.Core.Domains.Companies.UseCases.GetCompanyJobs;
 
 public record GetCompanyJobsQuery(
     long CompanyId,
-    string Query,
+    string? Query,
     int Page,
     int Size,
     bool? MustHaveSalaryRecord,
