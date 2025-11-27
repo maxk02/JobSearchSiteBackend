@@ -1,4 +1,5 @@
-﻿using JobSearchSiteBackend.Core.Domains._SystemEntities.SqlToSearchSyncInfo;
+﻿using JobSearchSiteBackend.Core.Domains._SystemEntities.EmailsToSend;
+using JobSearchSiteBackend.Core.Domains._SystemEntities.SqlToSearchSyncInfo;
 using JobSearchSiteBackend.Core.Domains.Accounts;
 using JobSearchSiteBackend.Core.Domains.Categories;
 using JobSearchSiteBackend.Core.Domains.Companies;
@@ -27,6 +28,7 @@ public class MainDataContext : IdentityDbContext<MyIdentityUser, MyIdentityRole,
     public DbSet<CompanyBalanceTransaction>  CompanyBalanceTransactions { get; set; }
     public DbSet<JobContractType> ContractTypes { get; set; }
     public DbSet<Country> Countries { get; set; }
+    public DbSet<EmailToSend> EmailsToSend { get; set; }
     public DbSet<PersonalFile> PersonalFiles { get; set; }
     public DbSet<JobApplication> JobApplications { get; set; }
     public DbSet<Job> Jobs { get; set; }
