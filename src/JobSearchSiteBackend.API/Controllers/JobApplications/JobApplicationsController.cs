@@ -22,9 +22,9 @@ public class JobApplicationsController(IMapper mapper) : ControllerBase
         [FromServices] AddJobApplicationHandler handler,
         CancellationToken cancellationToken)
     {
-        var mappedCommand = mapper.Map<AddJobApplicationCommand>(request);
+        var command = new AddJobApplicationCommand(request.JobId, request.PersonalFileIds);
         
-        var result = await handler.Handle(mappedCommand, cancellationToken);
+        var result = await handler.Handle(command, cancellationToken);
         
         return this.ToActionResult(result.Map(x => mapper.Map<AddJobApplicationResponse>(x)));
     }
@@ -36,8 +36,9 @@ public class JobApplicationsController(IMapper mapper) : ControllerBase
         [FromServices] DeleteJobApplicationHandler handler,
         CancellationToken cancellationToken)
     {
-        var mappedCommand = new DeleteJobApplicationCommand(id);
-        var result = await handler.Handle(mappedCommand, cancellationToken);
+        var command = new DeleteJobApplicationCommand(id);
+        
+        var result = await handler.Handle(command, cancellationToken);
         
         return this.ToActionResult(result);
     }
@@ -45,14 +46,14 @@ public class JobApplicationsController(IMapper mapper) : ControllerBase
     [HttpPut]
     [Route("{id:long:min(1)}/files")]
     public async Task<ActionResult> UpdateJobApplicationFiles(
-        long id,
+        [FromRoute] long id,
         [FromBody] UpdateJobApplicationFilesRequest request,
         [FromServices] UpdateJobApplicationFilesHandler handler,
         CancellationToken cancellationToken)
     {
-        var mappedCommand = mapper.Map<UpdateJobApplicationFilesCommand>(request);
+        var command = new UpdateJobApplicationFilesCommand(id, request.PersonalFileIds);
         
-        var result = await handler.Handle(mappedCommand, cancellationToken);
+        var result = await handler.Handle(command, cancellationToken);
         
         return this.ToActionResult(result);
     }
@@ -65,9 +66,9 @@ public class JobApplicationsController(IMapper mapper) : ControllerBase
         [FromServices] UpdateJobApplicationStatusHandler handler,
         CancellationToken cancellationToken)
     {
-        var mappedCommand = mapper.Map<UpdateJobApplicationStatusCommand>(request);
+        var command = new UpdateJobApplicationStatusCommand(id, request.StatusId);
         
-        var result = await handler.Handle(mappedCommand, cancellationToken);
+        var result = await handler.Handle(command, cancellationToken);
         
         return this.ToActionResult(result);
     }

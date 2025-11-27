@@ -1,3 +1,5 @@
-﻿namespace JobSearchSiteBackend.API.Controllers.JobApplications.Dtos;
+﻿using JobSearchSiteBackend.Core.Domains.JobApplications.Enums;
 
-public record UpdateJobApplicationStatusRequest(long StatusId);
+namespace JobSearchSiteBackend.API.Controllers.JobApplications.Dtos;
+
+public record UpdateJobApplicationStatusRequest(JobApplicationStatus StatusId);

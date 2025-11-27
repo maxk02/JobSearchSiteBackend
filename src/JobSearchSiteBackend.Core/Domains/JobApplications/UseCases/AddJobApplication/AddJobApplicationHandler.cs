@@ -19,10 +19,7 @@ public class AddJobApplicationHandler(
     {
         var currentUserId = currentAccountService.GetIdOrThrow();
 
-        if (command.UserId != currentUserId)
-            return Result.Forbidden();
-
-        var jobApplication = new JobApplication(command.UserId, command.JobId, JobApplicationStatus.Submitted);
+        var jobApplication = new JobApplication(currentUserId, command.JobId, JobApplicationStatus.Submitted);
 
         var requestedPersonalFilesOfUser = await context.PersonalFiles
             .Where(pf => command.PersonalFileIds.Contains(pf.Id) && pf.UserId == currentUserId)
