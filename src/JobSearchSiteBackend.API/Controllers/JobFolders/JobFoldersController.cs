@@ -24,9 +24,10 @@ public class JobFoldersController(IMapper mapper) : ControllerBase
         [FromServices] AddJobFolderHandler handler,
         CancellationToken cancellationToken)
     {
-        var mappedCommand = mapper.Map<AddJobFolderCommand>(request);
+        var command = new AddJobFolderCommand(request.CompanyId, request.ParentId,
+            request.Name, request.Description);
         
-        var result = await handler.Handle(mappedCommand, cancellationToken);
+        var result = await handler.Handle(command, cancellationToken);
         
         return this.ToActionResult(result);
     }
@@ -38,9 +39,9 @@ public class JobFoldersController(IMapper mapper) : ControllerBase
         [FromServices] DeleteJobFolderHandler handler,
         CancellationToken cancellationToken)
     {
-        var mappedCommand = new DeleteJobFolderCommand(id);
+        var command = new DeleteJobFolderCommand(id);
         
-        var result = await handler.Handle(mappedCommand, cancellationToken);
+        var result = await handler.Handle(command, cancellationToken);
         
         return this.ToActionResult(result);
     }
@@ -52,9 +53,9 @@ public class JobFoldersController(IMapper mapper) : ControllerBase
         [FromServices] GetChildFoldersHandler handler,
         CancellationToken cancellationToken)
     {
-        var mappedQuery = new GetChildFoldersQuery(id);
+        var query = new GetChildFoldersQuery(id);
         
-        var result = await handler.Handle(mappedQuery, cancellationToken);
+        var result = await handler.Handle(query, cancellationToken);
         
         return this.ToActionResult(result.Map(x => mapper.Map<GetChildFoldersResponse>(x)));
     }
@@ -66,9 +67,9 @@ public class JobFoldersController(IMapper mapper) : ControllerBase
         [FromServices] GetJobFolderHandler handler,
         CancellationToken cancellationToken)
     {
-        var mappedQuery = new GetJobFolderQuery(id);
+        var query = new GetJobFolderQuery(id);
         
-        var result = await handler.Handle(mappedQuery, cancellationToken);
+        var result = await handler.Handle(query, cancellationToken);
         
         return this.ToActionResult(result.Map(x => mapper.Map<GetJobFolderResponse>(x)));
     }
@@ -80,9 +81,9 @@ public class JobFoldersController(IMapper mapper) : ControllerBase
         [FromServices] GetFolderJobsHandler handler,
         CancellationToken cancellationToken)
     {
-        var mappedQuery = new GetFolderJobsQuery(id);
+        var query = new GetFolderJobsQuery(id);
         
-        var result = await handler.Handle(mappedQuery, cancellationToken);
+        var result = await handler.Handle(query, cancellationToken);
         
         return this.ToActionResult(result.Map(x => mapper.Map<GetFolderJobsResponse>(x)));
     }
@@ -95,12 +96,9 @@ public class JobFoldersController(IMapper mapper) : ControllerBase
         [FromServices] UpdateJobFolderHandler handler,
         CancellationToken cancellationToken)
     {
-        var mappedCommand = mapper.Map<UpdateJobFolderCommand>(request, opt =>
-        {
-            opt.Items["Id"] = id;
-        });
+        var command = new UpdateJobFolderCommand(id, request.Name, request.Description);
         
-        var result = await handler.Handle(mappedCommand, cancellationToken);
+        var result = await handler.Handle(command, cancellationToken);
         
         return this.ToActionResult(result);
     }

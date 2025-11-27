@@ -1,4 +1,8 @@
 ﻿using AutoMapper;
+using JobSearchSiteBackend.API.Controllers.JobFolders.Dtos;
+using JobSearchSiteBackend.Core.Domains.JobFolders.UseCases.GetChildFolders;
+using JobSearchSiteBackend.Core.Domains.JobFolders.UseCases.GetJobFolder;
+using JobSearchSiteBackend.Core.Domains.JobFolders.UseCases.GetJobs;
 using JobSearchSiteBackend.Core.Domains.JobFolders.UseCases.UpdateJobFolder;
 using UpdateJobFolderRequest = JobSearchSiteBackend.API.Controllers.JobFolders.Dtos.UpdateJobFolderRequest;
 
@@ -8,15 +12,10 @@ public class JobFoldersControllerDtosMapper : Profile
 {
     public JobFoldersControllerDtosMapper()
     {
-        CreateMap<UpdateJobFolderRequest, UpdateJobFolderCommand>()
-            .ForMember(dest => dest.Id, opt => opt.MapFrom((_, _, _, context) =>
-            {
-                if (context.Items.TryGetValue("Id", out var id))
-                {
-                    return (long)id;
-                }
-
-                return 0;
-            }));
+        CreateMap<GetChildFoldersResult, GetChildFoldersResponse>();
+        
+        CreateMap<GetFolderJobsResult, GetFolderJobsResponse>();
+        
+        CreateMap<GetJobFolderResult, GetJobFolderResponse>();
     }
 }
