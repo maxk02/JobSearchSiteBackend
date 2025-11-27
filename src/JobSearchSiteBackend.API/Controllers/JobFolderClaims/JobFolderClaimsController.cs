@@ -16,6 +16,21 @@ namespace JobSearchSiteBackend.API.Controllers.JobFolderClaims;
 public class JobFolderClaimsController(IMapper mapper) : ControllerBase
 {
     [HttpGet]
+    [Route("folder/{jobFolderId:long:min(1)}/user/{userId:long:min(1)}")]
+    public async Task<ActionResult<GetJobFolderClaimIdsForUserResponse>> GetJobFolderClaimIdsForUser(
+        [FromRoute] long jobFolderId,
+        [FromRoute] long userId,
+        [FromServices] GetJobFolderClaimIdsForUserHandler handler,
+        CancellationToken cancellationToken)
+    {
+        var query = new GetJobFolderClaimIdsForUserQuery(userId, jobFolderId);
+        
+        var result = await handler.Handle(query, cancellationToken);
+        
+        return this.ToActionResult(result.Map(x => mapper.Map<GetJobFolderClaimIdsForUserResponse>(x)));
+    }
+    
+    [HttpGet]
     [Route("folder/{jobFolderId:long:min(1)}")]
     public async Task<ActionResult<GetJobFolderClaimsOverviewResponse>> GetJobFolderClaimsOverview(
         [FromRoute] long jobFolderId,
@@ -23,29 +38,12 @@ public class JobFolderClaimsController(IMapper mapper) : ControllerBase
         [FromServices] GetJobFolderClaimsOverviewHandler handler,
         CancellationToken cancellationToken)
     {
-        var mappedQuery = mapper.Map<GetJobFolderClaimsOverviewQuery>(request, opt =>
-        {
-            opt.Items["JobFolderId"] = jobFolderId;
-        });
+        var query = new GetJobFolderClaimsOverviewQuery(jobFolderId, request.UserQuery,
+            request.JobFolderClaimIds, request.Page, request.Size);
         
-        var result = await handler.Handle(mappedQuery, cancellationToken);
+        var result = await handler.Handle(query, cancellationToken);
         
         return this.ToActionResult(result.Map(x => mapper.Map<GetJobFolderClaimsOverviewResponse>(x)));
-    }
-    
-    [HttpGet]
-    [Route("folder/{jobFolderId:long:min(1)}/user/{userId:long:min(1)}")]
-    public async Task<ActionResult<ICollection<long>>> GetJobFolderClaimIdsForUser(
-        [FromRoute] long jobFolderId,
-        [FromRoute] long userId,
-        [FromServices] GetJobFolderClaimIdsForUserHandler handler,
-        CancellationToken cancellationToken)
-    {
-        var mappedQuery = new GetJobFolderClaimIdsForUserQuery(userId, jobFolderId);
-        
-        var result = await handler.Handle(mappedQuery, cancellationToken);
-        
-        return this.ToActionResult(result);
     }
     
     [HttpPut]
@@ -57,13 +55,9 @@ public class JobFolderClaimsController(IMapper mapper) : ControllerBase
         [FromServices] UpdateJobFolderClaimIdsForUserHandler handler,
         CancellationToken cancellationToken)
     {
-        var mappedCommand = mapper.Map<UpdateJobFolderClaimIdsForUserCommand>(request, opt =>
-        {
-            opt.Items["JobFolderId"] = jobFolderId;
-            opt.Items["UserId"] = userId;
-        });
+        var command = new UpdateJobFolderClaimIdsForUserCommand(userId, jobFolderId, request.JobFolderClaimIds);
         
-        var result = await handler.Handle(mappedCommand, cancellationToken);
+        var result = await handler.Handle(command, cancellationToken);
         
         return this.ToActionResult(result);
     }

@@ -59,7 +59,7 @@ public class GetJobFolderClaimsOverviewHandler(
                 || jfcOverviewDto.UserEmail.Contains(query.UserQuery));
         }
 
-        if (query.JobFolderClaimIds.Count != 0)
+        if (query.JobFolderClaimIds is not null && query.JobFolderClaimIds.Count != 0)
         {
             dbQuery = dbQuery
                 .Where(jfcOverviewDto => query.JobFolderClaimIds.Contains(jfcOverviewDto.ClaimId));

@@ -9,9 +9,9 @@ using JobSearchSiteBackend.Core.Persistence;
 namespace JobSearchSiteBackend.Core.Domains.JobFolderClaims.UseCases.GetJobFolderClaimIdsForUser;
 
 public class GetJobFolderClaimIdsForUserHandler(ICurrentAccountService currentAccountService,
-    MainDataContext context) : IRequestHandler<GetJobFolderClaimIdsForUserQuery, Result<ICollection<long>>>
+    MainDataContext context) : IRequestHandler<GetJobFolderClaimIdsForUserQuery, Result<GetJobFolderClaimIdsForUserResult>>
 {
-    public async Task<Result<ICollection<long>>> Handle(GetJobFolderClaimIdsForUserQuery query,
+    public async Task<Result<GetJobFolderClaimIdsForUserResult>> Handle(GetJobFolderClaimIdsForUserQuery query,
         CancellationToken cancellationToken = default)
     {
         var currentUserId = currentAccountService.GetIdOrThrow();
@@ -21,10 +21,10 @@ public class GetJobFolderClaimIdsForUserHandler(ICurrentAccountService currentAc
             .ToListAsync(cancellationToken);
         
         if (query.UserId == currentUserId)
-            return currentUserClaimIdsOnThisAndAncestors;
+            return Result.Success(new GetJobFolderClaimIdsForUserResult(currentUserClaimIdsOnThisAndAncestors));
         
         if (!currentUserClaimIdsOnThisAndAncestors.Contains(JobFolderClaim.IsAdmin.Id))
-            return Result<ICollection<long>>.Forbidden("Current user is not a folder admin.");
+            return Result.Forbidden("Current user is not a folder admin.");
         
         var targetUserClaimIdsOnThisAndAncestors = await context.JobFolderRelations
             .GetClaimIdsForThisAndAncestors(query.FolderId, query.UserId)
@@ -35,6 +35,6 @@ public class GetJobFolderClaimIdsForUserHandler(ICurrentAccountService currentAc
                 .Intersect(targetUserClaimIdsOnThisAndAncestors)
                 .ToList();
         
-        return visibleClaimIds;
+        return Result.Success(new GetJobFolderClaimIdsForUserResult(visibleClaimIds));
     }
 }

@@ -5,7 +5,7 @@ namespace JobSearchSiteBackend.Core.Domains.JobFolderClaims.UseCases.GetJobFolde
 
 public record GetJobFolderClaimsOverviewQuery(
     long JobFolderId,
-    string UserQuery,
-    ICollection<long> JobFolderClaimIds,
+    string? UserQuery,
+    ICollection<long>? JobFolderClaimIds,
     int Page,
     int Size) : IRequest<Result<GetJobFolderClaimsOverviewResult>>;
