@@ -18,20 +18,20 @@ using Microsoft.AspNetCore.Mvc;
 namespace JobSearchSiteBackend.API.Controllers.UserProfiles;
 
 [ApiController]
-[Route("api/user")]
+[Route("api/users")]
 [Authorize]
 public class UserProfilesController(IMapper mapper) : ControllerBase
 {
     [HttpPost]
-    [Route("bookmarks/jobs")]
+    [Route("current/bookmarks/jobs/{jobId:long:min(1)}")]
     public async Task<ActionResult> AddJobBookmark(
-        long jobId,
+        [FromRoute] long jobId,
         [FromServices] AddJobBookmarkHandler handler,
         CancellationToken cancellationToken)
     {
-        var mappedCommand = new AddJobBookmarkCommand(jobId);
+        var command = new AddJobBookmarkCommand(jobId);
         
-        var result = await handler.Handle(mappedCommand, cancellationToken);
+        var result = await handler.Handle(command, cancellationToken);
         
         return this.ToActionResult(result);
     }
@@ -42,90 +42,93 @@ public class UserProfilesController(IMapper mapper) : ControllerBase
         [FromServices] AddUserProfileHandler handler,
         CancellationToken cancellationToken)
     {
-        var mappedCommand = mapper.Map<AddUserProfileCommand>(request);
+        var command = new AddUserProfileCommand(request.FirstName, request.LastName, request.Phone);
         
-        var result = await handler.Handle(mappedCommand, cancellationToken);
+        var result = await handler.Handle(command, cancellationToken);
         
         return this.ToActionResult(result.Map(x => mapper.Map<AddUserProfileResponse>(x)));
     }
     
     [HttpDelete]
-    [Route("bookmarks/jobs/{jobId:long:min(1)}")]
+    [Route("current/bookmarks/jobs/{jobId:long:min(1)}")]
     public async Task<ActionResult> DeleteJobBookmark(
         [FromRoute] long jobId,
         [FromServices] DeleteJobBookmarkHandler handler,
         CancellationToken cancellationToken)
     {
-        var mappedCommand = new DeleteJobBookmarkCommand(jobId);
+        var command = new DeleteJobBookmarkCommand(jobId);
         
-        var result = await handler.Handle(mappedCommand, cancellationToken);
+        var result = await handler.Handle(command, cancellationToken);
         
         return this.ToActionResult(result);
     }
     
     [HttpGet]
-    [Route("bookmarks/jobs")]
+    [Route("current/bookmarks/jobs")]
     public async Task<ActionResult<GetBookmarkedJobsResponse>> GetBookmarkedJobs(
         [FromQuery] GetBookmarkedJobsRequest request,
         [FromServices] GetBookmarkedJobsHandler handler,
         CancellationToken cancellationToken)
     {
-        var mappedQuery = mapper.Map<GetBookmarkedJobsQuery>(request);
+        var query = new GetBookmarkedJobsQuery(request.Page, request.Size);
         
-        var result = await handler.Handle(mappedQuery, cancellationToken);
+        var result = await handler.Handle(query, cancellationToken);
         
         return this.ToActionResult(result.Map(x => mapper.Map<GetBookmarkedJobsResponse>(x)));
     }
     
     [HttpGet]
-    [Route("job-applications")]
+    [Route("current/job-applications")]
     public async Task<ActionResult<GetJobApplicationsResponse>> GetJobApplications(
         [FromQuery] GetJobApplicationsRequest request,
         [FromServices] GetJobApplicationsHandler handler,
         CancellationToken cancellationToken)
     {
-        var  mappedQuery = mapper.Map<GetJobApplicationsQuery>(request);
+        var query = new GetJobApplicationsQuery(request.Page, request.Size);
         
-        var result = await handler.Handle(mappedQuery, cancellationToken);
+        var result = await handler.Handle(query, cancellationToken);
         
         return this.ToActionResult(result.Map(x => mapper.Map<GetJobApplicationsResponse>(x)));
     }
     
     [HttpGet]
-    [Route("personal-files")]
+    [Route("current/personal-files")]
     public async Task<ActionResult<GetPersonalFilesResponse>> GetPersonalFiles(
         [FromQuery] GetPersonalFilesRequest request,
         [FromServices] GetPersonalFilesHandler handler,
         CancellationToken cancellationToken)
     {
-        var mappedQuery = mapper.Map<GetPersonalFilesQuery>(request);
+        var query = new GetPersonalFilesQuery(request.Page, request.Size);
         
-        var result = await handler.Handle(mappedQuery, cancellationToken);
+        var result = await handler.Handle(query, cancellationToken);
         
         return this.ToActionResult(result.Map(x => mapper.Map<GetPersonalFilesResponse>(x)));
     }
     
     [HttpGet]
+    [Route("current")]
     public async Task<ActionResult<GetUserProfileResponse>> GetUserProfile(
         [FromServices] GetUserProfileHandler handler,
         CancellationToken cancellationToken)
     {
-        var mappedQuery = new GetUserProfileQuery();
+        var query = new GetUserProfileQuery();
         
-        var result = await handler.Handle(mappedQuery, cancellationToken);
+        var result = await handler.Handle(query, cancellationToken);
 
         return this.ToActionResult(result.Map(x => mapper.Map<GetUserProfileResponse>(x)));
     }
     
     [HttpPatch]
+    [Route("current")]
     public async Task<ActionResult> UpdateUserProfile(
         [FromBody] UpdateUserProfileRequest request,
         [FromServices] UpdateUserProfileHandler handler,
         CancellationToken cancellationToken)
     {
-        var mappedCommand = mapper.Map<UpdateUserProfileCommand>(request);
+        var command = new UpdateUserProfileCommand(request.FirstName, request.LastName,
+            request.Phone, request.IsReceivingApplicationStatusUpdates);
         
-        var result = await handler.Handle(mappedCommand, cancellationToken);
+        var result = await handler.Handle(command, cancellationToken);
         
         return this.ToActionResult(result);
     }
@@ -148,9 +151,9 @@ public class UserProfilesController(IMapper mapper) : ControllerBase
         var extension = Path.GetExtension(file.FileName).TrimStart('.');
         var size = file.Length;
         
-        var mappedCommand = new UploadUserAvatarCommand(stream, extension, size, id);
+        var command = new UploadUserAvatarCommand(stream, extension, size, id);
         
-        var result = await handler.Handle(mappedCommand, cancellationToken);
+        var result = await handler.Handle(command, cancellationToken);
 
         return this.ToActionResult(result.Map(x => mapper.Map<UploadUserAvatarResponse>(x)));
     }
