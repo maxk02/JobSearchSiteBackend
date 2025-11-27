@@ -46,16 +46,13 @@ public class PersonalFilesController(IMapper mapper) : ControllerBase
     [HttpPatch("{id:long:min(1)}")]
     public async Task<ActionResult> UpdateFile(
         [FromRoute] long id,
-        [FromBody] UpdateFileRequest requestDto,
+        [FromBody] UpdateFileRequest request,
         [FromServices] UpdateFileHandler handler,
         CancellationToken cancellationToken)
     {
-        var request = mapper.Map<UpdateFileCommand>(requestDto, opt =>
-        {
-            opt.Items["Id"] = id;
-        });
+        var command = new UpdateFileCommand(id, request.Name);
         
-        var result = await handler.Handle(request, cancellationToken);
+        var result = await handler.Handle(command, cancellationToken);
         
         return this.ToActionResult(result);
     }
