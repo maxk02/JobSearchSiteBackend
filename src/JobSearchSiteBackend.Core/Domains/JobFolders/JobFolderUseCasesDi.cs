@@ -1,7 +1,7 @@
 ﻿using JobSearchSiteBackend.Core.Domains.JobFolders.UseCases.AddJobFolder;
 using JobSearchSiteBackend.Core.Domains.JobFolders.UseCases.DeleteJobFolder;
 using JobSearchSiteBackend.Core.Domains.JobFolders.UseCases.GetChildFolders;
-using JobSearchSiteBackend.Core.Domains.JobFolders.UseCases.GetJobs;
+using JobSearchSiteBackend.Core.Domains.JobFolders.UseCases.GetFolderJobs;
 using JobSearchSiteBackend.Core.Domains.JobFolders.UseCases.UpdateJobFolder;
 using Microsoft.Extensions.DependencyInjection;
 

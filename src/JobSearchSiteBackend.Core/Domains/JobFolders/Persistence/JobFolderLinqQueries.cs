@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 
-namespace JobSearchSiteBackend.Core.Domains.JobFolders;
+namespace JobSearchSiteBackend.Core.Domains.JobFolders.Persistence;
 
 public static class JobFolderLinqQueries
 {

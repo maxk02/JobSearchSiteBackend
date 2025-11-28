@@ -1,6 +1,6 @@
 ﻿using Ardalis.Result;
 using JobSearchSiteBackend.Core.Domains._Shared.UseCaseStructure;
-using JobSearchSiteBackend.Core.Domains.Accounts.EmailMessages;
+using JobSearchSiteBackend.Core.Domains.Accounts.EmailMessageTemplates;
 using JobSearchSiteBackend.Core.Persistence;
 using JobSearchSiteBackend.Core.Services.BackgroundJobs;
 using JobSearchSiteBackend.Core.Services.EmailSender;

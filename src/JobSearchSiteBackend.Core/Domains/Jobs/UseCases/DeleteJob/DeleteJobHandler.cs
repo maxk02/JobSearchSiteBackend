@@ -7,6 +7,7 @@ using JobSearchSiteBackend.Core.Services.Auth;
 using JobSearchSiteBackend.Core.Services.BackgroundJobs;
 using Microsoft.EntityFrameworkCore;
 using Ardalis.Result;
+using JobSearchSiteBackend.Core.Domains.JobFolders.Persistence;
 using JobSearchSiteBackend.Core.Persistence;
 
 namespace JobSearchSiteBackend.Core.Domains.Jobs.UseCases.DeleteJob;

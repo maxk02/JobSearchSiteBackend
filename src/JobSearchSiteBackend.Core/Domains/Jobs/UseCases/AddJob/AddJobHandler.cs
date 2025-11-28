@@ -5,6 +5,7 @@ using JobSearchSiteBackend.Core.Domains.Categories;
 using JobSearchSiteBackend.Core.Domains.EmploymentOptions;
 using JobSearchSiteBackend.Core.Domains.JobFolderClaims;
 using JobSearchSiteBackend.Core.Domains.JobFolders;
+using JobSearchSiteBackend.Core.Domains.JobFolders.Persistence;
 using JobSearchSiteBackend.Core.Persistence;
 using JobSearchSiteBackend.Core.Services.Auth;
 using Microsoft.EntityFrameworkCore;

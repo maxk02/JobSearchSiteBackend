@@ -7,6 +7,7 @@ using Microsoft.EntityFrameworkCore;
 using Ardalis.Result;
 using AutoMapper;
 using AutoMapper.QueryableExtensions;
+using JobSearchSiteBackend.Core.Domains.JobFolders.Persistence;
 using JobSearchSiteBackend.Core.Persistence;
 
 namespace JobSearchSiteBackend.Core.Domains.JobFolders.UseCases.GetChildFolders;

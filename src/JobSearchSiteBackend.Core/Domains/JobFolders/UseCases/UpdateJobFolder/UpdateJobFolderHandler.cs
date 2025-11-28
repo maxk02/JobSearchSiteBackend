@@ -3,6 +3,7 @@ using JobSearchSiteBackend.Core.Domains.JobFolderClaims;
 using JobSearchSiteBackend.Core.Services.Auth;
 using Microsoft.EntityFrameworkCore;
 using Ardalis.Result;
+using JobSearchSiteBackend.Core.Domains.JobFolders.Persistence;
 using JobSearchSiteBackend.Core.Persistence;
 
 namespace JobSearchSiteBackend.Core.Domains.JobFolders.UseCases.UpdateJobFolder;

@@ -10,6 +10,7 @@ using Microsoft.EntityFrameworkCore;
 using Ardalis.Result;
 using AutoMapper;
 using JobSearchSiteBackend.Core.Domains.EmploymentOptions;
+using JobSearchSiteBackend.Core.Domains.JobFolders.Persistence;
 using JobSearchSiteBackend.Core.Persistence;
 
 namespace JobSearchSiteBackend.Core.Domains.Jobs.UseCases.UpdateJob;

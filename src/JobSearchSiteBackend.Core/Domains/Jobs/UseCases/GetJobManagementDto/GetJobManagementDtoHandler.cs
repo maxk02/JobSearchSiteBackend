@@ -3,6 +3,7 @@ using AutoMapper;
 using JobSearchSiteBackend.Core.Domains._Shared.UseCaseStructure;
 using JobSearchSiteBackend.Core.Domains.JobFolderClaims;
 using JobSearchSiteBackend.Core.Domains.JobFolders;
+using JobSearchSiteBackend.Core.Domains.JobFolders.Persistence;
 using JobSearchSiteBackend.Core.Domains.Jobs.Dtos;
 using JobSearchSiteBackend.Core.Domains.Locations.Dtos;
 using JobSearchSiteBackend.Core.Persistence;

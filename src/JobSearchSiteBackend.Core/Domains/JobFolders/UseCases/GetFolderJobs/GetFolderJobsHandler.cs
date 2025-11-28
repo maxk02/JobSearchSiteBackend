@@ -3,13 +3,14 @@ using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using JobSearchSiteBackend.Core.Domains._Shared.UseCaseStructure;
 using JobSearchSiteBackend.Core.Domains.JobFolderClaims;
+using JobSearchSiteBackend.Core.Domains.JobFolders.Persistence;
 using JobSearchSiteBackend.Core.Domains.Jobs.Dtos;
 using JobSearchSiteBackend.Core.Persistence;
 using JobSearchSiteBackend.Core.Services.Auth;
 using JobSearchSiteBackend.Core.Services.Caching;
 using Microsoft.EntityFrameworkCore;
 
-namespace JobSearchSiteBackend.Core.Domains.JobFolders.UseCases.GetJobs;
+namespace JobSearchSiteBackend.Core.Domains.JobFolders.UseCases.GetFolderJobs;
 
 public class GetFolderJobsHandler(
     ICurrentAccountService currentAccountService,

@@ -1,6 +1,6 @@
 ﻿using JobSearchSiteBackend.Core.Services.EmailSender;
 
-namespace JobSearchSiteBackend.Core.Domains.Accounts.EmailMessages;
+namespace JobSearchSiteBackend.Core.Domains.Accounts.EmailMessageTemplates;
 
 public class EmailConfirmationEmail(string confirmationLink) : IEmailTemplate
 {
