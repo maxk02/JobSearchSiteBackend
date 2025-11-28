@@ -1,10 +1,12 @@
 ﻿using Ardalis.Result;
 using JobSearchSiteBackend.Core.Domains._Shared.UseCaseStructure;
 using JobSearchSiteBackend.Core.Domains.Accounts.EmailMessages;
+using JobSearchSiteBackend.Core.Persistence;
 using JobSearchSiteBackend.Core.Services.Auth;
 using JobSearchSiteBackend.Core.Services.BackgroundJobs;
 using JobSearchSiteBackend.Core.Services.EmailSender;
 using JobSearchSiteBackend.Shared.MyAppSettings;
+using JobSearchSiteBackend.Shared.MyAppSettings.Email;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Options;
 
@@ -16,7 +18,9 @@ public class ResendEmailConfirmationLinkHandler(
     IBackgroundJobService backgroundJobService,
     IOptions<MyAppSettings> injectedAppSettings,
     IEmailSenderService emailSenderService,
-    StandardEmailRenderer emailRenderer) : IRequestHandler<ResendEmailConfirmationLinkCommand, Result>
+    StandardEmailRenderer emailRenderer,
+    IOptions<MyDefaultEmailSenderSettings> emailSenderSettings,
+    MainDataContext context) : IRequestHandler<ResendEmailConfirmationLinkCommand, Result>
 {
     public async Task<Result> Handle(ResendEmailConfirmationLinkCommand command,
         CancellationToken cancellationToken = default)
@@ -48,8 +52,10 @@ public class ResendEmailConfirmationLinkHandler(
 
         var renderedEmail = await emailRenderer.RenderAsync(emailTemplate);
 
-        backgroundJobService.Enqueue(() => emailSenderService
-                .SendEmailAsync(email, renderedEmail.Subject, renderedEmail.Content, CancellationToken.None),
+        var emailToSend = new EmailToSend(Guid.NewGuid(), emailSenderSettings.Value, email, null, null,
+            renderedEmail.Subject, renderedEmail.Content, renderedEmail.IsHtml);
+        
+        backgroundJobService.Enqueue(() => emailSenderService.SendEmailAsync(emailToSend, cancellationToken),
             BackgroundJobQueues.EmailSending);
 
         return Result.Success();

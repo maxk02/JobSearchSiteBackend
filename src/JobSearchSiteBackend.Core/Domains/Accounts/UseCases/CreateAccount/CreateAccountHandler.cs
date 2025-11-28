@@ -1,14 +1,13 @@
-﻿using System.Transactions;
+﻿using Ardalis.Result;
 using JobSearchSiteBackend.Core.Domains._Shared.UseCaseStructure;
 using JobSearchSiteBackend.Core.Domains.Accounts.EmailMessages;
-using JobSearchSiteBackend.Core.Services.Auth;
+using JobSearchSiteBackend.Core.Persistence;
 using JobSearchSiteBackend.Core.Services.BackgroundJobs;
 using JobSearchSiteBackend.Core.Services.EmailSender;
+using JobSearchSiteBackend.Shared.MyAppSettings;
+using JobSearchSiteBackend.Shared.MyAppSettings.Email;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Options;
-using JobSearchSiteBackend.Shared.MyAppSettings;
-using Ardalis.Result;
-using JobSearchSiteBackend.Core.Persistence;
 
 namespace JobSearchSiteBackend.Core.Domains.Accounts.UseCases.CreateAccount;
 
@@ -18,7 +17,8 @@ public class CreateAccountHandler(
     MainDataContext context,
     IBackgroundJobService backgroundJobService,
     IEmailSenderService emailSenderService,
-    StandardEmailRenderer emailRenderer) 
+    StandardEmailRenderer emailRenderer,
+    IOptions<MyDefaultEmailSenderSettings> emailSenderSettings) 
     : IRequestHandler<CreateAccountCommand, Result<CreateAccountResult>>
 {
     public async Task<Result<CreateAccountResult>> Handle(CreateAccountCommand command,
@@ -48,11 +48,13 @@ public class CreateAccountHandler(
 
         var renderedEmail = await emailRenderer.RenderAsync(emailTemplate);
 
-        backgroundJobService.Enqueue(() => emailSenderService
-                .SendEmailAsync(command.Email, renderedEmail.Subject, renderedEmail.Content, CancellationToken.None),
-            BackgroundJobQueues.EmailSending);
+        var emailToSend = new EmailToSend(Guid.NewGuid(), emailSenderSettings.Value, command.Email, null, null,
+            renderedEmail.Subject, renderedEmail.Content, renderedEmail.IsHtml);
         
         await transaction.CommitAsync(cancellationToken);
+        
+        backgroundJobService.Enqueue(() => emailSenderService.SendEmailAsync(emailToSend, cancellationToken),
+            BackgroundJobQueues.EmailSending);
 
         var result = new CreateAccountResult(user.Id);
         

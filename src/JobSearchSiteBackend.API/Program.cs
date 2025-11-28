@@ -7,7 +7,6 @@ using JobSearchSiteBackend.Core.Persistence;
 using JobSearchSiteBackend.Core.Services.Auth;
 using JobSearchSiteBackend.Core.Services.Cookies;
 using JobSearchSiteBackend.Core.Services.Search;
-using DotNetEnv;
 using JobSearchSiteBackend.Core.Domains.Companies.RecurringJobs;
 using JobSearchSiteBackend.Core.Domains.Companies.Search;
 using JobSearchSiteBackend.Core.Domains.Jobs.RecurringJobs;
@@ -16,6 +15,7 @@ using JobSearchSiteBackend.Core.Services.BackgroundJobs;
 using JobSearchSiteBackend.Infrastructure;
 using JobSearchSiteBackend.Infrastructure.Persistence;
 using JobSearchSiteBackend.Shared.MyAppSettings;
+using JobSearchSiteBackend.Shared.MyAppSettings.Email;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -25,17 +25,23 @@ var builder = WebApplication.CreateBuilder(args);
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
 
-Env.Load();
-
 builder.Configuration.AddEnvironmentVariables();
 
-builder.Services.AddOptions<MyAppSettings>()
-    .Bind(builder.Configuration)
+builder.Services
+    .AddOptions<MyAppSettings>()
+    .Bind(builder.Configuration.GetSection(nameof(MyAppSettings)))
     .ValidateDataAnnotations()
     .ValidateOnStart();
 
-builder.Services.AddOptions<MySmtpSettings>()
-    .Bind(builder.Configuration.GetSection("SmtpSettings"))
+builder.Services
+    .AddOptions<MySmtpSettings>()
+    .Bind(builder.Configuration.GetSection(nameof(MySmtpSettings)))
+    .ValidateDataAnnotations()
+    .ValidateOnStart();
+
+builder.Services
+    .AddOptions<MyJwtSettings>()
+    .Bind(builder.Configuration.GetSection(nameof(MyJwtSettings)))
     .ValidateDataAnnotations()
     .ValidateOnStart();
 

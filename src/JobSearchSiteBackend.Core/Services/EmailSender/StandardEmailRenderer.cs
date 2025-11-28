@@ -16,6 +16,6 @@ public class StandardEmailRenderer(IFileStorageService fileStorageService)
                             <p>&copy;2025 znajdzprace.pl Wszystkie prawa zastrzeżone.</p>
                             """;
         
-        return new RenderedEmailTemplate(template.Subject, renderedBody);
+        return new RenderedEmailTemplate(template.Subject, renderedBody, true);
     }
 }
