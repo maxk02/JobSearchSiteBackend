@@ -1,20 +1,20 @@
-﻿using AutoMapper;
-using JobSearchSiteBackend.Core.Domains.Jobs.Dtos;
+﻿using JobSearchSiteBackend.Core.Domains.Jobs.Dtos;
 
 namespace JobSearchSiteBackend.Core.Domains.Jobs;
 
-public class JobDtoMappings : Profile
+public static class JobDtoMappings
 {
-    public JobDtoMappings()
+    public static JobSalaryInfoDto ToJobSalaryInfoDto(this JobSalaryInfo jobSalaryInfo)
     {
-        CreateMap<Job, JobCardDto>()
-            .ForMember(dest => dest.CompanyName,
-                opt => opt.MapFrom(src => src.JobFolder!.Company!.Name))
-            // .ForMember(dest => dest.CompanyLogoLink,
-                // opt => opt.MapFrom(src => src.JobFolder!.Company!.LogoLink))
-            .ForMember(dest => dest.EmploymentTypeIds,
-                opt => opt.MapFrom(src => src.EmploymentOptions!.Select(x => x.Id).ToList()));
+        var jobSalaryInfoDto = new JobSalaryInfoDto(jobSalaryInfo.Minimum, jobSalaryInfo.Maximum,
+            jobSalaryInfo.Currency, jobSalaryInfo.UnitOfTime, jobSalaryInfo.IsAfterTaxes);
         
-        CreateMap<JobSalaryInfo, JobSalaryInfoDto>().ReverseMap();
+        return jobSalaryInfoDto;
     }
+
+    // public static JobCardDto ToJobCardDto(this Job job,
+    //     JobSalaryInfoDto? jobSalaryInfoDto, string? avatarLink)
+    // {
+    //     
+    // }
 }

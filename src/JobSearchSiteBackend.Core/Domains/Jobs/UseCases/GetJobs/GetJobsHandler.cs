@@ -5,21 +5,34 @@ using JobSearchSiteBackend.Core.Domains.Jobs.Search;
 using Microsoft.EntityFrameworkCore;
 using Ardalis.Result;
 using AutoMapper;
+using JobSearchSiteBackend.Core.Domains.Companies.Persistence;
+using JobSearchSiteBackend.Core.Domains.Locations.Dtos;
 using JobSearchSiteBackend.Core.Persistence;
+using JobSearchSiteBackend.Core.Services.Auth;
+using JobSearchSiteBackend.Core.Services.FileStorage;
 
 namespace JobSearchSiteBackend.Core.Domains.Jobs.UseCases.GetJobs;
 
 public class GetJobsHandler(
     IJobSearchRepository jobSearchRepository,
     MainDataContext context,
-    IMapper mapper) : IRequestHandler<GetJobsQuery, Result<GetJobsResult>>
+    IFileStorageService fileStorageService,
+    ICurrentAccountService currentAccountService) : IRequestHandler<GetJobsQuery, Result<GetJobsResult>>
 {
     public async Task<Result<GetJobsResult>> Handle(GetJobsQuery query,
         CancellationToken cancellationToken = default)
     {
-        var dbQuery = context.Jobs
-            .Include(j => j.EmploymentOptions)
+        var currentUserId = currentAccountService.GetId();
+        
+        var dbIncludeQuery = context.Jobs
             .AsNoTracking()
+            .Include(j => j.JobContractTypes)
+            .Include(j => j.EmploymentOptions)
+            .Include(j => j.JobFolder)
+            .ThenInclude(jf => jf!.Company)
+            .ThenInclude(c => c!.CompanyAvatars);
+
+        var dbQuery = dbIncludeQuery
             .Where(job => job.DateTimeExpiringUtc > DateTime.UtcNow)
             .Where(job => job.IsPublic);
 
@@ -50,21 +63,56 @@ public class GetJobsHandler(
 
         var count = await dbQuery.CountAsync(cancellationToken);
 
-        var jobs = await dbQuery
+        List<(Job, bool)> jobsWithIsBookmarked = [];
+
+        var paginatedDbQuery = dbQuery
             .OrderByDescending(job => job.DateTimePublishedUtc)
             .Skip((query.Page - 1) * query.Size)
-            .Take(query.Size)
-            .ToListAsync(cancellationToken);
-        
-        // list with logo links
-        var companyLogoLinks = jobs.Select(x => x.Id).Select(x => "").ToList(); //todo
+            .Take(query.Size);
+
+        if (currentUserId is null)
+        {
+            var jobs = await paginatedDbQuery.ToListAsync(cancellationToken);
+
+            jobsWithIsBookmarked = jobs.Select(j => (j, false)).ToList();
+        }
+        else
+        {
+            jobsWithIsBookmarked = await paginatedDbQuery
+                .Select(j => new ValueTuple<Job, bool>
+                (
+                    j,
+                    j.UsersWhoBookmarked!.Any(u => u.Id == currentUserId)
+                ))
+                .ToListAsync(cancellationToken);
+        }
+
+        List<JobCardDto> jobCardDtos = [];
+
+        foreach (var (job, isBookmarked) in jobsWithIsBookmarked)
+        {
+            var avatar = job.JobFolder?.Company?.CompanyAvatars?.GetLatestAvailableAvatar();
+
+            string? avatarLink = null;
+
+            if (avatar is not null)
+            {
+                avatarLink = await fileStorageService.GetDownloadUrlAsync(FileStorageBucketName.UserAvatars, 
+                    avatar.GuidIdentifier, avatar.Extension, cancellationToken);
+            }
+            
+            // todo work on locations
+            
+            var jobCardDto = new JobCardDto(job.Id, job.JobFolder!.CompanyId, avatarLink,
+                job.JobFolder!.Company!.Name, [], job.Title, job.DateTimePublishedUtc,
+                job.DateTimeExpiringUtc, job.SalaryInfo?.ToJobSalaryInfoDto(),
+                job.EmploymentOptions!.Select(eo => eo.Id).ToList(),
+                job.JobContractTypes!.Select(ct => ct.Id).ToList(), isBookmarked);
+            
+            jobCardDtos.Add(jobCardDto);
+        }
 
         var paginationResponse = new PaginationResponse(query.Page, query.Size, count);
-
-        var jobCardDtos = jobs
-            .Select((x, i) =>
-                mapper.Map<JobCardDto>(x, opt => { opt.State = companyLogoLinks[i]; }))
-            .ToList();
 
         var response = new GetJobsResult(jobCardDtos, paginationResponse);
 

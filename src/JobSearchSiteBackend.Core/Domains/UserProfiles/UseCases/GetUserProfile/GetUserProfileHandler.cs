@@ -18,26 +18,25 @@ public class GetUserProfileHandler(
     {
         var currentAccountId = currentAccountService.GetIdOrThrow();
         
-        // var user = await context.UserProfiles.FindAsync([currentAccountId], cancellationToken);
-        
-        var userWithEmail = await context.UserProfiles
+        var userWithEmailAndAvatars = await context.UserProfiles
             .Where(u => u.Id == currentAccountId)
             .Select(u => new
             {
                 User = u,
                 Email = u.Account!.Email,
-                Avatar = u.UserAvatars!.FilterLatestAvailableAvatar(u.Id)
+                Avatars = u.UserAvatars
             })
             .SingleOrDefaultAsync(cancellationToken);
-
-        var user = userWithEmail?.User;
-        var email = userWithEmail?.Email;
-        var avatar = userWithEmail?.Avatar.LastOrDefault();
+        
+        var user = userWithEmailAndAvatars?.User;
+        var email = userWithEmailAndAvatars?.Email;
 
         if (user is null || email is null)
-            return Result<GetUserProfileResult>.Error();
+            return Result.Error();
 
-        string? avatarLink =  null;
+        var avatar = userWithEmailAndAvatars!.Avatars?.GetLatestAvailableAvatar();
+
+        string? avatarLink = null;
 
         if (avatar is not null)
         {

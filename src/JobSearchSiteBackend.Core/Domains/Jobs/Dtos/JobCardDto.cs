@@ -12,6 +12,6 @@ public record JobCardDto(
     DateTime DateTimePublishedUtc,
     DateTime DateTimeExpiringUtc,
     JobSalaryInfoDto? SalaryInfo,
-    ICollection<long>? EmploymentTypeIds,
+    ICollection<long>? EmploymentOptionIds,
     ICollection<long>? ContractTypeIds,
     bool IsBookmarked);
