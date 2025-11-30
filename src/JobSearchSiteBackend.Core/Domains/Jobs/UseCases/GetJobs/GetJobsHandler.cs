@@ -86,6 +86,11 @@ public class GetJobsHandler(
                 ))
                 .ToListAsync(cancellationToken);
         }
+        
+        if (jobsWithIsBookmarked.Count == 0)
+        {
+            return Result.NotFound();
+        }
 
         List<JobCardDto> jobCardDtos = [];
 
@@ -116,6 +121,6 @@ public class GetJobsHandler(
 
         var response = new GetJobsResult(jobCardDtos, paginationResponse);
 
-        return response;
+        return Result.Success(response);
     }
 }

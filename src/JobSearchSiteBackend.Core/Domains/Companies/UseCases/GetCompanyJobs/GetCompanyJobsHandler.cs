@@ -2,10 +2,13 @@
 using AutoMapper;
 using JobSearchSiteBackend.Core.Domains._Shared.Pagination;
 using JobSearchSiteBackend.Core.Domains._Shared.UseCaseStructure;
+using JobSearchSiteBackend.Core.Domains.Companies.Persistence;
+using JobSearchSiteBackend.Core.Domains.Jobs;
 using JobSearchSiteBackend.Core.Domains.Jobs.Dtos;
 using JobSearchSiteBackend.Core.Domains.Jobs.Search;
 using JobSearchSiteBackend.Core.Domains.Jobs.UseCases.GetJobs;
 using JobSearchSiteBackend.Core.Persistence;
+using JobSearchSiteBackend.Core.Services.Auth;
 using JobSearchSiteBackend.Core.Services.FileStorage;
 using Microsoft.EntityFrameworkCore;
 
@@ -15,22 +18,34 @@ public class GetCompanyJobsHandler(
     IJobSearchRepository jobSearchRepository,
     IFileStorageService fileStorageService,
     MainDataContext context,
-    IMapper mapper) : IRequestHandler<GetCompanyJobsQuery, Result<GetCompanyJobsResult>>
+    ICurrentAccountService currentAccountService) : IRequestHandler<GetCompanyJobsQuery, Result<GetCompanyJobsResult>>
 {
     public async Task<Result<GetCompanyJobsResult>> Handle(GetCompanyJobsQuery query,
         CancellationToken cancellationToken = default)
     {
-        var hitIds = await jobSearchRepository
-            .SearchFromCompanyAsync(query.CompanyId, query.Query, cancellationToken);
-
-        var dbQuery = context.Jobs
+        var currentUserId = currentAccountService.GetId();
+        
+        var dbIncludeQuery = context.Jobs
+            .AsNoTracking()
+            .Include(j => j.JobContractTypes)
             .Include(j => j.EmploymentOptions)
             .Include(j => j.JobFolder)
-            .AsNoTracking()
+            .ThenInclude(jf => jf!.Company)
+            .ThenInclude(c => c!.CompanyAvatars);
+
+        var dbQuery = dbIncludeQuery
             .Where(job => job.JobFolder!.CompanyId == query.CompanyId)
             .Where(job => job.DateTimeExpiringUtc > DateTime.UtcNow)
-            .Where(job => job.IsPublic)
-            .Where(job => hitIds.Contains(job.Id));
+            .Where(job => job.IsPublic);
+        
+        if (!string.IsNullOrEmpty(query.Query))
+        {
+            var hitIds = await jobSearchRepository
+                .SearchFromCompanyAsync(query.CompanyId, query.Query, cancellationToken);
+
+            dbQuery = dbQuery
+                .Where(job => hitIds.Contains(job.Id));
+        }
 
         if (query.MustHaveSalaryRecord is not null && query.MustHaveSalaryRecord.Value)
             dbQuery = dbQuery.Where(job => job.SalaryInfo != null);
@@ -45,36 +60,67 @@ public class GetCompanyJobsHandler(
             dbQuery = dbQuery.Where(job => job.JobContractTypes!.Any(jct => query.ContractTypeIds.Contains(jct.Id)));
 
         var count = await dbQuery.CountAsync(cancellationToken);
-
-        var jobs = await dbQuery
+        
+        List<(Job, bool)> jobsWithIsBookmarked = [];
+        
+        var paginatedDbQuery = dbQuery
             .OrderByDescending(job => job.DateTimePublishedUtc)
             .Skip((query.Page - 1) * query.Size)
-            .Take(query.Size)
-            .ToListAsync(cancellationToken);
-        
-        var lastAvatar = await context.CompanyAvatars
-            .Where(a => a.CompanyId == query.CompanyId)
-            .Where(a => !a.IsDeleted && a.IsUploadedSuccessfully)
-            .OrderBy(a => a.DateTimeUpdatedUtc)
-            .LastOrDefaultAsync(cancellationToken);
+            .Take(query.Size);
 
-        string? companyLogoLink = null;
-            
-        if (lastAvatar is not null)
+        if (currentUserId is null)
         {
-            companyLogoLink = await fileStorageService.GetDownloadUrlAsync(FileStorageBucketName.CompanyAvatars,
-                lastAvatar.GuidIdentifier, lastAvatar.Extension, cancellationToken);
+            var jobs = await paginatedDbQuery.ToListAsync(cancellationToken);
+
+            jobsWithIsBookmarked = jobs.Select(j => (j, false)).ToList();
+        }
+        else
+        {
+            jobsWithIsBookmarked = await paginatedDbQuery
+                .Select(j => new ValueTuple<Job, bool>
+                (
+                    j,
+                    j.UsersWhoBookmarked!.Any(u => u.Id == currentUserId)
+                ))
+                .ToListAsync(cancellationToken);
+        }
+
+        if (jobsWithIsBookmarked.Count == 0)
+        {
+            return Result.NotFound();
+        }
+        
+        List<JobCardDto> jobCardDtos = [];
+        
+        var avatar = jobsWithIsBookmarked.First().Item1
+            .JobFolder?.Company?.CompanyAvatars?
+            .GetLatestAvailableAvatar();
+
+        string? avatarLink = null;
+
+        if (avatar is not null)
+        {
+            avatarLink = await fileStorageService.GetDownloadUrlAsync(FileStorageBucketName.UserAvatars, 
+                avatar.GuidIdentifier, avatar.Extension, cancellationToken);
+        }
+        
+        foreach (var (job, isBookmarked) in jobsWithIsBookmarked)
+        {
+            // todo work on locations
+            
+            var jobCardDto = new JobCardDto(job.Id, job.JobFolder!.CompanyId, avatarLink,
+                job.JobFolder!.Company!.Name, [], job.Title, job.DateTimePublishedUtc,
+                job.DateTimeExpiringUtc, job.SalaryInfo?.ToJobSalaryInfoDto(),
+                job.EmploymentOptions!.Select(eo => eo.Id).ToList(),
+                job.JobContractTypes!.Select(ct => ct.Id).ToList(), isBookmarked);
+            
+            jobCardDtos.Add(jobCardDto);
         }
 
         var paginationResponse = new PaginationResponse(query.Page, query.Size, count);
 
-        var jobCardDtos = jobs
-            .Select((x, i) =>
-                mapper.Map<JobCardDto>(x, opt => { opt.State = companyLogoLink; }))
-            .ToList();
-
         var response = new GetCompanyJobsResult(jobCardDtos, paginationResponse);
 
-        return response;
+        return Result.Success(response);
     }
 }
