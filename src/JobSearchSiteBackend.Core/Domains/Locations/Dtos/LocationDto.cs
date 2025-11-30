@@ -1,4 +1,3 @@
 ﻿namespace JobSearchSiteBackend.Core.Domains.Locations.Dtos;
 
-public record LocationDto(long Id, long CountryId, string Name,
-    ICollection<string> Subdivisions, string? Description, string? Code);
+public record LocationDto(long Id, long CountryId, string FullName, string? Description, string? Code);

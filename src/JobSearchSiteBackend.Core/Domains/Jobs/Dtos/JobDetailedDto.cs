@@ -5,10 +5,10 @@ namespace JobSearchSiteBackend.Core.Domains.Jobs.Dtos;
 public record JobDetailedDto(
     long Id,
     long CompanyId,
-    string? CompanyLogoLink,
+    string? CompanyAvatarLink,
     string CompanyName,
     string? CompanyDescription,
-    ICollection<LocationDto> Locations, // todo stringlocationdto??
+    ICollection<LocationDto> Locations,
     long CategoryId,
     string Title,
     string? Description,
@@ -18,7 +18,7 @@ public record JobDetailedDto(
     ICollection<string> Requirements,
     ICollection<string> NiceToHaves,
     JobSalaryInfoDto? SalaryInfo,
-    ICollection<long>? EmploymentTypeIds,
+    ICollection<long>? EmploymentOptionIds,
     ICollection<long>? ContractTypeIds,
     bool IsBookmarked,
     long? ApplicationId);

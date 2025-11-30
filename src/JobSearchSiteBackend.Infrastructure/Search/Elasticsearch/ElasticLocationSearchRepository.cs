@@ -62,13 +62,14 @@ public class ElasticLocationSearchRepository(IElasticClient client) : ILocationS
                             .Type(NumberType.Long)
                         )
                         .Text(t => t
-                            .Name(n => n.Name)
+                            .Name(n => n.FullName)
                         )
                         .Text(t => t
                             .Name(n => n.Description)
                         )
-                        .Text(t => t
-                            .Name(n => n.Subdivisions)
+                        .Number(t => t
+                            .Name(n => n.ParentIds)
+                            .Type(NumberType.Long)
                         )
                         .Text(t => t
                             .Name(n => n.Code)
@@ -148,8 +149,8 @@ public class ElasticLocationSearchRepository(IElasticClient client) : ILocationS
         return resultIds;
     }
     
-    public async Task<ICollection<long>> SearchFromCountryIdAsync(long countryId, string query,
-        CancellationToken cancellationToken = default)
+    public async Task<ICollection<LocationSearchModel>> SearchFromCountryIdAsync(long countryId, string query,
+        int size, CancellationToken cancellationToken = default)
     {
         var searchResponse = await client.SearchAsync<LocationSearchModel>(s => s
                 .Source(src => src.
@@ -173,12 +174,13 @@ public class ElasticLocationSearchRepository(IElasticClient client) : ILocationS
                 )
                 .Sort(sort => sort
                     .Descending(SortSpecialField.Score)
-                ), 
+                )
+                .Size(size), 
             cancellationToken
         );
 
-        var resultIds = searchResponse.Hits.Select(h => h.Source.Id).ToList();
+        var results = searchResponse.Hits.Select(h => h.Source).ToList();
         
-        return resultIds;
+        return results;
     }
 }

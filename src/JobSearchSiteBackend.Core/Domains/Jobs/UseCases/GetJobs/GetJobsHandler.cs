@@ -1,15 +1,14 @@
-﻿using JobSearchSiteBackend.Core.Domains._Shared.Pagination;
+﻿using Ardalis.Result;
+using JobSearchSiteBackend.Core.Domains._Shared.Pagination;
 using JobSearchSiteBackend.Core.Domains._Shared.UseCaseStructure;
+using JobSearchSiteBackend.Core.Domains.Companies.Persistence;
 using JobSearchSiteBackend.Core.Domains.Jobs.Dtos;
 using JobSearchSiteBackend.Core.Domains.Jobs.Search;
-using Microsoft.EntityFrameworkCore;
-using Ardalis.Result;
-using AutoMapper;
-using JobSearchSiteBackend.Core.Domains.Companies.Persistence;
-using JobSearchSiteBackend.Core.Domains.Locations.Dtos;
+using JobSearchSiteBackend.Core.Domains.Locations;
 using JobSearchSiteBackend.Core.Persistence;
 using JobSearchSiteBackend.Core.Services.Auth;
 using JobSearchSiteBackend.Core.Services.FileStorage;
+using Microsoft.EntityFrameworkCore;
 
 namespace JobSearchSiteBackend.Core.Domains.Jobs.UseCases.GetJobs;
 
@@ -26,6 +25,7 @@ public class GetJobsHandler(
         
         var dbIncludeQuery = context.Jobs
             .AsNoTracking()
+            .Include(j => j.Locations)
             .Include(j => j.JobContractTypes)
             .Include(j => j.EmploymentOptions)
             .Include(j => j.JobFolder)
@@ -106,11 +106,9 @@ public class GetJobsHandler(
                     avatar.GuidIdentifier, avatar.Extension, cancellationToken);
             }
             
-            // todo work on locations
-            
-            var jobCardDto = new JobCardDto(job.Id, job.JobFolder!.CompanyId, avatarLink,
-                job.JobFolder!.Company!.Name, [], job.Title, job.DateTimePublishedUtc,
-                job.DateTimeExpiringUtc, job.SalaryInfo?.ToJobSalaryInfoDto(),
+            var jobCardDto = new JobCardDto(job.Id, job.JobFolder!.CompanyId, avatarLink, job.JobFolder!.Company!.Name,
+                job.Locations!.Select(l => l.ToLocationDto()).ToList(),
+                job.Title, job.DateTimePublishedUtc, job.DateTimeExpiringUtc, job.SalaryInfo?.ToJobSalaryInfoDto(),
                 job.EmploymentOptions!.Select(eo => eo.Id).ToList(),
                 job.JobContractTypes!.Select(ct => ct.Id).ToList(), isBookmarked);
             

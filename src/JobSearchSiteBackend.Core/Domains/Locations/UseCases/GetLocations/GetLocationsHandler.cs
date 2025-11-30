@@ -10,24 +10,18 @@ using Microsoft.EntityFrameworkCore;
 namespace JobSearchSiteBackend.Core.Domains.Locations.UseCases.GetLocations;
 
 public class GetLocationsHandler(
-    MainDataContext context,
-    ILocationSearchRepository locationSearchRepository,
-    IMapper mapper)
+    ILocationSearchRepository locationSearchRepository)
     : IRequestHandler<GetLocationsQuery, Result<GetLocationsResult>>
 {
     public async Task<Result<GetLocationsResult>> Handle(GetLocationsQuery query,
         CancellationToken cancellationToken = default)
     {
-        var hitIds = await locationSearchRepository
-            .SearchFromCountryIdAsync(query.CountryId, query.Query, cancellationToken);
+        var hits = await locationSearchRepository
+            .SearchFromCountryIdAsync(query.CountryId, query.Query, query.Size, cancellationToken);
 
-        var dbQuery = context.Locations
-            .Where(l => hitIds.Contains(l.Id))
-            .Take(10);
-
-        var locationDtos = await dbQuery
-            .ProjectTo<LocationDto>(mapper.ConfigurationProvider)
-            .ToListAsync(cancellationToken);
+        var locationDtos = hits
+            .Select(h => new LocationDto(h.Id, h.CountryId,h.FullName, h.Description, h.Code))
+            .ToList();
 
         var response = new GetLocationsResult(locationDtos);
 

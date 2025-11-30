@@ -4,6 +4,6 @@ namespace JobSearchSiteBackend.Core.Domains.Locations.Search;
 
 public interface ILocationSearchRepository : ISearchRepository<LocationSearchModel>
 {
-    Task<ICollection<long>> SearchFromCountryIdAsync(long countryId, string query,
+    Task<ICollection<LocationSearchModel>> SearchFromCountryIdAsync(long countryId, string query, int size,
         CancellationToken cancellationToken = default);
 }

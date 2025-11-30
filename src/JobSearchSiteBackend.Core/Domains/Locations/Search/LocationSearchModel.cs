@@ -6,8 +6,8 @@ public record LocationSearchModel
 (
     long Id,
     long CountryId,
-    string Name,
-    ICollection<string> Subdivisions,
+    string FullName,
+    ICollection<long> ParentIds,
     string? Description,
     string? Code
 ) : ISearchModelWithId;
