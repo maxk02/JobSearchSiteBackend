@@ -14,8 +14,7 @@ namespace JobSearchSiteBackend.Core.Domains.Jobs.UseCases.AddJob;
 
 public class AddJobHandler(
     ICurrentAccountService currentAccountService,
-    MainDataContext context,
-    IMapper mapper) : IRequestHandler<AddJobCommand, Result<AddJobResult>>
+    MainDataContext context) : IRequestHandler<AddJobCommand, Result<AddJobResult>>
 {
     public async Task<Result<AddJobResult>> Handle(AddJobCommand command, CancellationToken cancellationToken = default)
     {
@@ -32,7 +31,7 @@ public class AddJobHandler(
             command.Responsibilities,
             command.Requirements,
             command.NiceToHaves,
-            mapper.Map<JobSalaryInfo>(command.JobSalaryInfoDto),
+            command.JobSalaryInfoDto?.ToJobSalaryInfo(),
             EmploymentOption.AllValues.Where(x => command.EmploymentOptionIds.Contains(x.Id)).ToList());
 
         var validator = new JobValidator();
@@ -53,8 +52,6 @@ public class AddJobHandler(
 
         if (jobFolder is null)
             return Result.Error();
-
-        var countryId = jobFolder.Company!.CountryId;
 
         var hasPermissionInRequestedFolderOrAncestors =
             await context.JobFolderRelations

@@ -16,8 +16,7 @@ namespace JobSearchSiteBackend.Core.Domains.Companies.UseCases.GetCompanyEmploye
 public class GetCompanyEmployeesHandler(
     ICurrentAccountService currentAccountService,
     IFileStorageService  fileStorageService,
-    MainDataContext context,
-    IMapper mapper)
+    MainDataContext context)
     : IRequestHandler<GetCompanyEmployeesQuery, Result<GetCompanyEmployeesResult>>
 {
     public async Task<Result<GetCompanyEmployeesResult>> Handle(GetCompanyEmployeesQuery query,

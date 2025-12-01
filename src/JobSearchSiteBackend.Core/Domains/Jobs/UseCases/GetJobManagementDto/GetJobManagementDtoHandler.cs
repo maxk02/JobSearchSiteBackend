@@ -5,6 +5,7 @@ using JobSearchSiteBackend.Core.Domains.JobFolderClaims;
 using JobSearchSiteBackend.Core.Domains.JobFolders;
 using JobSearchSiteBackend.Core.Domains.JobFolders.Persistence;
 using JobSearchSiteBackend.Core.Domains.Jobs.Dtos;
+using JobSearchSiteBackend.Core.Domains.Locations;
 using JobSearchSiteBackend.Core.Domains.Locations.Dtos;
 using JobSearchSiteBackend.Core.Persistence;
 using JobSearchSiteBackend.Core.Services.Auth;
@@ -18,8 +19,7 @@ public class GetJobManagementDtoHandler(
     ICurrentAccountService currentAccountService,
     MainDataContext context,
     IFileStorageService fileStorageService,
-    ICompanyLastVisitedJobsCacheRepository cacheRepo,
-    IMapper mapper) : IRequestHandler<GetJobManagementDtoQuery, Result<GetJobManagementDtoResult>>
+    ICompanyLastVisitedJobsCacheRepository cacheRepo) : IRequestHandler<GetJobManagementDtoQuery, Result<GetJobManagementDtoResult>>
 {
     public async Task<Result<GetJobManagementDtoResult>> Handle(GetJobManagementDtoQuery query,
         CancellationToken cancellationToken = default)
@@ -71,7 +71,7 @@ public class GetJobManagementDtoHandler(
             companyLogoLink,
             job.JobFolder!.Company!.Name,
             job.JobFolder.Company.Description,
-            mapper.Map<IList<LocationDto>>(job.Locations),
+            job.Locations!.Select(l => l.ToLocationDto()).ToList(),
             job.CategoryId,
             job.Title,
             job.Description,
@@ -80,7 +80,7 @@ public class GetJobManagementDtoHandler(
             job.Responsibilities!,
             job.Requirements!,
             job.NiceToHaves!,
-            mapper.Map<JobSalaryInfoDto>(job.SalaryInfo),
+            job.SalaryInfo?.ToJobSalaryInfoDto(),
             job.EmploymentOptions!.Select(x => x.Id).ToList(),
             job.JobContractTypes!.Select(x => x.Id).ToList(),
             job.JobFolderId,

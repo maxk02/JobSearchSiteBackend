@@ -12,8 +12,7 @@ namespace JobSearchSiteBackend.Core.Domains.Companies.UseCases.GetCompanyManagem
 public class GetCompanyManagementNavbarDtoHandler(
     ICurrentAccountService currentAccountService,
     IFileStorageService fileStorageService,
-    MainDataContext context,
-    IMapper mapper) : IRequestHandler<GetCompanyManagementNavbarDtoQuery, Result<GetCompanyManagementNavbarDtoResult>>
+    MainDataContext context) : IRequestHandler<GetCompanyManagementNavbarDtoQuery, Result<GetCompanyManagementNavbarDtoResult>>
 {
     public async Task<Result<GetCompanyManagementNavbarDtoResult>> Handle(GetCompanyManagementNavbarDtoQuery query,
         CancellationToken cancellationToken = default)

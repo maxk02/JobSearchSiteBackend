@@ -9,7 +9,6 @@ namespace JobSearchSiteBackend.Core.Domains.PersonalFiles.UseCases.GetDownloadLi
 
 public class GetDownloadLinkHandler(
     MainDataContext context,
-    IMapper mapper,
     ICurrentAccountService currentAccountService,
     IFileStorageService fileStorageService)
     : IRequestHandler<GetDownloadLinkQuery, Result<GetDownloadLinkResult>>

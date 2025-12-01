@@ -1,13 +1,11 @@
-﻿using AutoMapper;
-using JobSearchSiteBackend.Core.Domains.Companies.Dtos;
+﻿using JobSearchSiteBackend.Core.Domains.Companies.Dtos;
 
 namespace JobSearchSiteBackend.Core.Domains.Companies;
 
-public class CompanyDtoMappings : Profile
+public static class CompanyDtoMappings
 {
-    //todo dto mappings
-    public CompanyDtoMappings()
+    public static CompanyDto ToCompanyDto(this Company company, string? avatarLink)
     {
-        CreateMap<Company, CompanyDto>();
+        return new CompanyDto(company.Id, company.Name, company.Description, company.CountryId, avatarLink);
     }
 }

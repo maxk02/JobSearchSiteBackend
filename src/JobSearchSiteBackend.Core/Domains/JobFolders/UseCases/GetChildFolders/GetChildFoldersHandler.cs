@@ -14,8 +14,7 @@ namespace JobSearchSiteBackend.Core.Domains.JobFolders.UseCases.GetChildFolders;
 
 public class GetChildFoldersHandler(
     ICurrentAccountService currentAccountService,
-    MainDataContext context,
-    IMapper mapper) : IRequestHandler<GetChildFoldersQuery, Result<GetChildFoldersResult>>
+    MainDataContext context) : IRequestHandler<GetChildFoldersQuery, Result<GetChildFoldersResult>>
 {
     public async Task<Result<GetChildFoldersResult>> Handle(GetChildFoldersQuery query,
         CancellationToken cancellationToken = default)
@@ -26,20 +25,31 @@ public class GetChildFoldersHandler(
         if (jobFolder is null)
             return Result<GetChildFoldersResult>.NotFound();
 
-        var hasReadClaim = await context.JobFolderRelations
-            .GetThisOrAncestorWhereUserHasClaim(query.Id, currentUserId,
-                JobFolderClaim.CanReadJobs.Id)
-            .AnyAsync(cancellationToken);
-
-        if (!hasReadClaim)
-            return Result<GetChildFoldersResult>.Forbidden();
-
-        var childJobFolderDtos = await context.JobFolderRelations
-            .Where(jfc => jfc.AncestorId == query.Id)
-            .Where(jfc => jfc.Depth == 1)
-            .ProjectTo<JobFolderMinimalDto>(mapper.ConfigurationProvider)
+        var claimIdListForThisAndAncestors = await context.JobFolderRelations
+            .GetClaimIdsForThisAndAncestors(query.Id, currentUserId)
             .ToListAsync(cancellationToken);
 
-        return new GetChildFoldersResult(childJobFolderDtos);
+        if (!claimIdListForThisAndAncestors.Contains(JobFolderClaim.CanReadJobs.Id))
+            return Result<GetChildFoldersResult>.Forbidden();
+
+        var queriedChildJobFolders = await context.JobFolderRelations
+            .Where(jfc => jfc.AncestorId == query.Id)
+            .Where(jfc => jfc.Depth == 1)
+            .Select(jfr => new
+            {
+                JobFolderId = jfr.DescendantId,
+                JobFolderName = jfr.Descendant!.Name,
+                ClaimIds = context.JobFolderRelations.GetClaimIdsForThisAndAncestors(jfr.DescendantId, currentUserId)
+            })
+            .ToListAsync(cancellationToken);
+        
+        var jobFolderMinimalDtos = queriedChildJobFolders
+            .Select(anonType => new JobFolderMinimalDto(anonType.JobFolderId,
+                anonType.JobFolderName, anonType.ClaimIds.ToList()))
+            .ToList();
+
+        var result = new GetChildFoldersResult(jobFolderMinimalDtos);
+
+        return Result.Success(result);
     }
 }

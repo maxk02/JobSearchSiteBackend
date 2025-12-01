@@ -3,6 +3,7 @@ using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using JobSearchSiteBackend.Core.Domains._Shared.Pagination;
 using JobSearchSiteBackend.Core.Domains._Shared.UseCaseStructure;
+using JobSearchSiteBackend.Core.Domains.PersonalFiles;
 using JobSearchSiteBackend.Core.Domains.PersonalFiles.Dtos;
 using JobSearchSiteBackend.Core.Persistence;
 using JobSearchSiteBackend.Core.Services.Auth;
@@ -26,11 +27,14 @@ public class GetPersonalFilesHandler(
         
         var count = await dbQuery.CountAsync(cancellationToken);
         
-        var personalFileInfoDtos = await dbQuery
+        var personalFiles = await dbQuery
             .Skip((query.Page - 1) * query.Size)
             .Take(query.Size)
-            .ProjectTo<PersonalFileInfoDto>(mapper.ConfigurationProvider)
             .ToListAsync(cancellationToken);
+
+        var personalFileInfoDtos = personalFiles
+            .Select(pf => pf.ToPersonalFileInfoDto())
+            .ToList();
 
         var paginationResponse = new PaginationResponse(query.Page,
             query.Size, count);

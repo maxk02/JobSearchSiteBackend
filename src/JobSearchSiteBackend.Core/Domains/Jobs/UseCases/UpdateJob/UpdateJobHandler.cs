@@ -17,10 +17,7 @@ namespace JobSearchSiteBackend.Core.Domains.Jobs.UseCases.UpdateJob;
 
 public class UpdateJobHandler(
     ICurrentAccountService currentAccountService,
-    IJobSearchRepository jobSearchRepository,
-    IBackgroundJobService backgroundJobService,
-    MainDataContext context,
-    IMapper mapper) : IRequestHandler<UpdateJobCommand, Result>
+    MainDataContext context) : IRequestHandler<UpdateJobCommand, Result>
 {
     public async Task<Result> Handle(UpdateJobCommand command, CancellationToken cancellationToken = default)
     {
@@ -34,8 +31,7 @@ public class UpdateJobHandler(
 
         if (job is null)
             return Result.Error();
-
-        var countryId = job.JobFolder!.Company!.CountryId;
+        
         var companyId = job.JobFolder!.CompanyId;
 
         var hasPermissionInCurrentFolderOrAncestors =
@@ -106,7 +102,7 @@ public class UpdateJobHandler(
             job.NiceToHaves = command.NiceToHaves;
 
         if (command.SalaryInfo is not null)
-            job.SalaryInfo = mapper.Map<JobSalaryInfo>(command.SalaryInfo);
+            job.SalaryInfo = command.SalaryInfo.ToJobSalaryInfo(command.Id);
         
         if (command.EmploymentOptionIds is not null)
         {

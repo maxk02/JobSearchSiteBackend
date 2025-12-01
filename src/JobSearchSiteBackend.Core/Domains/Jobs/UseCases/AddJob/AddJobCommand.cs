@@ -8,7 +8,7 @@ public record AddJobCommand(
     long JobFolderId,
     long CategoryId,
     string Title,
-    string? Description,
+    string Description,
     bool IsPublic,
     DateTime DateTimeExpiringUtc,
     ICollection<string> Responsibilities,

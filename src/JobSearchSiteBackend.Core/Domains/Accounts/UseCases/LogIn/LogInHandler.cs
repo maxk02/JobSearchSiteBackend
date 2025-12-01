@@ -5,10 +5,14 @@ using Ardalis.Result;
 using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using JobSearchSiteBackend.Core.Domains.Accounts.Dtos;
+using JobSearchSiteBackend.Core.Domains.Companies;
 using JobSearchSiteBackend.Core.Domains.Companies.Dtos;
+using JobSearchSiteBackend.Core.Domains.Companies.Persistence;
+using JobSearchSiteBackend.Core.Domains.UserProfiles.Persistence;
 using JobSearchSiteBackend.Core.Persistence;
 using JobSearchSiteBackend.Core.Services.Caching;
 using JobSearchSiteBackend.Core.Services.Cookies;
+using JobSearchSiteBackend.Core.Services.FileStorage;
 using Microsoft.EntityFrameworkCore;
 
 namespace JobSearchSiteBackend.Core.Domains.Accounts.UseCases.LogIn;
@@ -16,10 +20,10 @@ namespace JobSearchSiteBackend.Core.Domains.Accounts.UseCases.LogIn;
 public class LogInHandler(UserManager<MyIdentityUser> userManager,
     MainDataContext context,
     IJwtTokenGenerationService jwtTokenGenerationService,
-    IMapper mapper,
     IUserSessionCacheRepository sessionCache,
     ICurrentAccountService currentAccountService,
-    ICookieService cookieService) 
+    ICookieService cookieService,
+    IFileStorageService fileStorageService) 
     : IRequestHandler<LogInCommand, Result<LogInResult>>
 {
     public async Task<Result<LogInResult>> Handle(LogInCommand command, CancellationToken cancellationToken = default)
@@ -32,42 +36,62 @@ public class LogInHandler(UserManager<MyIdentityUser> userManager,
         var account = await userManager.FindByEmailAsync(command.Email);
 
         if (account is null)
-            return Result<LogInResult>.NotFound();
+            return Result.NotFound();
 
         var isPasswordCorrect = await userManager.CheckPasswordAsync(account, command.Password);
 
         if (!isPasswordCorrect)
-            return Result<LogInResult>.Unauthorized();
+            return Result.Unauthorized();
         
         var isEmailConfirmed = await userManager.IsEmailConfirmedAsync(account);
 
         var userProfileData = await context.UserProfiles
             .Where(u => u.Id == account.Id)
-            .Select(u => new { u.FirstName, u.LastName })
+            .Select(u => new { u.FirstName, u.LastName, u.UserAvatars })
             .SingleOrDefaultAsync(cancellationToken);
 
-        var fullName = userProfileData is not null ? $"{userProfileData.FirstName} {userProfileData.LastName}" : null;
-        var avatarLink = ""; // todo
+        if (userProfileData is null)
+        {
+            return Result.Error();
+        }
+
+        var fullName = $"{userProfileData.FirstName} {userProfileData.LastName}";
+
+        var avatar = userProfileData.UserAvatars?.GetLatestAvailableAvatar();
         
-        var companyInfoDtos = await context.Companies
-            .Where(c => c.UserCompanyClaims!.Any(ucc => ucc.UserId == account.Id))
-            .Distinct()
-            .ProjectTo<CompanyDto>(mapper.ConfigurationProvider)
+        string? avatarLink = null;
+
+        if (avatar is not null)
+        {
+            avatarLink = await fileStorageService.GetDownloadUrlAsync(FileStorageBucketName.UserAvatars, 
+                avatar.GuidIdentifier, avatar.Extension, cancellationToken);
+        }
+        
+        var companiesWhereHasPermissions = await context.Companies
+            .Include(c => c.CompanyAvatars)
+            .Where(c => c.JobFolders!.Any(jf => jf.UserJobFolderClaims!.Any(ujfc => ujfc.UserId == account.Id))
+            || c.UserCompanyClaims!.Any(ucc => ucc.UserId == account.Id))
             .ToListAsync(cancellationToken);
+
+        List<CompanyDto> companyDtoList = [];
+
+        foreach (var company in companiesWhereHasPermissions)
+        {
+            string? companyAvatarLink = null;
+            
+            var companyAvatar = company.CompanyAvatars?.GetLatestAvailableAvatar();
+
+            if (companyAvatar is not null)
+            {
+                companyAvatarLink = await fileStorageService.GetDownloadUrlAsync(FileStorageBucketName.CompanyAvatars, 
+                    companyAvatar.GuidIdentifier, companyAvatar.Extension, cancellationToken);
+            }
+            
+            companyDtoList.Add(company.ToCompanyDto(companyAvatarLink));
+        }
         
-        var companyInfoDtosFromFolders = await context.Companies
-            .Where(c => c.JobFolders!.Any(jf => jf.UserJobFolderClaims!.Any(ujfc => ujfc.UserId == account.Id)))
-            .Distinct()
-            .ProjectTo<CompanyDto>(mapper.ConfigurationProvider)
-            .ToListAsync(cancellationToken);
-        
-        var combinedCompanyInfoDtos = companyInfoDtos
-            .Concat(companyInfoDtosFromFolders)
-            .DistinctBy(c => c.Id)
-            .ToList();
-        
-        var accountDataDto = new AccountDataDto(account.Id, command.Email, fullName, avatarLink, combinedCompanyInfoDtos); // todo avatar
-        
+        var accountDataDto = new AccountDataDto(account.Id, command.Email,
+            fullName, avatarLink, companyDtoList);
         
         // token generation + session adding
         

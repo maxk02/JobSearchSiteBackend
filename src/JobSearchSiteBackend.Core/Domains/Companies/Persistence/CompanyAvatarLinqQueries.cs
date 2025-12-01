@@ -19,4 +19,6 @@ public static class CompanyAvatarLinqQueries
             .OrderByDescending(av => av.DateTimeUpdatedUtc)
             .FirstOrDefault();
     }
+    
+    
 }
