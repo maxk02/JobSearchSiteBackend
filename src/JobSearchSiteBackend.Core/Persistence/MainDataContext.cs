@@ -37,6 +37,8 @@ public class MainDataContext : IdentityDbContext<MyIdentityUser, MyIdentityRole,
     public DbSet<CompanyClaim> CompanyClaims { get; set; }
     public DbSet<UserCompanyClaim> UserCompanyClaims { get; set; }
     public DbSet<JobFolderClaim> JobFolderClaims { get; set; }
+    public DbSet<UserJobApplicationBookmark> UserJobApplicationBookmarks { get; set; }
+    public DbSet<UserJobBookmark> UserJobBookmarks { get; set; }
     public DbSet<UserJobFolderClaim> UserJobFolderClaims { get; set; }
     public DbSet<UserProfile> UserProfiles { get; set; }
     public DbSet<UserAvatar>  UserAvatars { get; set; }

@@ -27,4 +27,5 @@ public class JobApplication : IEntityWithId, IEntityWithDateTimeCreatedUtc
     public UserProfile? User { get; private set; }
     public ICollection<PersonalFile>? PersonalFiles { get; set; }
     public ICollection<JobApplicationTag>? Tags { get; set; }
+    public ICollection<UserJobApplicationBookmark>? UserJobApplicationBookmarks { get; set; }
 }

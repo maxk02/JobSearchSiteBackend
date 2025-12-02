@@ -36,9 +36,10 @@ public class JobConfiguration : IEntityTypeConfiguration<Job>
             .OnDelete(DeleteBehavior.Cascade);
 
         builder
-            .HasMany(job => job.UsersWhoBookmarked)
-            .WithMany(user => user.BookmarkedJobs)
-            .UsingEntity(junctionEntityBuilder => junctionEntityBuilder.ToTable("JobBookmarks"));
+            .HasMany(job => job.UserJobBookmarks)
+            .WithOne(ujb => ujb.Job)
+            .HasForeignKey(ujb => ujb.JobId)
+            .OnDelete(DeleteBehavior.Cascade);
 
         builder
             .HasOne(job => job.SalaryInfo)

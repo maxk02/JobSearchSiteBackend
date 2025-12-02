@@ -56,7 +56,7 @@ public class GetJobHandler(
             
             isBookmarked = await context.Jobs
                 .Where(j => j.Id == query.Id)
-                .Where(j => j.UsersWhoBookmarked!.Any(u => u.Id == currentUserId.Value))
+                .Where(j => j.UserJobBookmarks!.Any(u => u.UserId == currentUserId.Value))
                 .AnyAsync(cancellationToken);
         }
         else

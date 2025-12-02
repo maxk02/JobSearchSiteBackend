@@ -82,7 +82,7 @@ public class GetJobsHandler(
                 .Select(j => new ValueTuple<Job, bool>
                 (
                     j,
-                    j.UsersWhoBookmarked!.Any(u => u.Id == currentUserId)
+                    j.UserJobBookmarks!.Any(ujb => ujb.UserId == currentUserId)
                 ))
                 .ToListAsync(cancellationToken);
         }
@@ -102,7 +102,7 @@ public class GetJobsHandler(
 
             if (avatar is not null)
             {
-                avatarLink = await fileStorageService.GetDownloadUrlAsync(FileStorageBucketName.UserAvatars, 
+                avatarLink = await fileStorageService.GetDownloadUrlAsync(FileStorageBucketName.CompanyAvatars, 
                     avatar.GuidIdentifier, avatar.Extension, cancellationToken);
             }
             

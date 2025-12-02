@@ -37,15 +37,13 @@ public class UserProfile : IEntityWithId
     public ICollection<PersonalFile>? PersonalFiles { get; set; }
     
     public ICollection<JobApplication>? JobApplications { get; set; }
-    public ICollection<Job>? BookmarkedJobs { get; set; }
-    public ICollection<Company>? BookmarkedCompanies { get; set; }
+    public ICollection<UserJobBookmark>? UserJobBookmarks { get; set; }
+    // public ICollection<Company>? BookmarkedCompanies { get; set; }
     
-    public ICollection<JobApplication>? BookmarkedJobApplications { get; set; }
+    public ICollection<UserJobApplicationBookmark>? UserJobApplicationBookmarks { get; set; }
 
     public ICollection<UserCompanyClaim>? UserCompanyClaims { get; set; }
     public ICollection<UserJobFolderClaim>? UserJobFolderClaims { get; set; }
-    
-    // public ICollection<UserSession>? UserSessions { get; set; }
     
     public ICollection<UserAvatar>? UserAvatars { get; set; }
     

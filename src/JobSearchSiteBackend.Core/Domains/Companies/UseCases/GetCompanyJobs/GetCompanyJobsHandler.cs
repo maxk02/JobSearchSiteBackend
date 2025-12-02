@@ -82,7 +82,7 @@ public class GetCompanyJobsHandler(
                 .Select(j => new ValueTuple<Job, bool>
                 (
                     j,
-                    j.UsersWhoBookmarked!.Any(u => u.Id == currentUserId)
+                    j.UserJobBookmarks!.Any(u => u.UserId == currentUserId)
                 ))
                 .ToListAsync(cancellationToken);
         }

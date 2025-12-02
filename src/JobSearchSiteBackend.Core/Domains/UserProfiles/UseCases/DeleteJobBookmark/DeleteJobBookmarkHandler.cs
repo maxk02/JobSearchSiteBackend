@@ -13,21 +13,16 @@ public class DeleteJobBookmarkHandler(ICurrentAccountService currentAccountServi
     {
         var currentAccountId = currentAccountService.GetIdOrThrow();
 
-        var user = await context.UserProfiles
-            .Include(u => u.BookmarkedCompanies)
-            .FirstOrDefaultAsync(u => u.Id == currentAccountId, cancellationToken);
+        var userJobBookmark = await context.UserJobBookmarks
+            .Where(ujb => ujb.JobId == command.JobId && ujb.UserId == currentAccountId)
+            .SingleOrDefaultAsync(cancellationToken);
 
-        if (user is null)
+        if (userJobBookmark is null)
+        {
             return Result.Error();
+        }
         
-        var job = await context.Jobs
-            .FirstOrDefaultAsync(c => c.Id == command.JobId, cancellationToken);
-        
-        if (job is null)
-            return Result.Error();
-        
-        user.BookmarkedJobs?.Remove(job);
-        
+        context.UserJobBookmarks.Remove(userJobBookmark);
         await context.SaveChangesAsync(cancellationToken);
 
         return Result.Success();

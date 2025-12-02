@@ -30,5 +30,11 @@ public class JobApplicationConfiguration : IEntityTypeConfiguration<JobApplicati
             .WithOne(tag => tag.JobApplication)
             .HasForeignKey(tag => tag.JobApplicationId)
             .OnDelete(DeleteBehavior.Cascade);
+        
+        builder
+            .HasMany(job => job.UserJobApplicationBookmarks)
+            .WithOne(ujb => ujb.JobApplication)
+            .HasForeignKey(ujb => ujb.JobApplicationId)
+            .OnDelete(DeleteBehavior.Cascade);
     }
 }

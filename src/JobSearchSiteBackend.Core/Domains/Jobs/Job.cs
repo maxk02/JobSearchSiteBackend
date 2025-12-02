@@ -68,5 +68,5 @@ public class Job : IEntityWithId, IEntityWithUpdDelDate
     public ICollection<JobContractType>? JobContractTypes { get; set; }
     public ICollection<Location>? Locations { get; set; }
 
-    public ICollection<UserProfile>? UsersWhoBookmarked { get; set; }
+    public ICollection<UserJobBookmark>? UserJobBookmarks { get; set; }
 }

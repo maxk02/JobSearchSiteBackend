@@ -46,19 +46,16 @@ public class UserProfileConfiguration : IEntityTypeConfiguration<UserProfile>
             .OnDelete(DeleteBehavior.Cascade);
         
         builder
-            .HasMany(userProfile => userProfile.BookmarkedJobs)
-            .WithMany(job => job.UsersWhoBookmarked)
-            .UsingEntity(junctionEntityBuilder => junctionEntityBuilder.ToTable("JobBookmarks"));
+            .HasMany(userProfile => userProfile.UserJobBookmarks)
+            .WithOne(ujb => ujb.UserProfile)
+            .HasForeignKey(ujb => ujb.UserId)
+            .OnDelete(DeleteBehavior.Cascade);
         
         builder
-            .HasMany(userProfile => userProfile.BookmarkedCompanies)
-            .WithMany(company => company.UsersWhoBookmarked)
-            .UsingEntity(junctionEntityBuilder => junctionEntityBuilder.ToTable("CompanyBookmarks"));
-        
-        builder
-            .HasMany(userProfile => userProfile.BookmarkedJobApplications)
-            .WithMany()
-            .UsingEntity(junctionEntityBuilder => junctionEntityBuilder.ToTable("JobApplicationBookmarks"));
+            .HasMany(userProfile => userProfile.UserJobApplicationBookmarks)
+            .WithOne(ujb => ujb.UserProfile)
+            .HasForeignKey(ujb => ujb.UserId)
+            .OnDelete(DeleteBehavior.Cascade);
         
         builder
             .HasMany(userProfile => userProfile.UserAvatars)

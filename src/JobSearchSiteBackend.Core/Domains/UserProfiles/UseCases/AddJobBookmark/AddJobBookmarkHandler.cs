@@ -13,20 +13,9 @@ public class AddJobBookmarkHandler(ICurrentAccountService currentAccountService,
     {
         var currentAccountId = currentAccountService.GetIdOrThrow();
 
-        var user = await context.UserProfiles
-            .Include(u => u.BookmarkedCompanies)
-            .FirstOrDefaultAsync(u => u.Id == currentAccountId, cancellationToken);
-
-        if (user is null)
-            return Result.Error();
+        var userJobBookmark = new UserJobBookmark(currentAccountId, command.JobId);
         
-        var job = await context.Jobs
-            .FirstOrDefaultAsync(c => c.Id == command.JobId, cancellationToken);
-        
-        if (job is null)
-            return Result.Error();
-        
-        user.BookmarkedJobs?.Add(job);
+        context.UserJobBookmarks.Add(userJobBookmark);
         
         await context.SaveChangesAsync(cancellationToken);
 
