@@ -4,6 +4,7 @@ using AutoMapper.QueryableExtensions;
 using JobSearchSiteBackend.Core.Domains._Shared.Pagination;
 using JobSearchSiteBackend.Core.Domains._Shared.UseCaseStructure;
 using JobSearchSiteBackend.Core.Domains.JobApplications.Dtos;
+using JobSearchSiteBackend.Core.Domains.Jobs;
 using JobSearchSiteBackend.Core.Persistence;
 using JobSearchSiteBackend.Core.Services.Auth;
 using Microsoft.EntityFrameworkCore;
@@ -12,8 +13,7 @@ namespace JobSearchSiteBackend.Core.Domains.UserProfiles.UseCases.GetJobApplicat
 
 public class GetJobApplicationsHandler(
     ICurrentAccountService currentAccountService,
-    MainDataContext context,
-    IMapper mapper)
+    MainDataContext context)
     : IRequestHandler<GetJobApplicationsQuery, Result<GetJobApplicationsResult>>
 {
     public async Task<Result<GetJobApplicationsResult>> Handle(GetJobApplicationsQuery query,
@@ -22,16 +22,43 @@ public class GetJobApplicationsHandler(
         var currentAccountId = currentAccountService.GetIdOrThrow();
 
         var dbQuery = context.JobApplications
-            .AsNoTracking()
             .Where(jobApplication => jobApplication.UserId == currentAccountId);
-
+        
         var count = await dbQuery.CountAsync(cancellationToken);
 
-        var jobApplicationDtos = await dbQuery
+        var jobApplicationObjects = await dbQuery
+            .OrderByDescending(ja => ja.DateTimeCreatedUtc)
             .Skip((query.Page - 1) * query.Size)
             .Take(query.Size)
-            .ProjectTo<JobApplicationInUserProfileDto>(mapper.ConfigurationProvider)
+            .Select(ja => new
+            {
+                Id = ja.Id,
+                CompanyId = ja.Job!.JobFolder!.CompanyId,
+                CompanyName = ja.Job!.JobFolder!.Company!.Name,
+                JobId = ja.JobId,
+                JobTitle = ja.Job!.Title,
+                DateTimePublishedUtc = ja.Job!.DateTimePublishedUtc,
+                JobSalaryInfo = ja.Job!.SalaryInfo,
+                EmploymentTypeIds = ja.Job!.EmploymentOptions!.Select(eo => eo.Id),
+                DateTimeAppliedUtc = ja.DateTimeCreatedUtc,
+                Status = ja.Status
+            })
             .ToListAsync(cancellationToken);
+
+        var jobApplicationDtos = jobApplicationObjects
+            .Select(jao => new JobApplicationInUserProfileDto(
+                jao.Id,
+                jao.CompanyId,
+                jao.CompanyName,
+                jao.JobId,
+                jao.JobTitle,
+                jao.DateTimePublishedUtc,
+                jao.JobSalaryInfo?.ToJobSalaryInfoDto(),
+                jao.EmploymentTypeIds.ToList(),
+                jao.DateTimeAppliedUtc,
+                jao.Status
+                ))
+            .ToList();
         
         var paginationResponse = new PaginationResponse(query.Page,
             query.Size, count);

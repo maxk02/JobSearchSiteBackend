@@ -17,8 +17,7 @@ public class GetJobFolderHandler(
     ICurrentAccountService currentAccountService,
     MainDataContext context,
     IFileStorageService fileStorageService,
-    ICompanyLastVisitedFoldersCacheRepository cacheRepo,
-    IMapper mapper) : IRequestHandler<GetJobFolderQuery, Result<GetJobFolderResult>>
+    ICompanyLastVisitedFoldersCacheRepository cacheRepo) : IRequestHandler<GetJobFolderQuery, Result<GetJobFolderResult>>
 {
     public async Task<Result<GetJobFolderResult>> Handle(GetJobFolderQuery query,
         CancellationToken cancellationToken = default)
