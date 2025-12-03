@@ -13,8 +13,7 @@ namespace JobSearchSiteBackend.Core.Domains.UserProfiles.UseCases.GetPersonalFil
 
 public class GetPersonalFilesHandler(
     ICurrentAccountService currentAccountService,
-    MainDataContext context,
-    IMapper mapper) 
+    MainDataContext context) 
     : IRequestHandler<GetPersonalFilesQuery, Result<GetPersonalFilesResult>>
 {
     public async Task<Result<GetPersonalFilesResult>> Handle(GetPersonalFilesQuery query,

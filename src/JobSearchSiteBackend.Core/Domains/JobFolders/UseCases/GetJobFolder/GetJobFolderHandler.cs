@@ -1,6 +1,7 @@
 ﻿using Ardalis.Result;
 using AutoMapper;
 using JobSearchSiteBackend.Core.Domains._Shared.UseCaseStructure;
+using JobSearchSiteBackend.Core.Domains.Companies.Persistence;
 using JobSearchSiteBackend.Core.Domains.JobFolderClaims;
 using JobSearchSiteBackend.Core.Domains.JobFolders.Dtos;
 using JobSearchSiteBackend.Core.Domains.JobFolders.Persistence;
@@ -24,19 +25,35 @@ public class GetJobFolderHandler(
     {
         var currentUserId = currentAccountService.GetIdOrThrow();
 
-        var jobFolder = await context.JobFolders
-            .AsNoTracking()
-            .Include(jf => jf.Company)
-            .ThenInclude(c => c!.CompanyAvatars!
-                .Where(a => !a.IsDeleted && a.IsUploadedSuccessfully)
-                .OrderBy(a => a.DateTimeUpdatedUtc))
-            .Include(jf => jf.RelationsWhereThisIsDescendant!.Where(x => x.Depth == 1))
-            .Include(jf => jf.RelationsWhereThisIsAncestor!.Where(x => x.Depth == 1))
-            .ThenInclude(rel => rel.Descendant)
+        var dbQuery = context.JobFolders
             .Where(jf => jf.Id == query.Id)
-            .SingleOrDefaultAsync(cancellationToken);
+            .Select(jf => new
+            {
+                Id = jf.Id,
+                Name = jf.Name,
+                Description = jf.Description,
+                ParentId = jf.RelationsWhereThisIsDescendant!
+                    .Where(jfr => jfr.Depth == 1)
+                    .Select(x => x.AncestorId)
+                    .SingleOrDefault(),
+                CompanyId = jf.CompanyId,
+                CompanyName = jf.Company!.Name,
+                CompanyAvatars = jf.Company!.CompanyAvatars,
+                ChildrenWithClaimIds = jf.RelationsWhereThisIsAncestor!
+                    .Where(jfr => jfr.Depth == 1)
+                    .Select(jfr => new
+                    {
+                        ChildJobFolder = jfr.Descendant!,
+                        ClaimIds = jfr.Descendant!.UserJobFolderClaims!
+                            .Where(ujfc => ujfc.UserId == currentUserId)
+                            .Select(ujfc => ujfc.ClaimId)
+                    })
+                
+            });
+
+        var jobFolderObject = await dbQuery.SingleOrDefaultAsync(cancellationToken);
         
-        if (jobFolder is null)
+        if (jobFolderObject is null)
             return Result<GetJobFolderResult>.NotFound();
 
         var claimIdList = await context.JobFolderRelations
@@ -47,28 +64,31 @@ public class GetJobFolderHandler(
             return Result<GetJobFolderResult>.Forbidden();
         
         await cacheRepo.AddLastVisitedAsync(currentUserId.ToString(),
-            jobFolder.CompanyId.ToString(), jobFolder.Id.ToString());
+            jobFolderObject.CompanyId.ToString(), jobFolderObject.Id.ToString());
 
-        var lastAvatar = jobFolder.Company!.CompanyAvatars!.LastOrDefault();
-        string? companyLogoLink = null;
+        var lastAvatar = jobFolderObject.CompanyAvatars!.GetLatestAvailableAvatar();
+        string? avatarLink = null;
         
         if (lastAvatar is not null)
         {
-            companyLogoLink = await fileStorageService.GetDownloadUrlAsync(FileStorageBucketName.CompanyAvatars,
+            avatarLink = await fileStorageService.GetDownloadUrlAsync(FileStorageBucketName.CompanyAvatars,
                 lastAvatar.GuidIdentifier, lastAvatar.Extension, cancellationToken);
         }
         
         var jobFolderDetailedDto = new JobFolderDetailedDto(
-            jobFolder.Id,
-            jobFolder.Name,
-            jobFolder.Description,
+            jobFolderObject.Id,
+            jobFolderObject.Name,
+            jobFolderObject.Description,
             null, //todo
-            jobFolder.RelationsWhereThisIsDescendant!.Select(x => x.AncestorId).FirstOrDefault(),
-            jobFolder.CompanyId,
-            jobFolder.Company!.Name,
-            companyLogoLink,
+            jobFolderObject.ParentId,
+            jobFolderObject.CompanyId,
+            jobFolderObject.CompanyName,
+            avatarLink,
             claimIdList,
-            mapper.Map<List<JobFolderMinimalDto>>(jobFolder.RelationsWhereThisIsAncestor!.Select(rel => rel.Descendant))
+            jobFolderObject.ChildrenWithClaimIds
+                .Select(c => new JobFolderMinimalDto(c.ChildJobFolder.Id,
+                    c.ChildJobFolder.Name, c.ClaimIds.ToList()))
+                .ToList()
             );
 
         var response = new GetJobFolderResult(jobFolderDetailedDto);
