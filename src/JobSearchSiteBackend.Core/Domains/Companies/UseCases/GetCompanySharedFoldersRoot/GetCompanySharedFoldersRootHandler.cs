@@ -1,11 +1,7 @@
 ﻿using Ardalis.Result;
-using AutoMapper;
-using AutoMapper.QueryableExtensions;
 using JobSearchSiteBackend.Core.Domains._Shared.UseCaseStructure;
 using JobSearchSiteBackend.Core.Domains.JobFolderClaims;
-using JobSearchSiteBackend.Core.Domains.JobFolders;
 using JobSearchSiteBackend.Core.Domains.JobFolders.Dtos;
-using JobSearchSiteBackend.Core.Domains.JobFolders.UseCases.GetChildFolders;
 using JobSearchSiteBackend.Core.Persistence;
 using JobSearchSiteBackend.Core.Services.Auth;
 using Microsoft.EntityFrameworkCore;
@@ -14,8 +10,7 @@ namespace JobSearchSiteBackend.Core.Domains.Companies.UseCases.GetCompanySharedF
 
 public class GetCompanySharedFoldersRootHandler(
     ICurrentAccountService currentAccountService,
-    MainDataContext context,
-    IMapper mapper) : IRequestHandler<GetCompanySharedFoldersRootQuery, Result<GetCompanySharedFoldersRootResult>>
+    MainDataContext context) : IRequestHandler<GetCompanySharedFoldersRootQuery, Result<GetCompanySharedFoldersRootResult>>
 {
     public async Task<Result<GetCompanySharedFoldersRootResult>> Handle(GetCompanySharedFoldersRootQuery query,
         CancellationToken cancellationToken = default)
@@ -29,16 +24,31 @@ public class GetCompanySharedFoldersRootHandler(
                     jfc.ClaimId == JobFolderClaim.CanReadJobs.Id && jfc.UserId == currentUserId))
             .Select(jf => jf.Id);
 
-        var jobFolderDtosWithoutDescendants = await context.JobFolders
+        var jobFolderObjectsWithoutDescendants = await context.JobFolders
             .Where(jf => jobFolderIdsWherePermissionPresent.Contains(jf.Id))
             .Where(jf =>
                 !jf.RelationsWhereThisIsDescendant!.Any(r =>
                     jobFolderIdsWherePermissionPresent.Contains(r.AncestorId)))
-            .ProjectTo<JobFolderMinimalDto>(mapper.ConfigurationProvider)
+            .GroupBy(jf => new { jf.Id, jf.Name })
+            .Select(g => new
+            {
+                Id = g.Key.Id,
+                Name = g.Key.Name,
+                ClaimIds = g
+                    .SelectMany(jf => jf.RelationsWhereThisIsDescendant!
+                        .SelectMany(rel => rel.Descendant!.UserJobFolderClaims!
+                            .Where(ujfc => ujfc.UserId == currentUserId)))
+                    .Select(ujfc => ujfc.ClaimId)
+                    .Distinct()
+            })
             .ToListAsync(cancellationToken); // cutting folders whose ancestor is already present in output
         
-        var response = new GetCompanySharedFoldersRootResult(jobFolderDtosWithoutDescendants);
+        var jobFolderMinimalDtos = jobFolderObjectsWithoutDescendants
+            .Select(o => new JobFolderMinimalDto(o.Id, o.Name, o.ClaimIds.ToList()))
+            .ToList();
         
-        return Result.Success(response);
+        var result = new GetCompanySharedFoldersRootResult(jobFolderMinimalDtos);
+        
+        return Result.Success(result);
     }
 }

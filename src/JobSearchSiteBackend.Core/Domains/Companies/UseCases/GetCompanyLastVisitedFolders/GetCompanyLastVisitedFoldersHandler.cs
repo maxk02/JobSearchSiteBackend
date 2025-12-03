@@ -14,12 +14,12 @@ namespace JobSearchSiteBackend.Core.Domains.Companies.UseCases.GetCompanyLastVis
 public class GetCompanyLastVisitedFoldersHandler(
     ICurrentAccountService currentAccountService,
     MainDataContext context,
-    IMapper mapper,
     ICompanyLastVisitedFoldersCacheRepository cacheRepo
     ) : IRequestHandler<GetCompanyLastVisitedFoldersQuery,
     Result<GetCompanyLastVisitedFoldersResult>>
 {
-    public async Task<Result<GetCompanyLastVisitedFoldersResult>> Handle(GetCompanyLastVisitedFoldersQuery query,
+    public async Task<Result<GetCompanyLastVisitedFoldersResult>> Handle(
+        GetCompanyLastVisitedFoldersQuery query,
         CancellationToken cancellationToken = default)
     {
         var currentUserId = currentAccountService.GetIdOrThrow();
@@ -27,17 +27,34 @@ public class GetCompanyLastVisitedFoldersHandler(
         var idListFromCache = await cacheRepo
             .GetLastVisitedAsync(currentUserId.ToString(), query.CompanyId.ToString());
         
-        var jobFolderListItemDtos = await context.JobFolders
+        var jobFolderListItemObjects = await context.JobFolders
             .Where(jf => jf.CompanyId == query.CompanyId)
             .Where(jf =>
-                jf.UserJobFolderClaims!.Any(jfc =>
-                    jfc.ClaimId == JobFolderClaim.CanReadJobs.Id && jfc.UserId == currentUserId))
+                jf.RelationsWhereThisIsDescendant!
+                    .Any(rel => rel.Descendant!.UserJobFolderClaims!.Any(ujfc =>
+                        ujfc.ClaimId == JobFolderClaim.CanReadJobs.Id && ujfc.UserId == currentUserId))
+                )
             .Where(jf => idListFromCache.Contains(jf.Id))
-            .ProjectTo<CompanyJobFolderListItemDto>(mapper.ConfigurationProvider)
+            .GroupBy(jf => new { jf.Id, jf.Name })
+            .Select(g => new
+            {
+                Id = g.Key.Id,
+                Name = g.Key.Name,
+                ClaimIds = g
+                    .SelectMany(jf => jf.RelationsWhereThisIsDescendant!
+                        .SelectMany(rel => rel.Descendant!.UserJobFolderClaims!
+                            .Where(ujfc => ujfc.UserId == currentUserId)))
+                    .Select(ujfc => ujfc.ClaimId)
+                    .Distinct()
+            })
             .ToListAsync(cancellationToken);
 
-        var response = new GetCompanyLastVisitedFoldersResult(jobFolderListItemDtos);
+        var jobFolderListItemDtos = jobFolderListItemObjects
+            .Select(o => new CompanyJobFolderListItemDto(o.Id, o.Name, o.ClaimIds.ToList()))
+            .ToList();
+        
+        var result = new GetCompanyLastVisitedFoldersResult(jobFolderListItemDtos);
 
-        return Result.Success(response);
+        return Result.Success(result);
     }
 }
