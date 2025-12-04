@@ -31,7 +31,7 @@ public class GetCompanyLastVisitedFoldersHandler(
             .Where(jf => jf.CompanyId == query.CompanyId)
             .Where(jf =>
                 jf.RelationsWhereThisIsDescendant!
-                    .Any(rel => rel.Descendant!.UserJobFolderClaims!.Any(ujfc =>
+                    .Any(rel => rel.Ancestor!.UserJobFolderClaims!.Any(ujfc =>
                         ujfc.ClaimId == JobFolderClaim.CanReadJobs.Id && ujfc.UserId == currentUserId))
                 )
             .Where(jf => idListFromCache.Contains(jf.Id))
@@ -42,7 +42,7 @@ public class GetCompanyLastVisitedFoldersHandler(
                 Name = g.Key.Name,
                 ClaimIds = g
                     .SelectMany(jf => jf.RelationsWhereThisIsDescendant!
-                        .SelectMany(rel => rel.Descendant!.UserJobFolderClaims!
+                        .SelectMany(rel => rel.Ancestor!.UserJobFolderClaims!
                             .Where(ujfc => ujfc.UserId == currentUserId)))
                     .Select(ujfc => ujfc.ClaimId)
                     .Distinct()

@@ -15,10 +15,8 @@ namespace JobSearchSiteBackend.Core.Domains.Companies.UseCases.GetCompanyLastVis
 public class GetCompanyLastVisitedJobsHandler(
     ICurrentAccountService currentAccountService,
     MainDataContext context,
-    IMapper mapper,
-    ICompanyLastVisitedJobsCacheRepository cacheRepo
-    ): IRequestHandler<GetCompanyLastVisitedJobsQuery,
-    Result<GetCompanyLastVisitedJobsResult>>
+    ICompanyLastVisitedJobsCacheRepository cacheRepo)
+    : IRequestHandler<GetCompanyLastVisitedJobsQuery, Result<GetCompanyLastVisitedJobsResult>>
 {
     public async Task<Result<GetCompanyLastVisitedJobsResult>> Handle(GetCompanyLastVisitedJobsQuery query,
         CancellationToken cancellationToken = default)
@@ -31,11 +29,12 @@ public class GetCompanyLastVisitedJobsHandler(
         var jobListItemDtos = await context.JobFolders
             .Where(jf => jf.CompanyId == query.CompanyId)
             .Where(jf =>
-                jf.UserJobFolderClaims!.Any(jfc =>
-                    jfc.ClaimId == JobFolderClaim.CanReadJobs.Id && jfc.UserId == currentUserId))
-            .SelectMany(jf => jf.Jobs!)
+                jf.RelationsWhereThisIsDescendant!
+                    .Any(rel => rel.Ancestor!.UserJobFolderClaims!.Any(ujfc =>
+                        ujfc.ClaimId == JobFolderClaim.CanReadJobs.Id && ujfc.UserId == currentUserId))
+            )
             .Where(jf => idListFromCache.Contains(jf.Id))
-            .ProjectTo<CompanyJobListItemDto>(mapper.ConfigurationProvider)
+            .SelectMany(jf => jf.Jobs!, (folder, job) => new CompanyJobListItemDto(job.Id, job.Title, folder.Name))
             .ToListAsync(cancellationToken);
 
         var response = new GetCompanyLastVisitedJobsResult(jobListItemDtos);
