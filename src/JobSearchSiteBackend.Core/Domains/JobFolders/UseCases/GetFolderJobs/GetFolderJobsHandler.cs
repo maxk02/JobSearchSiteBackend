@@ -1,10 +1,14 @@
 ﻿using Ardalis.Result;
 using AutoMapper;
 using AutoMapper.QueryableExtensions;
+using JobSearchSiteBackend.Core.Domains._Shared.Pagination;
 using JobSearchSiteBackend.Core.Domains._Shared.UseCaseStructure;
 using JobSearchSiteBackend.Core.Domains.JobFolderClaims;
+using JobSearchSiteBackend.Core.Domains.JobFolders.Dtos;
 using JobSearchSiteBackend.Core.Domains.JobFolders.Persistence;
+using JobSearchSiteBackend.Core.Domains.Jobs;
 using JobSearchSiteBackend.Core.Domains.Jobs.Dtos;
+using JobSearchSiteBackend.Core.Domains.Locations;
 using JobSearchSiteBackend.Core.Persistence;
 using JobSearchSiteBackend.Core.Services.Auth;
 using JobSearchSiteBackend.Core.Services.Caching;
@@ -15,7 +19,6 @@ namespace JobSearchSiteBackend.Core.Domains.JobFolders.UseCases.GetFolderJobs;
 public class GetFolderJobsHandler(
     ICurrentAccountService currentAccountService,
     MainDataContext context,
-    IMapper mapper,
     ICompanyLastVisitedFoldersCacheRepository cacheRepo) : IRequestHandler<GetFolderJobsQuery, Result<GetFolderJobsResult>>
 {
     public async Task<Result<GetFolderJobsResult>> Handle(GetFolderJobsQuery query,
@@ -38,11 +41,64 @@ public class GetFolderJobsHandler(
         await cacheRepo.AddLastVisitedAsync(currentUserId.ToString(),
             jobFolder.CompanyId.ToString(), jobFolder.Id.ToString());
         
-        var childJobInfoDtos = await context.Jobs
+        var dbBasicQuery = context.Jobs
             .Where(job => job.JobFolderId == query.Id)
-            .ProjectTo<JobCardDto>(mapper.ConfigurationProvider)
-            .ToListAsync(cancellationToken);
+            .Where(job => !job.IsDeleted);
+        
+        if (!string.IsNullOrEmpty(query.Query))
+        {
+            dbBasicQuery = dbBasicQuery
+                .Where(job => job.Title.ToLower().Contains(query.Query.ToLower()));
+        }
+        
+        var count = await dbBasicQuery.CountAsync(cancellationToken);
+        
+        if (query.Page is > 0 && query.Size is > 0)
+        {
+            dbBasicQuery = dbBasicQuery
+                .Skip((query.Page - 1) * query.Size)
+                .Take(query.Size);
+        }
+        
+        var dbQuery = dbBasicQuery
+            .OrderByDescending(job => job.DateTimePublishedUtc)
+            .Select(job => new
+            {
+                JobId = job.Id,
+                Locations = job.Locations!,
+                Title = job.Title,
+                DateTimePublishedUtc = job.DateTimePublishedUtc,
+                DateTimeExpiringUtc = job.DateTimeExpiringUtc,
+                SalaryInfo = job.SalaryInfo,
+                EmploymentOptionIds = job.EmploymentOptions!.Select(eo => eo.Id),
+                ContractTypeIds = job.JobContractTypes!.Select(ct => ct.Id),
+                IsBookmarked = job.UserJobBookmarks!.Any(ujb => ujb.UserId == currentUserId),
+                IsPublic = job.IsPublic,
+                TimeRangeOptionId = job.TimeRangeOptionId
+            });
 
-        return new GetFolderJobsResult(childJobInfoDtos);
+        var jobObjects = await dbQuery.ToListAsync(cancellationToken);
+
+        var jobManagementCardDtos = jobObjects
+            .Select(jo => new JobManagementCardDto(
+                jo.JobId,
+                jo.Locations.Select(l => l.ToLocationDto()).ToList(),
+                jo.Title,
+                jo.DateTimePublishedUtc,
+                jo.DateTimeExpiringUtc,
+                jo.SalaryInfo?.ToJobSalaryInfoDto(),
+                jo.EmploymentOptionIds.ToList(),
+                jo.ContractTypeIds.ToList(),
+                jo.IsBookmarked,
+                jo.IsPublic,
+                jo.TimeRangeOptionId)
+            )
+            .ToList();
+
+        var paginationResponse = new PaginationResponse(query.Page, query.Size, count);
+
+        var result = new GetFolderJobsResult(jobManagementCardDtos, paginationResponse); 
+        
+        return Result.Success(result);
     }
 }

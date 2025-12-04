@@ -78,10 +78,12 @@ public class JobFoldersController(IMapper mapper) : ControllerBase
     [Route("{id:long:min(1)}/jobs")]
     public async Task<ActionResult<GetFolderJobsResponse>> GetJobs(
         [FromRoute] long id,
+        [FromQuery] GetFolderJobsRequest request,
         [FromServices] GetFolderJobsHandler handler,
         CancellationToken cancellationToken)
     {
-        var query = new GetFolderJobsQuery(id);
+        var query = new GetFolderJobsQuery(id, request.Query,
+            request.Page, request.Size);
         
         var result = await handler.Handle(query, cancellationToken);
         
