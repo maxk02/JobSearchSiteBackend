@@ -13,8 +13,7 @@ namespace JobSearchSiteBackend.Core.Domains.Companies.UseCases.SearchCompanyShar
 
 public class SearchCompanySharedJobsHandler(
     ICurrentAccountService currentAccountService,
-    MainDataContext context,
-    IMapper mapper) : IRequestHandler<SearchCompanySharedJobsQuery, Result<SearchCompanySharedJobsResult>>
+    MainDataContext context) : IRequestHandler<SearchCompanySharedJobsQuery, Result<SearchCompanySharedJobsResult>>
 {
     public async Task<Result<SearchCompanySharedJobsResult>> Handle(SearchCompanySharedJobsQuery query,
         CancellationToken cancellationToken = default)
@@ -24,11 +23,12 @@ public class SearchCompanySharedJobsHandler(
         var jobListItemDtos = await context.JobFolders
             .Where(jf => jf.CompanyId == query.CompanyId)
             .Where(jf =>
-                jf.UserJobFolderClaims!.Any(jfc =>
-                    jfc.ClaimId == JobFolderClaim.CanReadJobs.Id && jfc.UserId == currentUserId))
-            .SelectMany(jf => jf.Jobs!)
-            .Where(j => j.Title.Contains(query.Query) || j.Description!.Contains(query.Query))
-            .ProjectTo<CompanyJobListItemDto>(mapper.ConfigurationProvider)
+                jf.RelationsWhereThisIsDescendant!
+                    .Any(rel => rel.Ancestor!.UserJobFolderClaims!.Any(ujfc =>
+                        ujfc.ClaimId == JobFolderClaim.CanReadJobs.Id && ujfc.UserId == currentUserId))
+            )
+            .SelectMany(jf => jf.Jobs!, (folder, job) => new CompanyJobListItemDto(job.Id, job.Title, folder.Name))
+            .Where(jobItem => jobItem.Title.ToLower().Contains(query.Query.ToLower()))
             .ToListAsync(cancellationToken);
         
         var response = new SearchCompanySharedJobsResult(jobListItemDtos);

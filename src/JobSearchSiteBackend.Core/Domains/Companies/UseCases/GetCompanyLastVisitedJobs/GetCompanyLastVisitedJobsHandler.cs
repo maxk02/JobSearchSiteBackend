@@ -33,8 +33,8 @@ public class GetCompanyLastVisitedJobsHandler(
                     .Any(rel => rel.Ancestor!.UserJobFolderClaims!.Any(ujfc =>
                         ujfc.ClaimId == JobFolderClaim.CanReadJobs.Id && ujfc.UserId == currentUserId))
             )
-            .Where(jf => idListFromCache.Contains(jf.Id))
             .SelectMany(jf => jf.Jobs!, (folder, job) => new CompanyJobListItemDto(job.Id, job.Title, folder.Name))
+            .Where(jobListItem => idListFromCache.Contains(jobListItem.Id))
             .ToListAsync(cancellationToken);
 
         var response = new GetCompanyLastVisitedJobsResult(jobListItemDtos);

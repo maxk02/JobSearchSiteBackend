@@ -27,7 +27,7 @@ public class GetCompanyLastVisitedFoldersHandler(
         var idListFromCache = await cacheRepo
             .GetLastVisitedAsync(currentUserId.ToString(), query.CompanyId.ToString());
         
-        var jobFolderListItemObjects = await context.JobFolders
+        var jobFolderObjects = await context.JobFolders
             .Where(jf => jf.CompanyId == query.CompanyId)
             .Where(jf =>
                 jf.RelationsWhereThisIsDescendant!
@@ -49,7 +49,7 @@ public class GetCompanyLastVisitedFoldersHandler(
             })
             .ToListAsync(cancellationToken);
 
-        var jobFolderListItemDtos = jobFolderListItemObjects
+        var jobFolderListItemDtos = jobFolderObjects
             .Select(o => new CompanyJobFolderListItemDto(o.Id, o.Name, o.ClaimIds.ToList()))
             .ToList();
         

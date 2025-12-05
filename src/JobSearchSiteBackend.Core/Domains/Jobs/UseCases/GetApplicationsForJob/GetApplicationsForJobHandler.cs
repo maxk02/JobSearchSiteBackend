@@ -6,6 +6,7 @@ using JobSearchSiteBackend.Core.Domains.JobApplications.Dtos;
 using JobSearchSiteBackend.Core.Domains.JobFolderClaims;
 using JobSearchSiteBackend.Core.Domains.JobFolders;
 using JobSearchSiteBackend.Core.Domains.JobFolders.Persistence;
+using JobSearchSiteBackend.Core.Domains.PersonalFiles;
 using JobSearchSiteBackend.Core.Persistence;
 using JobSearchSiteBackend.Core.Services.Auth;
 using JobSearchSiteBackend.Core.Services.Caching;
@@ -16,8 +17,7 @@ namespace JobSearchSiteBackend.Core.Domains.Jobs.UseCases.GetApplicationsForJob;
 public class GetApplicationsForJobHandler(
     ICurrentAccountService currentAccountService,
     MainDataContext context,
-    ICompanyLastVisitedJobsCacheRepository cacheRepo,
-    IMapper mapper) : IRequestHandler<GetApplicationsForJobQuery, Result<GetApplicationsForJobResult>>
+    ICompanyLastVisitedJobsCacheRepository cacheRepo) : IRequestHandler<GetApplicationsForJobQuery, Result<GetApplicationsForJobResult>>
 {
     public async Task<Result<GetApplicationsForJobResult>> Handle(GetApplicationsForJobQuery query,
         CancellationToken cancellationToken = default)
@@ -50,36 +50,51 @@ public class GetApplicationsForJobHandler(
         dbQuery = dbQuery
             .Skip((query.Page - 1) * query.Size)
             .Take(query.Size);
-        
-        var jobApplicationsWithJobFolder =  await dbQuery
+
+        var jobApplicationDbQueryItem = await dbQuery
             .GroupBy(ja => ja.Job!.JobFolder!)
             .Select(g => new
             {
-                JobFolder = g.Key,
-                JobApplications = g.ToList()
+                HasManageApplicationsPermission = g.Key.RelationsWhereThisIsDescendant!
+                    .SelectMany(rel => rel.Ancestor!.UserJobFolderClaims!
+                        .Where(ujfc => ujfc.UserId == currentUserId && ujfc.ClaimId == JobFolderClaim.CanManageApplications.Id))
+                    .Any(),
+                CompanyId = g.Key.CompanyId,
+                JobApplicationItems = g.Select(ja => new
+                {
+                    Id = ja.Id,
+                    UserId = ja.UserId,
+                    UserFullName = ja.User!.FirstName + " " + ja.User!.LastName,
+                    DateTimeAppliedUtc = ja.DateTimeCreatedUtc,
+                    PersonalFiles = ja.PersonalFiles,
+                    Status = ja.Status
+                })
             })
             .SingleOrDefaultAsync(cancellationToken);
 
-        if (jobApplicationsWithJobFolder is null)
+        if (jobApplicationDbQueryItem is null)
         {
             return Result.NotFound();
         }
-        
-        var canEdit = await context.JobFolderRelations
-            .GetThisOrAncestorWhereUserHasClaim(jobApplicationsWithJobFolder.JobFolder.Id, currentUserId,
-                JobFolderClaim.CanManageApplications.Id)
-            .AnyAsync(cancellationToken);
 
-        if (!canEdit)
+        if (!jobApplicationDbQueryItem.HasManageApplicationsPermission)
+        {
             return Result.Forbidden();
+        }
         
         await cacheRepo.AddLastVisitedAsync(currentUserId.ToString(),
-            jobApplicationsWithJobFolder.JobFolder.CompanyId.ToString(), query.Id.ToString());
-
-        if (jobApplicationsWithJobFolder.JobApplications.Count == 0)
-            return Result<GetApplicationsForJobResult>.NoContent();
+            jobApplicationDbQueryItem.CompanyId.ToString(), query.Id.ToString());
         
-        var jobApplicationDtos = mapper.Map<List<JobApplicationForManagersDto>>(jobApplicationsWithJobFolder.JobApplications);
+        var jobApplicationDtos = jobApplicationDbQueryItem.JobApplicationItems
+            .Select(jaItem => new JobApplicationForManagersDto(
+                jaItem.Id,
+                jaItem.UserId,
+                jaItem.UserFullName,
+                jaItem.DateTimeAppliedUtc,
+                jaItem.PersonalFiles!.Select(pf => pf.ToPersonalFileInfoDto()).ToList(),
+                jaItem.Status
+                ))
+            .ToList();
 
         var paginationResponse = new PaginationResponse(query.Page, query.Size, totalCount);
         

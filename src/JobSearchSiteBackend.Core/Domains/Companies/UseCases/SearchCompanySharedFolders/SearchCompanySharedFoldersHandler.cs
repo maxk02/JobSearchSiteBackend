@@ -12,25 +12,42 @@ namespace JobSearchSiteBackend.Core.Domains.Companies.UseCases.SearchCompanyShar
 
 public class SearchCompanySharedFoldersHandler(
     ICurrentAccountService currentAccountService,
-    MainDataContext context,
-    IMapper mapper) : IRequestHandler<SearchCompanySharedFoldersQuery, Result<SearchCompanySharedFoldersResult>>
+    MainDataContext context) : IRequestHandler<SearchCompanySharedFoldersQuery, Result<SearchCompanySharedFoldersResult>>
 {
     public async Task<Result<SearchCompanySharedFoldersResult>> Handle(SearchCompanySharedFoldersQuery query,
         CancellationToken cancellationToken = default)
     {
         var currentUserId = currentAccountService.GetIdOrThrow();
 
-        var jobFolderListItemDtos = await context.JobFolders
+        var jobFolderObjects = await context.JobFolders
             .Where(jf  => jf.CompanyId == query.CompanyId)
             .Where(jf =>
-                jf.UserJobFolderClaims!.Any(jfc =>
-                    jfc.ClaimId == JobFolderClaim.CanReadJobs.Id && jfc.UserId == currentUserId))
-            .Where(jf => jf.Name!.Contains(query.Query) || jf.Description!.Contains(query.Query))
-            .ProjectTo<CompanyJobFolderListItemDto>(mapper.ConfigurationProvider)
+                jf.RelationsWhereThisIsDescendant!
+                    .Any(rel => rel.Ancestor!.UserJobFolderClaims!.Any(ujfc =>
+                        ujfc.ClaimId == JobFolderClaim.CanReadJobs.Id && ujfc.UserId == currentUserId))
+            )
+            .Where(jf => jf.Name!.ToLower().Contains(query.Query.ToLower())
+                         || jf.Description!.ToLower().Contains(query.Query.ToLower()))
+            .GroupBy(jf => new { jf.Id, jf.Name })
+            .Select(g => new
+            {
+                Id = g.Key.Id,
+                Name = g.Key.Name,
+                ClaimIds = g
+                    .SelectMany(jf => jf.RelationsWhereThisIsDescendant!
+                        .SelectMany(rel => rel.Ancestor!.UserJobFolderClaims!
+                            .Where(ujfc => ujfc.UserId == currentUserId)))
+                    .Select(ujfc => ujfc.ClaimId)
+                    .Distinct()
+            })
             .ToListAsync(cancellationToken);
         
-        var response = new SearchCompanySharedFoldersResult(jobFolderListItemDtos);
+        var jobFolderListItemDtos = jobFolderObjects
+            .Select(o => new CompanyJobFolderListItemDto(o.Id, o.Name, o.ClaimIds.ToList()))
+            .ToList();
         
-        return Result.Success(response);
+        var result = new SearchCompanySharedFoldersResult(jobFolderListItemDtos);
+        
+        return Result.Success(result);
     }
 }
