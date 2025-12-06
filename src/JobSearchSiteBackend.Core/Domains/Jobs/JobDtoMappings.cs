@@ -7,15 +7,15 @@ public static class JobDtoMappings
     public static JobSalaryInfoDto ToJobSalaryInfoDto(this JobSalaryInfo jobSalaryInfo)
     {
         var jobSalaryInfoDto = new JobSalaryInfoDto(jobSalaryInfo.Minimum, jobSalaryInfo.Maximum,
-            jobSalaryInfo.Currency, jobSalaryInfo.UnitOfTime, jobSalaryInfo.IsAfterTaxes);
+            jobSalaryInfo.CurrencyId, jobSalaryInfo.UnitOfTime, jobSalaryInfo.IsAfterTaxes);
         
         return jobSalaryInfoDto;
     }
     
     public static JobSalaryInfo ToJobSalaryInfo(this JobSalaryInfoDto jobSalaryInfoDto, long jobId = 0)
     {
-        var jobSalaryInfo = new JobSalaryInfo(jobId, jobSalaryInfoDto.Minimum, jobSalaryInfoDto.Maximum,
-            jobSalaryInfoDto.Currency, jobSalaryInfoDto.UnitOfTime, jobSalaryInfoDto.IsAfterTaxes);
+        var jobSalaryInfo = new JobSalaryInfo(jobId, jobSalaryInfoDto.CurrencyId, jobSalaryInfoDto.Minimum,
+            jobSalaryInfoDto.Maximum, jobSalaryInfoDto.UnitOfTime, jobSalaryInfoDto.IsAfterTaxes);
         
         return jobSalaryInfo;
     }

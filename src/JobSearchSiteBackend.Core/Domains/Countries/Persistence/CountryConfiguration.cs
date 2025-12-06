@@ -26,6 +26,12 @@ public class CountryConfiguration : IEntityTypeConfiguration<Country>
             .WithOne(location => location.Country)
             .HasForeignKey(location => location.CountryId)
             .OnDelete(DeleteBehavior.Restrict);
+        
+        builder
+            .HasMany(country => country.CountryCurrencies)
+            .WithOne(countryCurrency => countryCurrency.Country)
+            .HasForeignKey(countryCurrency => countryCurrency.CountryId)
+            .OnDelete(DeleteBehavior.Restrict);
 
         builder.HasData(Country.AllValues);
     }

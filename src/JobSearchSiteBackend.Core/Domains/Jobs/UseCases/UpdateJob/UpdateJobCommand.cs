@@ -10,7 +10,7 @@ public record UpdateJobCommand(
     long? CategoryId,
     string? Title,
     string? Description,
-    int? TimeRangeOptionId, //todo use time range option check
+    //todo no time range option int id in command, check manually based on new date
     bool? IsPublic,
     DateTime? NewDateTimeExpiringUtc,
     ICollection<string>? Responsibilities,

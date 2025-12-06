@@ -5,6 +5,6 @@ namespace JobSearchSiteBackend.Core.Domains.Jobs.Dtos;
 public record JobSalaryInfoDto(
     decimal? Minimum,
     decimal? Maximum,
-    Currency Currency,
+    long CurrencyId, //todo frontend
     UnitOfTime UnitOfTime,
     bool? IsAfterTaxes);

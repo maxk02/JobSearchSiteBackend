@@ -7,7 +7,7 @@ public record UpdateJobRequest(
     long? FolderId,
     long? CategoryId,
     string? Description,
-    int? TimeRangeOptionId,
+    // todo without time range option id
     bool? IsPublic,
     DateTime? DateTimeExpiringUtc,
     ICollection<string>? Responsibilities,

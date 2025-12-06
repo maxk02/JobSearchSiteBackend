@@ -117,8 +117,8 @@ public class JobsController(IMapper mapper) : ControllerBase
         [FromServices] UpdateJobHandler handler,
         CancellationToken cancellationToken)
     {
-        var mappedCommand = new UpdateJobCommand(id, request.FolderId, request.CategoryId, request.Title, request.Description,
-            request.TimeRangeOptionId, request.IsPublic, request.DateTimeExpiringUtc, request.Responsibilities,
+        var mappedCommand = new UpdateJobCommand(id, request.FolderId, request.CategoryId, request.Title,
+            request.Description, request.IsPublic, request.DateTimeExpiringUtc, request.Responsibilities,
             request.Requirements, request.NiceToHaves, request.SalaryInfo, request.EmploymentOptionIds,
             request.ContractTypeIds, request.LocationIds);
 

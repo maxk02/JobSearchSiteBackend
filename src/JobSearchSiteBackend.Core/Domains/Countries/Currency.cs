@@ -7,16 +7,16 @@ using JobSearchSiteBackend.Core.Domains.Locations;
 
 namespace JobSearchSiteBackend.Core.Domains.Countries;
 
-public class Country : IEntityWithId
+public class Currency : IEntityWithId
 {
-    public static readonly ImmutableArray<Country> AllValues =
+    public static readonly ImmutableArray<Currency> AllValues =
     [
-        new Country(1, "POL"),
-        new Country(2, "DEU"),
-        new Country(3, "FRA"),
+        new(1, "PLN"),
+        new(2, "EUR"),
+        new(3, "USD")
     ];
     
-    private Country(long id, string code)
+    private Currency(long id, string code)
     {
         Id = id;
         Code = code;
@@ -25,8 +25,5 @@ public class Country : IEntityWithId
     public long Id { get; set; }
     public string Code { get; private set; }
     
-    public ICollection<JobContractType>? JobContractTypes { get; set; }
-    public ICollection<Location>? Locations { get; set; }
-    public ICollection<Company>? Companies { get; set; }
     public ICollection<CountryCurrency>? CountryCurrencies { get; private set; }
 }
