@@ -32,15 +32,19 @@ public class GetJobsHandler(
             .ThenInclude(jf => jf!.Company)
             .ThenInclude(c => c!.CompanyAvatars);
 
-        var dbQuery = dbIncludeQuery
+        IQueryable<Job> dbQuery = dbIncludeQuery
             .Where(job => job.DateTimeExpiringUtc > DateTime.UtcNow)
             .Where(job => job.IsPublic);
 
+        List<long>? hitIds = null;
+        
         if (!string.IsNullOrEmpty(query.Query))
         {
-            var hitIds = await jobSearchRepository
+            var hitIdsCollection = await jobSearchRepository
                 .SearchFromCountriesAndCategoriesAsync(query.CountryIds ?? [], query.CategoryIds ?? [],
                     query.Query, cancellationToken);
+
+            hitIds = hitIdsCollection.ToList();
 
             dbQuery = dbQuery
                 .Where(job => hitIds.Contains(job.Id));
@@ -65,20 +69,23 @@ public class GetJobsHandler(
 
         List<(Job, bool)> jobsWithIsBookmarked = [];
 
-        var paginatedDbQuery = dbQuery
-            .OrderByDescending(job => job.DateTimePublishedUtc)
-            .Skip((query.Page - 1) * query.Size)
-            .Take(query.Size);
+        if (string.IsNullOrEmpty(query.Query))
+        {
+            dbQuery = dbQuery
+                .OrderByDescending(job => job.DateTimePublishedUtc)
+                .Skip((query.Page - 1) * query.Size)
+                .Take(query.Size);
+        }
 
         if (currentUserId is null)
         {
-            var jobs = await paginatedDbQuery.ToListAsync(cancellationToken);
+            var jobs = await dbQuery.ToListAsync(cancellationToken);
 
             jobsWithIsBookmarked = jobs.Select(j => (j, false)).ToList();
         }
         else
         {
-            jobsWithIsBookmarked = await paginatedDbQuery
+            jobsWithIsBookmarked = await dbQuery
                 .Select(j => new ValueTuple<Job, bool>
                 (
                     j,
@@ -90,6 +97,18 @@ public class GetJobsHandler(
         if (jobsWithIsBookmarked.Count == 0)
         {
             return Result.NotFound();
+        }
+        
+        if (!string.IsNullOrEmpty(query.Query))
+        {
+            if (hitIds is null)
+                throw new NullReferenceException();
+            
+            jobsWithIsBookmarked = jobsWithIsBookmarked
+                .OrderBy(jwib => hitIds.IndexOf(jwib.Item1.Id))
+                .Skip((query.Page - 1) * query.Size)
+                .Take(query.Size)
+                .ToList();
         }
 
         List<JobCardDto> jobCardDtos = [];
