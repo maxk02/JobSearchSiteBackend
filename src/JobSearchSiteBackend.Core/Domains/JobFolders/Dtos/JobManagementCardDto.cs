@@ -13,6 +13,5 @@ public record JobManagementCardDto(
     ICollection<long>? EmploymentOptionIds,
     ICollection<long>? ContractTypeIds,
     bool IsBookmarked,
-    bool IsPublic,
-    int TimeRangeOptionId
-); // todo check on frontend
+    bool IsPublic
+); // todo check on frontend, no time range option id

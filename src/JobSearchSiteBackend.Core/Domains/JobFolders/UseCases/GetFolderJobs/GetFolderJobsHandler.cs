@@ -73,8 +73,7 @@ public class GetFolderJobsHandler(
                 EmploymentOptionIds = job.EmploymentOptions!.Select(eo => eo.Id),
                 ContractTypeIds = job.JobContractTypes!.Select(ct => ct.Id),
                 IsBookmarked = job.UserJobBookmarks!.Any(ujb => ujb.UserId == currentUserId),
-                IsPublic = job.IsPublic,
-                TimeRangeOptionId = job.TimeRangeOptionId
+                IsPublic = job.IsPublic
             });
 
         var jobObjects = await dbQuery.ToListAsync(cancellationToken);
@@ -90,8 +89,7 @@ public class GetFolderJobsHandler(
                 jo.EmploymentOptionIds.ToList(),
                 jo.ContractTypeIds.ToList(),
                 jo.IsBookmarked,
-                jo.IsPublic,
-                jo.TimeRangeOptionId)
+                jo.IsPublic)
             )
             .ToList();
 

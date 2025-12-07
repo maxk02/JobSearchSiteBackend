@@ -86,8 +86,7 @@ public class GetJobManagementDtoHandler(
             job.JobFolderId,
             job.JobFolder.Name!,
             claimIdsForCurrentUser,
-            job.IsPublic,
-            job.TimeRangeOptionId
+            job.IsPublic
             );
         
         return new GetJobManagementDtoResult(jobManagementDto);

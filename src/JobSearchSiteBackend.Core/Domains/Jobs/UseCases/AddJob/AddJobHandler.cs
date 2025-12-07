@@ -1,7 +1,9 @@
-﻿using Ardalis.Result;
+﻿using System.Globalization;
+using Ardalis.Result;
 using AutoMapper;
 using JobSearchSiteBackend.Core.Domains._Shared.UseCaseStructure;
 using JobSearchSiteBackend.Core.Domains.Categories;
+using JobSearchSiteBackend.Core.Domains.Companies;
 using JobSearchSiteBackend.Core.Domains.EmploymentOptions;
 using JobSearchSiteBackend.Core.Domains.JobFolderClaims;
 using JobSearchSiteBackend.Core.Domains.JobFolders;
@@ -20,14 +22,16 @@ public class AddJobHandler(
     {
         var currentUserId = currentAccountService.GetIdOrThrow();
         
+        var dateTimePublishedUtc = DateTime.UtcNow;
+        
         var job = new Job(
             command.CategoryId,
             command.JobFolderId,
             command.Title,
             command.Description,
             command.IsPublic,
-            DateTime.UtcNow,
-            DateTime.UtcNow.AddDays(30),
+            dateTimePublishedUtc,
+            command.DateTimeExpiringUtc,
             command.Responsibilities,
             command.Requirements,
             command.NiceToHaves,
@@ -62,6 +66,27 @@ public class AddJobHandler(
         if (!hasPermissionInRequestedFolderOrAncestors)
             return Result.Forbidden();
 
+        
+        var diff = command.DateTimeExpiringUtc.Subtract(dateTimePublishedUtc).TotalDays;
+        var daysCeiled = (int)Math.Ceiling(diff);
+        
+        // suppose we have implemented it only for one currency for now
+        var jobPublicationInterval = await context.JobPublicationIntervals
+            .Include(jpi => jpi.CountryCurrency)
+            .Where(jpi => jpi.CountryCurrency!.CountryId == jobFolder.CompanyId)
+            .Where(jpi => jpi.MaxDaysOfPublication >= daysCeiled)
+            .OrderBy(v => v.MaxDaysOfPublication)
+            .FirstOrDefaultAsync(cancellationToken);
+        
+        if (jobPublicationInterval is null)
+            return Result.Error();
+
+        var companyBalanceTransaction = new CompanyBalanceTransaction(jobFolder.CompanyId, -jobPublicationInterval.Price,
+            $"Publikacja ogłoszenia {command.Title} do {command.DateTimeExpiringUtc.ToString(CultureInfo.InvariantCulture)}",
+            jobPublicationInterval.CountryCurrency!.CurrencyId, currentUserId);
+        
+        context.CompanyBalanceTransactions.Add(companyBalanceTransaction);
+        
 
         var contractTypes = await context.ContractTypes
             .AsNoTracking()

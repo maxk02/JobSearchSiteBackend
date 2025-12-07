@@ -35,7 +35,7 @@ public class TopUpCompanyBalanceHandler(
         }
 
         var companyBalanceTransaction = new CompanyBalanceTransaction(command.Id, command.Amount,
-            command.CurrencyCode, currentUserId);
+            $"Zasilenie konta przez użytkownika", command.CurrencyId, currentUserId);
 
         context.CompanyBalanceTransactions.Add(companyBalanceTransaction);
         

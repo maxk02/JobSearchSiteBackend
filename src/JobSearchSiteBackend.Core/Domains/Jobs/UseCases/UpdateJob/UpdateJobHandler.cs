@@ -1,4 +1,5 @@
-﻿using System.Transactions;
+﻿using System.Globalization;
+using System.Transactions;
 using JobSearchSiteBackend.Core.Domains._Shared.UseCaseStructure;
 using JobSearchSiteBackend.Core.Domains.Categories;
 using JobSearchSiteBackend.Core.Domains.JobFolderClaims;
@@ -9,6 +10,7 @@ using JobSearchSiteBackend.Core.Services.BackgroundJobs;
 using Microsoft.EntityFrameworkCore;
 using Ardalis.Result;
 using AutoMapper;
+using JobSearchSiteBackend.Core.Domains.Companies;
 using JobSearchSiteBackend.Core.Domains.EmploymentOptions;
 using JobSearchSiteBackend.Core.Domains.JobFolders.Persistence;
 using JobSearchSiteBackend.Core.Persistence;
@@ -42,6 +44,52 @@ public class UpdateJobHandler(
 
         if (!hasPermissionInCurrentFolderOrAncestors)
             return Result.Forbidden();
+
+        if (command.NewDateTimeExpiringUtc is not null)
+        {
+            var oldDiff = job.DateTimeExpiringUtc.Subtract(job.DateTimePublishedUtc).TotalDays;
+            var oldDaysCeiled = (int)Math.Ceiling(oldDiff);
+            
+            var newDiff = command.NewDateTimeExpiringUtc.Value.Subtract(job.DateTimePublishedUtc).TotalDays;
+            var newDaysCeiled = (int)Math.Ceiling(newDiff);
+            
+            var oldJobPublicationInterval = await context.JobPublicationIntervals
+                .Include(jpi => jpi.CountryCurrency)
+                .Where(jpi => jpi.CountryCurrency!.CountryId == job.JobFolder.CompanyId)
+                .Where(jpi => jpi.MaxDaysOfPublication >= oldDaysCeiled)
+                .OrderBy(v => v.MaxDaysOfPublication)
+                .FirstOrDefaultAsync(cancellationToken);
+            
+            if (oldJobPublicationInterval is null)
+                return Result.Error();
+            
+            // suppose we have implemented it only for one currency for now
+            var newJobPublicationInterval = await context.JobPublicationIntervals
+                .Include(jpi => jpi.CountryCurrency)
+                .Where(jpi => jpi.CountryCurrency!.CountryId == job.JobFolder.CompanyId)
+                .Where(jpi => jpi.MaxDaysOfPublication >= newDaysCeiled)
+                .OrderBy(v => v.MaxDaysOfPublication)
+                .FirstOrDefaultAsync(cancellationToken);
+        
+            if (newJobPublicationInterval is null)
+                return Result.Error();
+            
+            if (oldJobPublicationInterval.CountryCurrency!.CurrencyId 
+                != newJobPublicationInterval.CountryCurrency!.CurrencyId)
+                return Result.Error();
+
+            var priceDifference = newJobPublicationInterval.Price - oldJobPublicationInterval.Price;
+
+            if (priceDifference > 0)
+            {
+                var companyBalanceTransaction = new CompanyBalanceTransaction(job.JobFolder.CompanyId, -priceDifference,
+                    $"Aktualizacja terminu wygaśnięcia ogłoszenia {job.Id} do " +
+                    $"{command.NewDateTimeExpiringUtc.Value.ToString(CultureInfo.InvariantCulture)}",
+                    newJobPublicationInterval.CountryCurrency!.CurrencyId, currentUserId);
+        
+                context.CompanyBalanceTransactions.Add(companyBalanceTransaction);
+            }
+        }
 
         if (command.JobFolderId is not null)
         {
@@ -157,8 +205,6 @@ public class UpdateJobHandler(
             return Result.Error();
         
         context.Jobs.Update(job);
-        
-        using var transaction = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled);
         
         await context.SaveChangesAsync(cancellationToken);
 

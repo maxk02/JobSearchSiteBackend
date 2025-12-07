@@ -31,6 +31,7 @@ public class MainDataContext : IdentityDbContext<MyIdentityUser, MyIdentityRole,
     public DbSet<Currency> Currencies { get; set; }
     public DbSet<PersonalFile> PersonalFiles { get; set; }
     public DbSet<JobApplication> JobApplications { get; set; }
+    public DbSet<JobPublicationInterval>  JobPublicationIntervals { get; set; }
     public DbSet<Job> Jobs { get; set; }
     public DbSet<Location> Locations { get; set; }
     public DbSet<LocationRelation> LocationRelations { get; set; }

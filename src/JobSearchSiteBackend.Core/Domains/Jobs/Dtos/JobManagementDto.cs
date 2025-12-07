@@ -24,5 +24,4 @@ public record JobManagementDto(
     long FolderId,
     string FolderName,
     ICollection<long> ClaimIds,
-    bool IsPublic,
-    int TimeRangeOptionId);
+    bool IsPublic); //todo frontend no time range option id

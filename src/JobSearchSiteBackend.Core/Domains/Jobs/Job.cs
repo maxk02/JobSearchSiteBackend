@@ -12,9 +12,9 @@ namespace JobSearchSiteBackend.Core.Domains.Jobs;
 public class Job : IEntityWithId, IEntityWithUpdDelDate
 {
     public Job(long categoryId, long jobFolderId, string title, string description, bool isPublic,
-        DateTime dateTimePublishedUtc,
-        DateTime dateTimeExpiringUtc, ICollection<string> responsibilities, ICollection<string> requirements,
-        ICollection<string> niceToHaves, JobSalaryInfo? salaryInfo, ICollection<EmploymentOption> employmentOptions)
+        DateTime dateTimePublishedUtc, DateTime dateTimeExpiringUtc, ICollection<string> responsibilities,
+        ICollection<string> requirements, ICollection<string> niceToHaves, JobSalaryInfo? salaryInfo,
+        ICollection<EmploymentOption> employmentOptions)
     {
         CategoryId = categoryId;
         JobFolderId = jobFolderId;
@@ -59,8 +59,6 @@ public class Job : IEntityWithId, IEntityWithUpdDelDate
     public ICollection<string>? NiceToHaves { get; set; }
 
     public bool IsPublic { get; set; }
-    
-    public int TimeRangeOptionId  { get; set; }
 
     public Category? Category { get; set; }
     public JobFolder? JobFolder { get; set; }

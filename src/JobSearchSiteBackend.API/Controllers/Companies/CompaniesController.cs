@@ -322,7 +322,7 @@ public class CompaniesController(IMapper mapper) : ControllerBase
         [FromServices] TopUpCompanyBalanceHandler handler,
         CancellationToken cancellationToken)
     {
-        var command = new TopUpCompanyBalanceCommand(companyId, request.Amount, request.CurrencyCode);
+        var command = new TopUpCompanyBalanceCommand(companyId, request.Amount, request.CurrencyId);
         
         var result = await handler.Handle(command, cancellationToken);
     

@@ -9,8 +9,8 @@ public class JobPublicationInterval : IEntityWithId
     public static readonly ImmutableArray<JobPublicationInterval> AllValues = [
         new JobPublicationInterval(1, 1, 5, new decimal(35)),
         new JobPublicationInterval(2, 1, 30, new decimal(60)),
-        new JobPublicationInterval(3, 1, 60, new decimal(120)),
-        new JobPublicationInterval(4, 1, 90, new decimal(150))
+        new JobPublicationInterval(3, 1, 60, new decimal(90)),
+        new JobPublicationInterval(4, 1, 90, new decimal(120))
     ];
     
     public static readonly ImmutableArray<long> AllIds = 
