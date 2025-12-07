@@ -3,7 +3,7 @@
 public record GetApplicationsForJobRequest(
     ICollection<long> StatusIds,
     string? Query,
-    int SortOption,
+    string? SortOption,  // todo frontend
     ICollection<string> IncludedTags,
     ICollection<string> ExcludedTags,
     int Page,

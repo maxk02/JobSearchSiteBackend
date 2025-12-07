@@ -27,6 +27,13 @@ public class GetApplicationsForJobHandler(
         var dbQuery = context.JobApplications
             .Where(ja => ja.JobId == query.Id);
 
+        if (!string.IsNullOrEmpty(query.Query))
+        {
+            dbQuery = dbQuery
+                .Where(ja => ja.User!.FirstName.ToLower().Contains(query.Query.ToLower())
+                || ja.User.LastName.ToLower().Contains(query.Query.ToLower()));
+        }
+        
         if (query.StatusIds.Count > 0)
         {
             dbQuery = dbQuery
@@ -47,6 +54,15 @@ public class GetApplicationsForJobHandler(
         
         var totalCount = await dbQuery.CountAsync(cancellationToken);
 
+        if (string.IsNullOrEmpty(query.SortOption) || query.SortOption == "dateAppliedDesc")
+        {
+            dbQuery = dbQuery.OrderByDescending(ja => ja.DateTimeCreatedUtc);
+        }
+        else if (query.SortOption == "dateAppliedAsc")
+        {
+            dbQuery = dbQuery.OrderBy(ja => ja.DateTimeCreatedUtc);
+        }
+        
         dbQuery = dbQuery
             .Skip((query.Page - 1) * query.Size)
             .Take(query.Size);

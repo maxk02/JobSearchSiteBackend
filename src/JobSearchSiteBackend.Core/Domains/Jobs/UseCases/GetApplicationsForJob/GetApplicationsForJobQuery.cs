@@ -8,7 +8,7 @@ public record GetApplicationsForJobQuery(
     long Id,
     ICollection<long> StatusIds,
     string? Query,
-    int SortOption, // todo
+    string? SortOption,
     ICollection<string> IncludedTags,
     ICollection<string> ExcludedTags,
     int Page,
