@@ -4,4 +4,4 @@ using Ardalis.Result;
 namespace JobSearchSiteBackend.Core.Domains.Companies.UseCases.AddCompany;
 
 public record AddCompanyCommand(string Name, string? Description,
-    string Nip, long CountryId): IRequest<Result<AddCompanyResult>>;
+    long CountryId, string CountrySpecificFieldsJson): IRequest<Result<AddCompanyResult>>;

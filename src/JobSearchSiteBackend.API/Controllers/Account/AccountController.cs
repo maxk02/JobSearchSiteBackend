@@ -29,8 +29,8 @@ public class AccountController(IMapper mapper) : ControllerBase
         [FromServices] ChangePasswordHandler handler,
         CancellationToken cancellationToken)
     {
-        var mappedCommand = mapper.Map<ChangePasswordCommand>(request);
-        var result = await handler.Handle(mappedCommand, cancellationToken);
+        var command = new ChangePasswordCommand(request.OldPassword, request.NewPassword);
+        var result = await handler.Handle(command, cancellationToken);
         
         return this.ToActionResult(result);
     }
@@ -42,8 +42,8 @@ public class AccountController(IMapper mapper) : ControllerBase
         [FromServices] ConfirmEmailHandler handler,
         CancellationToken cancellationToken)
     {
-        var mappedCommand = mapper.Map<ConfirmEmailCommand>(request);
-        var result = await handler.Handle(mappedCommand, cancellationToken);
+        var command = new ConfirmEmailCommand(request.Token);
+        var result = await handler.Handle(command, cancellationToken);
         
         return this.ToActionResult(result);
     }
@@ -55,8 +55,8 @@ public class AccountController(IMapper mapper) : ControllerBase
         [FromServices] CreateAccountHandler handler,
         CancellationToken cancellationToken)
     {
-        var mappedCommand = mapper.Map<CreateAccountCommand>(request);
-        var result = await handler.Handle(mappedCommand, cancellationToken);
+        var command = new CreateAccountCommand(request.Email, request.Password);
+        var result = await handler.Handle(command, cancellationToken);
         
         return this.ToActionResult(result.Map(x => mapper.Map<CreateAccountResponse>(x)));
     }
@@ -66,8 +66,8 @@ public class AccountController(IMapper mapper) : ControllerBase
         [FromServices] DeleteAccountHandler handler,
         CancellationToken cancellationToken)
     {
-        var mappedCommand = new DeleteAccountCommand();
-        var result = await handler.Handle(mappedCommand, cancellationToken);
+        var command = new DeleteAccountCommand();
+        var result = await handler.Handle(command, cancellationToken);
         
         return this.ToActionResult(result);
     }
@@ -80,8 +80,8 @@ public class AccountController(IMapper mapper) : ControllerBase
         [FromServices] LogInHandler handler,
         CancellationToken cancellationToken)
     {
-        var mappedCommand = mapper.Map<LogInCommand>(request);
-        var result = await handler.Handle(mappedCommand, cancellationToken);
+        var command = new LogInCommand(request.Email, request.Password);
+        var result = await handler.Handle(command, cancellationToken);
         
         if (!result.IsSuccess)
             return this.ToActionResult(result.Map(x => mapper.Map<LogInResponse>(x)));
@@ -99,8 +99,8 @@ public class AccountController(IMapper mapper) : ControllerBase
         [FromServices] LogOutHandler handler,
         CancellationToken cancellationToken)
     {
-        var mappedCommand = new LogOutCommand();
-        var result = await handler.Handle(mappedCommand, cancellationToken);
+        var command = new LogOutCommand();
+        var result = await handler.Handle(command, cancellationToken);
         
         return this.ToActionResult(result);
     }
@@ -113,8 +113,8 @@ public class AccountController(IMapper mapper) : ControllerBase
         [FromServices] ResetForgottenPasswordHandler handler,
         CancellationToken cancellationToken)
     {
-        var mappedCommand = mapper.Map<ResetForgottenPasswordCommand>(request);
-        var result = await handler.Handle(mappedCommand, cancellationToken);
+        var command = new ResetForgottenPasswordCommand(request.Token, request.NewPassword);
+        var result = await handler.Handle(command, cancellationToken);
         
         return this.ToActionResult(result);
     }
@@ -126,8 +126,8 @@ public class AccountController(IMapper mapper) : ControllerBase
         [FromServices] ResendEmailConfirmationLinkHandler handler,
         CancellationToken cancellationToken)
     {
-        var mappedCommand = new ResendEmailConfirmationLinkCommand();
-        var result = await handler.Handle(mappedCommand, cancellationToken);
+        var command = new ResendEmailConfirmationLinkCommand();
+        var result = await handler.Handle(command, cancellationToken);
         
         return this.ToActionResult(result);
     }
@@ -140,8 +140,8 @@ public class AccountController(IMapper mapper) : ControllerBase
         [FromServices] SendPasswordResetLinkHandler handler,
         CancellationToken cancellationToken)
     {
-        var mappedCommand = mapper.Map<SendPasswordResetLinkCommand>(request);
-        var result = await handler.Handle(mappedCommand, cancellationToken);
+        var command = new SendPasswordResetLinkCommand(request.Email);
+        var result = await handler.Handle(command, cancellationToken);
         
         return this.ToActionResult(result);
     }

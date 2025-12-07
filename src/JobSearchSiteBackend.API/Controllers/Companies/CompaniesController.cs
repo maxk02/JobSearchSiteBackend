@@ -37,8 +37,9 @@ public class CompaniesController(IMapper mapper) : ControllerBase
         [FromServices] AddCompanyHandler handler,
         CancellationToken cancellationToken)
     {
-        var mappedCommand = mapper.Map<AddCompanyCommand>(request);
-        var result = await handler.Handle(mappedCommand, cancellationToken);
+        var command = new AddCompanyCommand(request.Name, request.Description,
+            request.CountryId, request.CountrySpecificFieldsJson);
+        var result = await handler.Handle(command, cancellationToken);
 
         return this.ToActionResult(result.Map(x => mapper.Map<AddCompanyResponse>(x)));
     }
@@ -117,9 +118,9 @@ public class CompaniesController(IMapper mapper) : ControllerBase
         [FromServices] GetCompanyJobsHandler handler,
         CancellationToken cancellationToken)
     {
-        var mappedQuery = new GetCompanyJobsQuery(id, request.Query, request.Page, request.Size,
+        var query = new GetCompanyJobsQuery(id, request.Query, request.Page, request.Size,
             request.MustHaveSalaryRecord, request.EmploymentTypeIds, request.CategoryIds, request.ContractTypeIds);
-        var result = await handler.Handle(mappedQuery, cancellationToken);
+        var result = await handler.Handle(query, cancellationToken);
     
         return this.ToActionResult(result.Map(x => mapper.Map<GetCompanyJobsResponse>(x)));
     }

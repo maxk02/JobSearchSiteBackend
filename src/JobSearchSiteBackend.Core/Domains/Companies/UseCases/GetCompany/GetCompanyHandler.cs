@@ -23,6 +23,7 @@ public class GetCompanyHandler(
         var company = await context.Companies
             .Include(c => c.CompanyAvatars)
             .Where(c => c.Id == query.Id)
+            .Where(c => !c.IsDeleted)
             .SingleOrDefaultAsync(cancellationToken);
 
         if (company is null)
@@ -52,7 +53,7 @@ public class GetCompanyHandler(
         
         if (avatar is not null)
         {
-            avatarLink = await fileStorageService.GetDownloadUrlAsync(FileStorageBucketName.UserAvatars, 
+            avatarLink = await fileStorageService.GetDownloadUrlAsync(FileStorageBucketName.CompanyAvatars, 
                 avatar.GuidIdentifier, avatar.Extension, cancellationToken);
         }
         

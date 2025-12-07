@@ -5,6 +5,10 @@ using JobSearchSiteBackend.Core.Domains.JobFolderClaims;
 using JobSearchSiteBackend.Core.Domains.JobFolders;
 using JobSearchSiteBackend.Core.Persistence;
 using JobSearchSiteBackend.Core.Services.Auth;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using Newtonsoft.Json.Schema;
+using Newtonsoft.Json.Serialization;
 
 namespace JobSearchSiteBackend.Core.Domains.Companies.UseCases.AddCompany;
 
@@ -18,8 +22,19 @@ public class AddCompanyHandler(
     {
         var currentUserId = currentAccountService.GetIdOrThrow();
 
+        var settings = new JsonSerializerSettings
+        {
+            MissingMemberHandling = MissingMemberHandling.Error,
+            ContractResolver = new CamelCasePropertyNamesContractResolver()
+        };
+        
+        var schema = JSchema.Parse(CountrySpecificCompanyFieldsJsonSchemas.GetForCountryId(command.CountryId));
+        var fields = JObject.Parse(command.CountrySpecificFieldsJson);
+        var isValid = fields.IsValid(schema);
+
         //creating company and checking result
-        var company = new Company(command.Name, command.Description, true, command.CountryId);
+        var company = new Company(command.Name, command.Description,
+            true, command.CountryId, command.CountrySpecificFieldsJson);
 
         await using var transaction = await context.Database.BeginTransactionAsync(cancellationToken);
 

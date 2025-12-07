@@ -22,9 +22,9 @@ public class PersonalFilesController(IMapper mapper) : ControllerBase
         [FromServices] DeleteFileHandler handler,
         CancellationToken cancellationToken)
     {
-        var mappedCommand = new DeleteFileCommand(id);
+        var command = new DeleteFileCommand(id);
         
-        var result = await handler.Handle(mappedCommand, cancellationToken);
+        var result = await handler.Handle(command, cancellationToken);
         
         return this.ToActionResult(result);
     }
@@ -36,9 +36,9 @@ public class PersonalFilesController(IMapper mapper) : ControllerBase
         [FromServices] GetDownloadLinkHandler handler,
         CancellationToken cancellationToken)
     {
-        var mappedQuery = new GetDownloadLinkQuery(id);
+        var query = new GetDownloadLinkQuery(id);
         
-        var result = await handler.Handle(mappedQuery, cancellationToken);
+        var result = await handler.Handle(query, cancellationToken);
         
         return this.ToActionResult(result.Map(x => mapper.Map<GetDownloadLinkResponse>(x)));
     }

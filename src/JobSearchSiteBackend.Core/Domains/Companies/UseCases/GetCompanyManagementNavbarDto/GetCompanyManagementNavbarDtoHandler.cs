@@ -1,5 +1,4 @@
 ﻿using Ardalis.Result;
-using AutoMapper;
 using JobSearchSiteBackend.Core.Domains._Shared.UseCaseStructure;
 using JobSearchSiteBackend.Core.Domains.Companies.Dtos;
 using JobSearchSiteBackend.Core.Persistence;
@@ -21,6 +20,7 @@ public class GetCompanyManagementNavbarDtoHandler(
         
         var company = await context.Companies
             .AsNoTracking()
+            .Include(c => c.Country)
             .Include(c => c.UserCompanyClaims!.Where(ucc => ucc.UserId == currentAccountId))
             .Include(c => c.CompanyAvatars!.Where(a => !a.IsDeleted && a.IsUploadedSuccessfully).OrderBy(a => a.DateTimeUpdatedUtc))
             .Where(c => c.Id == query.CompanyId)
@@ -41,18 +41,18 @@ public class GetCompanyManagementNavbarDtoHandler(
                 lastAvatar.GuidIdentifier, lastAvatar.Extension, cancellationToken);
         }
 
-        var companyNavbarDto = new CompanyManagementDetailedDto(
+        var companyManagementDetailedDto = new CompanyManagementDetailedDto(
             company.Id,
             company.Name,
             company.Description,
             company.CountryId,
             companyLogoLink,
-            "", //todo
-            company.UserCompanyClaims!.Select(x => x.ClaimId).ToList()
+            company.UserCompanyClaims!.Select(x => x.ClaimId).ToList(),
+            company.CountrySpecificFieldsJson
             );
 
-        var response = new GetCompanyManagementNavbarDtoResult(companyNavbarDto);
+        var result = new GetCompanyManagementNavbarDtoResult(companyManagementDetailedDto);
 
-        return response;
+        return Result.Success(result);
     }
 }

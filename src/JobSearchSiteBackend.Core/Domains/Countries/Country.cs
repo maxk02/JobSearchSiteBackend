@@ -2,6 +2,7 @@
 using JobSearchSiteBackend.Core.Domains._Shared.EntityInterfaces;
 using JobSearchSiteBackend.Core.Domains._Shared.Enums;
 using JobSearchSiteBackend.Core.Domains.Companies;
+using JobSearchSiteBackend.Core.Domains.Countries.Enums;
 using JobSearchSiteBackend.Core.Domains.JobContractTypes;
 using JobSearchSiteBackend.Core.Domains.Locations;
 
@@ -11,9 +12,9 @@ public class Country : IEntityWithId
 {
     public static readonly ImmutableArray<Country> AllValues =
     [
-        new Country(1, "POL"),
-        new Country(2, "DEU"),
-        new Country(3, "FRA"),
+        new Country((long)CountryIdsEnum.Poland, "POL"),
+        new Country((long)CountryIdsEnum.Germany, "DEU"),
+        new Country((long)CountryIdsEnum.France, "FRA"),
     ];
     
     private Country(long id, string code)
@@ -22,7 +23,7 @@ public class Country : IEntityWithId
         Code = code;
     }
     
-    public long Id { get; set; }
+    public long Id { get; private set; }
     public string Code { get; private set; }
     
     public ICollection<JobContractType>? JobContractTypes { get; set; }

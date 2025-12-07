@@ -4,19 +4,19 @@ using JobSearchSiteBackend.Core.Domains.Countries;
 using JobSearchSiteBackend.Core.Domains.JobFolders;
 using JobSearchSiteBackend.Core.Domains.Jobs;
 using JobSearchSiteBackend.Core.Domains.UserProfiles;
-using Ardalis.Result;
-using Ardalis.Result.FluentValidation;
 
 namespace JobSearchSiteBackend.Core.Domains.Companies;
 
 public class Company : IEntityWithId, IEntityWithUpdDelDate
 {
-    public Company(string name, string? description, bool isPublic, long countryId)
+    public Company(string name, string? description, bool isPublic,
+        long countryId, string countrySpecificFieldsJson)
     {
         CountryId = countryId;
         Name = name;
         Description = description;
         IsPublic = isPublic;
+        CountrySpecificFieldsJson = countrySpecificFieldsJson;
     }
     
     public long Id { get; set; }
@@ -31,6 +31,8 @@ public class Company : IEntityWithId, IEntityWithUpdDelDate
     public string? Description { get; set; }
     
     public bool IsPublic { get; set; }
+    
+    public string CountrySpecificFieldsJson { get; set; }
     
     public Country? Country { get; set; }
 
