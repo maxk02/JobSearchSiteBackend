@@ -1,10 +1,12 @@
 ﻿using Ardalis.Result;
 using JobSearchSiteBackend.Core.Domains._Shared.Pagination;
 using JobSearchSiteBackend.Core.Domains._Shared.UseCaseStructure;
+using JobSearchSiteBackend.Core.Domains.Companies;
 using JobSearchSiteBackend.Core.Domains.Companies.Persistence;
 using JobSearchSiteBackend.Core.Domains.Jobs.Dtos;
 using JobSearchSiteBackend.Core.Domains.Jobs.Search;
 using JobSearchSiteBackend.Core.Domains.Locations;
+using JobSearchSiteBackend.Core.Domains.Locations.Dtos;
 using JobSearchSiteBackend.Core.Persistence;
 using JobSearchSiteBackend.Core.Services.Auth;
 using JobSearchSiteBackend.Core.Services.FileStorage;
@@ -18,23 +20,29 @@ public class GetJobsHandler(
     IFileStorageService fileStorageService,
     ICurrentAccountService currentAccountService) : IRequestHandler<GetJobsQuery, Result<GetJobsResult>>
 {
+    private record JobItem(
+        long Id,
+        long CompanyId,
+        string CompanyName,
+        IEnumerable<LocationDto> Locations,
+        string Title,
+        DateTime DateTimePublishedUtc,
+        DateTime DateTimeExpiringUtc,
+        JobSalaryInfoDto? SalaryInfoDto,
+        IEnumerable<long> JobContractTypeIds,
+        IEnumerable<long> EmploymentOptionIds,
+        IEnumerable<CompanyAvatar> CompanyAvatars,
+        bool IsBookmarked);
+    
     public async Task<Result<GetJobsResult>> Handle(GetJobsQuery query,
         CancellationToken cancellationToken = default)
     {
         var currentUserId = currentAccountService.GetId();
         
-        var dbIncludeQuery = context.Jobs
-            .AsNoTracking()
-            .Include(j => j.Locations)
-            .Include(j => j.JobContractTypes)
-            .Include(j => j.EmploymentOptions)
-            .Include(j => j.JobFolder)
-            .ThenInclude(jf => jf!.Company)
-            .ThenInclude(c => c!.CompanyAvatars);
-
-        IQueryable<Job> dbQuery = dbIncludeQuery
+        var dbQuery = context.Jobs
             .Where(job => job.DateTimeExpiringUtc > DateTime.UtcNow)
-            .Where(job => job.IsPublic);
+            .Where(job => job.IsPublic)
+            .Where(job => !job.IsDeleted);
 
         List<long>? hitIds = null;
         
@@ -67,7 +75,7 @@ public class GetJobsHandler(
 
         var count = await dbQuery.CountAsync(cancellationToken);
 
-        List<(Job, bool)> jobsWithIsBookmarked = [];
+        List<JobItem> jobItems = [];
 
         if (string.IsNullOrEmpty(query.Query))
         {
@@ -79,22 +87,44 @@ public class GetJobsHandler(
 
         if (currentUserId is null)
         {
-            var jobs = await dbQuery.ToListAsync(cancellationToken);
-
-            jobsWithIsBookmarked = jobs.Select(j => (j, false)).ToList();
+            jobItems = await dbQuery
+                .Select(j => new JobItem(
+                        j.Id, j.JobFolder!.CompanyId, j.JobFolder!.Company!.Name,
+                        j.Locations!
+                            .Select(l => new LocationDto(l.Id, l.CountryId, l.FullName, l.DescriptionPl, l.Code)),
+                        j.Title, j.DateTimePublishedUtc, j.DateTimeExpiringUtc,
+                        new JobSalaryInfoDto(j.SalaryInfo!.Minimum, j.SalaryInfo.Maximum,
+                            j.SalaryInfo.CurrencyId, j.SalaryInfo.UnitOfTime, j.SalaryInfo.IsAfterTaxes),
+                        j.JobContractTypes!.Select(jct => jct.Id),
+                        j.EmploymentOptions!.Select(eo => eo.Id),
+                        j.JobFolder!.Company!.CompanyAvatars!,
+                        false
+                    )
+                )
+                .ToListAsync(cancellationToken);
         }
         else
         {
-            jobsWithIsBookmarked = await dbQuery
-                .Select(j => new ValueTuple<Job, bool>
-                (
-                    j,
-                    j.UserJobBookmarks!.Any(ujb => ujb.UserId == currentUserId)
-                ))
+            jobItems = await dbQuery
+                .Select(j => new JobItem(
+                        j.Id, j.JobFolder!.CompanyId, j.JobFolder!.Company!.Name,
+                        j.Locations!
+                            .Select(l => new LocationDto(l.Id, l.CountryId, l.FullName, l.DescriptionPl, l.Code)),
+                        j.Title, j.DateTimePublishedUtc, j.DateTimeExpiringUtc,
+                        j.SalaryInfo != null
+                            ? new JobSalaryInfoDto(j.SalaryInfo.Minimum, j.SalaryInfo.Maximum,
+                                j.SalaryInfo.CurrencyId, j.SalaryInfo.UnitOfTime, j.SalaryInfo.IsAfterTaxes)
+                            : null,
+                        j.JobContractTypes!.Select(jct => jct.Id),
+                        j.EmploymentOptions!.Select(eo => eo.Id),
+                        j.JobFolder!.Company!.CompanyAvatars!,
+                        j.UserJobBookmarks!.Any(u => u.UserId == currentUserId)
+                    )
+                )
                 .ToListAsync(cancellationToken);
         }
         
-        if (jobsWithIsBookmarked.Count == 0)
+        if (jobItems.Count == 0)
         {
             return Result.NotFound();
         }
@@ -104,8 +134,8 @@ public class GetJobsHandler(
             if (hitIds is null)
                 throw new NullReferenceException();
             
-            jobsWithIsBookmarked = jobsWithIsBookmarked
-                .OrderBy(jwib => hitIds.IndexOf(jwib.Item1.Id))
+            jobItems = jobItems
+                .OrderBy(ji => hitIds.IndexOf(ji.Id))
                 .Skip((query.Page - 1) * query.Size)
                 .Take(query.Size)
                 .ToList();
@@ -113,9 +143,9 @@ public class GetJobsHandler(
 
         List<JobCardDto> jobCardDtos = [];
 
-        foreach (var (job, isBookmarked) in jobsWithIsBookmarked)
+        foreach (var jobItem in jobItems)
         {
-            var avatar = job.JobFolder?.Company?.CompanyAvatars?.GetLatestAvailableAvatar();
+            var avatar = jobItem.CompanyAvatars.ToList().GetLatestAvailableAvatar();
 
             string? avatarLink = null;
 
@@ -125,11 +155,10 @@ public class GetJobsHandler(
                     avatar.GuidIdentifier, avatar.Extension, cancellationToken);
             }
             
-            var jobCardDto = new JobCardDto(job.Id, job.JobFolder!.CompanyId, avatarLink, job.JobFolder!.Company!.Name,
-                job.Locations!.Select(l => l.ToLocationDto()).ToList(),
-                job.Title, job.DateTimePublishedUtc, job.DateTimeExpiringUtc, job.SalaryInfo?.ToJobSalaryInfoDto(),
-                job.EmploymentOptions!.Select(eo => eo.Id).ToList(),
-                job.JobContractTypes!.Select(ct => ct.Id).ToList(), isBookmarked);
+            var jobCardDto = new JobCardDto(jobItem.Id, jobItem.CompanyId, avatarLink,
+                jobItem.CompanyName, jobItem.Locations.ToList(), jobItem.Title, jobItem.DateTimePublishedUtc,
+                jobItem.DateTimeExpiringUtc, jobItem.SalaryInfoDto, jobItem.EmploymentOptionIds.ToList(),
+                jobItem.JobContractTypeIds.ToList(), jobItem.IsBookmarked);
             
             jobCardDtos.Add(jobCardDto);
         }

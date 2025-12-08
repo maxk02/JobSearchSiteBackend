@@ -44,7 +44,8 @@ public class GetCompanyJobsHandler(
         var dbQuery = context.Jobs
             .Where(job => job.JobFolder!.CompanyId == query.CompanyId)
             .Where(job => job.DateTimeExpiringUtc > DateTime.UtcNow)
-            .Where(job => job.IsPublic);
+            .Where(job => job.IsPublic)
+            .Where(job => !job.IsDeleted);
 
         if (!string.IsNullOrEmpty(query.Query))
         {
@@ -120,10 +121,7 @@ public class GetCompanyJobsHandler(
             return Result.NotFound();
         }
 
-        var avatar = jobItems.First()
-            .CompanyAvatars
-            .ToList()
-            .GetLatestAvailableAvatar();
+        var avatar = jobItems.First().CompanyAvatars.ToList().GetLatestAvailableAvatar();
 
         string? avatarLink = null;
 
