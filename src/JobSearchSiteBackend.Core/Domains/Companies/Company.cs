@@ -7,7 +7,7 @@ using JobSearchSiteBackend.Core.Domains.UserProfiles;
 
 namespace JobSearchSiteBackend.Core.Domains.Companies;
 
-public class Company : IEntityWithId, IEntityWithUpdDelDate
+public class Company : IEntityWithId, IEntityWithSearchSync
 {
     public Company(string name, string? description, bool isPublic,
         long countryId, string countrySpecificFieldsJson)
@@ -22,6 +22,9 @@ public class Company : IEntityWithId, IEntityWithUpdDelDate
     public long Id { get; set; }
     
     public DateTime DateTimeUpdatedUtc { get; set; }
+    
+    public DateTime? DateTimeSyncedWithSearchUtc { get; set; }
+    
     public bool IsDeleted { get; set; }
     
     public long CountryId { get; set; }

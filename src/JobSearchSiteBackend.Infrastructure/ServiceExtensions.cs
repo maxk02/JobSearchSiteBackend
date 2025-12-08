@@ -20,6 +20,7 @@ using JobSearchSiteBackend.Infrastructure.BackgroundJobs.Hangfire;
 using JobSearchSiteBackend.Infrastructure.Caching;
 using JobSearchSiteBackend.Infrastructure.EmailSender.MailKit;
 using JobSearchSiteBackend.Infrastructure.FileStorage.AmazonS3;
+using JobSearchSiteBackend.Infrastructure.Persistence;
 using JobSearchSiteBackend.Infrastructure.Search.Elasticsearch;
 using JobSearchSiteBackend.Infrastructure.TextExtraction;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -39,8 +40,15 @@ public static class ServiceExtensions
     public static void ConfigurePersistenceWithIdentity(this IServiceCollection serviceCollection,
         IConfiguration configuration)
     {
-        serviceCollection.AddDbContext<MainDataContext>(options =>
-            options.UseSqlServer(Environment.GetEnvironmentVariable("MAIN_DB_CONNECTION_STRING")));
+        serviceCollection.AddSingleton<UpdateTimestampInterceptor>();
+        
+        serviceCollection.AddDbContext<MainDataContext>((sp, options) =>
+        {
+            var interceptor = sp.GetRequiredService<UpdateTimestampInterceptor>();
+            options
+                .UseSqlServer(Environment.GetEnvironmentVariable("MAIN_DB_CONNECTION_STRING"))
+                .AddInterceptors(interceptor);
+        });
         
         serviceCollection.AddIdentity<MyIdentityUser, MyIdentityRole>(options =>
             {
