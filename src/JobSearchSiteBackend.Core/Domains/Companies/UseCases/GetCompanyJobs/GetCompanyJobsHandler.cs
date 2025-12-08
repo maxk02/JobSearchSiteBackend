@@ -8,6 +8,7 @@ using JobSearchSiteBackend.Core.Domains.Jobs.Dtos;
 using JobSearchSiteBackend.Core.Domains.Jobs.Search;
 using JobSearchSiteBackend.Core.Domains.Jobs.UseCases.GetJobs;
 using JobSearchSiteBackend.Core.Domains.Locations;
+using JobSearchSiteBackend.Core.Domains.Locations.Dtos;
 using JobSearchSiteBackend.Core.Persistence;
 using JobSearchSiteBackend.Core.Services.Auth;
 using JobSearchSiteBackend.Core.Services.FileStorage;
@@ -21,25 +22,30 @@ public class GetCompanyJobsHandler(
     MainDataContext context,
     ICurrentAccountService currentAccountService) : IRequestHandler<GetCompanyJobsQuery, Result<GetCompanyJobsResult>>
 {
+    private record JobItem(
+        long Id,
+        long CompanyId,
+        string CompanyName,
+        IEnumerable<LocationDto> Locations,
+        string Title,
+        DateTime DateTimePublishedUtc,
+        DateTime DateTimeExpiringUtc,
+        JobSalaryInfoDto? SalaryInfoDto,
+        IEnumerable<long> JobContractTypeIds,
+        IEnumerable<long> EmploymentOptionIds,
+        IEnumerable<CompanyAvatar> CompanyAvatars,
+        bool IsBookmarked);
+
     public async Task<Result<GetCompanyJobsResult>> Handle(GetCompanyJobsQuery query,
         CancellationToken cancellationToken = default)
     {
         var currentUserId = currentAccountService.GetId();
-        
-        var dbIncludeQuery = context.Jobs
-            .AsNoTracking()
-            .Include(j => j.Locations)
-            .Include(j => j.JobContractTypes)
-            .Include(j => j.EmploymentOptions)
-            .Include(j => j.JobFolder)
-            .ThenInclude(jf => jf!.Company)
-            .ThenInclude(c => c!.CompanyAvatars);
 
-        var dbQuery = dbIncludeQuery
+        var dbQuery = context.Jobs
             .Where(job => job.JobFolder!.CompanyId == query.CompanyId)
             .Where(job => job.DateTimeExpiringUtc > DateTime.UtcNow)
             .Where(job => job.IsPublic);
-        
+
         if (!string.IsNullOrEmpty(query.Query))
         {
             var hitIds = await jobSearchRepository
@@ -62,9 +68,9 @@ public class GetCompanyJobsHandler(
             dbQuery = dbQuery.Where(job => job.JobContractTypes!.Any(jct => query.ContractTypeIds.Contains(jct.Id)));
 
         var count = await dbQuery.CountAsync(cancellationToken);
-        
-        List<(Job, bool)> jobsWithIsBookmarked = [];
-        
+
+        List<JobItem> jobItems = [];
+
         var paginatedDbQuery = dbQuery
             .OrderByDescending(job => job.DateTimePublishedUtc)
             .Skip((query.Page - 1) * query.Size)
@@ -72,50 +78,67 @@ public class GetCompanyJobsHandler(
 
         if (currentUserId is null)
         {
-            var jobs = await paginatedDbQuery.ToListAsync(cancellationToken);
-
-            jobsWithIsBookmarked = jobs.Select(j => (j, false)).ToList();
+            jobItems = await paginatedDbQuery
+                .Select(j => new JobItem(
+                        j.Id, j.JobFolder!.CompanyId, j.JobFolder!.Company!.Name,
+                        j.Locations!
+                            .Select(l => new LocationDto(l.Id, l.CountryId, l.FullName, l.DescriptionPl, l.Code)),
+                        j.Title, j.DateTimePublishedUtc, j.DateTimeExpiringUtc,
+                        new JobSalaryInfoDto(j.SalaryInfo!.Minimum, j.SalaryInfo.Maximum,
+                            j.SalaryInfo.CurrencyId, j.SalaryInfo.UnitOfTime, j.SalaryInfo.IsAfterTaxes),
+                        j.JobContractTypes!.Select(jct => jct.Id),
+                        j.EmploymentOptions!.Select(eo => eo.Id),
+                        j.JobFolder!.Company!.CompanyAvatars!,
+                        false
+                    )
+                )
+                .ToListAsync(cancellationToken);
         }
         else
         {
-            jobsWithIsBookmarked = await paginatedDbQuery
-                .Select(j => new ValueTuple<Job, bool>
-                (
-                    j,
-                    j.UserJobBookmarks!.Any(u => u.UserId == currentUserId) //todo select after include
-                ))
+            jobItems = await paginatedDbQuery
+                .Select(j => new JobItem(
+                        j.Id, j.JobFolder!.CompanyId, j.JobFolder!.Company!.Name,
+                        j.Locations!
+                            .Select(l => new LocationDto(l.Id, l.CountryId, l.FullName, l.DescriptionPl, l.Code)),
+                        j.Title, j.DateTimePublishedUtc, j.DateTimeExpiringUtc,
+                        j.SalaryInfo != null
+                            ? new JobSalaryInfoDto(j.SalaryInfo.Minimum, j.SalaryInfo.Maximum,
+                                j.SalaryInfo.CurrencyId, j.SalaryInfo.UnitOfTime, j.SalaryInfo.IsAfterTaxes)
+                            : null,
+                        j.JobContractTypes!.Select(jct => jct.Id),
+                        j.EmploymentOptions!.Select(eo => eo.Id),
+                        j.JobFolder!.Company!.CompanyAvatars!,
+                        j.UserJobBookmarks!.Any(u => u.UserId == currentUserId)
+                    )
+                )
                 .ToListAsync(cancellationToken);
         }
 
-        if (jobsWithIsBookmarked.Count == 0)
+        if (jobItems.Count == 0)
         {
             return Result.NotFound();
         }
-        
-        List<JobCardDto> jobCardDtos = [];
-        
-        var avatar = jobsWithIsBookmarked.First().Item1
-            .JobFolder?.Company?.CompanyAvatars?
+
+        var avatar = jobItems.First()
+            .CompanyAvatars
+            .ToList()
             .GetLatestAvailableAvatar();
 
         string? avatarLink = null;
 
         if (avatar is not null)
         {
-            avatarLink = await fileStorageService.GetDownloadUrlAsync(FileStorageBucketName.UserAvatars, 
+            avatarLink = await fileStorageService.GetDownloadUrlAsync(FileStorageBucketName.UserAvatars,
                 avatar.GuidIdentifier, avatar.Extension, cancellationToken);
         }
-        
-        foreach (var (job, isBookmarked) in jobsWithIsBookmarked)
-        {
-            var jobCardDto = new JobCardDto(job.Id, job.JobFolder!.CompanyId, avatarLink, job.JobFolder!.Company!.Name,
-                job.Locations!.Select(l => l.ToLocationDto()).ToList(),
-                job.Title, job.DateTimePublishedUtc, job.DateTimeExpiringUtc, job.SalaryInfo?.ToJobSalaryInfoDto(),
-                job.EmploymentOptions!.Select(eo => eo.Id).ToList(),
-                job.JobContractTypes!.Select(ct => ct.Id).ToList(), isBookmarked);
-            
-            jobCardDtos.Add(jobCardDto);
-        }
+
+        var jobCardDtos = jobItems
+            .Select(jobItem => new JobCardDto(jobItem.Id, jobItem.CompanyId, avatarLink,
+                jobItem.CompanyName, jobItem.Locations.ToList(), jobItem.Title, jobItem.DateTimePublishedUtc,
+                jobItem.DateTimeExpiringUtc, jobItem.SalaryInfoDto, jobItem.EmploymentOptionIds.ToList(),
+                jobItem.JobContractTypeIds.ToList(), jobItem.IsBookmarked))
+            .ToList();
 
         var paginationResponse = new PaginationResponse(query.Page, query.Size, count);
 
