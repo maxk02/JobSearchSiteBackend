@@ -11,7 +11,10 @@ using JobSearchSiteBackend.Core.Domains.Companies.RecurringJobs;
 using JobSearchSiteBackend.Core.Domains.Companies.Search;
 using JobSearchSiteBackend.Core.Domains.Jobs.RecurringJobs;
 using JobSearchSiteBackend.Core.Domains.Jobs.Search;
+using JobSearchSiteBackend.Core.Domains.PersonalFiles.RecurringJobs;
+using JobSearchSiteBackend.Core.Domains.PersonalFiles.Search;
 using JobSearchSiteBackend.Core.Services.BackgroundJobs;
+using JobSearchSiteBackend.Core.Services.FileStorage;
 using JobSearchSiteBackend.Infrastructure;
 using JobSearchSiteBackend.Infrastructure.Persistence;
 using JobSearchSiteBackend.Shared.MyAppSettings;
@@ -159,9 +162,15 @@ using (var scope = app.Services.CreateScope())
         var backgroundJobService = services.GetRequiredService<IBackgroundJobService>();
         var jobSearchRepository = services.GetRequiredService<IJobSearchRepository>();
         var companySearchRepository = services.GetRequiredService<ICompanySearchRepository>();
+        var personalFileSearchRepository = services.GetRequiredService<IPersonalFileSearchRepository>();
+        var fileStorageService = services.GetRequiredService<IFileStorageService>();
 
         await SyncJobsWithSearchRecurringJob.Register(dbContext, jobSearchRepository, backgroundJobService);
         await SyncCompaniesWithSearchRecurringJob.Register(dbContext, companySearchRepository, backgroundJobService);
+        await SyncTextFilesWithSearchRecurringJob.Register(dbContext,
+            personalFileSearchRepository, backgroundJobService);
+        await DeleteNonUploadedFilesSqlEntriesRecurringJob.Register(dbContext, backgroundJobService);
+        await ClearCompanyAvatarsRecurringJob.Register(dbContext, fileStorageService, backgroundJobService);
     }
     catch (Exception ex)
     {

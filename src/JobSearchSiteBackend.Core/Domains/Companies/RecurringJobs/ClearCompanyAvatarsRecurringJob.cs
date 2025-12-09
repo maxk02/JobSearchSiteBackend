@@ -24,6 +24,9 @@ public static class ClearCompanyAvatarsRecurringJob
             .Where(ca => ca.IsDeleted || !ca.IsUploadedSuccessfully)
             .ToListAsync(CancellationToken.None);
 
+        if (avatarsToClear.Count == 0)
+            return;
+
         List<(Guid, string)> avatarsToClearGuidExtensionTuple = avatarsToClear
             .Select(a => (a.GuidIdentifier, a.Extension))
             .ToList();

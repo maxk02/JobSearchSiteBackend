@@ -21,32 +21,17 @@ public static class SyncJobsWithSearchRecurringJob
     
     public static async Task Run(MainDataContext dbContext, IJobSearchRepository jobSearchRepository)
     {
-        var lastUpdateInfo = await dbContext
-                .SqlToSearchSyncInfos
-                .Where(x => x.CollectionName == "jobs")
-                .SingleOrDefaultAsync();
-
-        if (lastUpdateInfo == null)
-        {
-            throw new InvalidDataException();
-        }
-
-        // var vs this type??
-        IQueryable<Job> query = dbContext.Jobs
-            .AsNoTracking()
+        var recordsToSync = await dbContext.Jobs
             .Include(j => j.JobFolder)
-            .ThenInclude(jf => jf!.Company);
+            .ThenInclude(jf => jf!.Company)
+            .Where(j => j.DateTimeSyncedWithSearchUtc == null
+                        || j.DateTimeSyncedWithSearchUtc < j.DateTimeUpdatedUtc)
+            .ToListAsync();
         
-        if (lastUpdateInfo.UpdatedUpToDateTimeUtc != null)
-        {
-            query = query
-                .Where(j => j.DateTimeUpdatedUtc > lastUpdateInfo.UpdatedUpToDateTimeUtc)
-                .OrderBy(x => x.DateTimeUpdatedUtc);
-        }
-
-        var recordsToUpdate = await query.ToListAsync();
+        if (recordsToSync.Count == 0)
+            return;
         
-        var jobSearchModels = recordsToUpdate.Select(job => new JobSearchModel(
+        var jobSearchModels = recordsToSync.Select(job => new JobSearchModel(
             job.Id,
             job.JobFolder!.Company!.CountryId,
             job.CategoryId,
@@ -61,8 +46,13 @@ public static class SyncJobsWithSearchRecurringJob
 
         await jobSearchRepository.UpsertMultipleAsync(jobSearchModels);
         
-        lastUpdateInfo.UpdatedUpToDateTimeUtc = recordsToUpdate.Last().DateTimeUpdatedUtc;
-        lastUpdateInfo.LastTimeSyncedUtc = DateTime.UtcNow;
+        var dateTimeSyncedUtc = DateTime.UtcNow;
+        
+        foreach (var record in recordsToSync)
+        {
+            record.DateTimeSyncedWithSearchUtc = dateTimeSyncedUtc;
+        }
+        
         await dbContext.SaveChangesAsync();
     }
 }

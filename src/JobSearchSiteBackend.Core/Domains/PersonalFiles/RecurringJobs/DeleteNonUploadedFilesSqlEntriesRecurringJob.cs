@@ -20,10 +20,12 @@ public static class DeleteNonUploadedFilesSqlEntriesRecurringJob
     public static async Task Run(MainDataContext dbContext)
     {
         var query = dbContext.PersonalFiles
-            .AsNoTracking()
             .Where(cv => cv.IsUploadedSuccessfully == false && cv.DateTimeUpdatedUtc < DateTime.UtcNow.AddDays(-DeleteOlderThanDays));
 
         var recordsToDelete = await query.ToListAsync();
+        
+        if (recordsToDelete.Count == 0)
+            return;
         
         dbContext.PersonalFiles.RemoveRange(recordsToDelete);
         

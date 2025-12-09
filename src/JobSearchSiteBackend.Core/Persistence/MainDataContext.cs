@@ -1,5 +1,4 @@
-﻿using JobSearchSiteBackend.Core.Domains._SystemEntities.SqlToSearchSyncInfo;
-using JobSearchSiteBackend.Core.Domains.Accounts;
+﻿using JobSearchSiteBackend.Core.Domains.Accounts;
 using JobSearchSiteBackend.Core.Domains.Categories;
 using JobSearchSiteBackend.Core.Domains.Companies;
 using JobSearchSiteBackend.Core.Domains.CompanyClaims;
@@ -45,9 +44,6 @@ public class MainDataContext : IdentityDbContext<MyIdentityUser, MyIdentityRole,
     public DbSet<UserJobFolderClaim> UserJobFolderClaims { get; set; }
     public DbSet<UserProfile> UserProfiles { get; set; }
     public DbSet<UserAvatar>  UserAvatars { get; set; }
-
-    //system entities
-    public DbSet<SqlToSearchSyncInfo> SqlToSearchSyncInfos { get; set; }
 
     public MainDataContext(DbContextOptions<MainDataContext> options) : base(options)
     {
