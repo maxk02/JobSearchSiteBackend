@@ -21,6 +21,7 @@ public class JobContractType : IEntityWithId
     
     private JobContractType(long id, long countryId, string namePl)
     {
+        Id = id;
         CountryId = countryId;
         NamePl = namePl;
     }

@@ -17,6 +17,7 @@ using JobSearchSiteBackend.Core.Services.BackgroundJobs;
 using JobSearchSiteBackend.Core.Services.FileStorage;
 using JobSearchSiteBackend.Infrastructure;
 using JobSearchSiteBackend.Infrastructure.Persistence;
+using JobSearchSiteBackend.Infrastructure.Persistence.EfCore;
 using JobSearchSiteBackend.Shared.MyAppSettings;
 using JobSearchSiteBackend.Shared.MyAppSettings.Email;
 

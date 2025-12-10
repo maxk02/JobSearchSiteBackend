@@ -10,6 +10,10 @@ public class CompanyBalanceTransactionConfiguration : IEntityTypeConfiguration<C
         builder.HasKey(companyBalanceTransaction => companyBalanceTransaction.Id);
         
         builder.HasIndex(companyBalanceTransaction => companyBalanceTransaction.GuidIdentifier).IsUnique();
+        
+        builder
+            .Property(companyBalanceTransaction => companyBalanceTransaction.Amount)
+            .HasColumnType("decimal(10,2)");
 
         builder
             .HasOne(companyBalanceTransaction => companyBalanceTransaction.Company)

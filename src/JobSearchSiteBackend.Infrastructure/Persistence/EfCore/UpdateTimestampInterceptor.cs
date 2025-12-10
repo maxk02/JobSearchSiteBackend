@@ -2,7 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 
-namespace JobSearchSiteBackend.Infrastructure.Persistence;
+namespace JobSearchSiteBackend.Infrastructure.Persistence.EfCore;
 
 public class UpdateTimestampInterceptor : SaveChangesInterceptor
 {

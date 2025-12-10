@@ -1,7 +1,7 @@
 ﻿using JobSearchSiteBackend.Core.Domains.Locations;
 using JobSearchSiteBackend.Core.Persistence;
 
-namespace JobSearchSiteBackend.Infrastructure.Persistence;
+namespace JobSearchSiteBackend.Infrastructure.Persistence.EfCore;
 
 public class MainDataContextSeed
 {

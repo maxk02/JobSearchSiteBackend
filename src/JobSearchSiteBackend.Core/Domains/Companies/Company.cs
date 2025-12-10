@@ -43,7 +43,6 @@ public class Company : IEntityWithId, IEntityWithSearchSync
     
     public ICollection<Job>? Jobs { get; set; }
     
-    public ICollection<UserProfile>? UsersWhoBookmarked { get; set; }
     public ICollection<UserCompanyClaim>? UserCompanyClaims { get; set; }
     
     public ICollection<CompanyAvatar>? CompanyAvatars { get; set; }

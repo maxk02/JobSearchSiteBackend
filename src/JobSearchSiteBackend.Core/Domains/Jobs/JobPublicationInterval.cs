@@ -42,13 +42,13 @@ public class JobPublicationInterval : IEntityWithId
         Price = price;
     }
     
-    public long Id { get; }
+    public long Id { get; private set; }
     
     public long CountryCurrencyId { get; private set; }
     
     public CountryCurrency? CountryCurrency { get; private set; }
     
-    public int MaxDaysOfPublication { get; }
+    public int MaxDaysOfPublication { get; private set; }
     
-    public decimal Price { get; }
+    public decimal Price { get; private set; }
 }

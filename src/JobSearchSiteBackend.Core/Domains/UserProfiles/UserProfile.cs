@@ -12,10 +12,10 @@ namespace JobSearchSiteBackend.Core.Domains.UserProfiles;
 
 public class UserProfile : IEntityWithId
 {
-    public UserProfile(long accountId, string firstName, string lastName,
+    public UserProfile(long id, string firstName, string lastName,
         string? phone, bool isReceivingApplicationStatusUpdates)
     {
-        Id = accountId;
+        Id = id;
         FirstName = firstName;
         LastName = lastName;
         Phone = phone;

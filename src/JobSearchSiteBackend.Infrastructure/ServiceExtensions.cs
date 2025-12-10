@@ -21,6 +21,7 @@ using JobSearchSiteBackend.Infrastructure.Caching;
 using JobSearchSiteBackend.Infrastructure.EmailSender.MailKit;
 using JobSearchSiteBackend.Infrastructure.FileStorage.AmazonS3;
 using JobSearchSiteBackend.Infrastructure.Persistence;
+using JobSearchSiteBackend.Infrastructure.Persistence.EfCore;
 using JobSearchSiteBackend.Infrastructure.Search.Elasticsearch;
 using JobSearchSiteBackend.Infrastructure.TextExtraction;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -46,7 +47,8 @@ public static class ServiceExtensions
         {
             var interceptor = sp.GetRequiredService<UpdateTimestampInterceptor>();
             options
-                .UseSqlServer(Environment.GetEnvironmentVariable("MAIN_DB_CONNECTION_STRING"))
+                .UseSqlServer(Environment.GetEnvironmentVariable("MAIN_DB_CONNECTION_STRING"),
+                    b => b.MigrationsAssembly(typeof(MainDataContext).Assembly.FullName))
                 .AddInterceptors(interceptor);
         });
         

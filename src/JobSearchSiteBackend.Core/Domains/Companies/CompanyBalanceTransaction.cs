@@ -5,13 +5,14 @@ namespace JobSearchSiteBackend.Core.Domains.Companies;
 
 public class CompanyBalanceTransaction : IEntityWithId, IEntityWithGuid
 {
-    public CompanyBalanceTransaction(long companyId, decimal amount, string description, long currencyId, long userId)
+    public CompanyBalanceTransaction(long companyId, decimal amount,
+        string description, long currencyId, long? userProfileId)
     {
         CompanyId = companyId;
         Amount = amount;
         Description = description;
         CurrencyId = currencyId;
-        UserProfileId = userId;
+        UserProfileId = userProfileId;
     }
     
     public long Id { get; private set; }
@@ -26,7 +27,7 @@ public class CompanyBalanceTransaction : IEntityWithId, IEntityWithGuid
     
     public long CurrencyId { get; private set; }
     
-    public long? CompanyId { get; set; }
+    public long CompanyId { get; set; }
     public long? UserProfileId { get; set; }
     
     public Company? Company { get; set; }

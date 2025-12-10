@@ -11,6 +11,9 @@ namespace JobSearchSiteBackend.Core.Domains.Jobs;
 
 public class Job : IEntityWithId, IEntityWithSearchSync
 {
+#pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider adding the 'required' modifier or declaring as nullable.
+    private Job() {}
+#pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider adding the 'required' modifier or declaring as nullable.
     public Job(long categoryId, long jobFolderId, string title, string description, bool isPublic,
         DateTime dateTimePublishedUtc, DateTime dateTimeExpiringUtc, ICollection<string> responsibilities,
         ICollection<string> requirements, ICollection<string> niceToHaves, JobSalaryInfo? salaryInfo,
