@@ -24,6 +24,7 @@ using JobSearchSiteBackend.Infrastructure.Persistence;
 using JobSearchSiteBackend.Infrastructure.Persistence.EfCore;
 using JobSearchSiteBackend.Infrastructure.Search.Elasticsearch;
 using JobSearchSiteBackend.Infrastructure.TextExtraction;
+using JobSearchSiteBackend.Shared.MyAppSettings;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
@@ -47,7 +48,7 @@ public static class ServiceExtensions
         {
             var interceptor = sp.GetRequiredService<UpdateTimestampInterceptor>();
             options
-                .UseSqlServer(Environment.GetEnvironmentVariable("MAIN_DB_CONNECTION_STRING"),
+                .UseSqlServer(configuration["SQL_SERVER_DEFAULT_CONNECTION_STRING"],
                     b => b.MigrationsAssembly(typeof(MainDataContext).Assembly.FullName))
                 .AddInterceptors(interceptor);
         });
@@ -68,12 +69,16 @@ public static class ServiceExtensions
     public static void ConfigureJwtAuthentication(this IServiceCollection serviceCollection,
         IConfiguration configuration)
     {
-        var issuer = configuration.GetSection("Jwt:Issuer").Value;
-        var audience = configuration.GetSection("Jwt:Audience").Value;
-        var secretKey = configuration.GetSection("Jwt:SecretKey").Value;
+        var issuer = configuration.GetSection("JWT_ISSUER").Value;
+        var audience = configuration.GetSection("JWT_AUDIENCE").Value;
+        var secretKey = configuration.GetSection("JWT_SECRET_KEY").Value;
 
-        if (string.IsNullOrEmpty(issuer) || string.IsNullOrEmpty(audience) || string.IsNullOrEmpty(secretKey))
+        if (string.IsNullOrEmpty(issuer)
+            || string.IsNullOrEmpty(audience)
+            || string.IsNullOrEmpty(secretKey))
+        {
             throw new ArgumentNullException();
+        }
         
         serviceCollection.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             .AddJwtBearer(options =>
@@ -105,11 +110,6 @@ public static class ServiceExtensions
     
     public static void ConfigureFileStorage(this IServiceCollection serviceCollection, IConfiguration configuration)
     {
-        // var bucketName = configuration["AWS:BucketName"];
-        //
-        // if (string.IsNullOrEmpty(bucketName))
-        //     throw new ArgumentNullException();
-        
         serviceCollection.AddDefaultAWSOptions(configuration.GetAWSOptions());
         
         serviceCollection.AddAWSService<IAmazonS3>();
@@ -122,12 +122,16 @@ public static class ServiceExtensions
     {
         serviceCollection.AddSingleton<IElasticClient>(provider =>
         {
-            var uri = configuration["Elasticsearch:Uri"];
-            var username = configuration["Elasticsearch:Username"];
-            var password = configuration["Elasticsearch:Password"];
-            
-            if (string.IsNullOrEmpty(uri) || string.IsNullOrEmpty(username) || string.IsNullOrEmpty(password))
+            var uri = configuration["ELASTICSEARCH_URI"];
+            var username = configuration["ELASTICSEARCH_USERNAME"];
+            var password = configuration["ELASTICSEARCH_PASSWORD"];
+
+            if (string.IsNullOrEmpty(uri)
+                || string.IsNullOrEmpty(username)
+                || string.IsNullOrEmpty(password))
+            {
                 throw new ArgumentNullException();
+            }
 
             var node = new Uri(uri);
             var connectionPool = new SingleNodeConnectionPool(node);
@@ -138,9 +142,9 @@ public static class ServiceExtensions
             return client;
         });
         
-        // serviceCollection.AddSingleton<IJobSearchRepository, ElasticJobSearchRepository>();
+        serviceCollection.AddSingleton<IJobSearchRepository, ElasticJobSearchRepository>();
         serviceCollection.AddSingleton<ILocationSearchRepository, ElasticLocationSearchRepository>();
-        // serviceCollection.AddSingleton<IPersonalFileSearchRepository, ElasticPersonalFileSearchRepository>();
+        serviceCollection.AddSingleton<IPersonalFileSearchRepository, ElasticPersonalFileSearchRepository>();
     }
     
     public static void ConfigureTextExtraction(this IServiceCollection serviceCollection)
@@ -148,14 +152,22 @@ public static class ServiceExtensions
         serviceCollection.AddSingleton<ITextExtractionService, TextExtractionService>();
     }
     
-    public static void ConfigureBackgroundJobScheduler(this IServiceCollection serviceCollection)
+    public static void ConfigureBackgroundJobScheduler(this IServiceCollection serviceCollection,
+        IConfiguration configuration)
     {
+        var connectionString = configuration["HANGFIRE_DEFAULT_SQL_SERVER_CONNECTION_STRING"];
+        
+        if (string.IsNullOrEmpty(connectionString))
+            throw new ArgumentNullException();
+        
         serviceCollection.AddHangfire(config =>
-            config.UseSqlServerStorage(Environment.GetEnvironmentVariable("MAIN_DB_CONNECTION_STRING")));
+            config.UseSqlServerStorage(connectionString));
+        
         serviceCollection.AddHangfireServer(options =>
         {
             options.Queues = BackgroundJobQueues.AllValues;
         });
+        
         serviceCollection.AddSingleton<IBackgroundJobService, HangfireBackgroundJobService>();
     }
 
@@ -183,7 +195,7 @@ public static class ServiceExtensions
             Password = configuration["REDIS_PASSWORD"] ?? throw new NullReferenceException(), 
     
             // If using Redis 6+ ACLs, specify the username
-            User = configuration["REDIS_USER"] ?? throw new NullReferenceException(), 
+            // User = configuration["REDIS_USER"] ?? throw new NullReferenceException(), 
     
             // Optional: Only one connection is generally needed, use multiplexing.
             AbortOnConnectFail = false 
@@ -196,5 +208,8 @@ public static class ServiceExtensions
         // 2. Register your abstraction
         serviceCollection.AddScoped<IGeneralCacheRepository, RedisGeneralCacheRepository>();
         serviceCollection.AddScoped<IUserSessionCacheRepository, RedisUserSessionCacheRepository>();
+        serviceCollection.AddScoped<IPageVisitCacheRepository, RedisPageVisitCacheRepository>();
+        serviceCollection.AddScoped<ICompanyLastVisitedFoldersCacheRepository, RedisCompanyLastVisitedFoldersCacheRepository>();
+        serviceCollection.AddScoped<ICompanyLastVisitedJobsCacheRepository, RedisCompanyLastVisitedJobsCacheRepository>();
     }
 }

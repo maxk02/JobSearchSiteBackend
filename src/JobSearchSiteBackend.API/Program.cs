@@ -1,5 +1,6 @@
 using System.Reflection;
 using System.Text.Json.Serialization;
+using Hangfire;
 using JobSearchSiteBackend.API.Middleware;
 using JobSearchSiteBackend.API.Services;
 using JobSearchSiteBackend.Core;
@@ -90,7 +91,7 @@ builder.Services.ConfigureJwtAuthentication(builder.Configuration);
 builder.Services.ConfigureJwtTokenGeneration();
 builder.Services.ConfigurePersistenceWithIdentity(builder.Configuration);
 builder.Services.ConfigureMemoryCache(builder.Configuration);
-builder.Services.ConfigureBackgroundJobScheduler();
+builder.Services.ConfigureBackgroundJobScheduler(builder.Configuration);
 builder.Services.ConfigureFileStorage(builder.Configuration);
 builder.Services.ConfigureEmailSender();
 builder.Services.ConfigureSearch(builder.Configuration);
@@ -200,5 +201,7 @@ app.UseMiddleware<RequireAuthWithEmailConfirmedMiddleware>();
 app.UseMiddleware<CheckUserTokenMiddleware>();
 
 app.MapControllers();
+
+app.UseHangfireDashboard("/hangfire");
 
 app.Run();
