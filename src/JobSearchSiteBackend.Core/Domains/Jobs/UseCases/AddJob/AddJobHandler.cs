@@ -16,7 +16,8 @@ namespace JobSearchSiteBackend.Core.Domains.Jobs.UseCases.AddJob;
 
 public class AddJobHandler(
     ICurrentAccountService currentAccountService,
-    MainDataContext context) : IRequestHandler<AddJobCommand, Result<AddJobResult>>
+    MainDataContext context,
+    IInjectableSqlQueries sqlQueries) : IRequestHandler<AddJobCommand, Result<AddJobResult>>
 {
     public async Task<Result<AddJobResult>> Handle(AddJobCommand command, CancellationToken cancellationToken = default)
     {
@@ -81,6 +82,17 @@ public class AddJobHandler(
         if (jobPublicationInterval is null)
             return Result.Error();
 
+        await using var transaction = await context.Database.BeginTransactionAsync(cancellationToken);
+        
+        var currentBalance = await context.CompanyBalanceTransactions
+            .FromSqlInterpolated(sqlQueries.GetCompanyBalanceTransactionsWithRowLocks(jobFolder.CompanyId))
+            .SumAsync(t => (decimal?)t.Amount, cancellationToken) ?? 0m;
+        
+        var newBalance = currentBalance + jobPublicationInterval.Price;
+
+        if (newBalance < 0)
+            return Result.Error();
+        
         var companyBalanceTransaction = new CompanyBalanceTransaction(jobFolder.CompanyId, -jobPublicationInterval.Price,
             $"Publikacja ogłoszenia {command.Title} do {command.DateTimeExpiringUtc.ToString(CultureInfo.InvariantCulture)}",
             jobPublicationInterval.CountryCurrency!.CurrencyId, currentUserId);
@@ -118,6 +130,7 @@ public class AddJobHandler(
         context.Jobs.Add(job);
 
         await context.SaveChangesAsync(cancellationToken);
+        await transaction.CommitAsync(cancellationToken);
 
         var result = new AddJobResult(job.Id);
         
