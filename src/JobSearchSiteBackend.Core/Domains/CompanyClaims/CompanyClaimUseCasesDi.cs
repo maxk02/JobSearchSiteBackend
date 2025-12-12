@@ -1,4 +1,5 @@
 ﻿using JobSearchSiteBackend.Core.Domains.CompanyClaims.UseCases.GetCompanyClaimIdsForUser;
+using JobSearchSiteBackend.Core.Domains.CompanyClaims.UseCases.GetCompanyClaimsOverview;
 using JobSearchSiteBackend.Core.Domains.CompanyClaims.UseCases.UpdateCompanyClaimIdsForUser;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -9,6 +10,7 @@ public static class CompanyClaimUseCasesDi
     public static void ConfigureCompanyClaimUseCases(this IServiceCollection serviceCollection)
     {
         serviceCollection.AddScoped<GetCompanyClaimIdsForUserHandler>();
+        serviceCollection.AddScoped<GetCompanyClaimsOverviewHandler>();
         serviceCollection.AddScoped<UpdateCompanyClaimIdsForUserHandler>();
     }
 }

@@ -12,7 +12,7 @@ public static class JobApplicationUseCasesDi
     {
         serviceCollection.AddScoped<AddJobApplicationHandler>();
         serviceCollection.AddScoped<DeleteJobApplicationHandler>();
-        serviceCollection.AddScoped<UpdateJobApplicationStatusHandler>();
         serviceCollection.AddScoped<UpdateJobApplicationFilesHandler>();
+        serviceCollection.AddScoped<UpdateJobApplicationStatusHandler>();
     }
 }

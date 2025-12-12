@@ -21,8 +21,8 @@ public static class AccountUseCasesDi
         serviceCollection.AddScoped<DeleteAccountHandler>();
         serviceCollection.AddScoped<LogInHandler>();
         serviceCollection.AddScoped<LogOutHandler>();
-        serviceCollection.AddScoped<ResetForgottenPasswordHandler>();
         serviceCollection.AddScoped<ResendEmailConfirmationLinkHandler>();
+        serviceCollection.AddScoped<ResetForgottenPasswordHandler>();
         serviceCollection.AddScoped<SendPasswordResetLinkHandler>();
     }
 }

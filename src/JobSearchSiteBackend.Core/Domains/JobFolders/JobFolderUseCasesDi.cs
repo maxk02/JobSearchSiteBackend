@@ -2,6 +2,7 @@
 using JobSearchSiteBackend.Core.Domains.JobFolders.UseCases.DeleteJobFolder;
 using JobSearchSiteBackend.Core.Domains.JobFolders.UseCases.GetChildFolders;
 using JobSearchSiteBackend.Core.Domains.JobFolders.UseCases.GetFolderJobs;
+using JobSearchSiteBackend.Core.Domains.JobFolders.UseCases.GetJobFolder;
 using JobSearchSiteBackend.Core.Domains.JobFolders.UseCases.UpdateJobFolder;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -15,6 +16,7 @@ public static class JobFolderUseCasesDi
         serviceCollection.AddScoped<DeleteJobFolderHandler>();
         serviceCollection.AddScoped<GetChildFoldersHandler>();
         serviceCollection.AddScoped<GetFolderJobsHandler>();
+        serviceCollection.AddScoped<GetJobFolderHandler>();
         serviceCollection.AddScoped<UpdateJobFolderHandler>();
     }
 }

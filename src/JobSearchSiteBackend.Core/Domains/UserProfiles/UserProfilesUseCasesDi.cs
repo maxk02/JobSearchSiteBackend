@@ -6,6 +6,7 @@ using JobSearchSiteBackend.Core.Domains.UserProfiles.UseCases.GetJobApplications
 using JobSearchSiteBackend.Core.Domains.UserProfiles.UseCases.GetPersonalFiles;
 using JobSearchSiteBackend.Core.Domains.UserProfiles.UseCases.GetUserProfile;
 using JobSearchSiteBackend.Core.Domains.UserProfiles.UseCases.UpdateUserProfile;
+using JobSearchSiteBackend.Core.Domains.UserProfiles.UseCases.UploadUserAvatar;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace JobSearchSiteBackend.Core.Domains.UserProfiles;
@@ -22,5 +23,6 @@ public static class UserProfilesUseCasesDi
         serviceCollection.AddScoped<GetPersonalFilesHandler>();
         serviceCollection.AddScoped<GetUserProfileHandler>();
         serviceCollection.AddScoped<UpdateUserProfileHandler>();
+        serviceCollection.AddScoped<UploadUserAvatarHandler>();
     }
 }
