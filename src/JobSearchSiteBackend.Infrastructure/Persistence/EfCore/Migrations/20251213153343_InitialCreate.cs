@@ -289,8 +289,7 @@ namespace JobSearchSiteBackend.Infrastructure.Persistence.EfCore.Migrations
                 name: "Locations",
                 columns: table => new
                 {
-                    Id = table.Column<long>(type: "bigint", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Id = table.Column<long>(type: "bigint", nullable: false),
                     CountryId = table.Column<long>(type: "bigint", nullable: false),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     FullName = table.Column<string>(type: "nvarchar(max)", nullable: false),
@@ -908,8 +907,7 @@ namespace JobSearchSiteBackend.Infrastructure.Persistence.EfCore.Migrations
                         name: "FK_UserJobApplicationBookmarks_UserProfiles_UserId",
                         column: x => x.UserId,
                         principalTable: "UserProfiles",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.InsertData(

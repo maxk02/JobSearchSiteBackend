@@ -1,10 +1,10 @@
 ﻿using JobSearchSiteBackend.Core.Domains._Shared.UseCaseStructure;
-using JobSearchSiteBackend.Core.Services.BackgroundJobs;
 using JobSearchSiteBackend.Core.Services.EmailSender;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Options;
 using JobSearchSiteBackend.Shared.MyAppSettings;
 using Ardalis.Result;
+using JobSearchSiteBackend.Core.Domains.Accounts.BackgroundJobRunners;
 using JobSearchSiteBackend.Core.Domains.Accounts.EmailMessageTemplates;
 using JobSearchSiteBackend.Shared.MyAppSettings.Email;
 
@@ -13,10 +13,9 @@ namespace JobSearchSiteBackend.Core.Domains.Accounts.UseCases.SendPasswordResetL
 public class SendPasswordResetLinkHandler(
     UserManager<MyIdentityUser> userManager,
     IOptions<MyAppSettings> injectedAppSettings,
-    IEmailSenderService emailSenderService,
-    IBackgroundJobService backgroundJobService,
+    ISendPasswordResetLinkRunner sendPasswordResetLinkRunner,
     StandardEmailRenderer emailRenderer,
-    IOptions<MyDefaultEmailSenderSettings> emailSenderSettings) : IRequestHandler<SendPasswordResetLinkCommand, Result>
+    IOptions<MyDefaultEmailSenderOptions> emailSenderSettings) : IRequestHandler<SendPasswordResetLinkCommand, Result>
 {
     public async Task<Result> Handle(SendPasswordResetLinkCommand command, CancellationToken cancellationToken = default)
     {
@@ -34,11 +33,13 @@ public class SendPasswordResetLinkHandler(
         
         var renderedEmail = await emailRenderer.RenderAsync(emailTemplate);
         
-        var emailToSend = new EmailToSend(Guid.NewGuid(), emailSenderSettings.Value, command.Email, null, null,
-            renderedEmail.Subject, renderedEmail.Content, renderedEmail.IsHtml);
+        var senderName = emailSenderSettings.Value.Name;
+        var senderEmail = emailSenderSettings.Value.EmailAddress;
+        
+        var emailToSend = new EmailToSend(Guid.NewGuid(), senderName, senderEmail, command.Email,
+            null, null, renderedEmail.Subject, renderedEmail.Content, renderedEmail.IsHtml);
 
-        backgroundJobService.Enqueue(() => emailSenderService.SendEmailAsync(emailToSend, cancellationToken),
-            BackgroundJobQueues.EmailSending);
+        await sendPasswordResetLinkRunner.RunAsync(emailToSend);
 
         return Result.Success();
     }

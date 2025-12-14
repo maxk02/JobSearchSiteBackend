@@ -1,9 +1,7 @@
-﻿using System.Transactions;
-using JobSearchSiteBackend.Core.Domains._Shared.UseCaseStructure;
+﻿using JobSearchSiteBackend.Core.Domains._Shared.UseCaseStructure;
 using JobSearchSiteBackend.Core.Domains.Companies.Search;
 using JobSearchSiteBackend.Core.Domains.CompanyClaims;
 using JobSearchSiteBackend.Core.Services.Auth;
-using JobSearchSiteBackend.Core.Services.BackgroundJobs;
 using Microsoft.EntityFrameworkCore;
 using Ardalis.Result;
 using JobSearchSiteBackend.Core.Persistence;

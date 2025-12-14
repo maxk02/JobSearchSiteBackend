@@ -8,6 +8,8 @@ public class LocationConfiguration : IEntityTypeConfiguration<Location>
     public void Configure(EntityTypeBuilder<Location> builder)
     {
         builder.HasKey(location => location.Id);
+        
+        builder.Property(location => location.Id).ValueGeneratedNever();
 
         builder
             .HasOne(location => location.Country)

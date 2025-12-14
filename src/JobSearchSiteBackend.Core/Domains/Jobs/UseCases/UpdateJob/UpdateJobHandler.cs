@@ -1,15 +1,10 @@
 ﻿using System.Globalization;
-using System.Transactions;
 using JobSearchSiteBackend.Core.Domains._Shared.UseCaseStructure;
 using JobSearchSiteBackend.Core.Domains.Categories;
 using JobSearchSiteBackend.Core.Domains.JobFolderClaims;
-using JobSearchSiteBackend.Core.Domains.JobFolders;
-using JobSearchSiteBackend.Core.Domains.Jobs.Search;
 using JobSearchSiteBackend.Core.Services.Auth;
-using JobSearchSiteBackend.Core.Services.BackgroundJobs;
 using Microsoft.EntityFrameworkCore;
 using Ardalis.Result;
-using AutoMapper;
 using JobSearchSiteBackend.Core.Domains.Companies;
 using JobSearchSiteBackend.Core.Domains.EmploymentOptions;
 using JobSearchSiteBackend.Core.Domains.JobFolders.Persistence;

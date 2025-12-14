@@ -1,13 +1,9 @@
-﻿using System.Transactions;
+﻿using Ardalis.Result;
 using JobSearchSiteBackend.Core.Domains._Shared.UseCaseStructure;
-using JobSearchSiteBackend.Core.Domains.PersonalFiles.Search;
+using JobSearchSiteBackend.Core.Persistence;
 using JobSearchSiteBackend.Core.Services.Auth;
-using JobSearchSiteBackend.Core.Services.BackgroundJobs;
 using JobSearchSiteBackend.Core.Services.FileStorage;
 using JobSearchSiteBackend.Core.Services.TextExtraction;
-using Microsoft.Extensions.Caching.Memory;
-using Ardalis.Result;
-using JobSearchSiteBackend.Core.Persistence;
 
 namespace JobSearchSiteBackend.Core.Domains.PersonalFiles.UseCases.UploadFile;
 

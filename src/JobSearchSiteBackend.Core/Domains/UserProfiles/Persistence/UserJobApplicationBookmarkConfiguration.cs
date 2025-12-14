@@ -21,6 +21,6 @@ public class UserJobApplicationBookmarkConfiguration : IEntityTypeConfiguration<
             .HasOne(ujb => ujb.UserProfile)
             .WithMany(u => u.UserJobApplicationBookmarks)
             .HasForeignKey(ujb => ujb.UserId)
-            .OnDelete(DeleteBehavior.Cascade);
+            .OnDelete(DeleteBehavior.NoAction);
     }
 }

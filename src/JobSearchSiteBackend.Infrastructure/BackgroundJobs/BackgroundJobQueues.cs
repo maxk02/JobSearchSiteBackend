@@ -1,4 +1,4 @@
-﻿namespace JobSearchSiteBackend.Core.Services.BackgroundJobs;
+﻿namespace JobSearchSiteBackend.Infrastructure.BackgroundJobs;
 
 public static class BackgroundJobQueues
 {

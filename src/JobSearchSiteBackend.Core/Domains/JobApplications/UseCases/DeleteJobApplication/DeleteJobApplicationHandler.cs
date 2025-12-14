@@ -1,7 +1,5 @@
 ﻿using JobSearchSiteBackend.Core.Domains._Shared.UseCaseStructure;
-using JobSearchSiteBackend.Core.Domains.PersonalFiles.Search;
 using JobSearchSiteBackend.Core.Services.Auth;
-using JobSearchSiteBackend.Core.Services.BackgroundJobs;
 using Microsoft.EntityFrameworkCore;
 using Ardalis.Result;
 using JobSearchSiteBackend.Core.Persistence;
@@ -10,9 +8,7 @@ namespace JobSearchSiteBackend.Core.Domains.JobApplications.UseCases.DeleteJobAp
 
 public class DeleteJobApplicationHandler(
     ICurrentAccountService currentAccountService,
-    IPersonalFileSearchRepository personalFileSearchRepository,
-    MainDataContext context,
-    IBackgroundJobService backgroundJobService) : IRequestHandler<DeleteJobApplicationCommand, Result>
+    MainDataContext context) : IRequestHandler<DeleteJobApplicationCommand, Result>
 {
     public async Task<Result> Handle(DeleteJobApplicationCommand command, CancellationToken cancellationToken = default)
     {

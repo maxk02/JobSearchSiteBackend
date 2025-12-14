@@ -5,18 +5,24 @@ using JobSearchSiteBackend.Core.Services.Auth;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using JobSearchSiteBackend.Shared.MyAppSettings;
+using Microsoft.Extensions.Configuration;
 
 namespace JobSearchSiteBackend.Infrastructure.Auth;
 
-public class JwtTokenGenerationService(IOptions<MyJwtSettings> settings) : IJwtTokenGenerationService
+public class JwtTokenGenerationService(IConfiguration configuration) : IJwtTokenGenerationService
 {
     public string Generate(AccountData accountData, Guid newTokenId)
     {
-        var secretKey= settings.Value.SecretKey;
+        var issuer = configuration["JWT_ISSUER"];
+        var audience = configuration["JWT_AUDIENCE"];
+        var secretKey = configuration["JWT_SECRET_KEY"];
 
-        var issuer = settings.Value.Issuer;
-
-        var audience= settings.Value.Audience;
+        if (string.IsNullOrEmpty(issuer)
+            || string.IsNullOrEmpty(audience)
+            || string.IsNullOrEmpty(secretKey))
+        {
+            throw new ArgumentNullException();
+        }
         
         List<Claim> claims = [
             new(JwtRegisteredClaimNames.Sub, accountData.Id.ToString()),

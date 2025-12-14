@@ -1,23 +1,14 @@
-﻿using JobSearchSiteBackend.Core.Persistence;
-using JobSearchSiteBackend.Core.Services.BackgroundJobs;
+﻿using JobSearchSiteBackend.Core.Domains.Companies.RecurringJobRunners;
+using JobSearchSiteBackend.Core.Persistence;
 using JobSearchSiteBackend.Core.Services.FileStorage;
 using Microsoft.EntityFrameworkCore;
 
-namespace JobSearchSiteBackend.Core.Domains.Companies.RecurringJobs;
+namespace JobSearchSiteBackend.Infrastructure.BackgroundJobs.Hangfire.RecurringJobsRunners;
 
-public static class ClearCompanyAvatarsRecurringJob
+public class ClearCompanyAvatarsRunner(MainDataContext dbContext,
+    IFileStorageService fileStorageService) : IClearCompanyAvatarsRunner
 {
-    public static async Task Register(MainDataContext dbContext,
-        IFileStorageService fileStorageService,
-        IBackgroundJobService backgroundJobService)
-    {
-        backgroundJobService.AddOrUpdateRecurring("clear-company-avatars",
-            () => Run(dbContext, fileStorageService), "0 0 * * *");
-
-        await Task.CompletedTask;
-    }
-
-    public static async Task Run(MainDataContext dbContext, IFileStorageService fileStorageService)
+    public async Task Run()
     {
         var avatarsToClear = await dbContext.CompanyAvatars
             .Where(ca => ca.DateTimeUpdatedUtc < DateTime.UtcNow.AddMonths(-1))

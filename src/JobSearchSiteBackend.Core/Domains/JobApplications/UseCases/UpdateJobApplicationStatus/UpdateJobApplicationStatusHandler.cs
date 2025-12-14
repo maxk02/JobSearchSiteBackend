@@ -1,12 +1,11 @@
 ﻿using Ardalis.Result;
 using JobSearchSiteBackend.Core.Domains._Shared.UseCaseStructure;
+using JobSearchSiteBackend.Core.Domains.JobApplications.BackgroundJobRunners;
 using JobSearchSiteBackend.Core.Domains.JobApplications.EmailMessageTemplates;
 using JobSearchSiteBackend.Core.Domains.JobFolderClaims;
-using JobSearchSiteBackend.Core.Domains.JobFolders;
 using JobSearchSiteBackend.Core.Domains.JobFolders.Persistence;
 using JobSearchSiteBackend.Core.Persistence;
 using JobSearchSiteBackend.Core.Services.Auth;
-using JobSearchSiteBackend.Core.Services.BackgroundJobs;
 using JobSearchSiteBackend.Core.Services.EmailSender;
 using JobSearchSiteBackend.Shared.MyAppSettings.Email;
 using Microsoft.EntityFrameworkCore;
@@ -17,10 +16,9 @@ namespace JobSearchSiteBackend.Core.Domains.JobApplications.UseCases.UpdateJobAp
 public class UpdateJobApplicationStatusHandler(
     ICurrentAccountService currentAccountService,
     MainDataContext context,
-    IBackgroundJobService backgroundJobService,
-    IEmailSenderService emailSenderService,
+    ISendApplicationStatusUpdatedEmailRunner sendApplicationStatusUpdatedEmailRunner,
     StandardEmailRenderer emailRenderer,
-    IOptions<MyDefaultEmailSenderSettings> emailSenderSettings) : IRequestHandler<UpdateJobApplicationStatusCommand, Result>
+    IOptions<MyDefaultEmailSenderOptions> emailSenderSettings) : IRequestHandler<UpdateJobApplicationStatusCommand, Result>
 {
     public async Task<Result> Handle(UpdateJobApplicationStatusCommand command,
         CancellationToken cancellationToken = default)
@@ -67,13 +65,15 @@ public class UpdateJobApplicationStatusHandler(
         
         var renderedEmail = await emailRenderer.RenderAsync(emailTemplate);
         
-        var emailToSend = new EmailToSend(Guid.NewGuid(), emailSenderSettings.Value, emailAddress, null, null,
-            renderedEmail.Subject, renderedEmail.Content, renderedEmail.IsHtml);
+        var senderName = emailSenderSettings.Value.Name;
+        var senderEmail = emailSenderSettings.Value.EmailAddress;
+        
+        var emailToSend = new EmailToSend(Guid.NewGuid(), senderName, senderEmail, emailAddress,
+            null, null, renderedEmail.Subject, renderedEmail.Content, renderedEmail.IsHtml);
         
         await context.SaveChangesAsync(cancellationToken);
-        
-        backgroundJobService.Enqueue(() => emailSenderService.SendEmailAsync(emailToSend, cancellationToken),
-            BackgroundJobQueues.EmailSending);
+
+        await sendApplicationStatusUpdatedEmailRunner.RunAsync(emailToSend);
 
         return Result.Success();
     }

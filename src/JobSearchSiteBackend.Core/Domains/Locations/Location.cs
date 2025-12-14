@@ -7,9 +7,10 @@ namespace JobSearchSiteBackend.Core.Domains.Locations;
 
 public class Location : IEntityWithId
 {
-    private Location(long countryId, string name, string fullName,
+    public Location(long id, long countryId, string name, string fullName,
         bool isConcrete, string? code, string? descriptionPl)
     {
+        Id = id;
         CountryId = countryId;
         Name = name;
         FullName = fullName;

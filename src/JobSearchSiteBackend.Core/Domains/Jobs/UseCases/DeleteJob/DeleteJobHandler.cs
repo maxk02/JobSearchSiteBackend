@@ -1,10 +1,6 @@
-﻿using System.Transactions;
-using JobSearchSiteBackend.Core.Domains._Shared.UseCaseStructure;
+﻿using JobSearchSiteBackend.Core.Domains._Shared.UseCaseStructure;
 using JobSearchSiteBackend.Core.Domains.JobFolderClaims;
-using JobSearchSiteBackend.Core.Domains.JobFolders;
-using JobSearchSiteBackend.Core.Domains.Jobs.Search;
 using JobSearchSiteBackend.Core.Services.Auth;
-using JobSearchSiteBackend.Core.Services.BackgroundJobs;
 using Microsoft.EntityFrameworkCore;
 using Ardalis.Result;
 using JobSearchSiteBackend.Core.Domains.JobFolders.Persistence;
@@ -14,8 +10,6 @@ namespace JobSearchSiteBackend.Core.Domains.Jobs.UseCases.DeleteJob;
 
 public class DeleteJobHandler(
     ICurrentAccountService currentAccountService,
-    IJobSearchRepository jobSearchRepository,
-    IBackgroundJobService backgroundJobService,
     MainDataContext context) : IRequestHandler<DeleteJobCommand, Result>
 {
     public async Task<Result> Handle(DeleteJobCommand command, CancellationToken cancellationToken = default)

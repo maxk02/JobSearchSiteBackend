@@ -1,8 +1,8 @@
 ﻿using Ardalis.Result;
 using JobSearchSiteBackend.Core.Domains._Shared.UseCaseStructure;
+using JobSearchSiteBackend.Core.Domains.Accounts.BackgroundJobRunners;
 using JobSearchSiteBackend.Core.Domains.Accounts.EmailMessageTemplates;
 using JobSearchSiteBackend.Core.Persistence;
-using JobSearchSiteBackend.Core.Services.BackgroundJobs;
 using JobSearchSiteBackend.Core.Services.EmailSender;
 using JobSearchSiteBackend.Shared.MyAppSettings;
 using JobSearchSiteBackend.Shared.MyAppSettings.Email;
@@ -15,10 +15,9 @@ public class CreateAccountHandler(
     IOptions<MyAppSettings> settings,
     UserManager<MyIdentityUser> userManager,
     MainDataContext context,
-    IBackgroundJobService backgroundJobService,
-    IEmailSenderService emailSenderService,
+    ISendAccountCreatedEmailRunner sendAccountCreatedEmailRunner,
     StandardEmailRenderer emailRenderer,
-    IOptions<MyDefaultEmailSenderSettings> emailSenderSettings) 
+    IOptions<MyDefaultEmailSenderOptions> emailSenderSettings) 
     : IRequestHandler<CreateAccountCommand, Result<CreateAccountResult>>
 {
     public async Task<Result<CreateAccountResult>> Handle(CreateAccountCommand command,
@@ -48,13 +47,15 @@ public class CreateAccountHandler(
 
         var renderedEmail = await emailRenderer.RenderAsync(emailTemplate);
 
-        var emailToSend = new EmailToSend(Guid.NewGuid(), emailSenderSettings.Value, command.Email, null, null,
-            renderedEmail.Subject, renderedEmail.Content, renderedEmail.IsHtml);
+        var senderName = emailSenderSettings.Value.Name;
+        var senderEmail = emailSenderSettings.Value.EmailAddress;
+        
+        var emailToSend = new EmailToSend(Guid.NewGuid(), senderName, senderEmail, command.Email, 
+            null, null, renderedEmail.Subject, renderedEmail.Content, renderedEmail.IsHtml);
         
         await transaction.CommitAsync(cancellationToken);
-        
-        backgroundJobService.Enqueue(() => emailSenderService.SendEmailAsync(emailToSend, cancellationToken),
-            BackgroundJobQueues.EmailSending);
+
+        await sendAccountCreatedEmailRunner.RunAsync(emailToSend);
 
         var result = new CreateAccountResult(user.Id);
         

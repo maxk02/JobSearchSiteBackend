@@ -1,4 +1,5 @@
-﻿using System.Security.Authentication;
+﻿using System.Reflection;
+using System.Security.Authentication;
 using System.Text;
 using Amazon.S3;
 using JobSearchSiteBackend.Core.Domains.Accounts;
@@ -8,20 +9,29 @@ using JobSearchSiteBackend.Core.Domains.Locations.Search;
 using JobSearchSiteBackend.Core.Domains.PersonalFiles.Search;
 using JobSearchSiteBackend.Core.Persistence;
 using JobSearchSiteBackend.Core.Services.Auth;
-using JobSearchSiteBackend.Core.Services.BackgroundJobs;
 using JobSearchSiteBackend.Core.Services.Caching;
 using JobSearchSiteBackend.Core.Services.EmailSender;
 using JobSearchSiteBackend.Core.Services.FileStorage;
 using JobSearchSiteBackend.Core.Services.TextExtraction;
 using Elasticsearch.Net;
 using Hangfire;
+using JobSearchSiteBackend.Core.Domains.Accounts.BackgroundJobRunners;
+using JobSearchSiteBackend.Core.Domains.Companies.RecurringJobRunners;
+using JobSearchSiteBackend.Core.Domains.JobApplications.BackgroundJobRunners;
+using JobSearchSiteBackend.Core.Domains.Jobs.RecurringJobRunners;
+using JobSearchSiteBackend.Core.Domains.PersonalFiles.BackgroundJobRunners;
+using JobSearchSiteBackend.Core.Domains.PersonalFiles.RecurringJobRunners;
 using JobSearchSiteBackend.Infrastructure.Auth;
+using JobSearchSiteBackend.Infrastructure.BackgroundJobs;
 using JobSearchSiteBackend.Infrastructure.BackgroundJobs.Hangfire;
+using JobSearchSiteBackend.Infrastructure.BackgroundJobs.Hangfire.BackgroundJobsRunners;
+using JobSearchSiteBackend.Infrastructure.BackgroundJobs.Hangfire.RecurringJobsRunners;
 using JobSearchSiteBackend.Infrastructure.Caching;
 using JobSearchSiteBackend.Infrastructure.EmailSender.MailKit;
 using JobSearchSiteBackend.Infrastructure.FileStorage.AmazonS3;
 using JobSearchSiteBackend.Infrastructure.Persistence;
 using JobSearchSiteBackend.Infrastructure.Persistence.EfCore;
+using JobSearchSiteBackend.Infrastructure.Persistence.SqlServer;
 using JobSearchSiteBackend.Infrastructure.Search.Elasticsearch;
 using JobSearchSiteBackend.Infrastructure.TextExtraction;
 using JobSearchSiteBackend.Shared.MyAppSettings;
@@ -49,7 +59,7 @@ public static class ServiceExtensions
             var interceptor = sp.GetRequiredService<UpdateTimestampInterceptor>();
             options
                 .UseSqlServer(configuration["SQL_SERVER_DEFAULT_CONNECTION_STRING"],
-                    b => b.MigrationsAssembly(typeof(MainDataContext).Assembly.FullName))
+                    b => b.MigrationsAssembly(Assembly.GetExecutingAssembly()))
                 .AddInterceptors(interceptor);
         });
         
@@ -64,14 +74,16 @@ public static class ServiceExtensions
             })
             .AddEntityFrameworkStores<MainDataContext>()
             .AddDefaultTokenProviders();
+        
+        serviceCollection.AddSingleton<IInjectableSqlQueries, SqlServerInjectableSqlQueries>();
     }
     
     public static void ConfigureJwtAuthentication(this IServiceCollection serviceCollection,
         IConfiguration configuration)
     {
-        var issuer = configuration.GetSection("JWT_ISSUER").Value;
-        var audience = configuration.GetSection("JWT_AUDIENCE").Value;
-        var secretKey = configuration.GetSection("JWT_SECRET_KEY").Value;
+        var issuer = configuration["JWT_ISSUER"];
+        var audience = configuration["JWT_AUDIENCE"];
+        var secretKey = configuration["JWT_SECRET_KEY"];
 
         if (string.IsNullOrEmpty(issuer)
             || string.IsNullOrEmpty(audience)
@@ -167,8 +179,20 @@ public static class ServiceExtensions
         {
             options.Queues = BackgroundJobQueues.AllValues;
         });
-        
-        serviceCollection.AddSingleton<IBackgroundJobService, HangfireBackgroundJobService>();
+
+        serviceCollection.AddSingleton<IRecurringJobRegisterer, HangfireRecurringJobRegisterer>();
+
+        serviceCollection.AddSingleton<IDeletePersonalFileFromStorageRunner, DeletePersonalFileFromStorageRunner>();
+        serviceCollection.AddSingleton<IResendEmailConfirmationLinkRunner, ResendEmailConfirmationLinkRunner>();
+        serviceCollection.AddSingleton<ISendAccountCreatedEmailRunner, SendAccountCreatedEmailRunner>();
+        serviceCollection
+            .AddSingleton<ISendApplicationStatusUpdatedEmailRunner, SendApplicationStatusUpdatedEmailRunner>();
+        serviceCollection.AddSingleton<ISendPasswordResetLinkRunner, SendPasswordResetLinkRunner>();
+
+        serviceCollection.AddScoped<IClearCompanyAvatarsRunner, ClearCompanyAvatarsRunner>();
+        serviceCollection.AddScoped<IDeleteNonUploadedFilesRunner, DeleteNonUploadedFilesRunner>();
+        serviceCollection.AddScoped<ISyncJobsWithSearchRunner, SyncJobsWithSearchRunner>();
+        serviceCollection.AddScoped<ISyncTextFilesWithSearchRunner, SyncTextFilesWithSearchRunner>();
     }
 
     public static void ConfigureEmailSender(this IServiceCollection serviceCollection)

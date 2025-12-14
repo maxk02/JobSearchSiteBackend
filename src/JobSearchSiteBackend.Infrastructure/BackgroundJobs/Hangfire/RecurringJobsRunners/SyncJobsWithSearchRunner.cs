@@ -1,25 +1,14 @@
-﻿using JobSearchSiteBackend.Core.Domains.Jobs.Search;
+﻿using JobSearchSiteBackend.Core.Domains.Jobs.RecurringJobRunners;
+using JobSearchSiteBackend.Core.Domains.Jobs.Search;
 using JobSearchSiteBackend.Core.Persistence;
-using JobSearchSiteBackend.Core.Services.BackgroundJobs;
 using Microsoft.EntityFrameworkCore;
 
-namespace JobSearchSiteBackend.Core.Domains.Jobs.RecurringJobs;
+namespace JobSearchSiteBackend.Infrastructure.BackgroundJobs.Hangfire.RecurringJobsRunners;
 
-public static class SyncJobsWithSearchRecurringJob
+public class SyncJobsWithSearchRunner(MainDataContext dbContext,
+    IJobSearchRepository jobSearchRepository) : ISyncJobsWithSearchRunner
 {
-    public static readonly int SyncPeriodMinutes = 2;
-    
-    public static async Task Register(MainDataContext dbContext,
-        IJobSearchRepository jobSearchRepository,
-        IBackgroundJobService backgroundJobService)
-    {
-        backgroundJobService.AddOrUpdateRecurring("sql-search-sync-jobs", 
-            () => Run(dbContext, jobSearchRepository), $"*/{SyncPeriodMinutes} * * * *");
-        
-        await Task.CompletedTask;
-    }
-    
-    public static async Task Run(MainDataContext dbContext, IJobSearchRepository jobSearchRepository)
+    public async Task Run()
     {
         var recordsToSync = await dbContext.Jobs
             .Include(j => j.JobFolder)

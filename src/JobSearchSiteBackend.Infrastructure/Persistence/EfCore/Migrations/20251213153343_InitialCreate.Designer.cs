@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace JobSearchSiteBackend.Infrastructure.Persistence.EfCore.Migrations
 {
     [DbContext(typeof(MainDataContext))]
-    [Migration("20251210222417_InitialCreate")]
+    [Migration("20251213153343_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -1131,10 +1131,7 @@ namespace JobSearchSiteBackend.Infrastructure.Persistence.EfCore.Migrations
             modelBuilder.Entity("JobSearchSiteBackend.Core.Domains.Locations.Location", b =>
                 {
                     b.Property<long>("Id")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("bigint");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
 
                     b.Property<string>("Code")
                         .HasColumnType("nvarchar(max)");
@@ -1820,7 +1817,7 @@ namespace JobSearchSiteBackend.Infrastructure.Persistence.EfCore.Migrations
                     b.HasOne("JobSearchSiteBackend.Core.Domains.UserProfiles.UserProfile", "UserProfile")
                         .WithMany("UserJobApplicationBookmarks")
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.Navigation("JobApplication");

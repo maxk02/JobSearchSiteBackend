@@ -1,5 +1,6 @@
 using System.Reflection;
 using System.Text.Json.Serialization;
+using DotNetEnv;
 using Hangfire;
 using JobSearchSiteBackend.API.Middleware;
 using JobSearchSiteBackend.API.Services;
@@ -8,16 +9,8 @@ using JobSearchSiteBackend.Core.Persistence;
 using JobSearchSiteBackend.Core.Services.Auth;
 using JobSearchSiteBackend.Core.Services.Cookies;
 using JobSearchSiteBackend.Core.Services.Search;
-using JobSearchSiteBackend.Core.Domains.Companies.RecurringJobs;
-using JobSearchSiteBackend.Core.Domains.Companies.Search;
-using JobSearchSiteBackend.Core.Domains.Jobs.RecurringJobs;
-using JobSearchSiteBackend.Core.Domains.Jobs.Search;
-using JobSearchSiteBackend.Core.Domains.PersonalFiles.RecurringJobs;
-using JobSearchSiteBackend.Core.Domains.PersonalFiles.Search;
-using JobSearchSiteBackend.Core.Services.BackgroundJobs;
-using JobSearchSiteBackend.Core.Services.FileStorage;
 using JobSearchSiteBackend.Infrastructure;
-using JobSearchSiteBackend.Infrastructure.Persistence;
+using JobSearchSiteBackend.Infrastructure.BackgroundJobs;
 using JobSearchSiteBackend.Infrastructure.Persistence.EfCore;
 using JobSearchSiteBackend.Shared.MyAppSettings;
 using JobSearchSiteBackend.Shared.MyAppSettings.Email;
@@ -30,6 +23,8 @@ var builder = WebApplication.CreateBuilder(args);
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
 
+Env.Load("./vars.env");
+
 builder.Configuration.AddEnvironmentVariables();
 
 builder.Services
@@ -41,12 +36,6 @@ builder.Services
 builder.Services
     .AddOptions<MySmtpSettings>()
     .Bind(builder.Configuration.GetSection(nameof(MySmtpSettings)))
-    .ValidateDataAnnotations()
-    .ValidateOnStart();
-
-builder.Services
-    .AddOptions<MyJwtSettings>()
-    .Bind(builder.Configuration.GetSection(nameof(MyJwtSettings)))
     .ValidateDataAnnotations()
     .ValidateOnStart();
 
@@ -128,7 +117,8 @@ using (var scope = app.Services.CreateScope())
     
     // DB
     var dbContext = services.GetRequiredService<MainDataContext>();
-    await MainDataContextSeed.SeedAsync(dbContext);
+    await MainDataContextSeed.SeedLocationsAsync(dbContext);
+    await MainDataContextSeed.SeedLocationRelationsAsync(dbContext);
     
     // ElasticSearch
     foreach (var repoType in searchRepositories)
@@ -160,19 +150,8 @@ using (var scope = app.Services.CreateScope())
 
     try
     {
-        var dbContext = services.GetRequiredService<MainDataContext>();
-        var backgroundJobService = services.GetRequiredService<IBackgroundJobService>();
-        var jobSearchRepository = services.GetRequiredService<IJobSearchRepository>();
-        var companySearchRepository = services.GetRequiredService<ICompanySearchRepository>();
-        var personalFileSearchRepository = services.GetRequiredService<IPersonalFileSearchRepository>();
-        var fileStorageService = services.GetRequiredService<IFileStorageService>();
-
-        await SyncJobsWithSearchRecurringJob.Register(dbContext, jobSearchRepository, backgroundJobService);
-        await SyncCompaniesWithSearchRecurringJob.Register(dbContext, companySearchRepository, backgroundJobService);
-        await SyncTextFilesWithSearchRecurringJob.Register(dbContext,
-            personalFileSearchRepository, backgroundJobService);
-        await DeleteNonUploadedFilesSqlEntriesRecurringJob.Register(dbContext, backgroundJobService);
-        await ClearCompanyAvatarsRecurringJob.Register(dbContext, fileStorageService, backgroundJobService);
+        var registerer = services.GetRequiredService<IRecurringJobRegisterer>();
+        await registerer.RegisterJobsAsync();
     }
     catch (Exception ex)
     {

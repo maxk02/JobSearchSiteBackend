@@ -1,30 +1,39 @@
 ﻿using JobSearchSiteBackend.Core.Domains.Locations;
 using JobSearchSiteBackend.Core.Persistence;
+using Microsoft.EntityFrameworkCore;
 
 namespace JobSearchSiteBackend.Infrastructure.Persistence.EfCore;
 
 public class MainDataContextSeed
 {
-    public static async Task SeedAsync(MainDataContext context)
+    public static async Task SeedLocationsAsync(MainDataContext context)
     {
-        if (!context.Locations.Any())
-        {
-            var locations = await SeedFileHelper.LoadJsonAsync<List<Location>>("Domains/Locations/Seed/locations.json");
-            if (locations is not null)
-            {
-                await context.Locations.AddRangeAsync(locations);
-                await context.SaveChangesAsync();
-            }
-        }
+        var locationsExist = await context.Locations.AnyAsync();
 
-        if (!context.LocationRelations.Any())
-        {
-            var relations = await SeedFileHelper.LoadJsonAsync<List<LocationRelation>>("Domains/Locations/Seed/location_relations.json");
-            if (relations is not null)
-            {
-                await context.LocationRelations.AddRangeAsync(relations);
-                await context.SaveChangesAsync();
-            }
-        }
+        if (locationsExist)
+            return;
+        
+        var locations = await SeedFileHelper.LoadJsonAsync<List<Location>>("Domains/Locations/Seed/locations.json");
+
+        if (locations is null || locations.Count == 0)
+            throw new InvalidDataException();
+        
+        context.Locations.AddRange(locations);
+        await context.SaveChangesAsync();
+    }
+    
+    public static async Task SeedLocationRelationsAsync(MainDataContext context)
+    {
+        var locationRelationsExist = await context.LocationRelations.AnyAsync();
+        
+        if (locationRelationsExist)
+            return;
+        
+        var relations = await SeedFileHelper.LoadJsonAsync<List<LocationRelation>>("Domains/Locations/Seed/location_relations.json");
+        if (relations is null || relations.Count == 0)
+            throw new InvalidDataException();
+        
+        context.LocationRelations.AddRange(relations);
+        await context.SaveChangesAsync();
     }
 }

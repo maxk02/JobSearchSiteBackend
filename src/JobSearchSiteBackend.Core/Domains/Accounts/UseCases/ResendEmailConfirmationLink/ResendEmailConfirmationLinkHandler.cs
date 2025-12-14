@@ -1,9 +1,8 @@
 ﻿using Ardalis.Result;
 using JobSearchSiteBackend.Core.Domains._Shared.UseCaseStructure;
+using JobSearchSiteBackend.Core.Domains.Accounts.BackgroundJobRunners;
 using JobSearchSiteBackend.Core.Domains.Accounts.EmailMessageTemplates;
-using JobSearchSiteBackend.Core.Persistence;
 using JobSearchSiteBackend.Core.Services.Auth;
-using JobSearchSiteBackend.Core.Services.BackgroundJobs;
 using JobSearchSiteBackend.Core.Services.EmailSender;
 using JobSearchSiteBackend.Shared.MyAppSettings;
 using JobSearchSiteBackend.Shared.MyAppSettings.Email;
@@ -15,12 +14,10 @@ namespace JobSearchSiteBackend.Core.Domains.Accounts.UseCases.ResendEmailConfirm
 public class ResendEmailConfirmationLinkHandler(
     ICurrentAccountService currentAccountService,
     UserManager<MyIdentityUser> userManager,
-    IBackgroundJobService backgroundJobService,
+    IResendEmailConfirmationLinkRunner resendEmailConfirmationLinkRunner,
     IOptions<MyAppSettings> injectedAppSettings,
-    IEmailSenderService emailSenderService,
     StandardEmailRenderer emailRenderer,
-    IOptions<MyDefaultEmailSenderSettings> emailSenderSettings,
-    MainDataContext context) : IRequestHandler<ResendEmailConfirmationLinkCommand, Result>
+    IOptions<MyDefaultEmailSenderOptions> emailSenderSettings) : IRequestHandler<ResendEmailConfirmationLinkCommand, Result>
 {
     public async Task<Result> Handle(ResendEmailConfirmationLinkCommand command,
         CancellationToken cancellationToken = default)
@@ -52,11 +49,13 @@ public class ResendEmailConfirmationLinkHandler(
 
         var renderedEmail = await emailRenderer.RenderAsync(emailTemplate);
 
-        var emailToSend = new EmailToSend(Guid.NewGuid(), emailSenderSettings.Value, email, null, null,
-            renderedEmail.Subject, renderedEmail.Content, renderedEmail.IsHtml);
+        var senderName = emailSenderSettings.Value.Name;
+        var senderEmail = emailSenderSettings.Value.EmailAddress;
         
-        backgroundJobService.Enqueue(() => emailSenderService.SendEmailAsync(emailToSend, cancellationToken),
-            BackgroundJobQueues.EmailSending);
+        var emailToSend = new EmailToSend(Guid.NewGuid(), senderName, senderEmail, email,
+            null, null, renderedEmail.Subject, renderedEmail.Content, renderedEmail.IsHtml);
+
+        await resendEmailConfirmationLinkRunner.RunAsync(emailToSend);
 
         return Result.Success();
     }

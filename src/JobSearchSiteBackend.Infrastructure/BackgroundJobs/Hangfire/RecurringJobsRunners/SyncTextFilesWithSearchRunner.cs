@@ -1,25 +1,14 @@
-﻿using JobSearchSiteBackend.Core.Domains.PersonalFiles.Search;
+﻿using JobSearchSiteBackend.Core.Domains.PersonalFiles.RecurringJobRunners;
+using JobSearchSiteBackend.Core.Domains.PersonalFiles.Search;
 using JobSearchSiteBackend.Core.Persistence;
-using JobSearchSiteBackend.Core.Services.BackgroundJobs;
 using Microsoft.EntityFrameworkCore;
 
-namespace JobSearchSiteBackend.Core.Domains.PersonalFiles.RecurringJobs;
+namespace JobSearchSiteBackend.Infrastructure.BackgroundJobs.Hangfire.RecurringJobsRunners;
 
-public static class SyncTextFilesWithSearchRecurringJob
+public class SyncTextFilesWithSearchRunner(MainDataContext dbContext,
+    IPersonalFileSearchRepository personalFileSearchRepository) : ISyncTextFilesWithSearchRunner
 {
-    public static readonly int SyncPeriodMinutes = 2;
-
-    public static async Task Register(MainDataContext dbContext,
-        IPersonalFileSearchRepository personalFileSearchRepository,
-        IBackgroundJobService backgroundJobService)
-    {
-        backgroundJobService.AddOrUpdateRecurring("sql-search-sync-text-files",
-            () => Run(dbContext, personalFileSearchRepository), $"*/{SyncPeriodMinutes} * * * *");
-
-        await Task.CompletedTask;
-    }
-
-    public static async Task Run(MainDataContext dbContext, IPersonalFileSearchRepository personalFileSearchRepository)
+    public async Task Run()
     {
         var recordsToSync = await dbContext.PersonalFiles
             .Where(c => c.DateTimeSyncedWithSearchUtc == null

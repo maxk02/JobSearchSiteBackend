@@ -55,7 +55,7 @@ public class UserProfileConfiguration : IEntityTypeConfiguration<UserProfile>
             .HasMany(userProfile => userProfile.UserJobApplicationBookmarks)
             .WithOne(ujb => ujb.UserProfile)
             .HasForeignKey(ujb => ujb.UserId)
-            .OnDelete(DeleteBehavior.Cascade);
+            .OnDelete(DeleteBehavior.NoAction);
         
         builder
             .HasMany(userProfile => userProfile.UserAvatars)

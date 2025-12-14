@@ -1,16 +1,15 @@
 ﻿using JobSearchSiteBackend.Core.Domains._Shared.UseCaseStructure;
 using JobSearchSiteBackend.Core.Services.Auth;
-using JobSearchSiteBackend.Core.Services.BackgroundJobs;
 using JobSearchSiteBackend.Core.Services.FileStorage;
 using Ardalis.Result;
+using JobSearchSiteBackend.Core.Domains.PersonalFiles.BackgroundJobRunners;
 using JobSearchSiteBackend.Core.Persistence;
 
 namespace JobSearchSiteBackend.Core.Domains.PersonalFiles.UseCases.DeleteFile;
 
 public class DeleteFileHandler(
     ICurrentAccountService currentAccountService,
-    IFileStorageService fileStorageService,
-    IBackgroundJobService backgroundJobService,
+    IDeletePersonalFileFromStorageRunner deletePersonalFileFromStorageRunner,
     MainDataContext context) : IRequestHandler<DeleteFileCommand, Result>
 {
     public async Task<Result> Handle(DeleteFileCommand command, CancellationToken cancellationToken = default)
@@ -28,10 +27,8 @@ public class DeleteFileHandler(
         context.PersonalFiles.Remove(personalFile);
         await context.SaveChangesAsync(cancellationToken);
 
-        backgroundJobService.Enqueue(
-            () => fileStorageService.DeleteFileAsync(FileStorageBucketName.PersonalFiles,
-                personalFile.GuidIdentifier, personalFile.Extension, CancellationToken.None),
-            BackgroundJobQueues.PersonalFileStorage);
+        await deletePersonalFileFromStorageRunner.RunAsync(FileStorageBucketName.PersonalFiles,
+            personalFile.GuidIdentifier, personalFile.Extension);
 
         return Result.Success();
     }

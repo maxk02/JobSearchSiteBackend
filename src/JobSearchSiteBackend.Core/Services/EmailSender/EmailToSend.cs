@@ -4,12 +4,12 @@ namespace JobSearchSiteBackend.Core.Services.EmailSender;
 
 public class EmailToSend
 {
-    public EmailToSend(Guid guidIdentifier, IMyEmailSenderSettings emailSenderSettings, string to, string? cc,
+    public EmailToSend(Guid guidIdentifier, string senderName, string senderEmail, string to, string? cc,
         string? bcc, string? subject, string? body, bool isHtml)
     {
         GuidIdentifier = guidIdentifier;
-        SenderName = emailSenderSettings.Name;
-        SenderEmail =  emailSenderSettings.EmailAddress;
+        SenderName = senderName;
+        SenderEmail = senderEmail;
         To = to;
         Cc = cc;
         Bcc = bcc;
@@ -18,7 +18,7 @@ public class EmailToSend
         IsHtml = isHtml;
     }
 
-    public long Id { get; private set; }
+    // public long Id { get; private set; }
     public Guid GuidIdentifier { get; private set; }
 
     public string SenderName { get; private set; }
