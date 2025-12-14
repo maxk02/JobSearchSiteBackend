@@ -7,11 +7,11 @@ using Microsoft.Extensions.Caching.Memory;
 namespace JobSearchSiteBackend.API.Middleware;
 
 public class CheckUserTokenMiddleware(
-    RequestDelegate next,
-    ICurrentAccountService currentAccountService,
-    IUserSessionCacheRepository sessionCache)
+    RequestDelegate next)
 {
-    public async Task InvokeAsync(HttpContext httpContext, MainDataContext dbContext)
+    public async Task InvokeAsync(HttpContext httpContext, MainDataContext dbContext,
+        ICurrentAccountService currentAccountService,
+        IUserSessionCacheRepository sessionCache)
     {
         var endpoint = httpContext.GetEndpoint();
 
