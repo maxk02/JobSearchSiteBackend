@@ -17,7 +17,7 @@ public record JobDetailedDto(
     ICollection<string> Responsibilities,
     ICollection<string> Requirements,
     ICollection<string> NiceToHaves,
-    JobSalaryInfoDto? SalaryInfo,
+    JobSalaryInfoDto? SalaryInfoDto,
     ICollection<long>? EmploymentOptionIds,
     ICollection<long>? ContractTypeIds,
     bool IsBookmarked,

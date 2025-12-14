@@ -14,4 +14,4 @@ public record JobManagementCardDto(
     ICollection<long>? ContractTypeIds,
     bool IsBookmarked,
     bool IsPublic
-); // todo check on frontend, no time range option id
+);

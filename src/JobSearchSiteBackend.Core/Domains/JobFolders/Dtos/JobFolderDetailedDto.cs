@@ -8,7 +8,7 @@ public record JobFolderDetailedDto(
     long? ParentFolderId,
     long CompanyId,
     string CompanyName,
-    string? CompanyLogoLink,
+    string? CompanyAvatarLink,
     ICollection<long> ClaimIds,
     ICollection<JobFolderMinimalDto> Children
     );

@@ -6,5 +6,4 @@ public record CompanyClaimOverviewDto(
     string UserFirstName,
     string UserLastName,
     string UserEmail,
-    long ClaimId
-    );
+    long ClaimId);

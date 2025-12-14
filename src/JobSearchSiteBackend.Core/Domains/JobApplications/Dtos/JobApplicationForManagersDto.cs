@@ -7,6 +7,10 @@ public record JobApplicationForManagersDto(
     long Id,
     long UserId,
     string UserFullName,
+    string? AvatarLink,
+    string Email,
+    string? Phone,
+    ICollection<string> Tags,
     DateTime DateTimeAppliedUtc,
     ICollection<PersonalFileInfoDto> PersonalFiles,
-    JobApplicationStatus Status);
+    JobApplicationStatus Status); //todo

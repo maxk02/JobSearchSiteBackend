@@ -5,7 +5,6 @@ public record CompanyManagementDetailedDto(
     string Name,
     string? Description,
     long CountryId,
-    string? LogoLink,
-    //todo frontend
+    string? AvatarLink,
     ICollection<long> ClaimIds,
     string CountrySpecificFieldsJson);

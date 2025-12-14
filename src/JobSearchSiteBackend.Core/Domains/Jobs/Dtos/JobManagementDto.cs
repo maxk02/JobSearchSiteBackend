@@ -8,7 +8,7 @@ public record JobManagementDto(
     string? CompanyLogoLink,
     string CompanyName,
     string? CompanyDescription,
-    ICollection<LocationDto> Locations, // todo stringlocationdto??
+    ICollection<LocationDto> Locations,
     long CategoryId,
     string Title,
     string? Description,
@@ -17,11 +17,10 @@ public record JobManagementDto(
     ICollection<string> Responsibilities,
     ICollection<string> Requirements,
     ICollection<string> NiceToHaves,
-    JobSalaryInfoDto? SalaryInfo,
-    ICollection<long>? EmploymentTypeIds,
+    JobSalaryInfoDto? SalaryInfoDto,
+    ICollection<long>? EmploymentOptionIds,
     ICollection<long>? ContractTypeIds,
-    //
     long FolderId,
-    string FolderName,
+    string? FolderName,
     ICollection<long> ClaimIds,
-    bool IsPublic); //todo frontend no time range option id
+    bool IsPublic);

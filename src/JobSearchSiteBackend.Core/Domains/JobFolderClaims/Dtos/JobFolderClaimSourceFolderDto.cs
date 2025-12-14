@@ -2,5 +2,5 @@
 
 public record JobFolderClaimSourceFolderDto(
     long SourceFolderId,
-    string SourceFolderName
+    string? SourceFolderName
 );
