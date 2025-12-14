@@ -3,17 +3,22 @@ using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using JobSearchSiteBackend.Core.Domains._Shared.Pagination;
 using JobSearchSiteBackend.Core.Domains._Shared.UseCaseStructure;
+using JobSearchSiteBackend.Core.Domains.Companies.Persistence;
 using JobSearchSiteBackend.Core.Domains.JobApplications.Dtos;
 using JobSearchSiteBackend.Core.Domains.Jobs;
+using JobSearchSiteBackend.Core.Domains.Locations;
+using JobSearchSiteBackend.Core.Domains.PersonalFiles;
 using JobSearchSiteBackend.Core.Persistence;
 using JobSearchSiteBackend.Core.Services.Auth;
+using JobSearchSiteBackend.Core.Services.FileStorage;
 using Microsoft.EntityFrameworkCore;
 
 namespace JobSearchSiteBackend.Core.Domains.UserProfiles.UseCases.GetJobApplications;
 
 public class GetJobApplicationsHandler(
     ICurrentAccountService currentAccountService,
-    MainDataContext context)
+    MainDataContext context,
+    IFileStorageService fileStorageService)
     : IRequestHandler<GetJobApplicationsQuery, Result<GetJobApplicationsResult>>
 {
     public async Task<Result<GetJobApplicationsResult>> Handle(GetJobApplicationsQuery query,
@@ -26,7 +31,7 @@ public class GetJobApplicationsHandler(
         
         var count = await dbQuery.CountAsync(cancellationToken);
 
-        var jobApplicationObjects = await dbQuery
+        var jobApplicationItems = await dbQuery
             .OrderByDescending(ja => ja.DateTimeCreatedUtc)
             .Skip((query.Page - 1) * query.Size)
             .Take(query.Size)
@@ -35,36 +40,62 @@ public class GetJobApplicationsHandler(
                 Id = ja.Id,
                 CompanyId = ja.Job!.JobFolder!.CompanyId,
                 CompanyName = ja.Job!.JobFolder!.Company!.Name,
+                CompanyAvatars = ja.Job!.JobFolder!.Company!.CompanyAvatars!,
                 JobId = ja.JobId,
                 JobTitle = ja.Job!.Title,
                 DateTimePublishedUtc = ja.Job!.DateTimePublishedUtc,
                 JobSalaryInfo = ja.Job!.SalaryInfo,
-                EmploymentTypeIds = ja.Job!.EmploymentOptions!.Select(eo => eo.Id),
+                Location = ja.Location!,
+                EmploymentOptionIds = ja.Job!.EmploymentOptions!.Select(eo => eo.Id),
+                ContractTypeIds = ja.Job!.JobContractTypes!.Select(ct => ct.Id),
                 DateTimeAppliedUtc = ja.DateTimeCreatedUtc,
+                PersonalFiles = ja.PersonalFiles!,
                 Status = ja.Status
             })
             .ToListAsync(cancellationToken);
 
-        var jobApplicationDtos = jobApplicationObjects
-            .Select(jao => new JobApplicationInUserProfileDto(
-                jao.Id,
-                jao.CompanyId,
-                jao.CompanyName,
-                jao.JobId,
-                jao.JobTitle,
-                jao.DateTimePublishedUtc,
-                jao.JobSalaryInfo?.ToJobSalaryInfoDto(),
-                jao.EmploymentTypeIds.ToList(),
-                jao.DateTimeAppliedUtc,
-                jao.Status
-                ))
-            .ToList();
+        if (jobApplicationItems.Count == 0)
+            return Result.NotFound();
+
+        List<JobApplicationInUserProfileDto> jobApplicationInUserProfileDtos = [];
+        
+        foreach (var jai in jobApplicationItems)
+        {
+            var avatar = jai.CompanyAvatars.ToList().GetLatestAvailableAvatar();
+
+            string? avatarLink = null;
+
+            if (avatar is not null)
+            {
+                avatarLink = await fileStorageService.GetDownloadUrlAsync(FileStorageBucketName.CompanyAvatars, 
+                    avatar.GuidIdentifier, avatar.Extension, cancellationToken);
+            }
+
+            var jobApplicationDto = new JobApplicationInUserProfileDto(
+                jai.Id,
+                jai.CompanyId,
+                jai.CompanyName,
+                avatarLink,
+                jai.JobId,
+                jai.JobTitle,
+                jai.DateTimePublishedUtc,
+                jai.JobSalaryInfo?.ToJobSalaryInfoDto(),
+                jai.Location.ToLocationDto(),
+                jai.EmploymentOptionIds.ToList(),
+                jai.ContractTypeIds.ToList(),
+                jai.DateTimeAppliedUtc,
+                jai.PersonalFiles.Select(pf => pf.ToPersonalFileInfoDto()).ToList(),
+                jai.Status
+            );
+            
+            jobApplicationInUserProfileDtos.Add(jobApplicationDto);
+        }
         
         var paginationResponse = new PaginationResponse(query.Page,
             query.Size, count);
 
-        var response = new GetJobApplicationsResult(jobApplicationDtos, paginationResponse);
+        var result = new GetJobApplicationsResult(jobApplicationInUserProfileDtos, paginationResponse);
 
-        return response;
+        return Result.Success(result);
     }
 }

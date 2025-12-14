@@ -16,8 +16,17 @@ public class AddJobApplicationHandler(
         CancellationToken cancellationToken = default)
     {
         var currentUserId = currentAccountService.GetIdOrThrow();
+        
+        var locationExistsForJob = await context.Jobs
+            .Where(j => j.Id == command.JobId)
+            .SelectMany(j  => j.Locations!)
+            .AnyAsync(l => l.Id == command.LocationId, cancellationToken);
+        
+        if (!locationExistsForJob)
+            return Result.Error();
 
-        var jobApplication = new JobApplication(currentUserId, command.JobId, JobApplicationStatus.Submitted);
+        var jobApplication = new JobApplication(currentUserId, command.JobId,
+            command.LocationId, JobApplicationStatus.Submitted);
 
         var requestedPersonalFilesOfUser = await context.PersonalFiles
             .Where(pf => command.PersonalFileIds.Contains(pf.Id) && pf.UserId == currentUserId)

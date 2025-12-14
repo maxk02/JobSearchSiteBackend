@@ -3,5 +3,5 @@ using Ardalis.Result;
 
 namespace JobSearchSiteBackend.Core.Domains.JobApplications.UseCases.AddJobApplication;
 
-public record AddJobApplicationCommand(long JobId,
+public record AddJobApplicationCommand(long JobId, long LocationId,
     ICollection<long> PersonalFileIds) : IRequest<Result<AddJobApplicationResult>>;

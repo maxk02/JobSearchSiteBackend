@@ -20,5 +20,11 @@ public class LocationConfiguration : IEntityTypeConfiguration<Location>
         builder
             .HasMany(location => location.Jobs)
             .WithMany(job => job.Locations);
+        
+        builder
+            .HasMany(location => location.JobApplications)
+            .WithOne(ja => ja.Location)
+            .HasForeignKey(jobApplication => jobApplication.LocationId)
+            .OnDelete(DeleteBehavior.Restrict);
     }
 }

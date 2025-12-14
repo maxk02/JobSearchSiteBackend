@@ -10,6 +10,12 @@ public class JobApplicationConfiguration : IEntityTypeConfiguration<JobApplicati
         builder.HasKey(jobApplication => jobApplication.Id);
 
         builder
+            .HasOne(jobApplication => jobApplication.Location)
+            .WithMany(l => l.JobApplications)
+            .HasForeignKey(jobApplication => jobApplication.LocationId)
+            .OnDelete(DeleteBehavior.Restrict);
+        
+        builder
             .HasOne(jobApplication => jobApplication.User)
             .WithMany(user => user.JobApplications)
             .HasForeignKey(jobApplication => jobApplication.UserId)

@@ -22,7 +22,7 @@ public class JobApplicationsController(IMapper mapper) : ControllerBase
         [FromServices] AddJobApplicationHandler handler,
         CancellationToken cancellationToken)
     {
-        var command = new AddJobApplicationCommand(request.JobId, request.PersonalFileIds);
+        var command = new AddJobApplicationCommand(request.JobId, request.LocationId, request.PersonalFileIds);
         
         var result = await handler.Handle(command, cancellationToken);
         

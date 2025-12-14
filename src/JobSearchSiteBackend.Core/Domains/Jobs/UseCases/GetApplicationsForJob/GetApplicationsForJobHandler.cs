@@ -7,9 +7,11 @@ using JobSearchSiteBackend.Core.Domains.JobFolderClaims;
 using JobSearchSiteBackend.Core.Domains.JobFolders;
 using JobSearchSiteBackend.Core.Domains.JobFolders.Persistence;
 using JobSearchSiteBackend.Core.Domains.PersonalFiles;
+using JobSearchSiteBackend.Core.Domains.UserProfiles.Persistence;
 using JobSearchSiteBackend.Core.Persistence;
 using JobSearchSiteBackend.Core.Services.Auth;
 using JobSearchSiteBackend.Core.Services.Caching;
+using JobSearchSiteBackend.Core.Services.FileStorage;
 using Microsoft.EntityFrameworkCore;
 
 namespace JobSearchSiteBackend.Core.Domains.Jobs.UseCases.GetApplicationsForJob;
@@ -17,7 +19,9 @@ namespace JobSearchSiteBackend.Core.Domains.Jobs.UseCases.GetApplicationsForJob;
 public class GetApplicationsForJobHandler(
     ICurrentAccountService currentAccountService,
     MainDataContext context,
-    ICompanyLastVisitedJobsCacheRepository cacheRepo) : IRequestHandler<GetApplicationsForJobQuery, Result<GetApplicationsForJobResult>>
+    ICompanyLastVisitedJobsCacheRepository cacheRepo,
+    IFileStorageService fileStorageService)
+    : IRequestHandler<GetApplicationsForJobQuery, Result<GetApplicationsForJobResult>>
 {
     public async Task<Result<GetApplicationsForJobResult>> Handle(GetApplicationsForJobQuery query,
         CancellationToken cancellationToken = default)
@@ -81,6 +85,10 @@ public class GetApplicationsForJobHandler(
                     Id = ja.Id,
                     UserId = ja.UserId,
                     UserFullName = ja.User!.FirstName + " " + ja.User!.LastName,
+                    UserAvatars = ja.User!.UserAvatars!,
+                    Email = ja.User!.Account!.Email!,
+                    Phone = ja.User!.Phone,
+                    Tags = ja.Tags!,
                     DateTimeAppliedUtc = ja.DateTimeCreatedUtc,
                     PersonalFiles = ja.PersonalFiles,
                     Status = ja.Status
@@ -97,24 +105,48 @@ public class GetApplicationsForJobHandler(
         {
             return Result.Forbidden();
         }
+
+        var jobApplicationItems = jobApplicationDbQueryItem.JobApplicationItems.ToList();
         
-        await cacheRepo.AddLastVisitedAsync(currentUserId.ToString(),
-            jobApplicationDbQueryItem.CompanyId.ToString(), query.Id.ToString());
+        if (jobApplicationItems.Count == 0)
+            return Result.NotFound();
+
+        List<JobApplicationForManagersDto> jobApplicationForManagersDtos = [];
         
-        var jobApplicationDtos = jobApplicationDbQueryItem.JobApplicationItems
-            .Select(jaItem => new JobApplicationForManagersDto(
+        foreach (var jaItem in jobApplicationItems)
+        {
+            var avatar = jaItem.UserAvatars.ToList().GetLatestAvailableAvatar();
+
+            string? avatarLink = null;
+
+            if (avatar is not null)
+            {
+                avatarLink = await fileStorageService.GetDownloadUrlAsync(FileStorageBucketName.UserAvatars, 
+                    avatar.GuidIdentifier, avatar.Extension, cancellationToken);
+            }
+
+            var jobApplicationDto = new JobApplicationForManagersDto(
                 jaItem.Id,
                 jaItem.UserId,
                 jaItem.UserFullName,
+                avatarLink,
+                jaItem.Email,
+                jaItem.Phone,
+                jaItem.Tags.Select(t => t.Tag).ToList(),
                 jaItem.DateTimeAppliedUtc,
                 jaItem.PersonalFiles!.Select(pf => pf.ToPersonalFileInfoDto()).ToList(),
                 jaItem.Status
-                ))
-            .ToList();
+            );
+            
+            jobApplicationForManagersDtos.Add(jobApplicationDto);
+        }
+        
+        await cacheRepo.AddLastVisitedAsync(currentUserId.ToString(),
+            jobApplicationDbQueryItem.CompanyId.ToString(), query.Id.ToString());
 
         var paginationResponse = new PaginationResponse(query.Page, query.Size, totalCount);
         
-        var result = new GetApplicationsForJobResult(jobApplicationDtos, paginationResponse);
+        var result = new GetApplicationsForJobResult(jobApplicationForManagersDtos, paginationResponse);
         
         return Result.Success(result);
     }

@@ -1,5 +1,6 @@
 ﻿using JobSearchSiteBackend.Core.Domains._Shared.EntityInterfaces;
 using JobSearchSiteBackend.Core.Domains.Countries;
+using JobSearchSiteBackend.Core.Domains.JobApplications;
 using JobSearchSiteBackend.Core.Domains.Jobs;
 using JobSearchSiteBackend.Core.Domains.UserProfiles;
 
@@ -29,8 +30,8 @@ public class Location : IEntityWithId
 
     
     public Country? Country { get; set; }
-    public ICollection<UserProfile>? Users { get; set; }
     public ICollection<Job>? Jobs { get; set; }
+    public ICollection<JobApplication>? JobApplications { get; set; }
     
     public ICollection<LocationRelation>? RelationsWhereThisIsDescendant { get; set; }
     public ICollection<LocationRelation>? RelationsWhereThisIsAncestor { get; set; }
