@@ -167,11 +167,11 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
-app.UseCors("AllowNextJs");
+// app.UseCors("AllowNextJs");
 
 // app.UseRouting();
 
-app.UseMiddleware<CsrfProtectionMiddleware>();
+// app.UseMiddleware<CsrfProtectionMiddleware>();
 
 app.UseAuthentication();
 app.UseAuthorization();
