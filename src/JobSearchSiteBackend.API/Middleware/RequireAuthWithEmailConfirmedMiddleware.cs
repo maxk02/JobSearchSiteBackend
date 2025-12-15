@@ -19,6 +19,13 @@ public class RequireAuthWithEmailConfirmedMiddleware(RequestDelegate next)
         var allowAnonymous = endpoint.Metadata
             .GetMetadata<IAllowAnonymous>() != null;
 
+        if (allowAnonymous)
+        {
+            httpContext.Items["IsAnonAllowed"] = true;
+            await next(httpContext);
+            return;
+        }
+
         var isAuthenticated = httpContext.User.Identity?.IsAuthenticated ?? false;
             
         if (!allowAnonymous && !isAuthenticated)

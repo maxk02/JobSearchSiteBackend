@@ -20,6 +20,14 @@ public class CheckUserTokenMiddleware(
             httpContext.Response.StatusCode = StatusCodes.Status500InternalServerError;
             return;
         }
+
+        if (httpContext.Items.TryGetValue("IsAnonAllowed", out var val)
+            && val is bool anonAllowed
+            && anonAllowed == true)
+        {
+            await next(httpContext);
+            return;
+        }
         
         var isAuthenticated = httpContext.User.Identity?.IsAuthenticated ?? false;
 
