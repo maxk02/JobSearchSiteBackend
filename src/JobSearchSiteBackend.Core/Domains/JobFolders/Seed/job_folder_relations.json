@@ -1,0 +1,22 @@
+[
+    { "AncestorId": 1, "DescendantId": 1, "Depth": 1 },
+    { "AncestorId": 2, "DescendantId": 2, "Depth": 1 },
+    { "AncestorId": 3, "DescendantId": 3, "Depth": 1 },
+    { "AncestorId": 4, "DescendantId": 4, "Depth": 1 },
+    { "AncestorId": 5, "DescendantId": 5, "Depth": 1 },
+    { "AncestorId": 6, "DescendantId": 6, "Depth": 1 },
+    { "AncestorId": 7, "DescendantId": 7, "Depth": 1 },
+    { "AncestorId": 8, "DescendantId": 8, "Depth": 1 },
+    { "AncestorId": 9, "DescendantId": 9, "Depth": 1 },
+    { "AncestorId": 10, "DescendantId": 10, "Depth": 1 },
+    { "AncestorId": 11, "DescendantId": 11, "Depth": 1 },
+    { "AncestorId": 12, "DescendantId": 12, "Depth": 1 },
+    { "AncestorId": 13, "DescendantId": 13, "Depth": 1 },
+    { "AncestorId": 14, "DescendantId": 14, "Depth": 1 },
+    { "AncestorId": 15, "DescendantId": 15, "Depth": 1 },
+    { "AncestorId": 16, "DescendantId": 16, "Depth": 1 },
+    { "AncestorId": 17, "DescendantId": 17, "Depth": 1 },
+    { "AncestorId": 18, "DescendantId": 18, "Depth": 1 },
+    { "AncestorId": 19, "DescendantId": 19, "Depth": 1 },
+    { "AncestorId": 20, "DescendantId": 20, "Depth": 1 }
+]

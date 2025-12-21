@@ -5,8 +5,8 @@ namespace JobSearchSiteBackend.Core.Domains.Jobs;
 public class JobTimePeriodOption
 {
     public static readonly ImmutableArray<JobTimePeriodOption> AllValues = [
-        new(1, 0, 4),
-        new(2, 5, 30),
+        new(1, 0, 7),
+        new(2, 8, 30),
         new(3, 31, 60),
         new(4, 61, 90),
     ];

@@ -1,0 +1,921 @@
+[
+  {
+    "Id": 111,
+    "JobFolderId": 8,
+    "CategoryId": 23,
+    "Title": "Social Media Manager",
+    "Description": "Szukamy kreatywnej duszy do prowadzenia profili naszych kluczowych klientów.",
+    "DateTimePublishedUtc": "2025-11-10T09:15:00Z",
+    "DateTimeExpiringUtc": "2026-02-10T17:00:00Z",
+    "EmploymentOptionIds": [1, 5],
+    "Responsibilities": [
+      "Tworzenie i realizacja strategii komunikacji w mediach społecznościowych (FB, IG, LinkedIn, TikTok)",
+      "Przygotowywanie harmonogramów postów i copywritingu",
+      "Analiza wyników kampanii i raportowanie",
+      "Współpraca z działem graficznym"
+    ],
+    "Requirements": [
+      "Minimum 2 lata doświadczenia w agencji reklamowej lub dziale marketingu",
+      "Znajomość narzędzi: Meta Business Suite, Canva, CapCut",
+      "Lekkie pióro i nienaganna polszczyzna"
+    ],
+    "NiceToHaves": [
+      "Umiejętność montażu prostych rolek/wideo",
+      "Znajomość języka angielskiego na poziomie B2"
+    ]
+  },
+  {
+    "Id": 112,
+    "JobFolderId": 2,
+    "CategoryId": 3,
+    "Title": "Asystent Architekta / Młodszy Architekt",
+    "Description": "Dołącz do zespołu projektowego przy dużych inwestycjach kubaturowych.",
+    "DateTimePublishedUtc": "2025-12-05T08:00:00Z",
+    "DateTimeExpiringUtc": "2026-01-15T16:00:00Z",
+    "EmploymentOptionIds": [1, 3],
+    "Responsibilities": [
+      "Przygotowywanie rysunków technicznych i detali architektonicznych",
+      "Wsparcie przy tworzeniu dokumentacji budowlanej i wykonawczej",
+      "Współpraca z branżystami",
+      "Inwentaryzacje budowlane"
+    ],
+    "Requirements": [
+      "Wykształcenie wyższe kierunkowe (Architektura) lub ostatni rok studiów",
+      "Bardzo dobra znajomość AutoCAD i Revit",
+      "Znajomość prawa budowlanego i warunków technicznych",
+      "Umiejętność pracy w zespole"
+    ],
+    "NiceToHaves": [
+      "Znajomość programów graficznych (Photoshop, InDesign)",
+      "Prawo jazdy kat. B"
+    ]
+  },
+  {
+    "Id": 113,
+    "JobFolderId": 14,
+    "CategoryId": 26,
+    "Title": "Mechanik Samochodowy / Diagnosta",
+    "Description": null,
+    "DateTimePublishedUtc": "2025-10-28T07:30:00Z",
+    "DateTimeExpiringUtc": "2026-01-20T18:00:00Z",
+    "EmploymentOptionIds": [1, 3],
+    "Responsibilities": [
+      "Diagnozowanie usterek mechanicznych i elektronicznych",
+      "Wykonywanie napraw bieżących i głównych",
+      "Obsługa urządzeń diagnostycznych",
+      "Dbanie o porządek na stanowisku pracy"
+    ],
+    "Requirements": [
+      "Wykształcenie kierunkowe (mechanik pojazdowy)",
+      "Doświadczenie w naprawie samochodów osobowych",
+      "Prawo jazdy kat. B",
+      "Dokładność i rzetelność"
+    ],
+    "NiceToHaves": [
+      "Uprawnienia Diagnosty Samochodowego",
+      "Doświadczenie z markami premium (BMW, Audi, Mercedes)"
+    ]
+  },
+  {
+    "Id": 114,
+    "JobFolderId": 20,
+    "CategoryId": 16,
+    "Title": "Specjalista ds. SEO / SEM",
+    "Description": "Zadbaj o widoczność naszych sklepów w sieci.",
+    "DateTimePublishedUtc": "2025-11-25T10:00:00Z",
+    "DateTimeExpiringUtc": "2026-02-25T23:59:00Z",
+    "EmploymentOptionIds": [1, 4],
+    "Responsibilities": [
+      "Optymalizacja stron pod kątem wyszukiwarek (SEO on-site i off-site)",
+      "Prowadzenie i optymalizacja kampanii Google Ads",
+      "Analiza słów kluczowych i konkurencji",
+      "Raportowanie efektów działań z wykorzystaniem Google Analytics 4"
+    ],
+    "Requirements": [
+      "Praktyczna znajomość Google Search Console, Ahrefs/Semstorm",
+      "Doświadczenie w prowadzeniu kampanii PPC",
+      "Analityczny umysł",
+      "Znajomość HTML/CSS w stopniu podstawowym"
+    ],
+    "NiceToHaves": [
+      "Certyfikaty Google",
+      "Znajomość systemów CMS (WordPress, PrestaShop)"
+    ]
+  },
+  {
+    "Id": 115,
+    "JobFolderId": 18,
+    "CategoryId": 34,
+    "Title": "Agronom / Doradca Agrotechniczny",
+    "Description": "Praca w terenie oraz nadzór nad nowoczesnymi uprawami.",
+    "DateTimePublishedUtc": "2025-10-15T08:00:00Z",
+    "DateTimeExpiringUtc": "2026-03-01T15:00:00Z",
+    "EmploymentOptionIds": [1, 6],
+    "Responsibilities": [
+      "Planowanie zasiewów i płodozmianu",
+      "Monitoring stanu upraw i zagrożeń agrofagami",
+      "Zalecanie zabiegów ochrony roślin i nawożenia",
+      "Prowadzenie dokumentacji polowej"
+    ],
+    "Requirements": [
+      "Wykształcenie wyższe rolnicze",
+      "Aktualne uprawnienia do doradztwa w zakresie środków ochrony roślin",
+      "Prawo jazdy kat. B i gotowość do częstych wyjazdów",
+      "Znajomość rynku środków produkcji rolniczej"
+    ],
+    "NiceToHaves": []
+  },
+  {
+    "Id": 116,
+    "JobFolderId": 16,
+    "CategoryId": 7,
+    "Title": "Lektor Języka Angielskiego (Native Speaker lub poziom C2)",
+    "Description": "Prowadzenie zajęć online oraz stacjonarnie w naszej szkole.",
+    "DateTimePublishedUtc": "2025-12-12T14:00:00Z",
+    "DateTimeExpiringUtc": "2026-01-30T20:00:00Z",
+    "EmploymentOptionIds": [2, 5],
+    "Responsibilities": [
+      "Prowadzenie zajęć indywidualnych i grupowych dla dorosłych",
+      "Przygotowywanie materiałów dydaktycznych",
+      "Monitorowanie postępów kursantów",
+      "Udział w spotkaniach metodycznych"
+    ],
+    "Requirements": [
+      "Biegła znajomość języka angielskiego (poziom C2 lub Native)",
+      "Przygotowanie pedagogiczne lub certyfikat CELTA/TEFL",
+      "Komunikatywność i otwartość",
+      "Dostępność w godzinach popołudniowych"
+    ],
+    "NiceToHaves": [
+      "Doświadczenie w nauczaniu metodą Direct",
+      "Działalność gospodarcza (B2B)"
+    ]
+  },
+  {
+    "Id": 117,
+    "JobFolderId": 4,
+    "CategoryId": 22,
+    "Title": "Magazynier z uprawnieniami UDT",
+    "Description": "Praca w nowoczesnym centrum logistycznym.",
+    "DateTimePublishedUtc": "2025-11-05T06:00:00Z",
+    "DateTimeExpiringUtc": "2026-01-10T22:00:00Z",
+    "EmploymentOptionIds": [1, 3],
+    "Responsibilities": [
+      "Załadunek i rozładunek towarów wózkiem widłowym",
+      "Kompletacja zamówień ze skanerem",
+      "Kontrola jakościowa i ilościowa przyjmowanego towaru",
+      "Dbanie o bezpieczeństwo w magazynie"
+    ],
+    "Requirements": [
+      "Uprawnienia UDT na wózki widłowe (WJO)",
+      "Doświadczenie w pracy na magazynie wysokiego składowania",
+      "Dobra kondycja fizyczna",
+      "Gotowość do pracy w systemie 3-zmianowym"
+    ],
+    "NiceToHaves": []
+  },
+  {
+    "Id": 118,
+    "JobFolderId": 17,
+    "CategoryId": 21,
+    "Title": "Samodzielna Księgowa / Samodzielny Księgowy",
+    "Description": null,
+    "DateTimePublishedUtc": "2025-11-20T09:00:00Z",
+    "DateTimeExpiringUtc": "2026-02-15T16:00:00Z",
+    "EmploymentOptionIds": [1, 5],
+    "Responsibilities": [
+      "Prowadzenie pełnej księgowości (KH) dla klientów biura",
+      "Sporządzanie deklaracji podatkowych CIT, VAT",
+      "Przygotowywanie sprawozdań finansowych",
+      "Kontakt z US i ZUS"
+    ],
+    "Requirements": [
+      "Min. 3 lata doświadczenia na stanowisku samodzielnego księgowego",
+      "Bardzo dobra i aktualna znajomość przepisów podatkowych",
+      "Znajomość programów Symfonia, Optima lub Enova",
+      "Skrupulatność"
+    ],
+    "NiceToHaves": [
+      "Certyfikat Ministra Finansów do usługowego prowadzenia ksiąg",
+      "Znajomość języka angielskiego w stopniu komunikatywnym"
+    ]
+  },
+  {
+    "Id": 119,
+    "JobFolderId": 11,
+    "CategoryId": 41,
+    "Title": "Recepcjonista / Recepcjonistka",
+    "Description": "Jesteś wizytówką naszego hotelu. Dołącz do zespołu Royal & Spa.",
+    "DateTimePublishedUtc": "2025-12-15T11:00:00Z",
+    "DateTimeExpiringUtc": "2026-01-20T23:00:00Z",
+    "EmploymentOptionIds": [1, 3],
+    "Responsibilities": [
+      "Meldowanie i wymeldowywanie gości (check-in/check-out)",
+      "Przyjmowanie rezerwacji telefonicznych i mailowych",
+      "Udzielanie informacji o usługach hotelu i atrakcjach turystycznych",
+      "Rozliczanie pobytów i wystawianie faktur"
+    ],
+    "Requirements": [
+      "Dobra znajomość języka angielskiego (min. B2)",
+      "Wysoka kultura osobista i uśmiech na twarzy",
+      "Gotowość do pracy w systemie zmianowym (również w weekendy)",
+      "Umiejętność radzenia sobie w stresujących sytuacjach"
+    ],
+    "NiceToHaves": [
+      "Znajomość drugiego języka obcego (niemiecki/hiszpański)",
+      "Doświadczenie w pracy z systemem hotelowym (np. ProHottel, Opera)"
+    ]
+  },
+  {
+    "Id": 120,
+    "JobFolderId": 10,
+    "CategoryId": 33,
+    "Title": "Operator Maszyn CNC",
+    "Description": "Produkcja elementów meblowych na nowoczesnym parku maszynowym.",
+    "DateTimePublishedUtc": "2025-10-30T13:00:00Z",
+    "DateTimeExpiringUtc": "2026-01-25T22:00:00Z",
+    "EmploymentOptionIds": [1, 3],
+    "Responsibilities": [
+      "Obsługa obrabiarek sterowanych numerycznie (frezarki, wiertarki)",
+      "Ustawianie parametrów obróbki na podstawie dokumentacji",
+      "Kontrola wymiarowa wykonanych detali",
+      "Bieżąca konserwacja maszyny"
+    ],
+    "Requirements": [
+      "Umiejętność czytania rysunku technicznego",
+      "Znajomość przyrządów pomiarowych (suwmiarka, mikrometr)",
+      "Doświadczenie w obsłudze maszyn stolarskich lub CNC",
+      "Gotowość do pracy zmianowej"
+    ],
+    "NiceToHaves": [
+      "Umiejętność programowania maszyn CNC",
+      "Uprawnienia na wózki widłowe"
+    ]
+  },
+  {
+    "Id": 121,
+    "JobFolderId": 1,
+    "CategoryId": 14,
+    "Title": "IT Support Specialist (1st line)",
+    "Description": "Pierwsza linia wsparcia dla naszych pracowników wewnętrznych.",
+    "DateTimePublishedUtc": "2025-12-01T08:30:00Z",
+    "DateTimeExpiringUtc": "2026-02-01T16:00:00Z",
+    "EmploymentOptionIds": [1, 5],
+    "Responsibilities": [
+      "Przyjmowanie i rozwiązywanie zgłoszeń w systemie ticketowym",
+      "Konfiguracja sprzętu komputerowego i oprogramowania biurowego",
+      "Zakładanie kont użytkowników i nadawanie uprawnień",
+      "Wsparcie w zakresie obsługi MS Office / Office 365"
+    ],
+    "Requirements": [
+      "Ogólna wiedza z zakresu budowy komputera i systemów Windows",
+      "Znajomość języka angielskiego umożliwiająca czytanie dokumentacji",
+      "Komunikatywność i chęć pomocy innym",
+      "Umiejętność diagnozowania prostych problemów sieciowych"
+    ],
+    "NiceToHaves": [
+      "Doświadczenie w pracy na Helpdesku",
+      "Znajomość Active Directory"
+    ]
+  },
+  {
+    "Id": 122,
+    "JobFolderId": 15,
+    "CategoryId": 29,
+    "Title": "Koordynator Projektów Społecznych",
+    "Description": "Pomóż nam zmieniać świat na lepsze realizując projekty edukacyjne.",
+    "DateTimePublishedUtc": "2025-11-12T10:00:00Z",
+    "DateTimeExpiringUtc": "2026-01-12T15:00:00Z",
+    "EmploymentOptionIds": [1, 6],
+    "Responsibilities": [
+      "Planowanie i koordynacja działań projektowych zgodnie z harmonogramem",
+      "Współpraca z wolontariuszami i partnerami fundacji",
+      "Rozliczanie budżetu projektu",
+      "Przygotowywanie raportów ewaluacyjnych"
+    ],
+    "Requirements": [
+      "Doświadczenie w zarządzaniu projektami (mile widziane w NGO)",
+      "Samodzielność i doskonała organizacja pracy",
+      "Umiejętność budowania relacji",
+      "Prawo jazdy kat. B"
+    ],
+    "NiceToHaves": [
+      "Doświadczenie w pozyskiwaniu grantów",
+      "Znajomość języka ukraińskiego"
+    ]
+  },
+  {
+    "Id": 123,
+    "JobFolderId": 9,
+    "CategoryId": 35,
+    "Title": "Instalator Fotowoltaiki / Elektryk",
+    "Description": "Montaż instalacji PV oraz pomp ciepła u klientów indywidualnych.",
+    "DateTimePublishedUtc": "2025-11-10T07:00:00Z",
+    "DateTimeExpiringUtc": "2026-02-10T16:00:00Z",
+    "EmploymentOptionIds": [1, 6],
+    "Responsibilities": [
+      "Montaż konstrukcji wsporczych i modułów fotowoltaicznych",
+      "Wykonywanie tras kablowych i podłączeń elektrycznych",
+      "Uruchamianie instalacji i szkolenie klienta z obsługi",
+      "Praca na wysokości"
+    ],
+    "Requirements": [
+      "Uprawnienia SEP do 1kV (E)",
+      "Brak przeciwwskazań do pracy na wysokości",
+      "Doświadczenie w pracach elektrycznych lub monterskich",
+      "Prawo jazdy kat. B"
+    ],
+    "NiceToHaves": [
+      "Certyfikat instalatora OZE (UDT)",
+      "Uprawnienia UDT na podnośniki koszowe"
+    ]
+  },
+  {
+    "Id": 124,
+    "JobFolderId": 12,
+    "CategoryId": 13,
+    "Title": "IT Recruiter / Researcher",
+    "Description": null,
+    "DateTimePublishedUtc": "2025-10-25T09:30:00Z",
+    "DateTimeExpiringUtc": "2026-01-25T17:00:00Z",
+    "EmploymentOptionIds": [1, 4],
+    "Responsibilities": [
+      "Aktywne poszukiwanie kandydatów (Direct Search) na LinkedIn i GitHub",
+      "Wstępna selekcja CV i przeprowadzanie rozmów telefonicznych (screening)",
+      "Budowanie bazy talentów",
+      "Współpraca z Hiring Managerami"
+    ],
+    "Requirements": [
+      "Zainteresowanie branżą IT i nowymi technologiami",
+      "Bardzo dobra znajomość języka angielskiego (min. B2)",
+      "Łatwość w nawiązywaniu kontaktów",
+      "Systematyczność"
+    ],
+    "NiceToHaves": [
+      "Pierwsze doświadczenia w agencji rekrutacyjnej",
+      "Znajomość Boolean Search"
+    ]
+  },
+  {
+    "Id": 125,
+    "JobFolderId": 19,
+    "CategoryId": 28,
+    "Title": "Kwalifikowany Pracownik Ochrony Fizycznej",
+    "Description": "Ochrona obiektu przemysłowego w systemie 24/48.",
+    "DateTimePublishedUtc": "2025-12-15T18:00:00Z",
+    "DateTimeExpiringUtc": "2026-01-15T23:59:00Z",
+    "EmploymentOptionIds": [1, 3],
+    "Responsibilities": [
+      "Kontrola ruchu osobowego i materiałowego",
+      "Obchody terenu obiektu",
+      "Reagowanie na sygnały alarmowe",
+      "Prowadzenie książki służby"
+    ],
+    "Requirements": [
+      "Wpis na listę Kwalifikowanych Pracowników Ochrony Fizycznej",
+      "Pozwolenie na broń obiektową (mile widziane)",
+      "Niekaralność",
+      "Dobra sprawność fizyczna"
+    ],
+    "NiceToHaves": []
+  },
+  {
+    "Id": 126,
+    "JobFolderId": 6,
+    "CategoryId": 37,
+    "Title": "Doradca Klienta Detalicznego",
+    "Description": "Praca w oddziale banku. Sprzedaż produktów kredytowych i obsługa kasowa.",
+    "DateTimePublishedUtc": "2025-11-05T08:00:00Z",
+    "DateTimeExpiringUtc": "2026-02-05T17:00:00Z",
+    "EmploymentOptionIds": [1, 3],
+    "Responsibilities": [
+      "Aktywna sprzedaż produktów bankowych (konta, kredyty, ubezpieczenia)",
+      "Obsługa gotówkowa klientów",
+      "Budowanie długotrwałych relacji z klientami",
+      "Realizacja planów sprzedażowych"
+    ],
+    "Requirements": [
+      "Wykształcenie min. średnie",
+      "Doświadczenie w sprzedaży lub obsłudze klienta",
+      "Umiejętność badania potrzeb klienta",
+      "Wysoka kultura osobista"
+    ],
+    "NiceToHaves": [
+      "Certyfikat EFCB",
+      "Znajomość systemów bankowych"
+    ]
+  },
+  {
+    "Id": 127,
+    "JobFolderId": 1,
+    "CategoryId": 19,
+    "Title": "QA Automation Engineer (Python)",
+    "Description": "Automatyzacja testów dla platformy chmurowej.",
+    "DateTimePublishedUtc": "2025-10-30T10:00:00Z",
+    "DateTimeExpiringUtc": "2026-01-30T18:00:00Z",
+    "EmploymentOptionIds": [1, 4],
+    "Responsibilities": [
+      "Tworzenie i rozwój frameworka do testów automatycznych",
+      "Pisanie skryptów testowych w Pythonie",
+      "Analiza błędów i raportowanie w Jira",
+      "Integracja testów z procesem CI/CD"
+    ],
+    "Requirements": [
+      "Min. 2 lata doświadczenia w automatyzacji testów",
+      "Dobra znajomość Python i bibliotek (PyTest, Selenium/Playwright)",
+      "Znajomość SQL i REST API",
+      "Komunikatywny angielski"
+    ],
+    "NiceToHaves": [
+      "Doświadczenie z testami wydajnościowymi (JMeter/Gatling)",
+      "Znajomość Dockera"
+    ]
+  },
+  {
+    "Id": 128,
+    "JobFolderId": 2,
+    "CategoryId": 5,
+    "Title": "Kosztorysant Robót Budowlanych",
+    "Description": null,
+    "DateTimePublishedUtc": "2025-11-15T08:00:00Z",
+    "DateTimeExpiringUtc": "2026-02-15T16:00:00Z",
+    "EmploymentOptionIds": [1, 5],
+    "Responsibilities": [
+      "Sporządzanie przedmiarów i kosztorysów ofertowych",
+      "Analiza dokumentacji projektowej",
+      "Wysyłanie zapytań ofertowych do dostawców i podwykonawców",
+      "Wycena robót dodatkowych i zamiennych"
+    ],
+    "Requirements": [
+      "Wykształcenie wyższe techniczne (Budownictwo)",
+      "Biegła obsługa programu Norma PRO/EXPERT",
+      "Znajomość cen rynkowych materiałów i usług",
+      "Analityczne myślenie"
+    ],
+    "NiceToHaves": []
+  },
+  {
+    "Id": 129,
+    "JobFolderId": 11,
+    "CategoryId": 20,
+    "Title": "Fizjoterapeuta / Masażysta SPA",
+    "Description": "Praca w strefie Wellness luksusowego hotelu.",
+    "DateTimePublishedUtc": "2025-12-01T12:00:00Z",
+    "DateTimeExpiringUtc": "2026-01-31T21:00:00Z",
+    "EmploymentOptionIds": [1, 2, 3],
+    "Responsibilities": [
+      "Wykonywanie masaży klasycznych, relaksacyjnych i leczniczych",
+      "Przeprowadzanie zabiegów na ciało zgodnie z ofertą SPA",
+      "Dbanie o czystość i atmosferę w gabinecie",
+      "Doradztwo w zakresie doboru zabiegów"
+    ],
+    "Requirements": [
+      "Wykształcenie kierunkowe (Fizjoterapia) lub ukończony kurs masażu (II stopień)",
+      "Wysoka kultura osobista i dyskrecja",
+      "Dostępność w weekendy",
+      "Komunikatywny angielski"
+    ],
+    "NiceToHaves": [
+      "Znajomość masaży orientalnych (np. tajski, balijski)",
+      "Kurs masażu Kobido"
+    ]
+  },
+  {
+    "Id": 130,
+    "JobFolderId": 5,
+    "CategoryId": 11,
+    "Title": "Kelner / Kelnerka",
+    "Description": "Restauracja z kuchnią polską w nowoczesnym wydaniu szuka obsługi.",
+    "DateTimePublishedUtc": "2025-12-18T10:00:00Z",
+    "DateTimeExpiringUtc": "2026-01-08T22:00:00Z",
+    "EmploymentOptionIds": [1, 2, 3],
+    "Responsibilities": [
+      "Przyjmowanie zamówień i serwowanie dań",
+      "Doradzanie gościom w wyborze potraw i win",
+      "Dbanie o porządek na sali",
+      "Rozliczanie stolików"
+    ],
+    "Requirements": [
+      "Aktualna książeczka sanepidowska",
+      "Pozytywne nastawienie i uśmiech",
+      "Gotowość do pracy w godzinach wieczornych i w weekendy",
+      "Mile widziane doświadczenie w gastronomii"
+    ],
+    "NiceToHaves": [
+      "Znajomość języka angielskiego",
+      "Szkolenia baristyczne lub sommelierskie"
+    ]
+  },
+  {
+    "Id": 131,
+    "JobFolderId": 13,
+    "CategoryId": 18,
+    "Title": "Kierownik Regionalny Sprzedaży",
+    "Description": "Zarządzanie siecią 10-15 sklepów w regionie południowym.",
+    "DateTimePublishedUtc": "2025-10-10T08:00:00Z",
+    "DateTimeExpiringUtc": "2026-01-10T18:00:00Z",
+    "EmploymentOptionIds": [1, 6],
+    "Responsibilities": [
+      "Realizacja celów sprzedażowych i budżetowych w podległym regionie",
+      "Zarządzanie podległym personelem (kierownicy sklepów)",
+      "Kontrola standardów ekspozycji i obsługi klienta",
+      "Rekrutacja i szkolenie kadry kierowniczej"
+    ],
+    "Requirements": [
+      "Min. 3 lata doświadczenia na stanowisku kierowniczym w handlu detalicznym (Retail)",
+      "Umiejętność analizy wskaźników KPI",
+      "Prawo jazdy kat. B i gotowość do częstych podróży służbowych",
+      "Silne zdolności przywódcze"
+    ],
+    "NiceToHaves": [
+      "Wykształcenie wyższe ekonomiczne"
+    ]
+  },
+  {
+    "Id": 132,
+    "JobFolderId": 3,
+    "CategoryId": 1,
+    "Title": "Asystentka / Sekretarka w Kancelarii",
+    "Description": "Organizacja pracy biura kancelarii prawnej.",
+    "DateTimePublishedUtc": "2025-11-20T08:30:00Z",
+    "DateTimeExpiringUtc": "2026-02-20T16:30:00Z",
+    "EmploymentOptionIds": [1, 3],
+    "Responsibilities": [
+      "Obsługa korespondencji przychodzącej i wychodzącej (również ePUAP)",
+      "Prowadzenie kalendarza spotkań i rozpraw",
+      "Przyjmowanie klientów i obsługa telefonów",
+      "Dbanie o zaopatrzenie biura"
+    ],
+    "Requirements": [
+      "Bardzo dobra obsługa pakietu MS Office i urządzeń biurowych",
+      "Doskonała organizacja pracy i wielozadaniowość",
+      "Wysoka kultura osobista",
+      "Poprawna polszczyzna w mowie i piśmie"
+    ],
+    "NiceToHaves": [
+      "Doświadczenie w pracy w kancelarii lub sądzie",
+      "Status studenta (możliwość pracy na część etatu)"
+    ]
+  },
+  {
+    "Id": 133,
+    "JobFolderId": 15,
+    "CategoryId": 23,
+    "Title": "Specjalista ds. Fundraisingu",
+    "Description": null,
+    "DateTimePublishedUtc": "2025-11-01T09:00:00Z",
+    "DateTimeExpiringUtc": "2026-01-30T15:00:00Z",
+    "EmploymentOptionIds": [2, 5],
+    "Responsibilities": [
+      "Pozyskiwanie funduszy na cele statutowe fundacji",
+      "Utrzymywanie relacji z darczyńcami biznesowymi i indywidualnymi",
+      "Pisanie wniosków grantowych",
+      "Organizacja akcji charytatywnych"
+    ],
+    "Requirements": [
+      "Doświadczenie w sprzedaży, marketingu lub fundraisingu",
+      "Łatwość w nawiązywaniu relacji i przekonywaniu",
+      "Kreatywność i inicjatywa",
+      "Umiejętność pisania tekstów promocyjnych"
+    ],
+    "NiceToHaves": [
+      "Własna baza kontaktów biznesowych"
+    ]
+  },
+  {
+    "Id": 134,
+    "JobFolderId": 20,
+    "CategoryId": 12,
+    "Title": "UI/UX Designer",
+    "Description": "Projektowanie intuicyjnych interfejsów dla sklepów internetowych.",
+    "DateTimePublishedUtc": "2025-12-05T10:00:00Z",
+    "DateTimeExpiringUtc": "2026-03-01T18:00:00Z",
+    "EmploymentOptionIds": [1, 4],
+    "Responsibilities": [
+      "Tworzenie makiet (wireframes) i prototypów high-fidelity",
+      "Projektowanie interfejsów użytkownika (UI) dla wersji mobile i desktop",
+      "Współpraca z programistami frontend i zespołem e-commerce",
+      "Przeprowadzanie testów użyteczności"
+    ],
+    "Requirements": [
+      "Bardzo dobra znajomość Figmy i pakietu Adobe CC",
+      "Portfolio prezentujące zrealizowane projekty webowe",
+      "Rozumienie zasad RWD (Responsive Web Design)",
+      "Znajomość trendów w e-commerce"
+    ],
+    "NiceToHaves": [
+      "Podstawowa znajomość HTML/CSS",
+      "Doświadczenie w pracy w metodologii Agile/Scrum"
+    ]
+  },
+  {
+    "Id": 135,
+    "CompanyId": 4,
+    "CategoryId": 40,
+    "Title": "Kierowca C+E (Transport Międzynarodowy)",
+    "Description": "Stałe trasy na kierunku Polska - Niemcy - Holandia.",
+    "DateTimePublishedUtc": "2025-11-01T08:00:00Z",
+    "DateTimeExpiringUtc": "2026-02-01T20:00:00Z",
+    "EmploymentOptionIds": [1, 6],
+    "Responsibilities": [
+      "Przewóz towarów zgodnie z otrzymanym zleceniem",
+      "Dbałość o powierzony sprzęt i ładunek",
+      "Przestrzeganie norm czasu pracy kierowców",
+      "Wypełnianie dokumentacji transportowej (CMR)"
+    ],
+    "Requirements": [
+      "Prawo jazdy kat. C+E z kodem 95",
+      "Aktualna karta kierowcy",
+      "Ważne badania psychotechniczne",
+      "Uczciwość i odpowiedzialność"
+    ],
+    "NiceToHaves": [
+      "Uprawnienia ADR (podstawowe)",
+      "Komunikatywna znajomość języka niemieckiego lub angielskiego"
+    ]
+  },
+  {
+    "Id": 136,
+    "CompanyId": 10,
+    "CategoryId": 33,
+    "Title": "Tapicer Meblowy",
+    "Description": "Praca w renomowanym zakładzie produkcyjnym.",
+    "DateTimePublishedUtc": "2025-10-15T06:30:00Z",
+    "DateTimeExpiringUtc": "2026-01-15T14:00:00Z",
+    "EmploymentOptionIds": [1, 3],
+    "Responsibilities": [
+      "Tapicerowanie mebli biurowych i wypoczynkowych (tkanina, skóra)",
+      "Przygotowywanie formatki piankowej",
+      "Obsługa narzędzi tapicerskich (zszywacze pneumatyczne)",
+      "Kontrola jakości gotowego wyrobu"
+    ],
+    "Requirements": [
+      "Doświadczenie w zawodzie tapicera (min. 1 rok)",
+      "Zdolności manualne i precyzja",
+      "Dobra organizacja pracy",
+      "Brak przeciwwskazań do pracy fizycznej"
+    ],
+    "NiceToHaves": [
+      "Umiejętność krojenia tkanin",
+      "Wykształcenie zawodowe (tapicer)"
+    ]
+  },
+  {
+    "Id": 137,
+    "CompanyId": 1,
+    "CategoryId": 14,
+    "Title": "IT Project Manager",
+    "Description": "Zarządzanie projektami wdrożeniowymi dla sektora bankowego.",
+    "DateTimePublishedUtc": "2025-12-10T09:00:00Z",
+    "DateTimeExpiringUtc": "2026-03-10T17:00:00Z",
+    "EmploymentOptionIds": [1, 5],
+    "Responsibilities": [
+      "Planowanie, monitorowanie i realizacja projektów IT",
+      "Zarządzanie harmonogramem, budżetem i ryzykiem",
+      "Koordynacja pracy zespołu deweloperskiego",
+      "Bieżąca komunikacja z interesariuszami projektu"
+    ],
+    "Requirements": [
+      "Min. 3 lata doświadczenia w prowadzeniu projektów IT",
+      "Dobra znajomość metodyk Agile (Scrum/Kanban)",
+      "Biegły język angielski (C1)",
+      "Wysokie umiejętności komunikacyjne"
+    ],
+    "NiceToHaves": [
+      "Certyfikat PMP lub PRINCE2",
+      "Znajomość narzędzia JIRA / Confluence"
+    ]
+  },
+  {
+    "Id": 138,
+    "CompanyId": 17,
+    "CategoryId": 13,
+    "Title": "Specjalista ds. Kadr i Płac",
+    "Description": null,
+    "DateTimePublishedUtc": "2025-11-25T11:00:00Z",
+    "DateTimeExpiringUtc": "2026-02-25T16:00:00Z",
+    "EmploymentOptionIds": [1, 5],
+    "Responsibilities": [
+      "Naliczanie wynagrodzeń oraz sporządzanie list płac",
+      "Prowadzenie akt osobowych pracowników",
+      "Rozliczanie czasu pracy, urlopów i zwolnień lekarskich",
+      "Sporządzanie deklaracji ZUS i PIT"
+    ],
+    "Requirements": [
+      "Praktyczna znajomość prawa pracy i ubezpieczeń społecznych",
+      "Doświadczenie w obsłudze programu Płatnik",
+      "Dokładność i terminowość",
+      "Znajomość programu Enova lub Symfonia Kadry i Płace"
+    ],
+    "NiceToHaves": [
+      "Doświadczenie w obsłudze PFRON",
+      "Znajomość PPK"
+    ]
+  },
+  {
+    "Id": 139,
+    "CompanyId": 8,
+    "CategoryId": 12,
+    "Title": "Graphic Designer (Mid/Senior)",
+    "Description": "Twórz z nami identyfikację wizualną dla marek z całego świata.",
+    "DateTimePublishedUtc": "2025-12-05T12:30:00Z",
+    "DateTimeExpiringUtc": "2026-01-30T23:00:00Z",
+    "EmploymentOptionIds": [1, 4],
+    "Responsibilities": [
+      "Projektowanie materiałów marketingowych (digital & print)",
+      "Tworzenie Key Visuali do kampanii reklamowych",
+      "Retusz zdjęć i przygotowanie plików do druku (DTP)",
+      "Udział w burzach mózgów"
+    ],
+    "Requirements": [
+      "Biegła znajomość pakietu Adobe (Photoshop, Illustrator, InDesign)",
+      "Kreatywność i wysokie poczucie estetyki",
+      "Mocne portfolio",
+      "Umiejętność pracy pod presją czasu"
+    ],
+    "NiceToHaves": [
+      "Umiejętność tworzenia prostych animacji (After Effects)",
+      "Znajomość zasad typografii"
+    ]
+  },
+  {
+    "Id": 140,
+    "CompanyId": 7,
+    "CategoryId": 1,
+    "Title": "Rejestratorka Medyczna",
+    "Description": "Pierwszy kontakt dla pacjentów naszego centrum medycznego.",
+    "DateTimePublishedUtc": "2025-11-30T07:45:00Z",
+    "DateTimeExpiringUtc": "2026-01-20T19:00:00Z",
+    "EmploymentOptionIds": [1, 2, 3],
+    "Responsibilities": [
+      "Telefoniczna i osobista rejestracja pacjentów",
+      "Prowadzenie harmonogramów wizyt lekarskich",
+      "Obsługa systemu medycznego i kasy fiskalnej",
+      "Udzielanie informacji o zakresie świadczonych usług"
+    ],
+    "Requirements": [
+      "Wysoka kultura osobista i empatia",
+      "Dobra obsługa komputera",
+      "Odporność na stres",
+      "Gotowość do pracy w systemie dwuzmianowym (7:00-20:00)"
+    ],
+    "NiceToHaves": [
+      "Doświadczenie w pracy w placówce medycznej",
+      "Status studenta (mile widziane)"
+    ]
+  },
+  {
+    "Id": 141,
+    "CompanyId": 14,
+    "CategoryId": 26,
+    "Title": "Car Detailer / Specjalista ds. kosmetyki aut",
+    "Description": "Praca dla pasjonata motoryzacji. Zadbaj o wygląd aut premium.",
+    "DateTimePublishedUtc": "2025-10-20T08:00:00Z",
+    "DateTimeExpiringUtc": "2026-01-10T17:00:00Z",
+    "EmploymentOptionIds": [1, 3],
+    "Responsibilities": [
+      "Wieloetapowe mycie i czyszczenie pojazdów",
+      "Polerowanie lakieru (korekta lakieru)",
+      "Aplikacja powłok ceramicznych i wosków",
+      "Pranie tapicerki i czyszczenie skór"
+    ],
+    "Requirements": [
+      "Doświadczenie w detailingu lub na myjni ręcznej",
+      "Dbałość o detale i cierpliwość",
+      "Prawo jazdy kat. B",
+      "Zmysł estetyczny"
+    ],
+    "NiceToHaves": [
+      "Umiejętność przyciemniania szyb",
+      "Umiejętność aplikacji folii PPF"
+    ]
+  },
+  {
+    "Id": 142,
+    "CompanyId": 5,
+    "CategoryId": 11,
+    "Title": "Dostawca / Kierowca (Skuter/Samochód)",
+    "Description": null,
+    "DateTimePublishedUtc": "2025-12-15T13:00:00Z",
+    "DateTimeExpiringUtc": "2026-01-15T22:00:00Z",
+    "EmploymentOptionIds": [2, 3, 6],
+    "Responsibilities": [
+      "Dostarczanie zamówień do klientów na terenie miasta",
+      "Rozliczanie się z gotówki i terminala",
+      "Dbanie o powierzony pojazd służbowy",
+      "Pomoc w prostych pracach na lokalu w razie braku wyjazdów"
+    ],
+    "Requirements": [
+      "Prawo jazdy kat. B lub AM (w zależności od pojazdu)",
+      "Dobra orientacja w topografii miasta",
+      "Książeczka sanepidowska",
+      "Punktualność"
+    ],
+    "NiceToHaves": [
+      "Własny pojazd (możliwość zwrotu kosztów paliwa + amortyzacja)"
+    ]
+  },
+  {
+    "Id": 143,
+    "CompanyId": 19,
+    "CategoryId": 28,
+    "Title": "Operator Monitoringu CCTV",
+    "Description": "Praca siedząca w centrum monitorowania.",
+    "DateTimePublishedUtc": "2025-11-12T06:00:00Z",
+    "DateTimeExpiringUtc": "2026-02-12T06:00:00Z",
+    "EmploymentOptionIds": [1, 3],
+    "Responsibilities": [
+      "Bieżąca obserwacja obrazu z kamer przemysłowych",
+      "Wykrywanie nieprawidłowości i zagrożeń",
+      "Powiadamianie grup interwencyjnych",
+      "Sporządzanie raportów ze zdarzeń"
+    ],
+    "Requirements": [
+      "Spostrzegawczość i umiejętność koncentracji",
+      "Niekaralność (zaświadczenie z KRK)",
+      "Podstawowa obsługa komputera",
+      "Gotowość do pracy w systemie zmianowym (również nocki)"
+    ],
+    "NiceToHaves": [
+      "Wpis na listę Kwalifikowanych Pracowników Ochrony",
+      "Orzeczenie o niepełnosprawności"
+    ]
+  },
+  {
+    "Id": 144,
+    "CompanyId": 16,
+    "CategoryId": 1,
+    "Title": "Office Manager / Koordynator Biura",
+    "Description": "Zarządzanie sekretariatem szkoły językowej.",
+    "DateTimePublishedUtc": "2025-11-05T09:00:00Z",
+    "DateTimeExpiringUtc": "2026-01-25T17:00:00Z",
+    "EmploymentOptionIds": [1, 3],
+    "Responsibilities": [
+      "Nadzór nad prawidłowym obiegiem dokumentów",
+      "Zaopatrzenie biura w artykuły spożywcze i papiernicze",
+      "Wsparcie administracyjne lektorów i metodyków",
+      "Organizacja eventów firmowych i spotkań integracyjnych"
+    ],
+    "Requirements": [
+      "Bardzo dobra organizacja pracy",
+      "Samodzielność i inicjatywa",
+      "Znajomość języka angielskiego (min. B2)",
+      "Obsługa pakietu MS Office (Word, Excel)"
+    ],
+    "NiceToHaves": [
+      "Prawo jazdy kat. B"
+    ]
+  },
+  {
+    "Id": 145,
+    "CompanyId": 9,
+    "CategoryId": 37,
+    "Title": "Przedstawiciel Handlowy (OZE)",
+    "Description": "Sprzedaż nowoczesnych rozwiązań energetycznych dla biznesu.",
+    "DateTimePublishedUtc": "2025-10-28T08:00:00Z",
+    "DateTimeExpiringUtc": "2026-02-28T18:00:00Z",
+    "EmploymentOptionIds": [1, 6],
+    "Responsibilities": [
+      "Pozyskiwanie nowych klientów B2B",
+      "Prezentacja oferty handlowej i negocjowanie warunków współpracy",
+      "Analiza potrzeb klienta i dobór rozwiązań (fotowoltaika, magazyny energii)",
+      "Realizacja celów sprzedażowych"
+    ],
+    "Requirements": [
+      "Doświadczenie w sprzedaży bezpośredniej (D2D lub B2B)",
+      "Wysoka motywacja do pracy i nastawienie na wynik",
+      "Prawo jazdy kat. B",
+      "Łatwość w nawiązywaniu kontaktów"
+    ],
+    "NiceToHaves": [
+      "Znajomość branży energetycznej lub OZE",
+      "Własna działalność gospodarcza"
+    ]
+  },
+  {
+    "Id": 146,
+    "CompanyId": 3,
+    "CategoryId": 32,
+    "Title": "Radca Prawny / Adwokat",
+    "Description": "Samodzielne stanowisko w dziale prawa gospodarczego.",
+    "DateTimePublishedUtc": "2025-11-18T10:00:00Z",
+    "DateTimeExpiringUtc": "2026-02-18T16:00:00Z",
+    "EmploymentOptionIds": [1, 3],
+    "Responsibilities": [
+      "Bieżąca obsługa prawna podmiotów gospodarczych",
+      "Opiniowanie i sporządzanie umów handlowych",
+      "Reprezentacja klientów przed sądami i organami administracji",
+      "Przygotowywanie opinii prawnych"
+    ],
+    "Requirements": [
+      "Tytuł zawodowy Radcy Prawnego lub Adwokata",
+      "Min. 2 lata doświadczenia po egzaminie zawodowym",
+      "Specjalizacja w prawie handlowym i cywilnym",
+      "Profesjonalizm i rzetelność"
+    ],
+    "NiceToHaves": [
+      "Znajomość prawa zamówień publicznych",
+      "Biegły angielski (Legal English)"
+    ]
+  }
+]
