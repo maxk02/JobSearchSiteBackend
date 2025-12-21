@@ -117,8 +117,12 @@ using (var scope = app.Services.CreateScope())
     
     // DB
     var dbContext = services.GetRequiredService<MainDataContext>();
+    await MainDataContextSeed.SeedCompaniesAsync(dbContext);
+    await MainDataContextSeed.SeedCompanyAvatarsAsync(dbContext);
     await MainDataContextSeed.SeedLocationsAsync(dbContext);
     await MainDataContextSeed.SeedLocationRelationsAsync(dbContext);
+    await MainDataContextSeed.SeedJobsAsync(dbContext);
+    await MainDataContextSeed.SeedJobSalaryInfosAsync(dbContext);
     
     // ElasticSearch
     foreach (var repoType in searchRepositories)

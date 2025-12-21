@@ -1,0 +1,22 @@
+[
+  { "Id": 1, "CompanyId": 1, "Extension": "svg", "GuidIdentifier": "7c9e6679-7425-40de-944b-e07fc1f90ae7" },
+  { "Id": 2, "CompanyId": 2, "Extension": "svg", "GuidIdentifier": "2b85e4d2-9c3a-4f51-8742-5b9e02c51f3d" },
+  { "Id": 3, "CompanyId": 3, "Extension": "svg", "GuidIdentifier": "a1d9405e-65f2-4c88-b230-01971d6f73a1" },
+  { "Id": 4, "CompanyId": 4, "Extension": "svg", "GuidIdentifier": "d4735e3a-265e-4917-a006-2532d8091a26" },
+  { "Id": 5, "CompanyId": 5, "Extension": "svg", "GuidIdentifier": "f8c2b9a1-0e4d-4763-9528-7a1b3c4d5e6f" },
+  { "Id": 6, "CompanyId": 6, "Extension": "svg", "GuidIdentifier": "902e4d56-78a1-423c-b6f5-192a837c40b9" },
+  { "Id": 7, "CompanyId": 7, "Extension": "svg", "GuidIdentifier": "e5a1b8c2-3d4f-4096-8712-65a4b3c2d1e0" },
+  { "Id": 8, "CompanyId": 8, "Extension": "svg", "GuidIdentifier": "12f45a78-9b3c-4d2e-81f0-7654321098ba" },
+  { "Id": 9, "CompanyId": 9, "Extension": "svg", "GuidIdentifier": "3c4d5e6f-7a8b-491c-2d3e-4f5a6b7c8d9e" },
+  { "Id": 10, "CompanyId": 10, "Extension": "svg", "GuidIdentifier": "6b7c8d9e-0f1a-42b3-c4d5-e6f7a8b9c0d1" },
+  { "Id": 11, "CompanyId": 11, "Extension": "svg", "GuidIdentifier": "5e6f7a8b-9c0d-41e2-f3a4-b5c6d7e8f9a0" },
+  { "Id": 12, "CompanyId": 12, "Extension": "svg", "GuidIdentifier": "8a9b0c1d-2e3f-44a5-b6c7-d8e9f0a1b2c3" },
+  { "Id": 13, "CompanyId": 13, "Extension": "svg", "GuidIdentifier": "c3d4e5f6-a7b8-4c9d-0e1f-2a3b4c5d6e7f" },
+  { "Id": 14, "CompanyId": 14, "Extension": "svg", "GuidIdentifier": "4d5e6f7a-8b9c-40d1-e2f3-a4b5c6d7e8f9" },
+  { "Id": 15, "CompanyId": 15, "Extension": "svg", "GuidIdentifier": "b5c6d7e8-f9a0-41b2-c3d4-e5f6a7b8c9d0" },
+  { "Id": 16, "CompanyId": 16, "Extension": "svg", "GuidIdentifier": "d0e1f2a3-b4c5-46d7-e8f9-a0b1c2d3e4f5" },
+  { "Id": 17, "CompanyId": 17, "Extension": "svg", "GuidIdentifier": "f5a6b7c8-d9e0-41f2-a3b4-c5d6e7f8a9b0" },
+  { "Id": 18, "CompanyId": 18, "Extension": "svg", "GuidIdentifier": "0a1b2c3d-4e5f-46a7-b8c9-d0e1f2a3b4c5" },
+  { "Id": 19, "CompanyId": 19, "Extension": "svg", "GuidIdentifier": "2d3e4f5a-6b7c-48d9-e0f1-a2b3c4d5e6f7" },
+  { "Id": 20, "CompanyId": 20, "Extension": "svg", "GuidIdentifier": "9e0f1a2b-3c4d-45e6-f7a8-b9c0d1e2f3a4" }
+]

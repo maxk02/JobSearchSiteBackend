@@ -2,6 +2,7 @@
   {
     "Id": 1,
     "CountryId": 1,
+    "IsPublic": true,
     "Name": "SoftFuture Sp. z o.o.",
     "Description": "Lider w tworzeniu innowacyjnego oprogramowania dla sektora fintech. Specjalizujemy się w rozwiązaniach chmurowych i AI.",
     "CountrySpecificFieldsJson": "{\"nip\": \"5213456789\"}"
@@ -9,6 +10,7 @@
   {
     "Id": 2,
     "CountryId": 1,
+    "IsPublic": true,
     "Name": "Budimex-Pol Construction S.A.",
     "Description": "Jedna z największych firm budowlanych w regionie, realizująca kluczowe inwestycje infrastrukturalne i mieszkaniowe.",
     "CountrySpecificFieldsJson": "{\"nip\": \"1234563218\"}"
@@ -16,6 +18,7 @@
   {
     "Id": 3,
     "CountryId": 1,
+    "IsPublic": true,
     "Name": "Kancelaria Prawna Iustitia",
     "Description": null,
     "CountrySpecificFieldsJson": "{\"nip\": \"8992345671\"}"
@@ -23,6 +26,7 @@
   {
     "Id": 4,
     "CountryId": 1,
+    "IsPublic": true,
     "Name": "Logistyka Trans-World",
     "Description": "Globalny operator logistyczny oferujący kompleksowe usługi transportowe, spedycyjne i magazynowe.",
     "CountrySpecificFieldsJson": "{\"nip\": \"7771122334\"}"
@@ -30,6 +34,7 @@
   {
     "Id": 5,
     "CountryId": 1,
+    "IsPublic": true,
     "Name": "Restauracja Smaki Regionu",
     "Description": null,
     "CountrySpecificFieldsJson": "{\"nip\": \"6665544332\"}"
@@ -37,6 +42,7 @@
   {
     "Id": 6,
     "CountryId": 1,
+    "IsPublic": true,
     "Name": "Bank Horyzont S.A.",
     "Description": "Nowoczesna bankowość dla klientów indywidualnych i biznesowych. Stawiamy na przejrzystość i bezpieczeństwo.",
     "CountrySpecificFieldsJson": "{\"nip\": \"5260001122\"}"
@@ -44,6 +50,7 @@
   {
     "Id": 7,
     "CountryId": 1,
+    "IsPublic": true,
     "Name": "Centrum Medyczne Vita-Med",
     "Description": "Prywatna sieć przychodni oferująca kompleksową opiekę zdrowotną oraz badania diagnostyczne.",
     "CountrySpecificFieldsJson": "{\"nip\": \"9512345678\"}"
@@ -51,6 +58,7 @@
   {
     "Id": 8,
     "CountryId": 1,
+    "IsPublic": true,
     "Name": "Agencja Reklamowa Buzz",
     "Description": "Kreatywna agencja 360 stopni. Tworzymy kampanie, które zapadają w pamięć i budują silne marki.",
     "CountrySpecificFieldsJson": "{\"nip\": \"1112223344\"}"
@@ -58,6 +66,7 @@
   {
     "Id": 9,
     "CountryId": 1,
+    "IsPublic": true,
     "Name": "EcoEnergy Systems",
     "Description": null,
     "CountrySpecificFieldsJson": "{\"nip\": \"5556667788\"}"
@@ -65,6 +74,7 @@
   {
     "Id": 10,
     "CountryId": 1,
+    "IsPublic": true,
     "Name": "Fabryka Mebli Styl",
     "Description": "Producent wysokiej jakości mebli biurowych i domowych z wieloletnią tradycją.",
     "CountrySpecificFieldsJson": "{\"nip\": \"9998887766\"}"
@@ -72,6 +82,7 @@
   {
     "Id": 11,
     "CountryId": 1,
+    "IsPublic": true,
     "Name": "Hotel Royal & Spa",
     "Description": "Luksusowy hotel w centrum miasta oferujący usługi na najwyższym poziomie dla gości biznesowych i turystów.",
     "CountrySpecificFieldsJson": "{\"nip\": \"3334445566\"}"
@@ -79,6 +90,7 @@
   {
     "Id": 12,
     "CountryId": 1,
+    "IsPublic": true,
     "Name": "HR Partnerzy",
     "Description": null,
     "CountrySpecificFieldsJson": "{\"nip\": \"2223334455\"}"
@@ -86,6 +98,7 @@
   {
     "Id": 13,
     "CountryId": 1,
+    "IsPublic": true,
     "Name": "Sieć Handlowa Grosik",
     "Description": "Ogólnopolska sieć sklepów spożywczych blisko Ciebie. Zatrudniamy ponad 2000 pracowników.",
     "CountrySpecificFieldsJson": "{\"nip\": \"4445556677\"}"
@@ -93,6 +106,7 @@
   {
     "Id": 14,
     "CountryId": 1,
+    "IsPublic": true,
     "Name": "Moto-Serwis Premium",
     "Description": "Autoryzowany serwis samochodowy marek premium. Blacharstwo, lakiernictwo i mechanika pojazdowa.",
     "CountrySpecificFieldsJson": "{\"nip\": \"8889990011\"}"
@@ -100,6 +114,7 @@
   {
     "Id": 15,
     "CountryId": 1,
+    "IsPublic": true,
     "Name": "Fundacja 'Dobra Przyszłość'",
     "Description": "Organizacja pozarządowa wspierająca edukację dzieci i młodzieży z mniejszych miejscowości.",
     "CountrySpecificFieldsJson": "{\"nip\": \"1239874560\"}"
@@ -107,6 +122,7 @@
   {
     "Id": 16,
     "CountryId": 1,
+    "IsPublic": true,
     "Name": "Akademia Językowa Lingua",
     "Description": null,
     "CountrySpecificFieldsJson": "{\"nip\": \"7418529630\"}"
@@ -114,6 +130,7 @@
   {
     "Id": 17,
     "CountryId": 1,
+    "IsPublic": true,
     "Name": "Biuro Rachunkowe Bilans",
     "Description": "Profesjonalna obsługa księgowa i kadrowo-płacowa dla małych i średnich przedsiębiorstw.",
     "CountrySpecificFieldsJson": "{\"nip\": \"3692581470\"}"
@@ -121,6 +138,7 @@
   {
     "Id": 18,
     "CountryId": 1,
+    "IsPublic": true,
     "Name": "AgroFarma Polska",
     "Description": "Nowoczesne gospodarstwo rolne zajmujące się uprawą zbóż oraz hodowlą ekologiczną.",
     "CountrySpecificFieldsJson": "{\"nip\": \"1593574862\"}"
@@ -128,6 +146,7 @@
   {
     "Id": 19,
     "CountryId": 1,
+    "IsPublic": true,
     "Name": "Ochrona Mienia Security24",
     "Description": null,
     "CountrySpecificFieldsJson": "{\"nip\": \"9517534862\"}"
@@ -135,6 +154,7 @@
   {
     "Id": 20,
     "CountryId": 1,
+    "IsPublic": true,
     "Name": "E-Commerce Solutions",
     "Description": "Tworzymy i zarządzamy sklepami internetowymi dla największych marek odzieżowych.",
     "CountrySpecificFieldsJson": "{\"nip\": \"3571592486\"}"

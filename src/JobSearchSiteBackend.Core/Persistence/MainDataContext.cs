@@ -23,15 +23,16 @@ public class MainDataContext : IdentityDbContext<MyIdentityUser, MyIdentityRole,
     public DbSet<Category> Categories { get; set; }
     public DbSet<Company> Companies { get; set; }
     public DbSet<CompanyAvatar> CompanyAvatars { get; set; }
-    public DbSet<CompanyBalanceTransaction>  CompanyBalanceTransactions { get; set; }
+    public DbSet<CompanyBalanceTransaction> CompanyBalanceTransactions { get; set; }
     public DbSet<JobContractType> ContractTypes { get; set; }
     public DbSet<Country> Countries { get; set; }
     public DbSet<CountryCurrency> CountryCurrencies { get; set; }
     public DbSet<Currency> Currencies { get; set; }
     public DbSet<PersonalFile> PersonalFiles { get; set; }
     public DbSet<JobApplication> JobApplications { get; set; }
-    public DbSet<JobPublicationInterval>  JobPublicationIntervals { get; set; }
+    public DbSet<JobPublicationInterval> JobPublicationIntervals { get; set; }
     public DbSet<Job> Jobs { get; set; }
+    public DbSet<JobSalaryInfo> JobSalaryInfos { get; set; }
     public DbSet<Location> Locations { get; set; }
     public DbSet<LocationRelation> LocationRelations { get; set; }
     public DbSet<JobFolder> JobFolders { get; set; }
@@ -43,7 +44,7 @@ public class MainDataContext : IdentityDbContext<MyIdentityUser, MyIdentityRole,
     public DbSet<UserJobBookmark> UserJobBookmarks { get; set; }
     public DbSet<UserJobFolderClaim> UserJobFolderClaims { get; set; }
     public DbSet<UserProfile> UserProfiles { get; set; }
-    public DbSet<UserAvatar>  UserAvatars { get; set; }
+    public DbSet<UserAvatar> UserAvatars { get; set; }
 
     public MainDataContext(DbContextOptions<MainDataContext> options) : base(options)
     {

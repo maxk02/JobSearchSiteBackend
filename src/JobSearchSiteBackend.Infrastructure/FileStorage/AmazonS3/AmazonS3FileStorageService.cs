@@ -2,11 +2,20 @@
 using Amazon.S3.Model;
 using Amazon.S3.Transfer;
 using JobSearchSiteBackend.Core.Services.FileStorage;
+using Microsoft.Extensions.Configuration;
 
 namespace JobSearchSiteBackend.Infrastructure.FileStorage.AmazonS3;
 
-public class AmazonS3FileStorageService(IAmazonS3 s3Client) : IFileStorageService
+public class AmazonS3FileStorageService(IAmazonS3 s3Client, IConfiguration configuration) : IFileStorageService
 {
+    private string GetBucketName(FileStorageBucketName bucketNameEnum) => bucketNameEnum switch
+    {
+        FileStorageBucketName.CompanyAvatars => configuration["AWS_COMPANY_AVATARS_BUCKET_NAME"] ?? throw new ApplicationException(),
+        FileStorageBucketName.PersonalFiles => configuration["AWS_PERSONAL_FILES_BUCKET_NAME"] ?? throw new ApplicationException(),
+        FileStorageBucketName.UserAvatars => configuration["AWS_USER_AVATARS_BUCKET_NAME"] ?? throw new ApplicationException(),
+        _ => throw new ArgumentException()
+    };
+
     private readonly TimeSpan _preSignedUrlExpiry = TimeSpan.FromMinutes(30);
     
     public async Task BulkDeleteFilesAsync(FileStorageBucketName bucketName,
@@ -18,7 +27,7 @@ public class AmazonS3FileStorageService(IAmazonS3 s3Client) : IFileStorageServic
         
         var deleteRequest = new DeleteObjectsRequest
         {
-            BucketName = bucketName.ToString(),
+            BucketName = GetBucketName(bucketName),
             Objects = objects
         };
         
@@ -32,7 +41,7 @@ public class AmazonS3FileStorageService(IAmazonS3 s3Client) : IFileStorageServic
 
         var deleteRequest = new DeleteObjectRequest
         {
-            BucketName = bucketName.ToString(),
+            BucketName = GetBucketName(bucketName),
             Key = key
         };
 
@@ -46,7 +55,7 @@ public class AmazonS3FileStorageService(IAmazonS3 s3Client) : IFileStorageServic
 
         var request = new GetObjectRequest
         {
-            BucketName = bucketName.ToString(),
+            BucketName = GetBucketName(bucketName),
             Key = key
         };
 
@@ -61,7 +70,7 @@ public class AmazonS3FileStorageService(IAmazonS3 s3Client) : IFileStorageServic
 
         var request = new GetPreSignedUrlRequest
         {
-            BucketName = bucketName.ToString(),
+            BucketName = GetBucketName(bucketName),
             Key = key,
             Expires = DateTime.UtcNow.Add(_preSignedUrlExpiry),
             Verb = HttpVerb.GET
@@ -86,7 +95,7 @@ public class AmazonS3FileStorageService(IAmazonS3 s3Client) : IFileStorageServic
         {
             InputStream = fileStream,
             Key = key,
-            BucketName = bucketName.ToString(),
+            BucketName = GetBucketName(bucketName),
             ContentType = "application/octet-stream"
         };
 

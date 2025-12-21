@@ -7,12 +7,12 @@ public class EmploymentOptionConfiguration : IEntityTypeConfiguration<Employment
 {
     public void Configure(EntityTypeBuilder<EmploymentOption> builder)
     {
-        builder.HasKey(employmentType => employmentType.Id);
+        builder.HasKey(employmentOption => employmentOption.Id);
         
-        builder.HasIndex(employmentType => employmentType.NamePl).IsUnique();
+        builder.HasIndex(employmentOption => employmentOption.NamePl).IsUnique();
 
         builder
-            .HasMany(employmentType => employmentType.Jobs)
+            .HasMany(employmentOption => employmentOption.Jobs)
             .WithMany(job => job.EmploymentOptions);
 
         builder.HasData(EmploymentOption.AllValues);
