@@ -60,7 +60,9 @@ public static class ServiceExtensions
             options
                 .UseSqlServer(configuration["SQL_SERVER_DEFAULT_CONNECTION_STRING"],
                     b => b.MigrationsAssembly(Assembly.GetExecutingAssembly()))
-                .AddInterceptors(interceptor);
+                .AddInterceptors(interceptor)
+                .LogTo(Console.WriteLine, Microsoft.Extensions.Logging.LogLevel.Information)
+                .EnableSensitiveDataLogging();
         });
         
         serviceCollection.AddIdentity<MyIdentityUser, MyIdentityRole>(options =>
@@ -76,6 +78,8 @@ public static class ServiceExtensions
             .AddDefaultTokenProviders();
         
         serviceCollection.AddSingleton<IInjectableSqlQueries, SqlServerInjectableSqlQueries>();
+
+        serviceCollection.AddScoped<MainDataContextSeeder>();
     }
     
     public static void ConfigureJwtAuthentication(this IServiceCollection serviceCollection,
@@ -127,7 +131,7 @@ public static class ServiceExtensions
         serviceCollection.AddAWSService<IAmazonS3>();
         
         serviceCollection.AddSingleton<IFileStorageService, AmazonS3FileStorageService>(provider => 
-            new AmazonS3FileStorageService(provider.GetRequiredService<IAmazonS3>()));
+            new AmazonS3FileStorageService(provider.GetRequiredService<IAmazonS3>(), configuration));
     }
     
     public static void ConfigureSearch(this IServiceCollection serviceCollection, IConfiguration configuration)

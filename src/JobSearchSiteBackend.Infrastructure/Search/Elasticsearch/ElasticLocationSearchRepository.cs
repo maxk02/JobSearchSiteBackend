@@ -90,6 +90,7 @@ public class ElasticLocationSearchRepository(IElasticClient client) : ILocationS
         CancellationToken cancellationToken = default)
     {
         var searchResponse = await client.SearchAsync<LocationSearchModel>(s => s
+            .Index(IndexName)
             .Source(src => src.
                 Includes(i => i.
                     Field(f => f.Id)
@@ -126,6 +127,7 @@ public class ElasticLocationSearchRepository(IElasticClient client) : ILocationS
     public async Task<ICollection<long>> SearchFromAllAsync(string query, CancellationToken cancellationToken = default)
     {
         var searchResponse = await client.SearchAsync<LocationSearchModel>(s => s
+                .Index(IndexName)
                 .Source(src => src.
                     Includes(i => i.
                         Field(f => f.Id)
@@ -153,6 +155,7 @@ public class ElasticLocationSearchRepository(IElasticClient client) : ILocationS
         int size, CancellationToken cancellationToken = default)
     {
         var searchResponse = await client.SearchAsync<LocationSearchModel>(s => s
+                .Index(IndexName)
                 .Source(src => src.
                     Includes(i => i.
                         Field(f => f.Id)

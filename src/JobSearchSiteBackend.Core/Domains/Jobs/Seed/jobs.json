@@ -9,6 +9,8 @@
     "DateTimePublishedUtc": "2025-11-10T09:15:00Z",
     "DateTimeExpiringUtc": "2026-02-10T17:00:00Z",
     "EmploymentOptionIds": [1, 5],
+    "LocationIds": [26],
+    "ContractTypeIds": [1, 3, 4],
     "Responsibilities": [
       "Tworzenie i realizacja strategii komunikacji w mediach społecznościowych (FB, IG, LinkedIn, TikTok)",
       "Przygotowywanie harmonogramów postów i copywritingu",
@@ -35,6 +37,8 @@
     "DateTimePublishedUtc": "2025-12-05T08:00:00Z",
     "DateTimeExpiringUtc": "2026-01-15T16:00:00Z",
     "EmploymentOptionIds": [1, 3],
+    "LocationIds": [7, 8],
+    "ContractTypeIds": [1, 3, 7],
     "Responsibilities": [
       "Przygotowywanie rysunków technicznych i detali architektonicznych",
       "Wsparcie przy tworzeniu dokumentacji budowlanej i wykonawczej",
@@ -62,6 +66,8 @@
     "DateTimePublishedUtc": "2025-10-28T07:30:00Z",
     "DateTimeExpiringUtc": "2026-01-20T18:00:00Z",
     "EmploymentOptionIds": [1, 3],
+    "LocationIds": [7],
+    "ContractTypeIds": [3],
     "Responsibilities": [
       "Diagnozowanie usterek mechanicznych i elektronicznych",
       "Wykonywanie napraw bieżących i głównych",
@@ -89,6 +95,8 @@
     "DateTimePublishedUtc": "2025-11-25T10:00:00Z",
     "DateTimeExpiringUtc": "2026-02-25T23:59:00Z",
     "EmploymentOptionIds": [1, 4],
+    "LocationIds": [25],
+    "ContractTypeIds": [1, 4],
     "Responsibilities": [
       "Optymalizacja stron pod kątem wyszukiwarek (SEO on-site i off-site)",
       "Prowadzenie i optymalizacja kampanii Google Ads",
@@ -116,6 +124,8 @@
     "DateTimePublishedUtc": "2025-10-15T08:00:00Z",
     "DateTimeExpiringUtc": "2026-03-01T15:00:00Z",
     "EmploymentOptionIds": [1, 6],
+    "LocationIds": [4],
+    "ContractTypeIds": [1],
     "Responsibilities": [
       "Planowanie zasiewów i płodozmianu",
       "Monitoring stanu upraw i zagrożeń agrofagami",
@@ -140,6 +150,8 @@
     "DateTimePublishedUtc": "2025-12-12T14:00:00Z",
     "DateTimeExpiringUtc": "2026-01-30T20:00:00Z",
     "EmploymentOptionIds": [2, 5],
+    "LocationIds": [9, 17],
+    "ContractTypeIds": [3, 4],
     "Responsibilities": [
       "Prowadzenie zajęć indywidualnych i grupowych dla dorosłych",
       "Przygotowywanie materiałów dydaktycznych",
@@ -167,6 +179,8 @@
     "DateTimePublishedUtc": "2025-11-05T06:00:00Z",
     "DateTimeExpiringUtc": "2026-01-10T22:00:00Z",
     "EmploymentOptionIds": [1, 3],
+    "LocationIds": [7, 8],
+    "ContractTypeIds": [3, 6],
     "Responsibilities": [
       "Załadunek i rozładunek towarów wózkiem widłowym",
       "Kompletacja zamówień ze skanerem",
@@ -191,6 +205,8 @@
     "DateTimePublishedUtc": "2025-11-20T09:00:00Z",
     "DateTimeExpiringUtc": "2026-02-15T16:00:00Z",
     "EmploymentOptionIds": [1, 5],
+    "LocationIds": [10],
+    "ContractTypeIds": [4],
     "Responsibilities": [
       "Prowadzenie pełnej księgowości (KH) dla klientów biura",
       "Sporządzanie deklaracji podatkowych CIT, VAT",
@@ -218,6 +234,8 @@
     "DateTimePublishedUtc": "2025-12-15T11:00:00Z",
     "DateTimeExpiringUtc": "2026-01-20T23:00:00Z",
     "EmploymentOptionIds": [1, 3],
+    "LocationIds": [14, 16],
+    "ContractTypeIds": [3],
     "Responsibilities": [
       "Meldowanie i wymeldowywanie gości (check-in/check-out)",
       "Przyjmowanie rezerwacji telefonicznych i mailowych",
@@ -245,6 +263,8 @@
     "DateTimePublishedUtc": "2025-10-30T13:00:00Z",
     "DateTimeExpiringUtc": "2026-01-25T22:00:00Z",
     "EmploymentOptionIds": [1, 3],
+    "LocationIds": [8],
+    "ContractTypeIds": [1, 2],
     "Responsibilities": [
       "Obsługa obrabiarek sterowanych numerycznie (frezarki, wiertarki)",
       "Ustawianie parametrów obróbki na podstawie dokumentacji",
@@ -272,6 +292,8 @@
     "DateTimePublishedUtc": "2025-12-01T08:30:00Z",
     "DateTimeExpiringUtc": "2026-02-01T16:00:00Z",
     "EmploymentOptionIds": [1, 5],
+    "LocationIds": [26],
+    "ContractTypeIds": [1, 2],
     "Responsibilities": [
       "Przyjmowanie i rozwiązywanie zgłoszeń w systemie ticketowym",
       "Konfiguracja sprzętu komputerowego i oprogramowania biurowego",
@@ -299,6 +321,8 @@
     "DateTimePublishedUtc": "2025-11-12T10:00:00Z",
     "DateTimeExpiringUtc": "2026-01-12T15:00:00Z",
     "EmploymentOptionIds": [1, 6],
+    "LocationIds": [25],
+    "ContractTypeIds": [1],
     "Responsibilities": [
       "Planowanie i koordynacja działań projektowych zgodnie z harmonogramem",
       "Współpraca z wolontariuszami i partnerami fundacji",
@@ -326,6 +350,8 @@
     "DateTimePublishedUtc": "2025-11-10T07:00:00Z",
     "DateTimeExpiringUtc": "2026-02-10T16:00:00Z",
     "EmploymentOptionIds": [1, 6],
+    "LocationIds": [17],
+    "ContractTypeIds": [2, 3],
     "Responsibilities": [
       "Montaż konstrukcji wsporczych i modułów fotowoltaicznych",
       "Wykonywanie tras kablowych i podłączeń elektrycznych",
@@ -353,6 +379,8 @@
     "DateTimePublishedUtc": "2025-10-25T09:30:00Z",
     "DateTimeExpiringUtc": "2026-01-25T17:00:00Z",
     "EmploymentOptionIds": [1, 4],
+    "LocationIds": [9],
+    "ContractTypeIds": [1],
     "Responsibilities": [
       "Aktywne poszukiwanie kandydatów (Direct Search) na LinkedIn i GitHub",
       "Wstępna selekcja CV i przeprowadzanie rozmów telefonicznych (screening)",
@@ -380,6 +408,8 @@
     "DateTimePublishedUtc": "2025-12-15T18:00:00Z",
     "DateTimeExpiringUtc": "2026-01-15T23:59:00Z",
     "EmploymentOptionIds": [1, 3],
+    "LocationIds": [22],
+    "ContractTypeIds": [1, 6],
     "Responsibilities": [
       "Kontrola ruchu osobowego i materiałowego",
       "Obchody terenu obiektu",
@@ -404,6 +434,8 @@
     "DateTimePublishedUtc": "2025-11-05T08:00:00Z",
     "DateTimeExpiringUtc": "2026-02-05T17:00:00Z",
     "EmploymentOptionIds": [1, 3],
+    "LocationIds": [17],
+    "ContractTypeIds": [4],
     "Responsibilities": [
       "Aktywna sprzedaż produktów bankowych (konta, kredyty, ubezpieczenia)",
       "Obsługa gotówkowa klientów",
@@ -431,6 +463,8 @@
     "DateTimePublishedUtc": "2025-10-30T10:00:00Z",
     "DateTimeExpiringUtc": "2026-01-30T18:00:00Z",
     "EmploymentOptionIds": [1, 4],
+    "LocationIds": [10],
+    "ContractTypeIds": [1],
     "Responsibilities": [
       "Tworzenie i rozwój frameworka do testów automatycznych",
       "Pisanie skryptów testowych w Pythonie",
@@ -458,6 +492,8 @@
     "DateTimePublishedUtc": "2025-11-15T08:00:00Z",
     "DateTimeExpiringUtc": "2026-02-15T16:00:00Z",
     "EmploymentOptionIds": [1, 5],
+    "LocationIds": [16],
+    "ContractTypeIds": [4],
     "Responsibilities": [
       "Sporządzanie przedmiarów i kosztorysów ofertowych",
       "Analiza dokumentacji projektowej",
@@ -482,6 +518,8 @@
     "DateTimePublishedUtc": "2025-12-01T12:00:00Z",
     "DateTimeExpiringUtc": "2026-01-31T21:00:00Z",
     "EmploymentOptionIds": [1, 2, 3],
+    "LocationIds": [14],
+    "ContractTypeIds": [3],
     "Responsibilities": [
       "Wykonywanie masaży klasycznych, relaksacyjnych i leczniczych",
       "Przeprowadzanie zabiegów na ciało zgodnie z ofertą SPA",
@@ -509,6 +547,8 @@
     "DateTimePublishedUtc": "2025-12-18T10:00:00Z",
     "DateTimeExpiringUtc": "2026-01-08T22:00:00Z",
     "EmploymentOptionIds": [1, 2, 3],
+    "LocationIds": [18],
+    "ContractTypeIds": [3],
     "Responsibilities": [
       "Przyjmowanie zamówień i serwowanie dań",
       "Doradzanie gościom w wyborze potraw i win",
@@ -536,6 +576,8 @@
     "DateTimePublishedUtc": "2025-10-10T08:00:00Z",
     "DateTimeExpiringUtc": "2026-01-10T18:00:00Z",
     "EmploymentOptionIds": [1, 6],
+    "LocationIds": [17],
+    "ContractTypeIds": [1],
     "Responsibilities": [
       "Realizacja celów sprzedażowych i budżetowych w podległym regionie",
       "Zarządzanie podległym personelem (kierownicy sklepów)",
@@ -562,6 +604,8 @@
     "DateTimePublishedUtc": "2025-11-20T08:30:00Z",
     "DateTimeExpiringUtc": "2026-02-20T16:30:00Z",
     "EmploymentOptionIds": [1, 3],
+    "LocationIds": [10],
+    "ContractTypeIds": [3, 7],
     "Responsibilities": [
       "Obsługa korespondencji przychodzącej i wychodzącej (również ePUAP)",
       "Prowadzenie kalendarza spotkań i rozpraw",
@@ -589,6 +633,8 @@
     "DateTimePublishedUtc": "2025-11-01T09:00:00Z",
     "DateTimeExpiringUtc": "2026-01-30T15:00:00Z",
     "EmploymentOptionIds": [2, 5],
+    "LocationIds": [25],
+    "ContractTypeIds": [4],
     "Responsibilities": [
       "Pozyskiwanie funduszy na cele statutowe fundacji",
       "Utrzymywanie relacji z darczyńcami biznesowymi i indywidualnymi",
@@ -615,6 +661,8 @@
     "DateTimePublishedUtc": "2025-12-05T10:00:00Z",
     "DateTimeExpiringUtc": "2026-03-01T18:00:00Z",
     "EmploymentOptionIds": [1, 4],
+    "LocationIds": [25],
+    "ContractTypeIds": [1, 2, 3],
     "Responsibilities": [
       "Tworzenie makiet (wireframes) i prototypów high-fidelity",
       "Projektowanie interfejsów użytkownika (UI) dla wersji mobile i desktop",
@@ -642,6 +690,8 @@
     "DateTimePublishedUtc": "2025-11-01T08:00:00Z",
     "DateTimeExpiringUtc": "2026-02-01T20:00:00Z",
     "EmploymentOptionIds": [1, 6],
+    "LocationIds": [25],
+    "ContractTypeIds": [1],
     "Responsibilities": [
       "Przewóz towarów zgodnie z otrzymanym zleceniem",
       "Dbałość o powierzony sprzęt i ładunek",
@@ -669,6 +719,8 @@
     "DateTimePublishedUtc": "2025-10-15T06:30:00Z",
     "DateTimeExpiringUtc": "2026-01-15T14:00:00Z",
     "EmploymentOptionIds": [1, 3],
+    "LocationIds": [4],
+    "ContractTypeIds": [1, 3],
     "Responsibilities": [
       "Tapicerowanie mebli biurowych i wypoczynkowych (tkanina, skóra)",
       "Przygotowywanie formatki piankowej",
@@ -696,6 +748,8 @@
     "DateTimePublishedUtc": "2025-12-10T09:00:00Z",
     "DateTimeExpiringUtc": "2026-03-10T17:00:00Z",
     "EmploymentOptionIds": [1, 5],
+    "LocationIds": [7],
+    "ContractTypeIds": [1],
     "Responsibilities": [
       "Planowanie, monitorowanie i realizacja projektów IT",
       "Zarządzanie harmonogramem, budżetem i ryzykiem",
@@ -723,6 +777,8 @@
     "DateTimePublishedUtc": "2025-11-25T11:00:00Z",
     "DateTimeExpiringUtc": "2026-02-25T16:00:00Z",
     "EmploymentOptionIds": [1, 5],
+    "LocationIds": [9],
+    "ContractTypeIds": [1, 4],
     "Responsibilities": [
       "Naliczanie wynagrodzeń oraz sporządzanie list płac",
       "Prowadzenie akt osobowych pracowników",
@@ -750,6 +806,8 @@
     "DateTimePublishedUtc": "2025-12-05T12:30:00Z",
     "DateTimeExpiringUtc": "2026-01-30T23:00:00Z",
     "EmploymentOptionIds": [1, 4],
+    "LocationIds": [17],
+    "ContractTypeIds": [1, 2],
     "Responsibilities": [
       "Projektowanie materiałów marketingowych (digital & print)",
       "Tworzenie Key Visuali do kampanii reklamowych",
@@ -777,6 +835,8 @@
     "DateTimePublishedUtc": "2025-11-30T07:45:00Z",
     "DateTimeExpiringUtc": "2026-01-20T19:00:00Z",
     "EmploymentOptionIds": [1, 2, 3],
+    "LocationIds": [24],
+    "ContractTypeIds": [3],
     "Responsibilities": [
       "Telefoniczna i osobista rejestracja pacjentów",
       "Prowadzenie harmonogramów wizyt lekarskich",
@@ -804,6 +864,8 @@
     "DateTimePublishedUtc": "2025-10-20T08:00:00Z",
     "DateTimeExpiringUtc": "2026-01-10T17:00:00Z",
     "EmploymentOptionIds": [1, 3],
+    "LocationIds": [7],
+    "ContractTypeIds": [1, 6],
     "Responsibilities": [
       "Wieloetapowe mycie i czyszczenie pojazdów",
       "Polerowanie lakieru (korekta lakieru)",
@@ -831,6 +893,8 @@
     "DateTimePublishedUtc": "2025-12-15T13:00:00Z",
     "DateTimeExpiringUtc": "2026-01-15T22:00:00Z",
     "EmploymentOptionIds": [2, 3, 6],
+    "LocationIds": [22],
+    "ContractTypeIds": [3],
     "Responsibilities": [
       "Dostarczanie zamówień do klientów na terenie miasta",
       "Rozliczanie się z gotówki i terminala",
@@ -857,6 +921,8 @@
     "DateTimePublishedUtc": "2025-11-12T06:00:00Z",
     "DateTimeExpiringUtc": "2026-02-12T06:00:00Z",
     "EmploymentOptionIds": [1, 3],
+    "LocationIds": [16],
+    "ContractTypeIds": [1],
     "Responsibilities": [
       "Bieżąca obserwacja obrazu z kamer przemysłowych",
       "Wykrywanie nieprawidłowości i zagrożeń",
@@ -884,6 +950,8 @@
     "DateTimePublishedUtc": "2025-11-05T09:00:00Z",
     "DateTimeExpiringUtc": "2026-01-25T17:00:00Z",
     "EmploymentOptionIds": [1, 3],
+    "LocationIds": [17],
+    "ContractTypeIds": [1],
     "Responsibilities": [
       "Nadzór nad prawidłowym obiegiem dokumentów",
       "Zaopatrzenie biura w artykuły spożywcze i papiernicze",
@@ -910,6 +978,8 @@
     "DateTimePublishedUtc": "2025-10-28T08:00:00Z",
     "DateTimeExpiringUtc": "2026-02-28T18:00:00Z",
     "EmploymentOptionIds": [1, 6],
+    "LocationIds": [4, 7],
+    "ContractTypeIds": [1, 4],
     "Responsibilities": [
       "Pozyskiwanie nowych klientów B2B",
       "Prezentacja oferty handlowej i negocjowanie warunków współpracy",
@@ -937,6 +1007,8 @@
     "DateTimePublishedUtc": "2025-11-18T10:00:00Z",
     "DateTimeExpiringUtc": "2026-02-18T16:00:00Z",
     "EmploymentOptionIds": [1, 3],
+    "LocationIds": [25],
+    "ContractTypeIds": [4],
     "Responsibilities": [
       "Bieżąca obsługa prawna podmiotów gospodarczych",
       "Opiniowanie i sporządzanie umów handlowych",

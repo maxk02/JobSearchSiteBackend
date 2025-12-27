@@ -85,6 +85,7 @@ public class ElasticJobSearchRepository(IElasticClient client) : IJobSearchRepos
         CancellationToken cancellationToken = default)
     {
         var searchResponse = await client.SearchAsync<JobSearchModel>(s => s
+            .Index(IndexName)
             .Source(src => src.
                 Includes(i => i.
                     Field(f => f.Id)
@@ -121,6 +122,7 @@ public class ElasticJobSearchRepository(IElasticClient client) : IJobSearchRepos
     public async Task<ICollection<long>> SearchFromAllAsync(string query, CancellationToken cancellationToken = default)
     {
         var searchResponse = await client.SearchAsync<JobSearchModel>(s => s
+            .Index(IndexName)
             .Source(src => src.
                 Includes(i => i.
                     Field(f => f.Id)
@@ -148,6 +150,7 @@ public class ElasticJobSearchRepository(IElasticClient client) : IJobSearchRepos
         ICollection<long> categoryIds, string query, CancellationToken cancellationToken = default)
     {
         var searchResponse = await client.SearchAsync<JobSearchModel>(s => s
+            .Index(IndexName)
             .Source(src => src.
                 Includes(i => i.
                     Field(f => f.Id)

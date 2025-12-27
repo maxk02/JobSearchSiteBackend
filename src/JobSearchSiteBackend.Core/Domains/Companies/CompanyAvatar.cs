@@ -12,18 +12,18 @@ public class CompanyAvatar : IEntityWithId, IEntityWithGuid, IEntityWithUpdDelDa
         Size = size;
     }
     
-    public long Id { get; private set; }
+    public long Id { get; set; }
     
-    public Guid GuidIdentifier { get; private set; } = Guid.NewGuid();
+    public Guid GuidIdentifier { get; set; } = Guid.NewGuid();
     
     public DateTime DateTimeUpdatedUtc { get; set; }
     public bool IsDeleted { get; set; }
     
     public long? CompanyId { get; set; }
     
-    public string Extension { get; private set; }
+    public string Extension { get; set; }
     
-    public long Size { get; private set; }
+    public long Size { get; set; }
 
     public bool IsUploadedSuccessfully { get; set; }
     

@@ -1,45 +1,5 @@
 [
   {
-    "JobId": 101,
-    "CurrencyId": 1,
-    "Minimum": 18000.00,
-    "Maximum": 26000.00,
-    "UnitOfTime": 4,
-    "IsAfterTaxes": false
-  },
-  {
-    "JobId": 103,
-    "CurrencyId": 1,
-    "Minimum": 12000.00,
-    "Maximum": 18000.00,
-    "UnitOfTime": 4,
-    "IsAfterTaxes": false
-  },
-  {
-    "JobId": 104,
-    "CurrencyId": 1,
-    "Minimum": 9000.00,
-    "Maximum": 13000.00,
-    "UnitOfTime": 4,
-    "IsAfterTaxes": true
-  },
-  {
-    "JobId": 107,
-    "CurrencyId": 1,
-    "Minimum": 29.50,
-    "Maximum": 34.00,
-    "UnitOfTime": 1,
-    "IsAfterTaxes": false
-  },
-  {
-    "JobId": 108,
-    "CurrencyId": 1,
-    "Minimum": 6500.00,
-    "Maximum": 9500.00,
-    "UnitOfTime": 4,
-    "IsAfterTaxes": false
-  },
-  {
     "JobId": 114,
     "CurrencyId": 1,
     "Minimum": 7000.00,

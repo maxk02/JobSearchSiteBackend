@@ -11,13 +11,31 @@
     </ItemGroup>
     
     <ItemGroup>
-        <Content Include=".\Domains\Locations\Seed\locations.json">
+        <Content Include=".\Domains\Companies\Seed\companies.json">
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </Content>
+        <Content Include=".\Domains\Companies\Seed\company_avatars.json">
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </Content>
+        <Content Include=".\Domains\JobFolders\Seed\job_folder_relations.json">
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </Content>
+        <Content Include=".\Domains\JobFolders\Seed\job_folders.json">
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </Content>
+        <Content Include=".\Domains\Jobs\Seed\jobs.json">
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </Content>
+        <Content Include=".\Domains\Jobs\Seed\job_salary_infos.json">
             <CopyToOutputDirectory>Always</CopyToOutputDirectory>
         </Content>
         <Content Include=".\Domains\Locations\Seed\location_relations.json">
             <CopyToOutputDirectory>Always</CopyToOutputDirectory>
         </Content>
         <Content Include=".\Domains\Locations\Seed\locations_search.json">
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </Content>
+        <Content Include=".\Domains\Locations\Seed\locations.json">
             <CopyToOutputDirectory>Always</CopyToOutputDirectory>
         </Content>
     </ItemGroup>

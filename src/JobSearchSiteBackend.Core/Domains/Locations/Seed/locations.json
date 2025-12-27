@@ -12,7 +12,7 @@
 
   { "Id": 11, "CountryId": 1, "Name": "Małopolskie", "IsConcrete": false, "DescriptionPl": "województwo", "Code": null, "FullName": "Małopolskie" },
   { "Id": 12, "CountryId": 1, "Name": "Tatrzański", "IsConcrete": false, "DescriptionPl": "powiat", "Code": null, "FullName": "Tatrzański, Małopolskie" },
-  { "Id": 13, "CountryId": 1, "Name": "Gmina Zakopane", "IsConcrete": false, "DescriptionPl": "gmina", "Code": null, "FullName": "Gmina Zakopane, Tatrzański, Małopolskie" },
+  { "Id": 13, "CountryId": 1, "Name": "Zakopane", "IsConcrete": false, "DescriptionPl": "gmina", "Code": null, "FullName": "Gmina Zakopane, Tatrzański, Małopolskie" },
   { "Id": 14, "CountryId": 1, "Name": "Zakopane", "IsConcrete": true, "DescriptionPl": "miasto", "Code": "34-500", "FullName": "Zakopane, Tatrzański, Małopolskie" },
   { "Id": 15, "CountryId": 1, "Name": "Bukowina Tatrzańska", "IsConcrete": false, "DescriptionPl": "gmina", "Code": null, "FullName": "Gmina Bukowina Tatrzańska, Tatrzański, Małopolskie" },
   { "Id": 16, "CountryId": 1, "Name": "Bukowina Tatrzańska", "IsConcrete": true, "DescriptionPl": "wieś", "Code": "34-530", "FullName": "Bukowina Tatrzańska, Tatrzański, Małopolskie" },

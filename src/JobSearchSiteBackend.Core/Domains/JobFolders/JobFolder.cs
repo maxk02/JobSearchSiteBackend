@@ -15,9 +15,9 @@ public class JobFolder : IEntityWithId, IHierarchicalEntity<JobFolder, JobFolder
         Description = description;
     }
     
-    public long Id { get; private set; }
+    public long Id { get; set; }
     
-    public long CompanyId { get; private set; }
+    public long CompanyId { get; set; }
     
     public string? Name { get; set; }
     

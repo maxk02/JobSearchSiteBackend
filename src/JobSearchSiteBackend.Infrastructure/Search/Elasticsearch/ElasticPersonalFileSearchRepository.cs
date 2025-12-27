@@ -73,6 +73,7 @@ public class ElasticPersonalFileSearchRepository(IElasticClient client) : IPerso
         CancellationToken cancellationToken = default)
     {
         var searchResponse = await client.SearchAsync<PersonalFileSearchModel>(s => s
+            .Index(IndexName)
             .Source(src => src.
                 Includes(i => i.
                     Field(f => f.Id)
@@ -108,6 +109,7 @@ public class ElasticPersonalFileSearchRepository(IElasticClient client) : IPerso
     public async Task<ICollection<long>> SearchFromAllAsync(string query, CancellationToken cancellationToken = default)
     {
         var searchResponse = await client.SearchAsync<PersonalFileSearchModel>(s => s
+            .Index(IndexName)
             .Source(src => src.
                 Includes(i => i.
                     Field(doc => doc.Id)

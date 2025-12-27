@@ -35,13 +35,14 @@ public class SyncJobsWithSearchRunner(MainDataContext dbContext,
 
         await jobSearchRepository.UpsertMultipleAsync(jobSearchModels);
         
-        var dateTimeSyncedUtc = DateTime.UtcNow;
-        
-        foreach (var record in recordsToSync)
-        {
-            record.DateTimeSyncedWithSearchUtc = dateTimeSyncedUtc;
-        }
-        
-        await dbContext.SaveChangesAsync();
+        var idsToUpdate = recordsToSync.Select(x => x.Id).ToList();
+
+        // EXECUTE UPDATE:
+        // This generates a direct SQL UPDATE statement.
+        // It bypasses the ChangeTracker, effectively skipping all SaveChanges interceptors.
+        await dbContext.Jobs
+            .Where(j => idsToUpdate.Contains(j.Id))
+            .ExecuteUpdateAsync(setters => setters
+                .SetProperty(j => j.DateTimeSyncedWithSearchUtc, j => DateTime.UtcNow));
     }
 }

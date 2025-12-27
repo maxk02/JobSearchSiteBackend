@@ -1,0 +1,465 @@
+﻿using JobSearchSiteBackend.Core.Domains.Accounts;
+using JobSearchSiteBackend.Core.Domains.Companies;
+using JobSearchSiteBackend.Core.Domains.EmploymentOptions;
+using JobSearchSiteBackend.Core.Domains.JobApplications;
+using JobSearchSiteBackend.Core.Domains.JobApplications.Enums;
+using JobSearchSiteBackend.Core.Domains.JobFolderClaims;
+using JobSearchSiteBackend.Core.Domains.JobFolders;
+using JobSearchSiteBackend.Core.Domains.Jobs;
+using JobSearchSiteBackend.Core.Domains.Locations;
+using JobSearchSiteBackend.Core.Domains.PersonalFiles;
+using JobSearchSiteBackend.Core.Domains.UserProfiles;
+using JobSearchSiteBackend.Core.Persistence;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
+using Newtonsoft.Json;
+using StackExchange.Redis;
+
+namespace JobSearchSiteBackend.Infrastructure.Persistence.EfCore;
+
+public class MainDataContextSeeder(MainDataContext context,
+    UserManager<MyIdentityUser> userManager, IConfiguration configuration)
+{
+    private record JobSeedingItem(long Id, bool IsPublic, long JobFolderId, long CategoryId, string Title, string? Description,
+        DateTime DateTimePublishedUtc, DateTime DateTimeExpiringUtc, List<long> EmploymentOptionIds, List<long> LocationIds,
+        List<long> ContractTypeIds, List<string> Responsibilities, List<string> Requirements, List<string> NiceToHaves);
+
+    private static string GetFileExtensionFromNumber(int number) => number switch
+    {
+        1 => "docx",
+        2 => "pdf",
+        3 => "odt",
+        _ => throw new ApplicationException()
+    };
+
+    public async Task SeedAllAsync()
+    {
+        await context.Database.EnsureDeletedAsync();
+        await context.Database.EnsureCreatedAsync();
+
+        await SeedCompaniesAsync();
+        await SeedCompanyAvatarsAsync();
+        await SeedLocationsAsync();
+        await SeedLocationRelationsAsync();
+        await SeedJobFoldersAsync();
+        await SeedJobsAsync();
+        await SeedJobSalaryInfosAsync();
+        await SeedUsersWithClaimsAndApplicationsAsync();
+    }
+
+    private async Task SeedLocationsAsync()
+    {       
+        var locations = await SeedFileHelper.LoadJsonAsync<List<Location>>("Domains/Locations/Seed/locations.json");
+
+        if (locations is null || locations.Count == 0)
+            throw new InvalidDataException();
+        
+        context.Locations.AddRange(locations);
+        await context.SaveChangesAsync();
+    }
+    
+    private async Task SeedLocationRelationsAsync()
+    {
+        var relations = await SeedFileHelper.LoadJsonAsync<List<LocationRelation>>("Domains/Locations/Seed/location_relations.json");
+        if (relations is null || relations.Count == 0)
+            throw new InvalidDataException();
+        
+        context.LocationRelations.AddRange(relations);
+        await context.SaveChangesAsync();
+    }
+
+    private async Task SeedCompaniesAsync()
+    {
+        await using var transaction = context.Database.BeginTransaction();
+
+        await context.Database.ExecuteSqlRawAsync("SET IDENTITY_INSERT dbo.Companies ON");
+
+        var companies = await SeedFileHelper.LoadJsonAsync<List<Company>>("Domains/Companies/Seed/companies.json");
+
+        if (companies is null || companies.Count == 0)
+            throw new InvalidDataException();
+
+        var sqlScript = $"INSERT INTO dbo.Companies (Id, CountryId, IsPublic, Name, Description, CountrySpecificFieldsJson, IsDeleted, DateTimeUpdatedUtc) VALUES ";
+
+        for (var i = 0; i < companies.Count; i++)
+        {
+            sqlScript += $"({companies[i].Id}, ";
+            sqlScript += $"{companies[i].CountryId}, ";
+            sqlScript += companies[i].IsPublic ? "1" : "0";
+            sqlScript += ", ";
+            sqlScript += $"\'{companies[i].Name.Replace("\'", "\'\'")}\', ";
+
+            var description = companies[i].Description?.Replace("\'", "\'\'");
+            if (description is null)
+                sqlScript += $"NULL, ";
+            else
+                sqlScript += $"\'{description}\', ";
+
+            sqlScript += $"N\'{{" + companies[i].CountrySpecificFieldsJson + "}\', ";
+
+            sqlScript += "0, GETUTCDATE())";
+
+            if (i < companies.Count - 1)
+                sqlScript += ",\n\n";
+            else
+                sqlScript += ";";
+        }
+
+        await context.Database.ExecuteSqlRawAsync(sqlScript);
+
+        await context.Database.ExecuteSqlRawAsync("SET IDENTITY_INSERT dbo.Companies OFF");
+
+        await context.Database.ExecuteSqlAsync($"DBCC CHECKIDENT (\'dbo.Companies\', RESEED, 1000);");
+
+        await transaction.CommitAsync();
+    }
+
+    private async Task SeedCompanyAvatarsAsync()
+    {
+        await using var transaction = context.Database.BeginTransaction();
+
+        await context.Database.ExecuteSqlRawAsync("SET IDENTITY_INSERT dbo.CompanyAvatars ON");
+
+        var companyAvatars = await SeedFileHelper.LoadJsonAsync<List<CompanyAvatar>>("Domains/Companies/Seed/company_avatars.json");
+
+        if (companyAvatars is null || companyAvatars.Count == 0)
+            throw new InvalidDataException();
+
+        var sqlScript = "INSERT INTO CompanyAvatars (Id, GuidIdentifier, DateTimeUpdatedUtc, IsDeleted, CompanyId, Extension, Size, IsUploadedSuccessfully) VALUES \n";
+
+        for (var i = 0; i < companyAvatars.Count; i++)
+        {
+            sqlScript += $"({companyAvatars[i].Id}, \'{companyAvatars[i].GuidIdentifier}\', GETUTCDATE(), 0, {companyAvatars[i].CompanyId}, \'{companyAvatars[i].Extension}\', 10000000, 1)";
+            if (i < companyAvatars.Count - 1)
+                sqlScript += ",\n";
+            else
+                sqlScript += ";";
+        }
+
+        await context.Database.ExecuteSqlRawAsync(sqlScript);
+
+        await context.Database.ExecuteSqlRawAsync("SET IDENTITY_INSERT dbo.CompanyAvatars OFF");
+
+        await context.Database.ExecuteSqlAsync($"DBCC CHECKIDENT (\'dbo.CompanyAvatars\', RESEED, 1000);");
+
+        await transaction.CommitAsync();
+    }
+
+    private async Task SeedJobFoldersAsync()
+    {
+        await using var transaction = context.Database.BeginTransaction();
+
+        await context.Database.ExecuteSqlRawAsync("SET IDENTITY_INSERT dbo.JobFolders ON");
+
+        var jobFolders = await SeedFileHelper.LoadJsonAsync<List<JobFolder>>("Domains/JobFolders/Seed/job_folders.json");
+
+        if (jobFolders is null || jobFolders.Count == 0)
+            throw new InvalidDataException();
+
+        var sqlScript = "INSERT INTO dbo.JobFolders (Id, CompanyId, Name, Description) VALUES \n";
+
+        for (var i = 0; i < jobFolders.Count; i++)
+        {
+            sqlScript += $"({jobFolders[i].Id}, ";
+
+            sqlScript += $"{jobFolders[i].CompanyId}, ";
+
+            if (jobFolders[i].Name is null)
+                sqlScript += $"NULL, ";
+            else
+                sqlScript += $"\'{jobFolders[i].Name}\', ";
+
+            if (jobFolders[i].Description is null)
+                sqlScript += $"NULL)";
+            else
+                sqlScript += $"\'{jobFolders[i].Description}\')";
+
+            if (i < jobFolders.Count - 1)
+                sqlScript += ",\n\n";
+            else
+                sqlScript += ";";
+        }
+
+        await context.Database.ExecuteSqlRawAsync(sqlScript);
+
+        await context.Database.ExecuteSqlRawAsync("SET IDENTITY_INSERT dbo.JobFolders OFF");
+
+        await context.Database.ExecuteSqlAsync($"DBCC CHECKIDENT (\'dbo.JobFolders\', RESEED, 1000);");
+
+        await transaction.CommitAsync();
+    }
+
+    private async Task SeedJobsAsync()
+    {
+        await using var transaction = context.Database.BeginTransaction();
+
+        await context.Database.ExecuteSqlRawAsync("SET IDENTITY_INSERT dbo.Jobs ON");
+
+        var jobSeedingItems = await SeedFileHelper.LoadJsonAsync<List<JobSeedingItem>>("Domains/Jobs/Seed/jobs.json");
+
+        if (jobSeedingItems is null || jobSeedingItems.Count == 0)
+            throw new InvalidDataException();
+
+        var jobs = new List<Job>();
+
+        var sqlScript = "INSERT INTO Jobs (Id, DateTimeUpdatedUtc, DateTimeSyncedWithSearchUtc, IsDeleted, CategoryId, JobFolderId, Title, Description, DateTimePublishedUtc, DateTimeExpiringUtc, Responsibilities, Requirements, NiceToHaves, IsPublic) VALUES \n";
+
+        var sqlLocationsScript = "INSERT INTO JobLocation (JobsId, LocationsId) VALUES \n";
+
+        var sqlEmploymentOptionsScript = "INSERT INTO EmploymentOptionJob (JobsId, EmploymentOptionsId) VALUES \n";
+
+        var sqlContractTypesScript = "INSERT INTO JobJobContractType (JobsId, JobContractTypesId) VALUES \n";
+
+        for (var i = 0; i < jobSeedingItems.Count; i++)
+        {
+            sqlScript += $"({jobSeedingItems[i].Id}, ";
+            sqlScript += $"GETDATE(), ";
+            sqlScript += $"NULL, ";
+            sqlScript += $"0, ";
+            sqlScript += $"{jobSeedingItems[i].CategoryId}, ";
+            sqlScript += $"{jobSeedingItems[i].JobFolderId}, ";
+            sqlScript += $"\'{jobSeedingItems[i].Title}\', ";
+            if (jobSeedingItems[i].Description is not null)
+                sqlScript += $"\'{jobSeedingItems[i].Description}\', ";
+            else sqlScript += $"NULL, ";
+            sqlScript += $"\'{jobSeedingItems[i].DateTimePublishedUtc.ToString("yyyy-MM-ddTHH:mm:ss.fff")}\', ";
+            sqlScript += $"\'{jobSeedingItems[i].DateTimeExpiringUtc.ToString("yyyy-MM-ddTHH:mm:ss.fff")}\', ";
+            sqlScript += $"N\'" + JsonConvert.SerializeObject(jobSeedingItems[i].Responsibilities) + "\', ";
+            sqlScript += $"N\'" + JsonConvert.SerializeObject(jobSeedingItems[i].Requirements) + "\', ";
+            sqlScript += $"N\'" + JsonConvert.SerializeObject(jobSeedingItems[i].NiceToHaves) + "\', ";
+            sqlScript += "1)";
+
+            if (i < jobSeedingItems.Count - 1)
+                sqlScript += ",\n";
+            else
+                sqlScript += ";";
+
+            for (var l = 0; l < jobSeedingItems[i].LocationIds.Count; l++)
+            {
+                var lId = jobSeedingItems[i].LocationIds[l];
+
+                var location = await context.Locations.FindAsync([lId]);
+
+                if (location is null)
+                    throw new ApplicationException($"Location with id=${lId} not found.");
+
+                sqlLocationsScript += $"({jobSeedingItems[i].Id}, {lId})";
+
+                if (i == jobSeedingItems.Count - 1 && l == jobSeedingItems[i].LocationIds.Count - 1)
+                    sqlLocationsScript += ";";
+                else
+                    sqlLocationsScript += ", \n";
+            }
+
+            for (var eo = 0; eo < jobSeedingItems[i].EmploymentOptionIds.Count; eo++)
+            {
+                var eoId = jobSeedingItems[i].EmploymentOptionIds[eo];
+
+                sqlEmploymentOptionsScript += $"({jobSeedingItems[i].Id}, {eoId})";
+
+                if (i == jobSeedingItems.Count - 1 && eo == jobSeedingItems[i].EmploymentOptionIds.Count - 1)
+                    sqlEmploymentOptionsScript += ";";
+                else
+                    sqlEmploymentOptionsScript += ", \n";
+            }
+            
+            for (var ct = 0; ct < jobSeedingItems[i].ContractTypeIds.Count; ct++)
+            {
+                var ctId = jobSeedingItems[i].ContractTypeIds[ct];
+
+                sqlContractTypesScript += $"({jobSeedingItems[i].Id}, {ctId})";
+
+                if (i == jobSeedingItems.Count - 1 && ct == jobSeedingItems[i].ContractTypeIds.Count - 1)
+                    sqlContractTypesScript += ";";
+                else
+                    sqlContractTypesScript += ", \n";
+            }
+        }
+
+        await context.Database.ExecuteSqlRawAsync(sqlScript);
+        await context.Database.ExecuteSqlRawAsync(sqlLocationsScript);
+        await context.Database.ExecuteSqlRawAsync(sqlEmploymentOptionsScript);
+        await context.Database.ExecuteSqlRawAsync(sqlContractTypesScript);
+
+        await context.Database.ExecuteSqlRawAsync("SET IDENTITY_INSERT dbo.Jobs OFF");
+
+        await context.Database.ExecuteSqlAsync($"DBCC CHECKIDENT (\'dbo.Jobs\', RESEED, 1000);");
+
+        await transaction.CommitAsync();
+    }
+
+    private async Task SeedJobSalaryInfosAsync()
+    {
+        var jobSalaryInfoSeedingItems = await SeedFileHelper.LoadJsonAsync<List<JobSalaryInfo>>("Domains/Jobs/Seed/job_salary_infos.json");
+
+        if (jobSalaryInfoSeedingItems is null || jobSalaryInfoSeedingItems.Count == 0)
+            throw new InvalidDataException();
+        
+        context.JobSalaryInfos.AddRange(jobSalaryInfoSeedingItems);
+        await context.SaveChangesAsync();
+    }
+
+    private async Task SeedUsersWithClaimsAndApplicationsAsync()
+    {
+        // global admin
+        var user1FromDb = await userManager.FindByEmailAsync("admin@transworld.pl");
+
+        if (user1FromDb is null)
+        {
+            var user1 = new MyIdentityUser { UserName = "admin@transworld.pl", Email = "admin@transworld.pl" };
+        
+            var aspNetIdentityResult1 = await userManager
+                .CreateAsync(user1, configuration["admin_at_transworld.pl_USER_PASSWORD"] ?? throw new ApplicationException());
+
+            if (!aspNetIdentityResult1.Succeeded)
+                throw new ApplicationException(string.Join(",", aspNetIdentityResult1.Errors.Select(e => e.Description)));
+
+            long user1Id = user1.Id;
+
+            var newUser1Profile = new UserProfile(user1Id, "Administrator",
+                "Firmy", null, true);
+
+            context.UserProfiles.Add(newUser1Profile);
+            await context.SaveChangesAsync();
+
+            List<JobFolderClaim> jobFolderClaims = JobFolderClaim.AllValues.ToList();
+
+            var user1JobFolderClaims = jobFolderClaims
+                .Select(x => new UserJobFolderClaim(user1Id, 4, x.Id))
+                .ToList();
+
+            context.UserJobFolderClaims.AddRange(user1JobFolderClaims);
+
+            await context.SaveChangesAsync();
+        }
+
+        // branch admin
+        var user2FromDb = await userManager.FindByEmailAsync("branch_admin@transworld.pl");
+
+        if (user2FromDb is null)
+        {
+            var user2 = new MyIdentityUser { UserName = "branch_admin@transworld.pl", Email = "branch_admin@transworld.pl" };
+        
+            var aspNetIdentityResult2 = await userManager
+                .CreateAsync(user2, configuration["branch_admin_at_transworld.pl_USER_PASSWORD"] ?? throw new ApplicationException());
+
+            if (!aspNetIdentityResult2.Succeeded)
+                throw new ApplicationException();
+
+            long user2Id = user2.Id;
+
+            var newUser2Profile = new UserProfile(user2Id, "Administrator",
+                "Działu", null, true);
+
+            context.UserProfiles.Add(newUser2Profile);
+            await context.SaveChangesAsync();
+
+            List<JobFolderClaim> jobFolderClaims = [
+                JobFolderClaim.CanReadJobs,
+                JobFolderClaim.CanReadStats,
+                JobFolderClaim.CanManageApplications,
+                JobFolderClaim.CanEditJobs,
+                JobFolderClaim.CanEditInfo,
+                JobFolderClaim.IsAdmin
+            ];
+
+            var user2JobFolderClaims = jobFolderClaims
+                .Select(x => new UserJobFolderClaim(user2Id, 21, x.Id))
+                .ToList();
+
+            context.UserJobFolderClaims.AddRange(user2JobFolderClaims);
+
+            await context.SaveChangesAsync();
+        }
+
+        // branch application reviewer
+        var user3FromDb = await userManager.FindByEmailAsync("branch_application_reviewer@transworld.pl");
+
+        if (user3FromDb is null)
+        {
+            var user3 = new MyIdentityUser { UserName = "branch_application_reviewer@transworld.pl",
+                Email = "branch_application_reviewer@transworld.pl" };
+        
+            var aspNetIdentityResult3 = await userManager
+                .CreateAsync(user3, configuration["branch_application_reviewer_at_transworld.pl_USER_PASSWORD"] ?? throw new ApplicationException());
+
+            if (!aspNetIdentityResult3.Succeeded)
+                throw new ApplicationException();
+
+            long user3Id = user3.Id;
+
+            var newUser3Profile = new UserProfile(user3Id, "Specjalista HR",
+                "Niższego Działu", null, true);
+
+            context.UserProfiles.Add(newUser3Profile);
+
+            List<JobFolderClaim> jobFolderClaims = [
+                JobFolderClaim.CanReadJobs,
+                JobFolderClaim.CanReadStats,
+                JobFolderClaim.CanManageApplications
+            ];
+
+            var user3JobFolderClaims = jobFolderClaims
+                .Select(x => new UserJobFolderClaim(user3Id, 22, x.Id))
+                .ToList();
+
+            context.UserJobFolderClaims.AddRange(user3JobFolderClaims);
+
+            await context.SaveChangesAsync();
+        }
+
+        // users that send applications
+        for (var i = 0; i < 50; i++)
+        {
+            var userFromDb = await userManager.FindByEmailAsync($"sample_user_{i}@znajdzprace.pl");
+
+            if (userFromDb is not null)
+                continue;
+
+            var sampleUser = new MyIdentityUser { UserName = $"sample_user_{i}@znajdzprace.pl", Email = $"sample_user_{i}@znajdzprace.pl" };
+        
+            var aspNetIdentitySampleUserResult = await userManager
+                .CreateAsync(sampleUser, configuration["SAMPLE_USER_PASSWORD"] ?? throw new ApplicationException());
+
+            if (!aspNetIdentitySampleUserResult.Succeeded)
+                throw new ApplicationException();
+
+            var sampleUserProfile = new UserProfile(sampleUser.Id, "Użytkownik",
+                $"Numer {i}", null, true);
+
+            context.UserProfiles.Add(sampleUserProfile);
+            await context.SaveChangesAsync();
+
+            // add 1-3 files for each and then job applications with them
+            var random = new Random();
+            var randFileNumber = random.Next(1, 5);
+            List<PersonalFile> personalFilesToAddApplicationWith = [];
+
+            for (var f = 0; f < randFileNumber; f++)
+            {
+                var randFileExtensionNumber = random.Next(1, 4);
+                var randFileSizeInBytes = random.Next(1048576, 10485761);
+
+                var fileText = f switch
+                {
+                    12 => "wózek widłowy",
+                    20 => "wózek widłowy UDT, prawo jazdy kat. B",
+                    24 => "UDT",
+                    _ => ""
+                };
+
+                var personalFile = new PersonalFile(sampleUser.Id, $"plik_{f}",
+                    GetFileExtensionFromNumber(randFileExtensionNumber), randFileSizeInBytes, fileText);
+
+                context.PersonalFiles.Add(personalFile);
+                personalFilesToAddApplicationWith.Add(personalFile);
+            }
+
+            var jobApplication = new JobApplication(sampleUser.Id, 117, 7, JobApplicationStatus.Submitted);
+            context.JobApplications.Add(jobApplication);
+
+            await context.SaveChangesAsync();
+        }
+    }
+}

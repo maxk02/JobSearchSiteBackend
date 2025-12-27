@@ -11,8 +11,9 @@ public class SyncTextFilesWithSearchRunner(MainDataContext dbContext,
     public async Task Run()
     {
         var recordsToSync = await dbContext.PersonalFiles
-            .Where(c => c.DateTimeSyncedWithSearchUtc == null
-                        || c.DateTimeSyncedWithSearchUtc < c.DateTimeUpdatedUtc)
+            .Where(pf => pf.IsUploadedSuccessfully)
+            .Where(pf => pf.DateTimeSyncedWithSearchUtc == null
+                        || pf.DateTimeSyncedWithSearchUtc < pf.DateTimeUpdatedUtc)
             .ToListAsync();
         
         if (recordsToSync.Count == 0)
@@ -29,13 +30,14 @@ public class SyncTextFilesWithSearchRunner(MainDataContext dbContext,
 
         await personalFileSearchRepository.UpsertMultipleAsync(personalFileSearchModels);
 
-        var dateTimeSyncedUtc = DateTime.UtcNow;
+        var idsToUpdate = recordsToSync.Select(x => x.Id).ToList();
 
-        foreach (var record in recordsToSync)
-        {
-            record.DateTimeSyncedWithSearchUtc = dateTimeSyncedUtc;
-        }
-        
-        await dbContext.SaveChangesAsync();
+        // EXECUTE UPDATE:
+        // This generates a direct SQL UPDATE statement.
+        // It bypasses the ChangeTracker, effectively skipping all SaveChanges interceptors.
+        await dbContext.PersonalFiles
+            .Where(pf => idsToUpdate.Contains(pf.Id))
+            .ExecuteUpdateAsync(setters => setters
+                .SetProperty(pf => pf.DateTimeSyncedWithSearchUtc, pf => DateTime.UtcNow));
     }
 }
