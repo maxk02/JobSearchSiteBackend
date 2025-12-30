@@ -33,9 +33,9 @@ public class GetJobHandler(
             .ThenInclude(c => c!.CompanyAvatars)
             .Include(job => job.SalaryInfo)
             .Include(job => job.EmploymentOptions)
-            .Include(job => job.Responsibilities)
-            .Include(job => job.Requirements)
-            .Include(job => job.NiceToHaves)
+            // .Include(job => job.Responsibilities)
+            // .Include(job => job.Requirements)
+            // .Include(job => job.NiceToHaves)
             .Include(job => job.JobContractTypes)
             .Include(job => job.Locations);
 
@@ -78,7 +78,7 @@ public class GetJobHandler(
 
         if (avatar is not null)
         {
-            avatarLink = await fileStorageService.GetDownloadUrlAsync(FileStorageBucketName.UserAvatars, 
+            avatarLink = await fileStorageService.GetDownloadUrlAsync(FileStorageBucketName.CompanyAvatars, 
                 avatar.GuidIdentifier, avatar.Extension, cancellationToken);
         }
         

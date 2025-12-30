@@ -12,6 +12,17 @@ public class ElasticPersonalFileSearchRepository(IElasticClient client) : IPerso
     {
         // Create index if not exists
         var existsResponse = await client.Indices.ExistsAsync(IndexName);
+
+        if (existsResponse.Exists)
+        {
+            var deleteResponse = await client.Indices.DeleteAsync(IndexName);
+
+            if (!deleteResponse.IsValid)
+            {
+                throw new Exception($"Failed to delete index: {deleteResponse.DebugInformation}");
+            }
+        }
+
         if (!existsResponse.Exists)
         {
             await CreateIndexAsync();
@@ -37,9 +48,30 @@ public class ElasticPersonalFileSearchRepository(IElasticClient client) : IPerso
 
     public async Task CreateIndexAsync(CancellationToken cancellationToken = default)
     {
-        await client.Indices.CreateAsync(
+        var createResponse = await client.Indices.CreateAsync(
             IndexName,
             index => index
+                .Settings(s => s
+                    .Analysis(a => a
+                        .Tokenizers(t => t
+                            .EdgeNGram("autocomplete_tokenizer", e => e
+                                .MinGram(2)
+                                .MaxGram(20)
+                                .TokenChars(TokenChar.Letter, TokenChar.Digit)
+                            )
+                        )
+                        .Analyzers(an => an
+                            .Custom("autocomplete_analyzer", ca => ca
+                                .Tokenizer("autocomplete_tokenizer")
+                                .Filters("lowercase") // Ensure case-insensitivity
+                            )
+                            .Custom("search_analyzer", ca => ca
+                                .Tokenizer("standard")
+                                .Filters("lowercase")
+                            )
+                        )
+                    )
+                )
                 .Map<PersonalFileSearchModel>(map => map
                     .Properties(properties => properties
                         .Number(num => num
@@ -48,6 +80,8 @@ public class ElasticPersonalFileSearchRepository(IElasticClient client) : IPerso
                         )
                         .Text(t => t
                             .Name(n => n.Text)
+                            .Analyzer("autocomplete_analyzer") // Index partial words
+                            .SearchAnalyzer("search_analyzer") // Search using whole words
                         )
                         .Date(d => d
                             .Name(n => n.DateTimeUpdatedUtc)
@@ -61,6 +95,9 @@ public class ElasticPersonalFileSearchRepository(IElasticClient client) : IPerso
                 ),
             cancellationToken
         );
+
+        if (!createResponse.IsValid)
+            throw new ApplicationException();
     }
 
     public async Task<bool> CheckIndexExistenceAsync(CancellationToken cancellationToken = default)

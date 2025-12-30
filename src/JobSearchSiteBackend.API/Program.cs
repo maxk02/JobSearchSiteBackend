@@ -5,6 +5,9 @@ using Hangfire;
 using JobSearchSiteBackend.API.Middleware;
 using JobSearchSiteBackend.API.Services;
 using JobSearchSiteBackend.Core;
+using JobSearchSiteBackend.Core.Domains.Jobs.Search;
+using JobSearchSiteBackend.Core.Domains.Locations.Search;
+using JobSearchSiteBackend.Core.Domains.PersonalFiles.Search;
 using JobSearchSiteBackend.Core.Persistence;
 using JobSearchSiteBackend.Core.Services.Auth;
 using JobSearchSiteBackend.Core.Services.Cookies;
@@ -14,6 +17,7 @@ using JobSearchSiteBackend.Infrastructure.BackgroundJobs;
 using JobSearchSiteBackend.Infrastructure.Persistence.EfCore;
 using JobSearchSiteBackend.Shared.MyAppSettings;
 using JobSearchSiteBackend.Shared.MyAppSettings.Email;
+using Microsoft.EntityFrameworkCore.Infrastructure.Internal;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -98,17 +102,15 @@ builder.WebHost.ConfigureKestrel(options =>
 
 var app = builder.Build();
 
+// Getting assembly by some type
+var infrastructureAssembly = typeof(JobSearchSiteBackend.Infrastructure.ServiceExtensions).Assembly;
 
 // Implemented search repo types
-var searchRepositories = Assembly.GetExecutingAssembly()
-    .GetTypes()
-    .Where(type => 
-        type.IsClass && 
-        !type.IsAbstract && 
-        type.GetInterfaces().Any(i => 
-            i.IsGenericType && 
-            i.GetGenericTypeDefinition() == typeof(ISearchRepository<>)))
-    .ToList();
+List<Type> searchRepositories = [
+    typeof(IJobSearchRepository),
+    typeof(ILocationSearchRepository),
+    typeof(IPersonalFileSearchRepository),
+];
 
 // Seeding
 using (var scope = app.Services.CreateScope())
@@ -122,23 +124,9 @@ using (var scope = app.Services.CreateScope())
     // ElasticSearch
     foreach (var repoType in searchRepositories)
     {
-        try
-        {
-            var interfaceType = repoType.GetInterfaces()
-                .First(i => i.IsGenericType && 
-                            i.GetGenericTypeDefinition() == typeof(ISearchRepository<>));
-            var genericArg = interfaceType.GetGenericArguments()[0];
-            var genericInterfaceType = typeof(ISearchRepository<>).MakeGenericType(genericArg);
-            var repository = services.GetRequiredService(genericInterfaceType);
+        var repository = services.GetRequiredService(repoType);
                 
-            await ((dynamic)repository).SeedAsync();
-            Console.WriteLine($"Seeded {repoType.Name} successfully");
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine($"Error seeding {repoType.Name}: {ex.Message}");
-            throw;
-        }
+        await ((dynamic)repository).SeedAsync();
     }
 }
 
@@ -147,15 +135,8 @@ using (var scope = app.Services.CreateScope())
 {
     var services = scope.ServiceProvider;
 
-    try
-    {
-        var registerer = services.GetRequiredService<IRecurringJobRegisterer>();
-        await registerer.RegisterJobsAsync();
-    }
-    catch (Exception ex)
-    {
-        throw;
-    }
+    var registerer = services.GetRequiredService<IRecurringJobRegisterer>();
+    await registerer.RegisterJobsAsync();
 }
 
 // Configure the HTTP request pipeline.

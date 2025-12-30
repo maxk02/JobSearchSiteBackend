@@ -85,8 +85,8 @@ public class GetCompanyJobsHandler(
                         j.Locations!
                             .Select(l => new LocationDto(l.Id, l.CountryId, l.FullName, l.DescriptionPl, l.Code)),
                         j.Title, j.DateTimePublishedUtc, j.DateTimeExpiringUtc,
-                        new JobSalaryInfoDto(j.SalaryInfo!.Minimum, j.SalaryInfo.Maximum,
-                            j.SalaryInfo.CurrencyId, j.SalaryInfo.UnitOfTime, j.SalaryInfo.IsAfterTaxes),
+                        j.SalaryInfo != null ? new JobSalaryInfoDto(j.SalaryInfo!.Minimum, j.SalaryInfo.Maximum,
+                            j.SalaryInfo.CurrencyId, j.SalaryInfo.UnitOfTime, j.SalaryInfo.IsAfterTaxes) : null,
                         j.JobContractTypes!.Select(jct => jct.Id),
                         j.EmploymentOptions!.Select(eo => eo.Id),
                         j.JobFolder!.Company!.CompanyAvatars!,
@@ -127,7 +127,7 @@ public class GetCompanyJobsHandler(
 
         if (avatar is not null)
         {
-            avatarLink = await fileStorageService.GetDownloadUrlAsync(FileStorageBucketName.UserAvatars,
+            avatarLink = await fileStorageService.GetDownloadUrlAsync(FileStorageBucketName.CompanyAvatars,
                 avatar.GuidIdentifier, avatar.Extension, cancellationToken);
         }
 

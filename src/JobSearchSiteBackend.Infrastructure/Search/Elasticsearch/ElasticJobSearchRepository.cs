@@ -12,10 +12,18 @@ public class ElasticJobSearchRepository(IElasticClient client) : IJobSearchRepos
     {
         // Create index if not exists
         var existsResponse = await client.Indices.ExistsAsync(IndexName);
-        if (!existsResponse.Exists)
+
+        if (existsResponse.Exists)
         {
-            await CreateIndexAsync();
+            var deleteResponse = await client.Indices.DeleteAsync(IndexName);
+
+            if (!deleteResponse.IsValid)
+            {
+                throw new Exception($"Failed to delete index: {deleteResponse.DebugInformation}");
+            }
         }
+
+        await CreateIndexAsync();
     }
     
     public async Task UpsertMultipleAsync(ICollection<JobSearchModel> searchModels,
@@ -37,9 +45,30 @@ public class ElasticJobSearchRepository(IElasticClient client) : IJobSearchRepos
 
     public async Task CreateIndexAsync(CancellationToken cancellationToken = default)
     {
-        await client.Indices.CreateAsync(
+        var createResponse = await client.Indices.CreateAsync(
             IndexName,
             index => index
+                .Settings(s => s
+                    .Analysis(a => a
+                        .Tokenizers(t => t
+                            .EdgeNGram("autocomplete_tokenizer", e => e
+                                .MinGram(2)
+                                .MaxGram(20)
+                                .TokenChars(TokenChar.Letter, TokenChar.Digit)
+                            )
+                        )
+                        .Analyzers(an => an
+                            .Custom("autocomplete_analyzer", ca => ca
+                                .Tokenizer("autocomplete_tokenizer")
+                                .Filters("lowercase") // Ensure case-insensitivity
+                            )
+                            .Custom("search_analyzer", ca => ca
+                                .Tokenizer("standard")
+                                .Filters("lowercase")
+                            )
+                        )
+                    )
+                )
                 .Map<JobSearchModel>(map => map
                     .Properties(properties => properties
                         .Number(num => num
@@ -48,18 +77,28 @@ public class ElasticJobSearchRepository(IElasticClient client) : IJobSearchRepos
                         )
                         .Text(t => t
                             .Name(n => n.Title)
+                            .Analyzer("autocomplete_analyzer") // Index partial words
+                            .SearchAnalyzer("search_analyzer") // Search using whole words
                         )
                         .Text(t => t
                             .Name(n => n.Description)
+                            .Analyzer("autocomplete_analyzer") // Index partial words
+                            .SearchAnalyzer("search_analyzer") // Search using whole words
                         )
                         .Text(t => t
                             .Name(n => n.Responsibilities)
+                            .Analyzer("autocomplete_analyzer") // Index partial words
+                            .SearchAnalyzer("search_analyzer") // Search using whole words
                         )
                         .Text(t => t
                             .Name(n => n.Requirements)
+                            .Analyzer("autocomplete_analyzer") // Index partial words
+                            .SearchAnalyzer("search_analyzer") // Search using whole words
                         )
                         .Text(t => t
                             .Name(n => n.NiceToHaves)
+                            .Analyzer("autocomplete_analyzer") // Index partial words
+                            .SearchAnalyzer("search_analyzer") // Search using whole words
                         )
                         .Date(d => d
                             .Name(n => n.DateTimeUpdatedUtc)
@@ -73,6 +112,9 @@ public class ElasticJobSearchRepository(IElasticClient client) : IJobSearchRepos
                 ),
             cancellationToken
         );
+
+        if (!createResponse.IsValid)
+            throw new ApplicationException();
     }
 
     public async Task<bool> CheckIndexExistenceAsync(CancellationToken cancellationToken = default)
@@ -104,6 +146,7 @@ public class ElasticJobSearchRepository(IElasticClient client) : IJobSearchRepos
                             .Query(query)
                             .Type(TextQueryType.BestFields)
                             .Fields("*")
+                            .Fuzziness(Fuzziness.Auto)
                         )
                     )
                 )

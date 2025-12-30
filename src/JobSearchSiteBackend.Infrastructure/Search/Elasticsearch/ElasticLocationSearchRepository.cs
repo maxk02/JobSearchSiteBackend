@@ -1,4 +1,5 @@
-﻿using JobSearchSiteBackend.Core.Domains.Locations.Search;
+﻿using Elasticsearch.Net;
+using JobSearchSiteBackend.Core.Domains.Locations.Search;
 using Nest;
 
 namespace JobSearchSiteBackend.Infrastructure.Search.Elasticsearch;
@@ -11,8 +12,8 @@ public class ElasticLocationSearchRepository(IElasticClient client) : ILocationS
     {
         var locations = await SeedFileHelper
             .LoadJsonAsync<List<LocationSearchModel>>("Domains/Locations/Seed/locations_search.json");
-        if (locations is null)
-            return;
+        if (locations is null || locations.Count == 0)
+            throw new InvalidDataException();
 
         // Create index if not exists
         var existsResponse = await client.Indices.ExistsAsync(IndexName);
@@ -21,36 +22,44 @@ public class ElasticLocationSearchRepository(IElasticClient client) : ILocationS
             await CreateIndexAsync();
         }
 
-        // Bulk index locations
-        var bulkRequest = new BulkRequest(IndexName)
-        {
-            Operations = new List<IBulkOperation>()
-        };
-
-        foreach (var location in locations)
-        {
-            bulkRequest.Operations.Add(new BulkIndexOperation<LocationSearchModel>(location)
-            {
-                Id = location.Id.ToString()
-            });
-        }
-
-        var bulkResponse = await client.BulkAsync(bulkRequest);
-
-        if (bulkResponse.Errors)
-        {
-            foreach (var item in bulkResponse.ItemsWithErrors)
-            {
-                Console.WriteLine($"Failed to index document {item.Id}: {item.Error}");
-            }
-        }
+        var response = await client.BulkAsync(b => b
+            .Index(IndexName)
+            // .Refresh(Refresh.WaitFor)
+            .UpdateMany(locations, (ud, p) => ud
+                .Id(p.Id)
+                .Doc(p)
+                .DocAsUpsert(true)));
+        
+        if (!response.IsValid)
+            throw new ApplicationException();
     }
 
     public async Task CreateIndexAsync(CancellationToken cancellationToken = default)
     {
-        await client.Indices.CreateAsync(
+        var result = await client.Indices.CreateAsync(
             IndexName,
             index => index
+                .Settings(s => s
+                    .Analysis(a => a
+                        .Tokenizers(t => t
+                            .EdgeNGram("autocomplete_tokenizer", e => e
+                                .MinGram(2)
+                                .MaxGram(20)
+                                .TokenChars(TokenChar.Letter, TokenChar.Digit)
+                            )
+                        )
+                        .Analyzers(an => an
+                            .Custom("autocomplete_analyzer", ca => ca
+                                .Tokenizer("autocomplete_tokenizer")
+                                .Filters("lowercase") // Ensure case-insensitivity
+                            )
+                            .Custom("search_analyzer", ca => ca
+                                .Tokenizer("standard")
+                                .Filters("lowercase")
+                            )
+                        )
+                    )
+                )
                 .Map<LocationSearchModel>(map => map
                     .Properties(properties => properties
                         .Number(num => num
@@ -63,6 +72,8 @@ public class ElasticLocationSearchRepository(IElasticClient client) : ILocationS
                         )
                         .Text(t => t
                             .Name(n => n.FullName)
+                            .Analyzer("autocomplete_analyzer") // Index partial words
+                            .SearchAnalyzer("search_analyzer") // Search using whole words
                         )
                         .Text(t => t
                             .Name(n => n.Description)
@@ -78,6 +89,9 @@ public class ElasticLocationSearchRepository(IElasticClient client) : ILocationS
                 ),
             cancellationToken
         );
+
+        if (!result.IsValid)
+            throw new ApplicationException();
     }
 
     public async Task<bool> CheckIndexExistenceAsync(CancellationToken cancellationToken = default)
@@ -91,11 +105,11 @@ public class ElasticLocationSearchRepository(IElasticClient client) : ILocationS
     {
         var searchResponse = await client.SearchAsync<LocationSearchModel>(s => s
             .Index(IndexName)
-            .Source(src => src.
-                Includes(i => i.
-                    Field(f => f.Id)
-                )
-            )
+            // .Source(src => src.
+            //     Includes(i => i.
+            //         Field(f => f.Id)
+            //     )
+            // )
             .Query(q => q
                 .Bool(b => b
                     .Filter(f => f
@@ -128,11 +142,11 @@ public class ElasticLocationSearchRepository(IElasticClient client) : ILocationS
     {
         var searchResponse = await client.SearchAsync<LocationSearchModel>(s => s
                 .Index(IndexName)
-                .Source(src => src.
-                    Includes(i => i.
-                        Field(f => f.Id)
-                    )
-                )
+                // .Source(src => src.
+                //     Includes(i => i.
+                //         Field(f => f.Id)
+                //     )
+                // )
                 .Query(q => q
                     .MultiMatch(mm => mm
                         .Query(query)
@@ -154,29 +168,26 @@ public class ElasticLocationSearchRepository(IElasticClient client) : ILocationS
     public async Task<ICollection<LocationSearchModel>> SearchFromCountryIdAsync(long countryId, string query,
         int size, CancellationToken cancellationToken = default)
     {
+        await client.Indices.RefreshAsync(IndexName);
+
         var searchResponse = await client.SearchAsync<LocationSearchModel>(s => s
                 .Index(IndexName)
-                .Source(src => src.
-                    Includes(i => i.
-                        Field(f => f.Id)
-                    )
-                )
                 .Query(q => q
                     .Bool(b => b
                         .Filter(f => f
-                            .Term(t => t.CountryId, countryId)
+                            .Term(t => t
+                                .Field(model => model.CountryId)
+                                .Value(countryId)
+                            )
                         )
                         .Must(m => m
-                            .MultiMatch(mm => mm
+                            .Match(m => m
+                                .Field(f => f.FullName) // single field
                                 .Query(query)
-                                .Type(TextQueryType.BestFields)
-                                .Fields("*")
+                                .Fuzziness(Fuzziness.Auto)
                             )
                         )
                     )
-                )
-                .Sort(sort => sort
-                    .Descending(SortSpecialField.Score)
                 )
                 .Size(size), 
             cancellationToken

@@ -151,8 +151,7 @@ public static class ServiceExtensions
 
             var node = new Uri(uri);
             var connectionPool = new SingleNodeConnectionPool(node);
-            var connectionSettings = new ConnectionSettings(connectionPool)
-                .BasicAuthentication(username, password);
+            var connectionSettings = new ConnectionSettings(connectionPool);
 
             var client = new ElasticClient(connectionSettings);
             return client;
@@ -209,13 +208,14 @@ public static class ServiceExtensions
         var options = new ConfigurationOptions
         {
             // Use your Redis server endpoint and port
-            EndPoints = { { configuration["REDIS_HOST"] ?? throw new NullReferenceException(), 6379 } }, 
+            EndPoints = { { configuration["REDIS_HOST"] ?? throw new NullReferenceException(),
+                int.Parse(configuration["REDIS_PORT"] ?? throw new NullReferenceException()) } }, 
     
             // 2. Enable TLS/SSL for encrypted communication
-            Ssl = true, 
+            Ssl = false, 
     
             // Optionally specify the TLS version (recommended: Tls12 or Tls13)
-            SslProtocols = SslProtocols.Tls12, 
+            // SslProtocols = SslProtocols.Tls12, 
     
             // 3. Provide Authentication
             // Use the password set in your redis.conf (requirepass) 
