@@ -16,7 +16,7 @@ namespace JobSearchSiteBackend.API.Controllers.CompanyClaims;
 public class CompanyClaimsController(IMapper mapper) : ControllerBase
 {
     [HttpGet]
-    [Route("/company/{companyId:long:min(1)}/user/{userId:long:min(1)}/claim-ids")]
+    [Route("company/{companyId:long:min(1)}/user/{userId:long:min(1)}/claim-ids")]
     public async Task<ActionResult<GetCompanyClaimIdsForUserResponse>> GetCompanyClaimIdsForUser(
         [FromRoute] long companyId,
         [FromRoute] long userId,
@@ -31,7 +31,7 @@ public class CompanyClaimsController(IMapper mapper) : ControllerBase
     }
     
     [HttpGet]
-    [Route("/company/{companyId:long:min(1)}")]
+    [Route("company/{companyId:long:min(1)}")]
     public async Task<ActionResult<GetCompanyClaimsOverviewResponse>> GetCompanyClaimsOverview(
         [FromRoute] long companyId,
         [FromQuery] GetCompanyClaimsOverviewRequest request,
@@ -47,7 +47,7 @@ public class CompanyClaimsController(IMapper mapper) : ControllerBase
     }
     
     [HttpPut]
-    [Route("/company/{companyId:long:min(1)}/user/{userId:long:min(1)}/claim-ids")]
+    [Route("company/{companyId:long:min(1)}/user/{userId:long:min(1)}/claim-ids")]
     public async Task<ActionResult> UpdateCompanyClaimIdsForUser(
         [FromRoute] long companyId,
         [FromRoute] long userId,

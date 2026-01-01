@@ -1,6 +1,7 @@
 ﻿using Ardalis.Result;
 using Ardalis.Result.AspNetCore;
 using AutoMapper;
+using JobSearchSiteBackend.API.Attributes;
 using JobSearchSiteBackend.API.Controllers.UserProfiles.Dtos;
 using JobSearchSiteBackend.Core.Domains._Shared.Pagination;
 using JobSearchSiteBackend.Core.Domains.UserProfiles.UseCases.AddJobBookmark;
@@ -107,6 +108,7 @@ public class UserProfilesController(IMapper mapper) : ControllerBase
     
     [HttpGet]
     [Route("current")]
+    [AllowUnconfirmedEmail]
     public async Task<ActionResult<GetUserProfileResponse>> GetUserProfile(
         [FromServices] GetUserProfileHandler handler,
         CancellationToken cancellationToken)

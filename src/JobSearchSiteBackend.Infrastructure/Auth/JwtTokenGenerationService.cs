@@ -25,7 +25,7 @@ public class JwtTokenGenerationService(IConfiguration configuration) : IJwtToken
         }
         
         List<Claim> claims = [
-            new(JwtRegisteredClaimNames.Sub, accountData.Id.ToString()),
+            new(ClaimTypes.NameIdentifier, accountData.Id.ToString()),
             new(JwtRegisteredClaimNames.Jti, newTokenId.ToString()),
             new("EmailConfirmed", accountData.EmailConfirmed.ToString().ToLower())
         ];

@@ -19,7 +19,7 @@ public class JwtCurrentAccountService(IHttpContextAccessor httpContextAccessor) 
 
     public long? GetId()
     {
-        string? userIdString = httpContextAccessor.HttpContext?.User.FindFirstValue(JwtRegisteredClaimNames.Sub);
+        string? userIdString = httpContextAccessor.HttpContext?.User.FindFirstValue(ClaimTypes.NameIdentifier);
 
         if (string.IsNullOrEmpty(userIdString))
             return null;

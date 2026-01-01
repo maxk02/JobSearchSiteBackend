@@ -6,7 +6,7 @@ namespace JobSearchSiteBackend.Infrastructure.Search.Elasticsearch;
 
 public class ElasticPersonalFileSearchRepository(IElasticClient client) : IPersonalFileSearchRepository
 {
-    public string IndexName => "personalFiles";
+    public string IndexName => "personal_files";
     
     public async Task SeedAsync()
     {
@@ -23,10 +23,7 @@ public class ElasticPersonalFileSearchRepository(IElasticClient client) : IPerso
             }
         }
 
-        if (!existsResponse.Exists)
-        {
-            await CreateIndexAsync();
-        }
+        await CreateIndexAsync();
     }
 
     public async Task UpsertMultipleAsync(ICollection<PersonalFileSearchModel> searchModels,

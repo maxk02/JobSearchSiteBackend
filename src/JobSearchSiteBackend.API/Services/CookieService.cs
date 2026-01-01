@@ -17,8 +17,9 @@ public class CookieService(IHttpContextAccessor httpContextAccessor) : ICookieSe
             new CookieOptions
             {
                 HttpOnly = true,
-                Secure = true,
-                SameSite = SameSiteMode.None
+                Secure = false,
+                SameSite = SameSiteMode.Lax,
+                Path = "/"
             }
         );
     }

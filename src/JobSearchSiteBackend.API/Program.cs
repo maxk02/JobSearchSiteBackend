@@ -49,10 +49,10 @@ builder.Services.AddControllers()
         options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
     });
 
-builder.Services.AddAntiforgery(options =>
-{
-    options.HeaderName = "X-CSRF-TOKEN";
-});
+// builder.Services.AddAntiforgery(options =>
+// {
+//     options.HeaderName = "X-CSRF-TOKEN";
+// });
 
 builder.Services.AddCors(options =>
 {
@@ -60,6 +60,18 @@ builder.Services.AddCors(options =>
     {
         policyBuilder
             .WithOrigins("http://localhost:3000")
+            .AllowAnyMethod()
+            .AllowAnyHeader()
+            .AllowCredentials();
+    });
+});
+
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAll", policy =>
+    {
+        policy
+            .SetIsOriginAllowed(_ => true) // allow any origin dynamically
             .AllowAnyMethod()
             .AllowAnyHeader()
             .AllowCredentials();
@@ -80,9 +92,9 @@ builder.Services.AddScoped<ICurrentAccountService, JwtCurrentAccountService>();
 builder.Services.AddAutoMapper(Assembly.GetExecutingAssembly());
 
 // Infrastructure services
+builder.Services.ConfigurePersistenceWithIdentity(builder.Configuration);
 builder.Services.ConfigureJwtAuthentication(builder.Configuration);
 builder.Services.ConfigureJwtTokenGeneration();
-builder.Services.ConfigurePersistenceWithIdentity(builder.Configuration);
 builder.Services.ConfigureMemoryCache(builder.Configuration);
 builder.Services.ConfigureBackgroundJobScheduler(builder.Configuration);
 builder.Services.ConfigureFileStorage(builder.Configuration);
@@ -145,11 +157,31 @@ if (app.Environment.IsDevelopment())
     app.MapOpenApi();
 }
 
+app.Use(async (context, next) =>
+{
+    try
+    {
+        await next();
+    }
+    catch (Exception ex)
+    {
+        // Log the error to the console immediately
+        Console.WriteLine($"CRITICAL ERROR: {ex.Message}");
+        Console.WriteLine(ex.StackTrace);
+
+        // Re-throw so the standard error page can still show it (optional)
+        throw; 
+    }
+});
+
+app.UseDeveloperExceptionPage();
+
 app.UseHttpsRedirection();
 
-// app.UseCors("AllowNextJs");
+app.UseRouting();
 
-// app.UseRouting();
+app.UseCors("AllowNextJs");
+// app.UseCors("AllowAll");
 
 // app.UseMiddleware<CsrfProtectionMiddleware>();
 

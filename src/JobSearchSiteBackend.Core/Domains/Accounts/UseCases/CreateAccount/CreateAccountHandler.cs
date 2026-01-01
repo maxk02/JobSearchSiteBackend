@@ -28,7 +28,7 @@ public class CreateAccountHandler(
         if (userFromDb is not null)
             return Result.Conflict();
 
-        var user = new MyIdentityUser { Email = command.Email };
+        var user = new MyIdentityUser { UserName = command.Email, Email = command.Email };
 
         await using var transaction = await context.Database.BeginTransactionAsync(cancellationToken);
         

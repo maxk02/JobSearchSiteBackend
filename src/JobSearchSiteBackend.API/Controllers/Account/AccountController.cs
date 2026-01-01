@@ -23,7 +23,8 @@ namespace JobSearchSiteBackend.API.Controllers.Account;
 public class AccountController(IMapper mapper) : ControllerBase
 {
     [HttpPost]
-    [Route("/change-password")]
+    [Route("change-password")]
+    [AllowUnconfirmedEmail]
     public async Task<ActionResult> ChangePassword(
         [FromBody] ChangePasswordRequest request,
         [FromServices] ChangePasswordHandler handler,
@@ -36,7 +37,8 @@ public class AccountController(IMapper mapper) : ControllerBase
     }
     
     [HttpPost]
-    [Route("/confirm-email")]
+    [Route("confirm-email")]
+    [AllowAnonymous]
     public async Task<ActionResult> ConfirmEmail(
         [FromBody] ConfirmEmailRequest request,
         [FromServices] ConfirmEmailHandler handler,
@@ -73,7 +75,7 @@ public class AccountController(IMapper mapper) : ControllerBase
     }
     
     [HttpPost]
-    [Route("/login")]
+    [Route("login")]
     [AllowAnonymous]
     public async Task<ActionResult<LogInResponse>> LogIn(
         [FromBody] LogInRequest request,
@@ -83,18 +85,12 @@ public class AccountController(IMapper mapper) : ControllerBase
         var command = new LogInCommand(request.Email, request.Password);
         var result = await handler.Handle(command, cancellationToken);
         
-        if (!result.IsSuccess)
-            return this.ToActionResult(result.Map(x => mapper.Map<LogInResponse>(x)));
-        
-        var logInResponseDto = mapper.Map<LogInResponse>(result.Value);
-        
-        var newResultWithDto = Result.Success(logInResponseDto);
-        
-        return this.ToActionResult(newResultWithDto);
+        return this.ToActionResult(result.Map(x => mapper.Map<LogInResponse>(x)));
     }
     
     [HttpPost]
-    [Route("/logout")]
+    [Route("logout")]
+    [AllowUnconfirmedEmail]
     public async Task<ActionResult> LogOut(
         [FromServices] LogOutHandler handler,
         CancellationToken cancellationToken)
@@ -106,7 +102,7 @@ public class AccountController(IMapper mapper) : ControllerBase
     }
     
     [HttpPost]
-    [Route("/reset-forgotten-password")]
+    [Route("reset-forgotten-password")]
     [AllowAnonymous]
     public async Task<ActionResult> ResetForgottenPassword(
         [FromBody] ResetForgottenPasswordRequest request,
@@ -120,7 +116,7 @@ public class AccountController(IMapper mapper) : ControllerBase
     }
     
     [HttpPost]
-    [Route("/send-email-confirmation-link")]
+    [Route("send-email-confirmation-link")]
     [AllowUnconfirmedEmail]
     public async Task<ActionResult> SendEmailConfirmationLink(
         [FromServices] ResendEmailConfirmationLinkHandler handler,
@@ -133,7 +129,7 @@ public class AccountController(IMapper mapper) : ControllerBase
     }
     
     [HttpPost]
-    [Route("/send-password-reset-link")]
+    [Route("send-password-reset-link")]
     [AllowAnonymous]
     public async Task<ActionResult> SendPasswordResetLink(
         [FromBody] SendPasswordResetLinkRequest request,

@@ -178,7 +178,7 @@ public class CompaniesController(IMapper mapper) : ControllerBase
     }
     
     [HttpDelete]
-    [Route("/{id:long:min(1)}/management/last-visited-folders")]
+    [Route("{id:long:min(1)}/management/last-visited-folders")]
     public async Task<ActionResult> RemoveCompanyAllLastVisitedFolders(
         [FromRoute] long id,
         [FromServices] RemoveCompanyLastVisitedFoldersHandler handler,
@@ -191,7 +191,7 @@ public class CompaniesController(IMapper mapper) : ControllerBase
     }
     
     [HttpDelete]
-    [Route("/{id:long:min(1)}/management/last-visited-folders/{folderId:long:min(1)}")]
+    [Route("{id:long:min(1)}/management/last-visited-folders/{folderId:long:min(1)}")]
     public async Task<ActionResult> RemoveCompanyLastVisitedFolder(
         [FromRoute] long id,
         [FromRoute] long folderId,
@@ -205,7 +205,7 @@ public class CompaniesController(IMapper mapper) : ControllerBase
     }
     
     [HttpDelete]
-    [Route("/{id:long:min(1)}/management/last-visited-jobs")]
+    [Route("{id:long:min(1)}/management/last-visited-jobs")]
     public async Task<ActionResult> RemoveCompanyAllLastVisitedJobs(
         [FromRoute] long id,
         [FromServices] RemoveCompanyLastVisitedJobsHandler handler,
@@ -218,7 +218,7 @@ public class CompaniesController(IMapper mapper) : ControllerBase
     }
     
     [HttpDelete]
-    [Route("/{id:long:min(1)}/management/last-visited-jobs/{jobId:long:min(1)}")]
+    [Route("{id:long:min(1)}/management/last-visited-jobs/{jobId:long:min(1)}")]
     public async Task<ActionResult> RemoveCompanyLastVisitedJob(
         [FromRoute] long id,
         [FromRoute] long jobId,

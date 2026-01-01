@@ -44,6 +44,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using Nest;
 using StackExchange.Redis;
+using System.IdentityModel.Tokens.Jwt;
 
 namespace JobSearchSiteBackend.Infrastructure;
 
@@ -80,6 +81,22 @@ public static class ServiceExtensions
         serviceCollection.AddSingleton<IInjectableSqlQueries, SqlServerInjectableSqlQueries>();
 
         serviceCollection.AddScoped<MainDataContextSeeder>();
+
+        // This stops the 302 Redirects and returns 401/403 JSON-friendly errors
+        serviceCollection.ConfigureApplicationCookie(options =>
+        {
+            options.Events.OnRedirectToLogin = context =>
+            {
+                context.Response.StatusCode = StatusCodes.Status401Unauthorized;
+                return Task.CompletedTask;
+            };
+            
+            options.Events.OnRedirectToAccessDenied = context =>
+            {
+                context.Response.StatusCode = StatusCodes.Status403Forbidden;
+                return Task.CompletedTask;
+            };
+        });
     }
     
     public static void ConfigureJwtAuthentication(this IServiceCollection serviceCollection,
@@ -96,27 +113,61 @@ public static class ServiceExtensions
             throw new ArgumentNullException();
         }
         
-        serviceCollection.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+        serviceCollection
+            .AddAuthentication(options => 
+            {
+                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+            })
             .AddJwtBearer(options =>
             {
                 options.TokenValidationParameters = new TokenValidationParameters
                 {
                     ValidateIssuer = true,
                     ValidateAudience = true,
-                    ValidateLifetime = true,
+                    ValidateLifetime = false,
                     ValidateIssuerSigningKey = true,
                     ValidIssuer = issuer,
                     ValidAudience = audience,
                     IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey))
                 };
-            })
-            .AddCookie(options =>
-            {
-                options.Cookie.HttpOnly = true;
-                options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
-                options.Cookie.SameSite = SameSiteMode.None;
-                options.Cookie.Name = "auth_token";
+
+                options.Events = new JwtBearerEvents
+                {
+                    OnMessageReceived = context =>
+                    {
+                        // Look for the "auth_token" cookie
+                        var token = context.Request.Cookies["auth_token"];
+                        
+                        // If found, pass it to the JWT validator
+                        if (!string.IsNullOrEmpty(token))
+                        {
+                            context.Token = token;
+                        }
+                        
+                        return Task.CompletedTask;
+                    },
+
+                    OnAuthenticationFailed = context =>
+                    {
+                        Console.WriteLine($"Auth failed: {context.Exception.Message}");
+                        return Task.CompletedTask;
+                    },
+                    OnTokenValidated = context =>
+                    {
+                        Console.WriteLine("Token validated successfully.");
+                        return Task.CompletedTask;
+                    }
+                };
             });
+            // .AddCookie(options =>
+            // {
+            //     options.Cookie.HttpOnly = true;
+            //     options.Cookie.SecurePolicy = CookieSecurePolicy.None;
+            //     options.Cookie.SameSite = SameSiteMode.Lax;
+            //     options.Cookie.Name = "auth_token";
+            // });
     }
     
     public static void ConfigureJwtTokenGeneration(this IServiceCollection serviceCollection)

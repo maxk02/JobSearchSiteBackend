@@ -307,8 +307,13 @@ public class MainDataContextSeeder(MainDataContext context,
 
         if (user1FromDb is null)
         {
-            var user1 = new MyIdentityUser { UserName = "admin@transworld.pl", Email = "admin@transworld.pl" };
-        
+            var user1 = new MyIdentityUser
+            {
+                UserName = "admin@transworld.pl",
+                Email = "admin@transworld.pl",
+                EmailConfirmed = true
+            };
+
             var aspNetIdentityResult1 = await userManager
                 .CreateAsync(user1, configuration["admin_at_transworld.pl_USER_PASSWORD"] ?? throw new ApplicationException());
 
@@ -339,7 +344,11 @@ public class MainDataContextSeeder(MainDataContext context,
 
         if (user2FromDb is null)
         {
-            var user2 = new MyIdentityUser { UserName = "branch_admin@transworld.pl", Email = "branch_admin@transworld.pl" };
+            var user2 = new MyIdentityUser {
+                UserName = "branch_admin@transworld.pl",
+                Email = "branch_admin@transworld.pl",
+                EmailConfirmed = true
+            };
         
             var aspNetIdentityResult2 = await userManager
                 .CreateAsync(user2, configuration["branch_admin_at_transworld.pl_USER_PASSWORD"] ?? throw new ApplicationException());
@@ -378,8 +387,11 @@ public class MainDataContextSeeder(MainDataContext context,
 
         if (user3FromDb is null)
         {
-            var user3 = new MyIdentityUser { UserName = "branch_application_reviewer@transworld.pl",
-                Email = "branch_application_reviewer@transworld.pl" };
+            var user3 = new MyIdentityUser {
+                UserName = "branch_application_reviewer@transworld.pl",
+                Email = "branch_application_reviewer@transworld.pl",
+                EmailConfirmed = true
+            };
         
             var aspNetIdentityResult3 = await userManager
                 .CreateAsync(user3, configuration["branch_application_reviewer_at_transworld.pl_USER_PASSWORD"] ?? throw new ApplicationException());
