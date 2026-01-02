@@ -4,6 +4,7 @@ using AutoMapper;
 using JobSearchSiteBackend.API.Attributes;
 using JobSearchSiteBackend.API.Controllers.UserProfiles.Dtos;
 using JobSearchSiteBackend.Core.Domains._Shared.Pagination;
+using JobSearchSiteBackend.Core.Domains.Accounts.UseCases.GetAccountData;
 using JobSearchSiteBackend.Core.Domains.UserProfiles.UseCases.AddJobBookmark;
 using JobSearchSiteBackend.Core.Domains.UserProfiles.UseCases.AddUserProfile;
 using JobSearchSiteBackend.Core.Domains.UserProfiles.UseCases.DeleteJobBookmark;

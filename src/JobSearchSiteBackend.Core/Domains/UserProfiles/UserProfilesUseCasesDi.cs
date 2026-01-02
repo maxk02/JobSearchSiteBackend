@@ -1,4 +1,5 @@
-﻿using JobSearchSiteBackend.Core.Domains.UserProfiles.UseCases.AddJobBookmark;
+﻿using JobSearchSiteBackend.Core.Domains.Accounts.UseCases.GetAccountData;
+using JobSearchSiteBackend.Core.Domains.UserProfiles.UseCases.AddJobBookmark;
 using JobSearchSiteBackend.Core.Domains.UserProfiles.UseCases.AddUserProfile;
 using JobSearchSiteBackend.Core.Domains.UserProfiles.UseCases.DeleteJobBookmark;
 using JobSearchSiteBackend.Core.Domains.UserProfiles.UseCases.GetBookmarkedJobs;

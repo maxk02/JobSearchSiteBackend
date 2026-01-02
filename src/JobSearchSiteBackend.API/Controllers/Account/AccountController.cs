@@ -14,6 +14,7 @@ using JobSearchSiteBackend.Core.Domains.Accounts.UseCases.ResetForgottenPassword
 using JobSearchSiteBackend.Core.Domains.Accounts.UseCases.SendPasswordResetLink;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using JobSearchSiteBackend.Core.Domains.Accounts.UseCases.GetAccountData;
 
 namespace JobSearchSiteBackend.API.Controllers.Account;
 
@@ -72,6 +73,19 @@ public class AccountController(IMapper mapper) : ControllerBase
         var result = await handler.Handle(command, cancellationToken);
         
         return this.ToActionResult(result);
+    }
+
+    [HttpGet]
+    [AllowUnconfirmedEmail]
+    public async Task<ActionResult<GetAccountDataResponse>> GetAccountData(
+        [FromServices] GetAccountDataHandler handler,
+        CancellationToken cancellationToken)
+    {
+        var query = new GetAccountDataQuery();
+        
+        var result = await handler.Handle(query, cancellationToken);
+
+        return this.ToActionResult(result.Map(x => mapper.Map<GetAccountDataResponse>(x)));
     }
     
     [HttpPost]

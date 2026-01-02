@@ -2,6 +2,7 @@
 using JobSearchSiteBackend.Core.Domains.Accounts.UseCases.ConfirmEmail;
 using JobSearchSiteBackend.Core.Domains.Accounts.UseCases.CreateAccount;
 using JobSearchSiteBackend.Core.Domains.Accounts.UseCases.DeleteAccount;
+using JobSearchSiteBackend.Core.Domains.Accounts.UseCases.GetAccountData;
 using JobSearchSiteBackend.Core.Domains.Accounts.UseCases.LogIn;
 using JobSearchSiteBackend.Core.Domains.Accounts.UseCases.LogOut;
 using JobSearchSiteBackend.Core.Domains.Accounts.UseCases.ResendEmailConfirmationLink;
@@ -19,6 +20,7 @@ public static class AccountUseCasesDi
         serviceCollection.AddScoped<ConfirmEmailHandler>();
         serviceCollection.AddScoped<CreateAccountHandler>();
         serviceCollection.AddScoped<DeleteAccountHandler>();
+        serviceCollection.AddScoped<GetAccountDataHandler>();
         serviceCollection.AddScoped<LogInHandler>();
         serviceCollection.AddScoped<LogOutHandler>();
         serviceCollection.AddScoped<ResendEmailConfirmationLinkHandler>();
