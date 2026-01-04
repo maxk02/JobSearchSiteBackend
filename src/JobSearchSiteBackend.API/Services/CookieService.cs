@@ -24,7 +24,7 @@ public class CookieService(IHttpContextAccessor httpContextAccessor) : ICookieSe
         );
     }
     
-    public void RemoveAuthCookie(string token)
+    public void RemoveAuthCookie()
     {
         if (httpContextAccessor.HttpContext == null)
         {

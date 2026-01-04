@@ -30,7 +30,19 @@ public class LogInHandler(UserManager<MyIdentityUser> userManager,
     {
         if (currentAccountService.IsLoggedIn())
         {
-            return Result.Forbidden();
+            var tokenId = currentAccountService.GetTokenIdentifierOrThrow();
+            var userId = currentAccountService.GetIdOrThrow();
+
+            var expirationUtc = await sessionCache.GetSessionExpirationUtcAsync(userId.ToString(), tokenId); 
+            
+            if (expirationUtc is null || expirationUtc <= DateTime.UtcNow)
+            {
+                cookieService.RemoveAuthCookie();
+            }
+            else
+            {
+                return Result.Forbidden();
+            }
         }
         
         var account = await userManager.FindByEmailAsync(command.Email);

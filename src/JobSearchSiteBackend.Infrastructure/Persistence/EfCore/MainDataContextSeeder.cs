@@ -1,5 +1,6 @@
 ﻿using JobSearchSiteBackend.Core.Domains.Accounts;
 using JobSearchSiteBackend.Core.Domains.Companies;
+using JobSearchSiteBackend.Core.Domains.CompanyClaims;
 using JobSearchSiteBackend.Core.Domains.EmploymentOptions;
 using JobSearchSiteBackend.Core.Domains.JobApplications;
 using JobSearchSiteBackend.Core.Domains.JobApplications.Enums;
@@ -302,6 +303,11 @@ public class MainDataContextSeeder(MainDataContext context,
 
     private async Task SeedUsersWithClaimsAndApplicationsAsync()
     {
+        var company = await context.Companies
+            .Include(c => c.Employees)
+            .Where(c => c.Id == 4)
+            .SingleAsync();
+
         // global admin
         var user1FromDb = await userManager.FindByEmailAsync("admin@transworld.pl");
 
@@ -326,7 +332,19 @@ public class MainDataContextSeeder(MainDataContext context,
                 "Firmy", null, true);
 
             context.UserProfiles.Add(newUser1Profile);
+            company.Employees!.Add(newUser1Profile);
+
             await context.SaveChangesAsync();
+
+
+            List<CompanyClaim> companyClaims = CompanyClaim.AllValues.ToList();
+
+            var user1CompanyClaims = companyClaims
+                .Select(x => new UserCompanyClaim(user1Id, 4, x.Id))
+                .ToList();
+
+            context.UserCompanyClaims.AddRange(user1CompanyClaims);
+
 
             List<JobFolderClaim> jobFolderClaims = JobFolderClaim.AllValues.ToList();
 
@@ -335,6 +353,7 @@ public class MainDataContextSeeder(MainDataContext context,
                 .ToList();
 
             context.UserJobFolderClaims.AddRange(user1JobFolderClaims);
+
 
             await context.SaveChangesAsync();
         }
@@ -362,6 +381,8 @@ public class MainDataContextSeeder(MainDataContext context,
                 "Działu", null, true);
 
             context.UserProfiles.Add(newUser2Profile);
+            company.Employees!.Add(newUser2Profile);
+
             await context.SaveChangesAsync();
 
             List<JobFolderClaim> jobFolderClaims = [
@@ -405,6 +426,7 @@ public class MainDataContextSeeder(MainDataContext context,
                 "Niższego Działu", null, true);
 
             context.UserProfiles.Add(newUser3Profile);
+            company.Employees!.Add(newUser3Profile);
 
             List<JobFolderClaim> jobFolderClaims = [
                 JobFolderClaim.CanReadJobs,

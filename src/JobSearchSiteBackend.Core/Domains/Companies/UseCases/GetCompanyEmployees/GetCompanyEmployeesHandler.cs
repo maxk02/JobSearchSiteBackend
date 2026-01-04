@@ -15,7 +15,7 @@ namespace JobSearchSiteBackend.Core.Domains.Companies.UseCases.GetCompanyEmploye
 
 public class GetCompanyEmployeesHandler(
     ICurrentAccountService currentAccountService,
-    IFileStorageService  fileStorageService,
+    IFileStorageService fileStorageService,
     MainDataContext context)
     : IRequestHandler<GetCompanyEmployeesQuery, Result<GetCompanyEmployeesResult>>
 {
@@ -35,14 +35,24 @@ public class GetCompanyEmployeesHandler(
             return Result.Forbidden();
         }
 
-        var companyEmployeesGeneralQuery = context.Companies
+        var dbQuery = context.Companies
             .AsNoTracking()
             .Where(c => c.Id == query.CompanyId)
             .SelectMany(c => c.Employees!);
+
+        if (!string.IsNullOrWhiteSpace(query.Query))
+        {
+            var lowerTextQuery = query.Query.ToLower();
+
+            dbQuery = dbQuery
+                .Where(employee => employee.Account!.Email!.ToLower().Contains(lowerTextQuery)
+                || employee.FirstName.ToLower().Contains(lowerTextQuery)
+                || employee.LastName.Contains(lowerTextQuery));
+        }
+
+        var count = await dbQuery.CountAsync(cancellationToken);
         
-        var count = await companyEmployeesGeneralQuery.CountAsync(cancellationToken);
-        
-        var companyEmployeesQueryWithFiltersNJoins = companyEmployeesGeneralQuery
+        var dbQueryWithFiltersNJoins = dbQuery
             .Include(employee => employee.Account)
             .Include(employee => employee.UserAvatars!
                 .Where(a => !a.IsDeleted && a.IsUploadedSuccessfully)
@@ -50,15 +60,7 @@ public class GetCompanyEmployeesHandler(
             .Take(query.Size)
             .Skip((query.Page - 1) * query.Size);
 
-        if (!string.IsNullOrWhiteSpace(query.Query))
-        {
-            companyEmployeesQueryWithFiltersNJoins = companyEmployeesQueryWithFiltersNJoins
-                .Where(employee => employee.Account!.Email!.Contains(query.Query)
-                || employee.FirstName.Contains(query.Query)
-                || employee.LastName.Contains(query.Query));
-        }
-
-        var companyEmployees = await companyEmployeesQueryWithFiltersNJoins
+        var companyEmployees = await dbQueryWithFiltersNJoins
             .ToListAsync(cancellationToken);
 
         List<CompanyEmployeeDto> companyEmployeeDtos = [];

@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace JobSearchSiteBackend.Infrastructure.Persistence.EfCore.Migrations
 {
     [DbContext(typeof(MainDataContext))]
-    [Migration("20260103190051_JobSalaryInfoNameUpdates")]
-    partial class JobSalaryInfoNameUpdates
+    [Migration("20260104032012_InitialCreate")]
+    partial class InitialCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -578,6 +578,33 @@ namespace JobSearchSiteBackend.Infrastructure.Persistence.EfCore.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("CompanyClaims");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1L,
+                            Name = "IsOwner"
+                        },
+                        new
+                        {
+                            Id = 2L,
+                            Name = "IsAdmin"
+                        },
+                        new
+                        {
+                            Id = 3L,
+                            Name = "CanReadStats"
+                        },
+                        new
+                        {
+                            Id = 4L,
+                            Name = "CanEditProfile"
+                        },
+                        new
+                        {
+                            Id = 5L,
+                            Name = "CanManageBalance"
+                        });
                 });
 
             modelBuilder.Entity("JobSearchSiteBackend.Core.Domains.CompanyClaims.UserCompanyClaim", b =>

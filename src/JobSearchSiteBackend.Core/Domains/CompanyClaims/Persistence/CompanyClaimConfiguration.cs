@@ -14,5 +14,7 @@ public class CompanyClaimConfiguration : IEntityTypeConfiguration<CompanyClaim>
             .WithOne(userCompanyClaim => userCompanyClaim.CompanyClaim)
             .HasForeignKey(userCompanyClaim => userCompanyClaim.ClaimId)
             .OnDelete(DeleteBehavior.Restrict);
+
+        builder.HasData(CompanyClaim.AllValues);
     }
 }

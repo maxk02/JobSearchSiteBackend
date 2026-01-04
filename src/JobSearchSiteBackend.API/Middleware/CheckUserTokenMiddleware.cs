@@ -2,6 +2,7 @@
 using JobSearchSiteBackend.Core.Persistence;
 using JobSearchSiteBackend.Core.Services.Auth;
 using JobSearchSiteBackend.Core.Services.Caching;
+using JobSearchSiteBackend.Core.Services.Cookies;
 using Microsoft.Extensions.Caching.Memory;
 
 namespace JobSearchSiteBackend.API.Middleware;
@@ -11,7 +12,8 @@ public class CheckUserTokenMiddleware(
 {
     public async Task InvokeAsync(HttpContext httpContext, MainDataContext dbContext,
         ICurrentAccountService currentAccountService,
-        IUserSessionCacheRepository sessionCache)
+        IUserSessionCacheRepository sessionCache,
+        ICookieService cookieService)
     {
         var endpoint = httpContext.GetEndpoint();
 
@@ -46,6 +48,7 @@ public class CheckUserTokenMiddleware(
         
         if (expirationUtc is null || expirationUtc <= DateTime.UtcNow)
         {
+            cookieService.RemoveAuthCookie();
             httpContext.Response.StatusCode = StatusCodes.Status401Unauthorized;
             return;
         }

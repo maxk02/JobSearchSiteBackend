@@ -240,6 +240,27 @@ namespace JobSearchSiteBackend.Infrastructure.Persistence.EfCore.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "UserProfiles",
+                columns: table => new
+                {
+                    Id = table.Column<long>(type: "bigint", nullable: false),
+                    FirstName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    LastName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Phone = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    IsReceivingApplicationStatusUpdates = table.Column<bool>(type: "bit", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_UserProfiles", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_UserProfiles_AspNetUsers_Id",
+                        column: x => x.Id,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Companies",
                 columns: table => new
                 {
@@ -335,6 +356,58 @@ namespace JobSearchSiteBackend.Infrastructure.Persistence.EfCore.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "PersonalFiles",
+                columns: table => new
+                {
+                    Id = table.Column<long>(type: "bigint", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    GuidIdentifier = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    DateTimeUpdatedUtc = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    DateTimeSyncedWithSearchUtc = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    IsDeleted = table.Column<bool>(type: "bit", nullable: false),
+                    UserId = table.Column<long>(type: "bigint", nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(40)", maxLength: 40, nullable: false),
+                    Extension = table.Column<string>(type: "nvarchar(25)", maxLength: 25, nullable: false),
+                    Size = table.Column<long>(type: "bigint", nullable: false),
+                    IsUploadedSuccessfully = table.Column<bool>(type: "bit", nullable: false),
+                    Text = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_PersonalFiles", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_PersonalFiles_UserProfiles_UserId",
+                        column: x => x.UserId,
+                        principalTable: "UserProfiles",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "UserAvatars",
+                columns: table => new
+                {
+                    Id = table.Column<long>(type: "bigint", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    GuidIdentifier = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    DateTimeUpdatedUtc = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    IsDeleted = table.Column<bool>(type: "bit", nullable: false),
+                    UserId = table.Column<long>(type: "bigint", nullable: true),
+                    Extension = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Size = table.Column<long>(type: "bigint", nullable: false),
+                    IsUploadedSuccessfully = table.Column<bool>(type: "bit", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_UserAvatars", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_UserAvatars_UserProfiles_UserId",
+                        column: x => x.UserId,
+                        principalTable: "UserProfiles",
+                        principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
                 name: "CompanyAvatars",
                 columns: table => new
                 {
@@ -359,6 +432,59 @@ namespace JobSearchSiteBackend.Infrastructure.Persistence.EfCore.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "CompanyBalanceTransactions",
+                columns: table => new
+                {
+                    Id = table.Column<long>(type: "bigint", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    GuidIdentifier = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    DateTimeCommittedUtc = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    Amount = table.Column<decimal>(type: "decimal(10,2)", nullable: false),
+                    Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    CurrencyId = table.Column<long>(type: "bigint", nullable: false),
+                    CompanyId = table.Column<long>(type: "bigint", nullable: false),
+                    UserProfileId = table.Column<long>(type: "bigint", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_CompanyBalanceTransactions", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_CompanyBalanceTransactions_Companies_CompanyId",
+                        column: x => x.CompanyId,
+                        principalTable: "Companies",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_CompanyBalanceTransactions_UserProfiles_UserProfileId",
+                        column: x => x.UserProfileId,
+                        principalTable: "UserProfiles",
+                        principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
+                name: "CompanyUserProfile",
+                columns: table => new
+                {
+                    CompaniesWhereEmployedId = table.Column<long>(type: "bigint", nullable: false),
+                    EmployeesId = table.Column<long>(type: "bigint", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_CompanyUserProfile", x => new { x.CompaniesWhereEmployedId, x.EmployeesId });
+                    table.ForeignKey(
+                        name: "FK_CompanyUserProfile_Companies_CompaniesWhereEmployedId",
+                        column: x => x.CompaniesWhereEmployedId,
+                        principalTable: "Companies",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_CompanyUserProfile_UserProfiles_EmployeesId",
+                        column: x => x.EmployeesId,
+                        principalTable: "UserProfiles",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "JobFolders",
                 columns: table => new
                 {
@@ -375,6 +501,39 @@ namespace JobSearchSiteBackend.Infrastructure.Persistence.EfCore.Migrations
                         name: "FK_JobFolders_Companies_CompanyId",
                         column: x => x.CompanyId,
                         principalTable: "Companies",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "UserCompanyClaims",
+                columns: table => new
+                {
+                    Id = table.Column<long>(type: "bigint", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    UserId = table.Column<long>(type: "bigint", nullable: false),
+                    CompanyId = table.Column<long>(type: "bigint", nullable: false),
+                    ClaimId = table.Column<long>(type: "bigint", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_UserCompanyClaims", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_UserCompanyClaims_Companies_CompanyId",
+                        column: x => x.CompanyId,
+                        principalTable: "Companies",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_UserCompanyClaims_CompanyClaims_ClaimId",
+                        column: x => x.ClaimId,
+                        principalTable: "CompanyClaims",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_UserCompanyClaims_UserProfiles_UserId",
+                        column: x => x.UserId,
+                        principalTable: "UserProfiles",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -402,33 +561,6 @@ namespace JobSearchSiteBackend.Infrastructure.Persistence.EfCore.Migrations
                         principalTable: "Locations",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "UserProfiles",
-                columns: table => new
-                {
-                    Id = table.Column<long>(type: "bigint", nullable: false),
-                    FirstName = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    LastName = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Phone = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    IsReceivingApplicationStatusUpdates = table.Column<bool>(type: "bit", nullable: false),
-                    LocationId = table.Column<long>(type: "bigint", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_UserProfiles", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_UserProfiles_AspNetUsers_Id",
-                        column: x => x.Id,
-                        principalTable: "AspNetUsers",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_UserProfiles_Locations_LocationId",
-                        column: x => x.LocationId,
-                        principalTable: "Locations",
-                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -521,144 +653,6 @@ namespace JobSearchSiteBackend.Infrastructure.Persistence.EfCore.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "CompanyBalanceTransactions",
-                columns: table => new
-                {
-                    Id = table.Column<long>(type: "bigint", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    GuidIdentifier = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    DateTimeCommittedUtc = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    Amount = table.Column<decimal>(type: "decimal(10,2)", nullable: false),
-                    Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    CurrencyId = table.Column<long>(type: "bigint", nullable: false),
-                    CompanyId = table.Column<long>(type: "bigint", nullable: false),
-                    UserProfileId = table.Column<long>(type: "bigint", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_CompanyBalanceTransactions", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_CompanyBalanceTransactions_Companies_CompanyId",
-                        column: x => x.CompanyId,
-                        principalTable: "Companies",
-                        principalColumn: "Id");
-                    table.ForeignKey(
-                        name: "FK_CompanyBalanceTransactions_UserProfiles_UserProfileId",
-                        column: x => x.UserProfileId,
-                        principalTable: "UserProfiles",
-                        principalColumn: "Id");
-                });
-
-            migrationBuilder.CreateTable(
-                name: "CompanyUserProfile",
-                columns: table => new
-                {
-                    CompaniesWhereEmployedId = table.Column<long>(type: "bigint", nullable: false),
-                    EmployeesId = table.Column<long>(type: "bigint", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_CompanyUserProfile", x => new { x.CompaniesWhereEmployedId, x.EmployeesId });
-                    table.ForeignKey(
-                        name: "FK_CompanyUserProfile_Companies_CompaniesWhereEmployedId",
-                        column: x => x.CompaniesWhereEmployedId,
-                        principalTable: "Companies",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_CompanyUserProfile_UserProfiles_EmployeesId",
-                        column: x => x.EmployeesId,
-                        principalTable: "UserProfiles",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "PersonalFiles",
-                columns: table => new
-                {
-                    Id = table.Column<long>(type: "bigint", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    GuidIdentifier = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    DateTimeUpdatedUtc = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    DateTimeSyncedWithSearchUtc = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    IsDeleted = table.Column<bool>(type: "bit", nullable: false),
-                    UserId = table.Column<long>(type: "bigint", nullable: false),
-                    Name = table.Column<string>(type: "nvarchar(40)", maxLength: 40, nullable: false),
-                    Extension = table.Column<string>(type: "nvarchar(25)", maxLength: 25, nullable: false),
-                    Size = table.Column<long>(type: "bigint", nullable: false),
-                    IsUploadedSuccessfully = table.Column<bool>(type: "bit", nullable: false),
-                    Text = table.Column<string>(type: "nvarchar(max)", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_PersonalFiles", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_PersonalFiles_UserProfiles_UserId",
-                        column: x => x.UserId,
-                        principalTable: "UserProfiles",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "UserAvatars",
-                columns: table => new
-                {
-                    Id = table.Column<long>(type: "bigint", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    GuidIdentifier = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    DateTimeUpdatedUtc = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    IsDeleted = table.Column<bool>(type: "bit", nullable: false),
-                    UserId = table.Column<long>(type: "bigint", nullable: true),
-                    Extension = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Size = table.Column<long>(type: "bigint", nullable: false),
-                    IsUploadedSuccessfully = table.Column<bool>(type: "bit", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_UserAvatars", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_UserAvatars_UserProfiles_UserId",
-                        column: x => x.UserId,
-                        principalTable: "UserProfiles",
-                        principalColumn: "Id");
-                });
-
-            migrationBuilder.CreateTable(
-                name: "UserCompanyClaims",
-                columns: table => new
-                {
-                    Id = table.Column<long>(type: "bigint", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    UserId = table.Column<long>(type: "bigint", nullable: false),
-                    CompanyId = table.Column<long>(type: "bigint", nullable: false),
-                    ClaimId = table.Column<long>(type: "bigint", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_UserCompanyClaims", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_UserCompanyClaims_Companies_CompanyId",
-                        column: x => x.CompanyId,
-                        principalTable: "Companies",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_UserCompanyClaims_CompanyClaims_ClaimId",
-                        column: x => x.ClaimId,
-                        principalTable: "CompanyClaims",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_UserCompanyClaims_UserProfiles_UserId",
-                        column: x => x.UserId,
-                        principalTable: "UserProfiles",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "UserJobFolderClaims",
                 columns: table => new
                 {
@@ -722,6 +716,7 @@ namespace JobSearchSiteBackend.Infrastructure.Persistence.EfCore.Migrations
                     Id = table.Column<long>(type: "bigint", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     DateTimeCreatedUtc = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    LocationId = table.Column<long>(type: "bigint", nullable: false),
                     UserId = table.Column<long>(type: "bigint", nullable: false),
                     JobId = table.Column<long>(type: "bigint", nullable: false),
                     Status = table.Column<int>(type: "int", nullable: false)
@@ -735,6 +730,12 @@ namespace JobSearchSiteBackend.Infrastructure.Persistence.EfCore.Migrations
                         principalTable: "Jobs",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_JobApplications_Locations_LocationId",
+                        column: x => x.LocationId,
+                        principalTable: "Locations",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_JobApplications_UserProfiles_UserId",
                         column: x => x.UserId,
@@ -792,7 +793,7 @@ namespace JobSearchSiteBackend.Infrastructure.Persistence.EfCore.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "JobSalaryInfo",
+                name: "JobSalaryInfos",
                 columns: table => new
                 {
                     JobId = table.Column<long>(type: "bigint", nullable: false),
@@ -804,9 +805,9 @@ namespace JobSearchSiteBackend.Infrastructure.Persistence.EfCore.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_JobSalaryInfo", x => x.JobId);
+                    table.PrimaryKey("PK_JobSalaryInfos", x => x.JobId);
                     table.ForeignKey(
-                        name: "FK_JobSalaryInfo_Jobs_JobId",
+                        name: "FK_JobSalaryInfos_Jobs_JobId",
                         column: x => x.JobId,
                         principalTable: "Jobs",
                         principalColumn: "Id",
@@ -959,6 +960,18 @@ namespace JobSearchSiteBackend.Infrastructure.Persistence.EfCore.Migrations
                     { 42L, "Ubezpieczenia" },
                     { 43L, "Zakupy" },
                     { 44L, "Franczyza" }
+                });
+
+            migrationBuilder.InsertData(
+                table: "CompanyClaims",
+                columns: new[] { "Id", "Name" },
+                values: new object[,]
+                {
+                    { 1L, "IsOwner" },
+                    { 2L, "IsAdmin" },
+                    { 3L, "CanReadStats" },
+                    { 4L, "CanEditProfile" },
+                    { 5L, "CanManageBalance" }
                 });
 
             migrationBuilder.InsertData(
@@ -1148,6 +1161,11 @@ namespace JobSearchSiteBackend.Infrastructure.Persistence.EfCore.Migrations
                 column: "JobId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_JobApplications_LocationId",
+                table: "JobApplications",
+                column: "LocationId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_JobApplications_UserId",
                 table: "JobApplications",
                 column: "UserId");
@@ -1275,11 +1293,6 @@ namespace JobSearchSiteBackend.Infrastructure.Persistence.EfCore.Migrations
                 name: "IX_UserJobFolderClaims_UserId",
                 table: "UserJobFolderClaims",
                 column: "UserId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_UserProfiles_LocationId",
-                table: "UserProfiles",
-                column: "LocationId");
         }
 
         /// <inheritdoc />
@@ -1331,7 +1344,7 @@ namespace JobSearchSiteBackend.Infrastructure.Persistence.EfCore.Migrations
                 name: "JobPublicationIntervals");
 
             migrationBuilder.DropTable(
-                name: "JobSalaryInfo");
+                name: "JobSalaryInfos");
 
             migrationBuilder.DropTable(
                 name: "LocationRelations");
@@ -1382,6 +1395,9 @@ namespace JobSearchSiteBackend.Infrastructure.Persistence.EfCore.Migrations
                 name: "Jobs");
 
             migrationBuilder.DropTable(
+                name: "Locations");
+
+            migrationBuilder.DropTable(
                 name: "UserProfiles");
 
             migrationBuilder.DropTable(
@@ -1392,9 +1408,6 @@ namespace JobSearchSiteBackend.Infrastructure.Persistence.EfCore.Migrations
 
             migrationBuilder.DropTable(
                 name: "AspNetUsers");
-
-            migrationBuilder.DropTable(
-                name: "Locations");
 
             migrationBuilder.DropTable(
                 name: "Companies");

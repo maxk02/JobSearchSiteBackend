@@ -24,7 +24,7 @@ public class LogOutHandler(ICurrentAccountService currentAccountService,
         
         await sessionCache.DeleteSessionAsync(currentUserId.ToString(), currentUserTokenId);
         
-        cookieService.RemoveAuthCookie(currentUserTokenId);
+        cookieService.RemoveAuthCookie();
         
         return Result.Success();
     }

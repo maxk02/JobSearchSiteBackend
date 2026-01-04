@@ -99,7 +99,7 @@ public class CompaniesController(IMapper mapper) : ControllerBase
     [Route("{id:long:min(1)}/management/employees")]
     public async Task<ActionResult<GetCompanyEmployeesResponse>> GetCompanyEmployees(
         [FromRoute] long id,
-        [FromBody] GetCompanyEmployeesRequest request,
+        [FromQuery] GetCompanyEmployeesRequest request,
         [FromServices] GetCompanyEmployeesHandler handler,
         CancellationToken cancellationToken)
     {

@@ -26,6 +26,12 @@ public class GetCompanyLastVisitedFoldersHandler(
 
         var idListFromCache = await cacheRepo
             .GetLastVisitedAsync(currentUserId.ToString(), query.CompanyId.ToString());
+
+        if (idListFromCache.Count == 0)
+        {
+            var emptyResult = new GetCompanyLastVisitedFoldersResult([]);
+            return Result.Success(emptyResult);
+        }
         
         var jobFolderObjects = await context.JobFolders
             .Where(jf => jf.CompanyId == query.CompanyId)

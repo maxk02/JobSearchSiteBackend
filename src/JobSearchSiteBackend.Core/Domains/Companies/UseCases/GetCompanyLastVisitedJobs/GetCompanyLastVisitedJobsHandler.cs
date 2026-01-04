@@ -25,6 +25,12 @@ public class GetCompanyLastVisitedJobsHandler(
 
         var idListFromCache = await cacheRepo
             .GetLastVisitedAsync(currentUserId.ToString(), query.CompanyId.ToString());
+
+        if (idListFromCache.Count == 0)
+        {
+            var emptyResult = new GetCompanyLastVisitedJobsResult([]);
+            return Result.Success(emptyResult);
+        }
         
         var jobListItemDtos = await context.JobFolders
             .Where(jf => jf.CompanyId == query.CompanyId)
@@ -37,8 +43,8 @@ public class GetCompanyLastVisitedJobsHandler(
             .Where(jobListItem => idListFromCache.Contains(jobListItem.Id))
             .ToListAsync(cancellationToken);
 
-        var response = new GetCompanyLastVisitedJobsResult(jobListItemDtos);
+        var result = new GetCompanyLastVisitedJobsResult(jobListItemDtos);
 
-        return Result.Success(response);
+        return Result.Success(result);
     }
 }

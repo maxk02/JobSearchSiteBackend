@@ -3,5 +3,5 @@
 public interface ICookieService
 {
     void SetAuthCookie(string token);
-    void RemoveAuthCookie(string token);
+    void RemoveAuthCookie();
 }
