@@ -59,6 +59,15 @@ builder.Services.AddCors(options =>
     options.AddPolicy("AllowNextJs", policyBuilder =>
     {
         policyBuilder
+            .WithOrigins("https://localhost:3000")
+            .AllowAnyMethod()
+            .AllowAnyHeader()
+            .AllowCredentials();
+    });
+    
+    options.AddPolicy("AllowNextJsHttp", policyBuilder =>
+    {
+        policyBuilder
             .WithOrigins("http://localhost:3000")
             .AllowAnyMethod()
             .AllowAnyHeader()
@@ -181,7 +190,7 @@ app.UseHttpsRedirection();
 app.UseRouting();
 
 app.UseCors("AllowNextJs");
-// app.UseCors("AllowAll");
+app.UseCors("AllowNextJsHttp");
 
 // app.UseMiddleware<CsrfProtectionMiddleware>();
 
