@@ -25,7 +25,7 @@ public class JobsController(IMapper mapper) : ControllerBase
         [FromServices] AddJobHandler handler,
         CancellationToken cancellationToken)
     {
-        var command = new AddJobCommand(request.JobFolderId, request.CategoryId, request.Title, request.Description,
+        var command = new AddJobCommand(request.CompanyId, request.CategoryId, request.Title, request.Description,
             request.IsPublic, request.DateTimeExpiringUtc, request.Responsibilities, request.Requirements,
             request.NiceToHaves, request.JobSalaryInfoDto, request.EmploymentOptionIds, request.ContractTypeIds,
             request.LocationIds);
@@ -117,7 +117,7 @@ public class JobsController(IMapper mapper) : ControllerBase
         [FromServices] UpdateJobHandler handler,
         CancellationToken cancellationToken)
     {
-        var command = new UpdateJobCommand(id, request.FolderId, request.CategoryId, request.Title,
+        var command = new UpdateJobCommand(id, request.CategoryId, request.Title,
             request.Description, request.IsPublic, request.DateTimeExpiringUtc, request.Responsibilities,
             request.Requirements, request.NiceToHaves, request.SalaryInfo, request.EmploymentOptionIds,
             request.ContractTypeIds, request.LocationIds);

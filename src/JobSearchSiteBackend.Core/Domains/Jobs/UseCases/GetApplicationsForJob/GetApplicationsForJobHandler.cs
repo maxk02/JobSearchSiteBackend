@@ -2,10 +2,8 @@
 using AutoMapper;
 using JobSearchSiteBackend.Core.Domains._Shared.Pagination;
 using JobSearchSiteBackend.Core.Domains._Shared.UseCaseStructure;
+using JobSearchSiteBackend.Core.Domains.CompanyClaims;
 using JobSearchSiteBackend.Core.Domains.JobApplications.Dtos;
-using JobSearchSiteBackend.Core.Domains.JobFolderClaims;
-using JobSearchSiteBackend.Core.Domains.JobFolders;
-using JobSearchSiteBackend.Core.Domains.JobFolders.Persistence;
 using JobSearchSiteBackend.Core.Domains.PersonalFiles;
 using JobSearchSiteBackend.Core.Domains.UserProfiles.Persistence;
 using JobSearchSiteBackend.Core.Persistence;
@@ -72,14 +70,12 @@ public class GetApplicationsForJobHandler(
             .Take(query.Size);
 
         var jobApplicationDbQueryItem = await dbQuery
-            .GroupBy(ja => ja.Job!.JobFolder!)
+            .GroupBy(ja => ja.Job!.Company!)
             .Select(g => new
             {
-                HasManageApplicationsPermission = g.Key.RelationsWhereThisIsDescendant!
-                    .SelectMany(rel => rel.Ancestor!.UserJobFolderClaims!
-                        .Where(ujfc => ujfc.UserId == currentUserId && ujfc.ClaimId == JobFolderClaim.CanManageApplications.Id))
-                    .Any(),
-                CompanyId = g.Key.CompanyId,
+                HasManageApplicationsPermission = g.Key.UserCompanyClaims!
+                    .Any(ucc => ucc.ClaimId == CompanyClaim.CanManageApplications.Id && ucc.UserId == currentUserId),
+                CompanyId = g.Key.Id,
                 JobApplicationItems = g.Select(ja => new
                 {
                     Id = ja.Id,

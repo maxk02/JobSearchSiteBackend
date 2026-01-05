@@ -1,13 +1,9 @@
 ﻿using Ardalis.Result;
-using AutoMapper;
 using JobSearchSiteBackend.Core.Domains._Shared.Pagination;
 using JobSearchSiteBackend.Core.Domains._Shared.UseCaseStructure;
 using JobSearchSiteBackend.Core.Domains.Companies.Persistence;
-using JobSearchSiteBackend.Core.Domains.Jobs;
 using JobSearchSiteBackend.Core.Domains.Jobs.Dtos;
 using JobSearchSiteBackend.Core.Domains.Jobs.Search;
-using JobSearchSiteBackend.Core.Domains.Jobs.UseCases.GetJobs;
-using JobSearchSiteBackend.Core.Domains.Locations;
 using JobSearchSiteBackend.Core.Domains.Locations.Dtos;
 using JobSearchSiteBackend.Core.Persistence;
 using JobSearchSiteBackend.Core.Services.Auth;
@@ -42,7 +38,7 @@ public class GetCompanyJobsHandler(
         var currentUserId = currentAccountService.GetId();
 
         var dbQuery = context.Jobs
-            .Where(job => job.JobFolder!.CompanyId == query.CompanyId)
+            .Where(job => job.CompanyId == query.CompanyId)
             .Where(job => job.DateTimeExpiringUtc > DateTime.UtcNow)
             .Where(job => job.IsPublic)
             .Where(job => !job.IsDeleted);
@@ -81,7 +77,9 @@ public class GetCompanyJobsHandler(
         {
             jobItems = await paginatedDbQuery
                 .Select(j => new JobItem(
-                        j.Id, j.JobFolder!.CompanyId, j.JobFolder!.Company!.Name,
+                        j.Id,
+                        j.CompanyId,
+                        j.Company!.Name,
                         j.Locations!
                             .Select(l => new LocationDto(l.Id, l.CountryId, l.FullName, l.DescriptionPl, l.Code)),
                         j.Title, j.DateTimePublishedUtc, j.DateTimeExpiringUtc,
@@ -89,7 +87,7 @@ public class GetCompanyJobsHandler(
                             j.SalaryInfo.CurrencyId, j.SalaryInfo.UnitOfTime, j.SalaryInfo.IsAfterTaxes) : null,
                         j.JobContractTypes!.Select(jct => jct.Id),
                         j.EmploymentOptions!.Select(eo => eo.Id),
-                        j.JobFolder!.Company!.CompanyAvatars!,
+                        j.Company!.CompanyAvatars!,
                         false
                     )
                 )
@@ -99,7 +97,9 @@ public class GetCompanyJobsHandler(
         {
             jobItems = await paginatedDbQuery
                 .Select(j => new JobItem(
-                        j.Id, j.JobFolder!.CompanyId, j.JobFolder!.Company!.Name,
+                        j.Id,
+                        j.CompanyId,
+                        j.Company!.Name,
                         j.Locations!
                             .Select(l => new LocationDto(l.Id, l.CountryId, l.FullName, l.DescriptionPl, l.Code)),
                         j.Title, j.DateTimePublishedUtc, j.DateTimeExpiringUtc,
@@ -109,7 +109,7 @@ public class GetCompanyJobsHandler(
                             : null,
                         j.JobContractTypes!.Select(jct => jct.Id),
                         j.EmploymentOptions!.Select(eo => eo.Id),
-                        j.JobFolder!.Company!.CompanyAvatars!,
+                        j.Company!.CompanyAvatars!,
                         j.UserJobBookmarks!.Any(u => u.UserId == currentUserId)
                     )
                 )

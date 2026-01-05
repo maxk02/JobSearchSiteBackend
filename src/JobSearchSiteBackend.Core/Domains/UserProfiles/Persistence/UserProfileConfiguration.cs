@@ -27,18 +27,6 @@ public class UserProfileConfiguration : IEntityTypeConfiguration<UserProfile>
             .HasForeignKey(personalFile => personalFile.UserId)
             .OnDelete(DeleteBehavior.Restrict);
 
-        // builder
-        //     .HasMany(userProfile => userProfile.Cvs)
-        //     .WithOne(cv => cv.User)
-        //     .HasForeignKey(cv => cv.UserId)
-        //     .OnDelete(DeleteBehavior.Cascade);
-
-        builder
-            .HasMany(userProfile => userProfile.UserJobFolderClaims)
-            .WithOne(userJobFolderClaim => userJobFolderClaim.User)
-            .HasForeignKey(userJobFolderClaim => userJobFolderClaim.UserId)
-            .OnDelete(DeleteBehavior.Cascade);
-
         builder
             .HasMany(userProfile => userProfile.UserCompanyClaims)
             .WithOne(userCompanyClaim => userCompanyClaim.User)

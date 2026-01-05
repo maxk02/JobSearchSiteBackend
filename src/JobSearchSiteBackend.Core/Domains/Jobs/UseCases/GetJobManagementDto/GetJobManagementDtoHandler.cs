@@ -1,12 +1,8 @@
 ﻿using Ardalis.Result;
-using AutoMapper;
 using JobSearchSiteBackend.Core.Domains._Shared.UseCaseStructure;
-using JobSearchSiteBackend.Core.Domains.JobFolderClaims;
-using JobSearchSiteBackend.Core.Domains.JobFolders;
-using JobSearchSiteBackend.Core.Domains.JobFolders.Persistence;
+using JobSearchSiteBackend.Core.Domains.CompanyClaims;
 using JobSearchSiteBackend.Core.Domains.Jobs.Dtos;
 using JobSearchSiteBackend.Core.Domains.Locations;
-using JobSearchSiteBackend.Core.Domains.Locations.Dtos;
 using JobSearchSiteBackend.Core.Persistence;
 using JobSearchSiteBackend.Core.Services.Auth;
 using JobSearchSiteBackend.Core.Services.Caching;
@@ -29,8 +25,7 @@ public class GetJobManagementDtoHandler(
         var job = await context.Jobs
             .AsNoTracking()
             .Where(j => j.Id == query.Id)
-            .Include(job => job.JobFolder)
-            .ThenInclude(jf => jf!.Company)
+            .Include(jf => jf!.Company)
             .ThenInclude(c => c!.CompanyAvatars!
                 .Where(a => !a.IsDeleted && a.IsUploadedSuccessfully)
                 .OrderBy(a => a.DateTimeUpdatedUtc))
@@ -46,17 +41,20 @@ public class GetJobManagementDtoHandler(
         if (job is null)
             return Result<GetJobManagementDtoResult>.NotFound();
 
-        var claimIdsForCurrentUser = context.JobFolderRelations
-            .GetClaimIdsForThisAndAncestors(job.JobFolderId, currentUserId)
-            .ToList();
+        var hasPermissionInRequestedCompany =
+            await context.UserCompanyClaims
+                .Where(ucc => ucc.CompanyId == job.CompanyId
+                    && ucc.UserId == currentUserId
+                    && ucc.ClaimId == CompanyClaim.CanEditJobs.Id)
+                .AnyAsync();
 
-        if (!claimIdsForCurrentUser.Contains(JobFolderClaim.CanEditJobs.Id))
+        if (!hasPermissionInRequestedCompany)
             return Result.Forbidden();
         
         await cacheRepo.AddLastVisitedAsync(currentUserId.ToString(),
-            job.JobFolder!.CompanyId.ToString(), job.Id.ToString());
+            job.CompanyId.ToString(), job.Id.ToString());
         
-        var lastAvatar = job.JobFolder.Company!.CompanyAvatars!.LastOrDefault();
+        var lastAvatar = job.Company!.CompanyAvatars!.LastOrDefault();
         string? companyLogoLink = null;
         
         if (lastAvatar is not null)
@@ -67,10 +65,10 @@ public class GetJobManagementDtoHandler(
 
         var jobManagementDto = new JobManagementDto(
             job.Id,
-            job.JobFolder!.CompanyId,
+            job.CompanyId,
             companyLogoLink,
-            job.JobFolder!.Company!.Name,
-            job.JobFolder.Company.Description,
+            job.Company!.Name,
+            job.Company.Description,
             job.Locations!.Select(l => l.ToLocationDto()).ToList(),
             job.CategoryId,
             job.Title,
@@ -83,9 +81,6 @@ public class GetJobManagementDtoHandler(
             job.SalaryInfo?.ToJobSalaryInfoDto(),
             job.EmploymentOptions!.Select(x => x.Id).ToList(),
             job.JobContractTypes!.Select(x => x.Id).ToList(),
-            job.JobFolderId,
-            job.JobFolder.Name!,
-            claimIdsForCurrentUser,
             job.IsPublic
             );
         

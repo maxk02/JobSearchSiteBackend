@@ -58,8 +58,7 @@ public class GetAccountDataHandler(
         
         var companiesWhereHasPermissions = await context.Companies
             .Include(c => c.CompanyAvatars)
-            .Where(c => c.JobFolders!.Any(jf => jf.UserJobFolderClaims!.Any(ujfc => ujfc.UserId == currentAccountId))
-            || c.UserCompanyClaims!.Any(ucc => ucc.UserId == currentAccountId))
+            .Where(c => c.UserCompanyClaims!.Any(ucc => ucc.UserId == currentAccountId))
             .ToListAsync(cancellationToken);
 
         List<CompanyDto> companyDtoList = [];

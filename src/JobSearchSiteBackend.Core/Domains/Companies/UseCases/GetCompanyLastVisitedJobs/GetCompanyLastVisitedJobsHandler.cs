@@ -1,10 +1,6 @@
 ﻿using Ardalis.Result;
-using AutoMapper;
-using AutoMapper.QueryableExtensions;
 using JobSearchSiteBackend.Core.Domains._Shared.UseCaseStructure;
 using JobSearchSiteBackend.Core.Domains.Companies.Dtos;
-using JobSearchSiteBackend.Core.Domains.Companies.UseCases.GetCompanyLastVisitedFolders;
-using JobSearchSiteBackend.Core.Domains.JobFolderClaims;
 using JobSearchSiteBackend.Core.Persistence;
 using JobSearchSiteBackend.Core.Services.Auth;
 using JobSearchSiteBackend.Core.Services.Caching;
@@ -32,15 +28,10 @@ public class GetCompanyLastVisitedJobsHandler(
             return Result.Success(emptyResult);
         }
         
-        var jobListItemDtos = await context.JobFolders
-            .Where(jf => jf.CompanyId == query.CompanyId)
-            .Where(jf =>
-                jf.RelationsWhereThisIsDescendant!
-                    .Any(rel => rel.Ancestor!.UserJobFolderClaims!.Any(ujfc =>
-                        ujfc.ClaimId == JobFolderClaim.CanReadJobs.Id && ujfc.UserId == currentUserId))
-            )
-            .SelectMany(jf => jf.Jobs!, (folder, job) => new CompanyJobListItemDto(job.Id, job.Title, folder.Name))
+        var jobListItemDtos = await context.Jobs
+            .Where(job => job.CompanyId == query.CompanyId)
             .Where(jobListItem => idListFromCache.Contains(jobListItem.Id))
+            .Select(job => new CompanyJobListItemDto(job.Id, job.Title))
             .ToListAsync(cancellationToken);
 
         var result = new GetCompanyLastVisitedJobsResult(jobListItemDtos);

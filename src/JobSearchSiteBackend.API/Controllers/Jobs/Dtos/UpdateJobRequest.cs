@@ -4,7 +4,6 @@ namespace JobSearchSiteBackend.API.Controllers.Jobs.Dtos;
 
 public record UpdateJobRequest(
     string? Title,
-    long? FolderId,
     long? CategoryId,
     string? Description,
     //todo no time range option int id in command, check manually based on new date

@@ -38,9 +38,9 @@ public class GetJobApplicationsHandler(
             .Select(ja => new
             {
                 Id = ja.Id,
-                CompanyId = ja.Job!.JobFolder!.CompanyId,
-                CompanyName = ja.Job!.JobFolder!.Company!.Name,
-                CompanyAvatars = ja.Job!.JobFolder!.Company!.CompanyAvatars!,
+                CompanyId = ja.Job!.CompanyId,
+                CompanyName = ja.Job!.Company!.Name,
+                CompanyAvatars = ja.Job!.Company!.CompanyAvatars!,
                 JobId = ja.JobId,
                 JobTitle = ja.Job!.Title,
                 DateTimePublishedUtc = ja.Job!.DateTimePublishedUtc,

@@ -1,3 +1,0 @@
-﻿namespace JobSearchSiteBackend.Core.Domains.JobFolderClaims.UseCases.GetJobFolderClaimIdsForUser;
-
-public record GetJobFolderClaimIdsForUserResult(ICollection<long> ClaimIds);

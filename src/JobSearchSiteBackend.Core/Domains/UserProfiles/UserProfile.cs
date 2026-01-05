@@ -3,9 +3,6 @@ using JobSearchSiteBackend.Core.Domains.Accounts;
 using JobSearchSiteBackend.Core.Domains.Companies;
 using JobSearchSiteBackend.Core.Domains.CompanyClaims;
 using JobSearchSiteBackend.Core.Domains.JobApplications;
-using JobSearchSiteBackend.Core.Domains.JobFolderClaims;
-using JobSearchSiteBackend.Core.Domains.JobFolders;
-using JobSearchSiteBackend.Core.Domains.Jobs;
 using JobSearchSiteBackend.Core.Domains.PersonalFiles;
 
 namespace JobSearchSiteBackend.Core.Domains.UserProfiles;
@@ -38,12 +35,10 @@ public class UserProfile : IEntityWithId
     
     public ICollection<JobApplication>? JobApplications { get; set; }
     public ICollection<UserJobBookmark>? UserJobBookmarks { get; set; }
-    // public ICollection<Company>? BookmarkedCompanies { get; set; }
     
     public ICollection<UserJobApplicationBookmark>? UserJobApplicationBookmarks { get; set; }
 
     public ICollection<UserCompanyClaim>? UserCompanyClaims { get; set; }
-    public ICollection<UserJobFolderClaim>? UserJobFolderClaims { get; set; }
     
     public ICollection<UserAvatar>? UserAvatars { get; set; }
     

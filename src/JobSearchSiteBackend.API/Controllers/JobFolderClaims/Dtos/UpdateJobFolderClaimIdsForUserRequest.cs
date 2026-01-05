@@ -1,3 +1,0 @@
-﻿namespace JobSearchSiteBackend.API.Controllers.JobFolderClaims.Dtos;
-
-public record UpdateJobFolderClaimIdsForUserRequest(ICollection<long> JobFolderClaimIds);

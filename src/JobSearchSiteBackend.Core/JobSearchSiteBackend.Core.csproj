@@ -17,12 +17,6 @@
         <Content Include=".\Domains\Companies\Seed\company_avatars.json">
             <CopyToOutputDirectory>Always</CopyToOutputDirectory>
         </Content>
-        <Content Include=".\Domains\JobFolders\Seed\job_folder_relations.json">
-            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-        </Content>
-        <Content Include=".\Domains\JobFolders\Seed\job_folders.json">
-            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-        </Content>
         <Content Include=".\Domains\Jobs\Seed\jobs.json">
             <CopyToOutputDirectory>Always</CopyToOutputDirectory>
         </Content>

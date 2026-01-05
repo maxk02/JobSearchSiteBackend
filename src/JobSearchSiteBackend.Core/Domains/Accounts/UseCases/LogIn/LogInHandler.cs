@@ -81,8 +81,7 @@ public class LogInHandler(UserManager<MyIdentityUser> userManager,
         
         var companiesWhereHasPermissions = await context.Companies
             .Include(c => c.CompanyAvatars)
-            .Where(c => c.JobFolders!.Any(jf => jf.UserJobFolderClaims!.Any(ujfc => ujfc.UserId == account.Id))
-            || c.UserCompanyClaims!.Any(ucc => ucc.UserId == account.Id))
+            .Where(c => c.UserCompanyClaims!.Any(ucc => ucc.UserId == account.Id))
             .ToListAsync(cancellationToken);
 
         List<CompanyDto> companyDtoList = [];

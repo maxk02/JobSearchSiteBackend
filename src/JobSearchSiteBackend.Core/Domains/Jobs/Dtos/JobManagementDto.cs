@@ -20,7 +20,4 @@ public record JobManagementDto(
     JobSalaryInfoDto? SalaryInfoDto,
     ICollection<long>? EmploymentOptionIds,
     ICollection<long>? ContractTypeIds,
-    long FolderId,
-    string? FolderName,
-    ICollection<long> ClaimIds,
     bool IsPublic);

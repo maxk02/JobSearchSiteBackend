@@ -1,5 +1,4 @@
 ﻿using JobSearchSiteBackend.Core.Domains._Shared.UseCaseStructure;
-using JobSearchSiteBackend.Core.Domains.JobFolderClaims;
 using JobSearchSiteBackend.Core.Services.Auth;
 using Microsoft.EntityFrameworkCore;
 using Ardalis.Result;
@@ -54,12 +53,12 @@ public class UpdateCompanyClaimIdsForUserHandler(
             .Select(ucp => ucp.Id)
             .ToListAsync(cancellationToken);
 
-        if (targetUserClaimIds.Contains(JobFolderClaim.IsOwner.Id))
+        if (targetUserClaimIds.Contains(CompanyClaim.IsOwner.Id))
             return Result.Forbidden();
 
-        if (targetUserClaimIds.Contains(CompanyClaim.IsAdmin.Id)
-            && !targetUserClaimIds.Contains(CompanyClaim.IsOwner.Id))
-            return Result.Forbidden();
+        // if (targetUserClaimIds.Contains(CompanyClaim.IsAdmin.Id)
+        //     && !targetUserClaimIds.Contains(CompanyClaim.IsOwner.Id))
+        //     return Result.Forbidden(); todo
 
         var claimIdsToRemove =
             currentUserClaimIds

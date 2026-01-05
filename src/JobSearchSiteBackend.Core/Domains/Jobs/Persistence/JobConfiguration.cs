@@ -10,9 +10,9 @@ public class JobConfiguration : IEntityTypeConfiguration<Job>
         builder.HasKey(job => job.Id);
 
         builder
-            .HasOne(job => job.JobFolder)
-            .WithMany(jobFolder => jobFolder.Jobs)
-            .HasForeignKey(job => job.JobFolderId)
+            .HasOne(job => job.Company)
+            .WithMany(company => company.Jobs)
+            .HasForeignKey(job => job.CompanyId)
             .OnDelete(DeleteBehavior.Cascade);
 
         builder

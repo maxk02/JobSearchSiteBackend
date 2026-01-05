@@ -1,9 +1,8 @@
 ﻿using Ardalis.Result;
 using JobSearchSiteBackend.Core.Domains._Shared.UseCaseStructure;
+using JobSearchSiteBackend.Core.Domains.CompanyClaims;
 using JobSearchSiteBackend.Core.Domains.JobApplications.BackgroundJobRunners;
 using JobSearchSiteBackend.Core.Domains.JobApplications.EmailMessageTemplates;
-using JobSearchSiteBackend.Core.Domains.JobFolderClaims;
-using JobSearchSiteBackend.Core.Domains.JobFolders.Persistence;
 using JobSearchSiteBackend.Core.Persistence;
 using JobSearchSiteBackend.Core.Services.Auth;
 using JobSearchSiteBackend.Core.Services.EmailSender;
@@ -30,10 +29,10 @@ public class UpdateJobApplicationStatusHandler(
             .Select(ja => new
             {
                 JobApplication = ja,
-                JobFolderId = ja.Job!.JobFolderId,
+                CompanyId = ja.Job!.CompanyId,
                 EmailAdress = ja.User!.Account!.Email!,
                 JobTitle = ja.Job!.Title,
-                CompanyName = ja.Job!.JobFolder!.Company!.Name
+                CompanyName = ja.Job!.Company!.Name
             })
             .SingleOrDefaultAsync(cancellationToken);
 
@@ -41,18 +40,19 @@ public class UpdateJobApplicationStatusHandler(
             return Result.NotFound();
 
         var jobApplication = jobApplicationWithRelatedData.JobApplication;
-        var jobFolderId = jobApplicationWithRelatedData.JobFolderId;
+        var companyId = jobApplicationWithRelatedData.CompanyId;
         var emailAddress = jobApplicationWithRelatedData.EmailAdress;
         var jobTitle = jobApplicationWithRelatedData.JobTitle;
         var companyName = jobApplicationWithRelatedData.CompanyName;
 
-        var hasPermissionInCurrentFolderOrAncestors =
-            await context.JobFolderRelations
-                .GetThisOrAncestorWhereUserHasClaim(jobFolderId, currentUserId,
-                    JobFolderClaim.CanManageApplications.Id)
-                .AnyAsync(cancellationToken);
+        var hasPermissionInRequestedCompany =
+            await context.UserCompanyClaims
+                .Where(ucc => ucc.CompanyId == companyId
+                    && ucc.UserId == currentUserId
+                    && ucc.ClaimId == CompanyClaim.CanEditJobs.Id)
+                .AnyAsync();
 
-        if (!hasPermissionInCurrentFolderOrAncestors)
+        if (!hasPermissionInRequestedCompany)
             return Result.Forbidden();
         
         context.JobApplications.Attach(jobApplication);

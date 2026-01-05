@@ -3,7 +3,7 @@
 namespace JobSearchSiteBackend.API.Controllers.Jobs.Dtos;
 
 public record AddJobRequest(
-    long JobFolderId,
+    long CompanyId,
     long CategoryId,
     string Title,
     string? Description,

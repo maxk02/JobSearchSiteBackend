@@ -1,14 +1,13 @@
 ﻿using System.Globalization;
 using JobSearchSiteBackend.Core.Domains._Shared.UseCaseStructure;
 using JobSearchSiteBackend.Core.Domains.Categories;
-using JobSearchSiteBackend.Core.Domains.JobFolderClaims;
 using JobSearchSiteBackend.Core.Services.Auth;
 using Microsoft.EntityFrameworkCore;
 using Ardalis.Result;
 using JobSearchSiteBackend.Core.Domains.Companies;
 using JobSearchSiteBackend.Core.Domains.EmploymentOptions;
-using JobSearchSiteBackend.Core.Domains.JobFolders.Persistence;
 using JobSearchSiteBackend.Core.Persistence;
+using JobSearchSiteBackend.Core.Domains.CompanyClaims;
 
 namespace JobSearchSiteBackend.Core.Domains.Jobs.UseCases.UpdateJob;
 
@@ -21,23 +20,21 @@ public class UpdateJobHandler(
         var currentUserId = currentAccountService.GetIdOrThrow();
 
         var job = await context.Jobs
-            .Include(job => job.JobFolder)
-            .ThenInclude(jobFolder => jobFolder!.Company)
+            .Include(job => job!.Company)
             .Where(job => job.Id == command.Id)
             .SingleOrDefaultAsync(cancellationToken);
 
         if (job is null)
             return Result.Error();
-        
-        var companyId = job.JobFolder!.CompanyId;
 
-        var hasPermissionInCurrentFolderOrAncestors =
-            await context.JobFolderRelations
-                .GetThisOrAncestorWhereUserHasClaim(job.JobFolderId, currentUserId,
-                    JobFolderClaim.CanEditJobs.Id)
-                .AnyAsync(cancellationToken);
+        var hasPermissionInRequestedCompany =
+            await context.UserCompanyClaims
+                .Where(ucc => ucc.CompanyId == job.CompanyId
+                    && ucc.UserId == currentUserId
+                    && ucc.ClaimId == CompanyClaim.CanEditJobs.Id)
+                .AnyAsync();
 
-        if (!hasPermissionInCurrentFolderOrAncestors)
+        if (!hasPermissionInRequestedCompany)
             return Result.Forbidden();
 
         if (command.NewDateTimeExpiringUtc is not null)
@@ -50,7 +47,7 @@ public class UpdateJobHandler(
             
             var oldJobPublicationInterval = await context.JobPublicationIntervals
                 .Include(jpi => jpi.CountryCurrency)
-                .Where(jpi => jpi.CountryCurrency!.CountryId == job.JobFolder.CompanyId)
+                .Where(jpi => jpi.CountryCurrency!.CountryId == job.Company!.CountryId)
                 .Where(jpi => jpi.MaxDaysOfPublication >= oldDaysCeiled)
                 .OrderBy(v => v.MaxDaysOfPublication)
                 .FirstOrDefaultAsync(cancellationToken);
@@ -61,7 +58,7 @@ public class UpdateJobHandler(
             // suppose we have implemented it only for one currency for now
             var newJobPublicationInterval = await context.JobPublicationIntervals
                 .Include(jpi => jpi.CountryCurrency)
-                .Where(jpi => jpi.CountryCurrency!.CountryId == job.JobFolder.CompanyId)
+                .Where(jpi => jpi.CountryCurrency!.CountryId == job.Company!.CountryId)
                 .Where(jpi => jpi.MaxDaysOfPublication >= newDaysCeiled)
                 .OrderBy(v => v.MaxDaysOfPublication)
                 .FirstOrDefaultAsync(cancellationToken);
@@ -77,35 +74,13 @@ public class UpdateJobHandler(
 
             if (priceDifference > 0)
             {
-                var companyBalanceTransaction = new CompanyBalanceTransaction(job.JobFolder.CompanyId, -priceDifference,
+                var companyBalanceTransaction = new CompanyBalanceTransaction(job.CompanyId, -priceDifference,
                     $"Aktualizacja terminu wygaśnięcia ogłoszenia {job.Id} do " +
                     $"{command.NewDateTimeExpiringUtc.Value.ToString(CultureInfo.InvariantCulture)}",
                     newJobPublicationInterval.CountryCurrency!.CurrencyId, currentUserId);
         
                 context.CompanyBalanceTransactions.Add(companyBalanceTransaction);
             }
-        }
-
-        if (command.JobFolderId is not null)
-        {
-            var newCompanyId = await context.JobFolders
-                .Where(jf => jf.Id == command.JobFolderId)
-                .Select(jf => jf.CompanyId)
-                .SingleOrDefaultAsync(cancellationToken);
-            
-            if (newCompanyId != companyId)
-                return Result.Error();
-            
-            var hasPermissionInRequestedFolderOrAncestors =
-                await context.JobFolderRelations
-                    .GetThisOrAncestorWhereUserHasClaim(command.JobFolderId.Value, currentUserId,
-                        JobFolderClaim.CanEditJobs.Id)
-                    .AnyAsync(cancellationToken);
-
-            if (!hasPermissionInRequestedFolderOrAncestors)
-                return Result.Forbidden();
-
-            job.JobFolderId = command.JobFolderId.Value;
         }
 
         if (command.CategoryId is not null)

@@ -6,7 +6,6 @@ namespace JobSearchSiteBackend.Core.Domains.Jobs.UseCases.UpdateJob;
 
 public record UpdateJobCommand(
     long Id,
-    long? JobFolderId,
     long? CategoryId,
     string? Title,
     string? Description,

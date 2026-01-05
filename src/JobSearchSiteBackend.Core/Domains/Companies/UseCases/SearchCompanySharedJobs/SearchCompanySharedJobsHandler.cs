@@ -1,10 +1,7 @@
 ﻿using Ardalis.Result;
-using AutoMapper;
-using AutoMapper.QueryableExtensions;
 using JobSearchSiteBackend.Core.Domains._Shared.UseCaseStructure;
 using JobSearchSiteBackend.Core.Domains.Companies.Dtos;
-using JobSearchSiteBackend.Core.Domains.Companies.UseCases.SearchCompanySharedJobs;
-using JobSearchSiteBackend.Core.Domains.JobFolderClaims;
+using JobSearchSiteBackend.Core.Domains.CompanyClaims;
 using JobSearchSiteBackend.Core.Persistence;
 using JobSearchSiteBackend.Core.Services.Auth;
 using Microsoft.EntityFrameworkCore;
@@ -20,15 +17,20 @@ public class SearchCompanySharedJobsHandler(
     {
         var currentUserId = currentAccountService.GetIdOrThrow();
 
-        var jobListItemDtos = await context.JobFolders
-            .Where(jf => jf.CompanyId == query.CompanyId)
-            .Where(jf =>
-                jf.RelationsWhereThisIsDescendant!
-                    .Any(rel => rel.Ancestor!.UserJobFolderClaims!.Any(ujfc =>
-                        ujfc.ClaimId == JobFolderClaim.CanReadJobs.Id && ujfc.UserId == currentUserId))
-            )
-            .SelectMany(jf => jf.Jobs!, (folder, job) => new CompanyJobListItemDto(job.Id, job.Title, folder.Name))
+        var hasPermissionInRequestedCompany =
+            await context.UserCompanyClaims
+                .Where(ucc => ucc.CompanyId == query.CompanyId
+                    && ucc.UserId == currentUserId
+                    && ucc.ClaimId == CompanyClaim.CanEditJobs.Id)
+                .AnyAsync();
+
+        if (!hasPermissionInRequestedCompany)
+            return Result.Forbidden();
+
+        var jobListItemDtos = await context.Jobs
+            .Where(job => job.CompanyId == query.CompanyId)
             .Where(jobItem => jobItem.Title.ToLower().Contains(query.Query.ToLower()))
+            .Select(job => new CompanyJobListItemDto(job.Id, job.Title))
             .ToListAsync(cancellationToken);
         
         var response = new SearchCompanySharedJobsResult(jobListItemDtos);

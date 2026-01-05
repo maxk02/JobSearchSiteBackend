@@ -35,9 +35,9 @@ public class GetBookmarkedJobsHandler(
             .Select(ujb => new
             {
                 JobId = ujb.JobId,
-                CompanyId = ujb.Job!.JobFolder!.CompanyId,
-                CompanyAvatars = ujb.Job!.JobFolder!.Company!.CompanyAvatars,
-                CompanyName = ujb.Job!.JobFolder!.Company!.Name,
+                CompanyId = ujb.Job!.CompanyId,
+                CompanyAvatars = ujb.Job!.Company!.CompanyAvatars,
+                CompanyName = ujb.Job!.Company!.Name,
                 Locations = ujb.Job!.Locations!,
                 Title = ujb.Job!.Title,
                 DateTimePublishedUtc = ujb.Job!.DateTimePublishedUtc,

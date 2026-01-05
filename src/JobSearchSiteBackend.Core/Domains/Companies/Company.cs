@@ -1,7 +1,6 @@
 ﻿using JobSearchSiteBackend.Core.Domains._Shared.EntityInterfaces;
 using JobSearchSiteBackend.Core.Domains.CompanyClaims;
 using JobSearchSiteBackend.Core.Domains.Countries;
-using JobSearchSiteBackend.Core.Domains.JobFolders;
 using JobSearchSiteBackend.Core.Domains.Jobs;
 using JobSearchSiteBackend.Core.Domains.UserProfiles;
 
@@ -38,8 +37,6 @@ public class Company : IEntityWithId, IEntityWithSearchSync
     public string CountrySpecificFieldsJson { get; set; }
     
     public Country? Country { get; set; }
-
-    public ICollection<JobFolder>? JobFolders { get; set; }
     
     public ICollection<Job>? Jobs { get; set; }
     

@@ -288,7 +288,6 @@ public static class ServiceExtensions
         serviceCollection.AddScoped<IGeneralCacheRepository, RedisGeneralCacheRepository>();
         serviceCollection.AddScoped<IUserSessionCacheRepository, RedisUserSessionCacheRepository>();
         serviceCollection.AddScoped<IPageVisitCacheRepository, RedisPageVisitCacheRepository>();
-        serviceCollection.AddScoped<ICompanyLastVisitedFoldersCacheRepository, RedisCompanyLastVisitedFoldersCacheRepository>();
         serviceCollection.AddScoped<ICompanyLastVisitedJobsCacheRepository, RedisCompanyLastVisitedJobsCacheRepository>();
     }
 }

@@ -1,10 +1,9 @@
 ﻿using JobSearchSiteBackend.Core.Domains._Shared.UseCaseStructure;
-using JobSearchSiteBackend.Core.Domains.JobFolderClaims;
 using JobSearchSiteBackend.Core.Services.Auth;
 using Microsoft.EntityFrameworkCore;
 using Ardalis.Result;
-using JobSearchSiteBackend.Core.Domains.JobFolders.Persistence;
 using JobSearchSiteBackend.Core.Persistence;
+using JobSearchSiteBackend.Core.Domains.CompanyClaims;
 
 namespace JobSearchSiteBackend.Core.Domains.Jobs.UseCases.DeleteJob;
 
@@ -17,24 +16,22 @@ public class DeleteJobHandler(
         var currentUserId = currentAccountService.GetIdOrThrow();
 
         var job = await context.Jobs
-            .Include(job => job.JobFolder)
-            .ThenInclude(jf => jf!.Company)
+            .Include(job => job!.Company)
             .Where(job => job.Id == command.Id)
             .SingleOrDefaultAsync(cancellationToken);
 
         if (job is null)
             return Result.Error();
 
-        var hasPermissionInCurrentFolderOrAncestors =
-            await context.JobFolderRelations
-                .GetThisOrAncestorWhereUserHasClaim(job.JobFolderId, currentUserId,
-                    JobFolderClaim.CanEditJobs.Id)
-                .AnyAsync(cancellationToken);
+        var hasPermissionInRequestedCompany =
+            await context.UserCompanyClaims
+                .Where(ucc => ucc.CompanyId == job.CompanyId
+                    && ucc.UserId == currentUserId
+                    && ucc.ClaimId == CompanyClaim.CanEditJobs.Id)
+                .AnyAsync();
 
-        if (!hasPermissionInCurrentFolderOrAncestors)
+        if (!hasPermissionInRequestedCompany)
             return Result.Forbidden();
-
-        var countryId = job.JobFolder!.Company!.CountryId;
         
         context.Jobs.Remove(job);
         

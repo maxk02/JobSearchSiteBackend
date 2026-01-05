@@ -8,12 +8,6 @@ public class CompanyConfiguration : IEntityTypeConfiguration<Company>
     public void Configure(EntityTypeBuilder<Company> builder)
     {
         builder.HasKey(company => company.Id);
-        
-        builder
-            .HasMany(company => company.JobFolders)
-            .WithOne(jobFolder => jobFolder.Company)
-            .HasForeignKey(jobFolder => jobFolder.CompanyId)
-            .OnDelete(DeleteBehavior.Cascade);
 
         builder
             .HasMany(company => company.UserCompanyClaims)

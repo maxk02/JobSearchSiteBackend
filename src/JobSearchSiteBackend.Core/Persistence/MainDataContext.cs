@@ -5,8 +5,6 @@ using JobSearchSiteBackend.Core.Domains.CompanyClaims;
 using JobSearchSiteBackend.Core.Domains.Countries;
 using JobSearchSiteBackend.Core.Domains.JobApplications;
 using JobSearchSiteBackend.Core.Domains.JobContractTypes;
-using JobSearchSiteBackend.Core.Domains.JobFolderClaims;
-using JobSearchSiteBackend.Core.Domains.JobFolders;
 using JobSearchSiteBackend.Core.Domains.Jobs;
 using JobSearchSiteBackend.Core.Domains.Locations;
 using JobSearchSiteBackend.Core.Domains.PersonalFiles;
@@ -35,14 +33,10 @@ public class MainDataContext : IdentityDbContext<MyIdentityUser, MyIdentityRole,
     public DbSet<JobSalaryInfo> JobSalaryInfos { get; set; }
     public DbSet<Location> Locations { get; set; }
     public DbSet<LocationRelation> LocationRelations { get; set; }
-    public DbSet<JobFolder> JobFolders { get; set; }
-    public DbSet<JobFolderRelation> JobFolderRelations { get; set; }
     public DbSet<CompanyClaim> CompanyClaims { get; set; }
     public DbSet<UserCompanyClaim> UserCompanyClaims { get; set; }
-    public DbSet<JobFolderClaim> JobFolderClaims { get; set; }
     public DbSet<UserJobApplicationBookmark> UserJobApplicationBookmarks { get; set; }
     public DbSet<UserJobBookmark> UserJobBookmarks { get; set; }
-    public DbSet<UserJobFolderClaim> UserJobFolderClaims { get; set; }
     public DbSet<UserProfile> UserProfiles { get; set; }
     public DbSet<UserAvatar> UserAvatars { get; set; }
 

@@ -2,8 +2,6 @@
 using AutoMapper;
 using JobSearchSiteBackend.Core.Domains._Shared.UseCaseStructure;
 using JobSearchSiteBackend.Core.Domains.Companies.Persistence;
-using JobSearchSiteBackend.Core.Domains.JobFolderClaims;
-using JobSearchSiteBackend.Core.Domains.JobFolders;
 using JobSearchSiteBackend.Core.Domains.Jobs.Dtos;
 using JobSearchSiteBackend.Core.Domains.Locations;
 using JobSearchSiteBackend.Core.Persistence;
@@ -28,14 +26,10 @@ public class GetJobHandler(
         var dbQuery = context.Jobs
             .AsNoTracking()
             .Where(j => j.Id == query.Id)
-            .Include(j => j.JobFolder)
-            .ThenInclude(jf => jf!.Company)
+            .Include(j => j.Company)
             .ThenInclude(c => c!.CompanyAvatars)
             .Include(job => job.SalaryInfo)
             .Include(job => job.EmploymentOptions)
-            // .Include(job => job.Responsibilities)
-            // .Include(job => job.Requirements)
-            // .Include(job => job.NiceToHaves)
             .Include(job => job.JobContractTypes)
             .Include(job => job.Locations);
 
@@ -70,9 +64,9 @@ public class GetJobHandler(
         if (!fetchedJob.IsPublic)
             return Result.Forbidden();
 
-        await cacheRepo.IncrementJobVisitsCounterAsync(fetchedJob.JobFolder!.CompanyId.ToString(), fetchedJob.Id.ToString());
+        await cacheRepo.IncrementJobVisitsCounterAsync(fetchedJob.CompanyId.ToString(), fetchedJob.Id.ToString());
         
-        var avatar = fetchedJob.JobFolder?.Company?.CompanyAvatars?.GetLatestAvailableAvatar();
+        var avatar = fetchedJob.Company?.CompanyAvatars?.GetLatestAvailableAvatar();
 
         string? avatarLink = null;
 
@@ -84,10 +78,10 @@ public class GetJobHandler(
         
         var jobDetailedDto = new JobDetailedDto(
             fetchedJob.Id,
-            fetchedJob.JobFolder!.CompanyId,
+            fetchedJob.CompanyId,
             avatarLink,
-            fetchedJob.JobFolder!.Company!.Name,
-            fetchedJob.JobFolder.Company.Description,
+            fetchedJob.Company!.Name,
+            fetchedJob.Company.Description,
             fetchedJob.Locations!.Select(l => l.ToLocationDto()).ToList(),
             fetchedJob.CategoryId,
             fetchedJob.Title,

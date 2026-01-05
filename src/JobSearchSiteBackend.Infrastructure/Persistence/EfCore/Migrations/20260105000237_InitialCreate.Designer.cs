@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace JobSearchSiteBackend.Infrastructure.Persistence.EfCore.Migrations
 {
     [DbContext(typeof(MainDataContext))]
-    [Migration("20260104032012_InitialCreate")]
+    [Migration("20260105000237_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -604,6 +604,21 @@ namespace JobSearchSiteBackend.Infrastructure.Persistence.EfCore.Migrations
                         {
                             Id = 5L,
                             Name = "CanManageBalance"
+                        },
+                        new
+                        {
+                            Id = 6L,
+                            Name = "CanEditJobs"
+                        },
+                        new
+                        {
+                            Id = 7L,
+                            Name = "CanReadJobs"
+                        },
+                        new
+                        {
+                            Id = 8L,
+                            Name = "CanManageApplications"
                         });
                 });
 
@@ -925,130 +940,6 @@ namespace JobSearchSiteBackend.Infrastructure.Persistence.EfCore.Migrations
                         });
                 });
 
-            modelBuilder.Entity("JobSearchSiteBackend.Core.Domains.JobFolderClaims.JobFolderClaim", b =>
-                {
-                    b.Property<long>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("JobFolderClaims");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1L,
-                            Name = "IsOwner"
-                        },
-                        new
-                        {
-                            Id = 2L,
-                            Name = "IsAdmin"
-                        },
-                        new
-                        {
-                            Id = 3L,
-                            Name = "CanReadStats"
-                        },
-                        new
-                        {
-                            Id = 4L,
-                            Name = "CanEditInfo"
-                        },
-                        new
-                        {
-                            Id = 5L,
-                            Name = "CanEditJobs"
-                        },
-                        new
-                        {
-                            Id = 6L,
-                            Name = "CanReadJobs"
-                        },
-                        new
-                        {
-                            Id = 7L,
-                            Name = "CanManageApplications"
-                        });
-                });
-
-            modelBuilder.Entity("JobSearchSiteBackend.Core.Domains.JobFolderClaims.UserJobFolderClaim", b =>
-                {
-                    b.Property<long>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
-
-                    b.Property<long>("ClaimId")
-                        .HasColumnType("bigint");
-
-                    b.Property<long>("FolderId")
-                        .HasColumnType("bigint");
-
-                    b.Property<long>("UserId")
-                        .HasColumnType("bigint");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ClaimId");
-
-                    b.HasIndex("FolderId");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("UserJobFolderClaims");
-                });
-
-            modelBuilder.Entity("JobSearchSiteBackend.Core.Domains.JobFolders.JobFolder", b =>
-                {
-                    b.Property<long>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
-
-                    b.Property<long>("CompanyId")
-                        .HasColumnType("bigint");
-
-                    b.Property<string>("Description")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Name")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("CompanyId");
-
-                    b.ToTable("JobFolders");
-                });
-
-            modelBuilder.Entity("JobSearchSiteBackend.Core.Domains.JobFolders.JobFolderRelation", b =>
-                {
-                    b.Property<long>("AncestorId")
-                        .HasColumnType("bigint");
-
-                    b.Property<long>("DescendantId")
-                        .HasColumnType("bigint");
-
-                    b.Property<int>("Depth")
-                        .HasColumnType("int");
-
-                    b.HasKey("AncestorId", "DescendantId");
-
-                    b.HasIndex("DescendantId");
-
-                    b.ToTable("JobFolderRelations");
-                });
-
             modelBuilder.Entity("JobSearchSiteBackend.Core.Domains.Jobs.Job", b =>
                 {
                     b.Property<long>("Id")
@@ -1060,7 +951,7 @@ namespace JobSearchSiteBackend.Infrastructure.Persistence.EfCore.Migrations
                     b.Property<long>("CategoryId")
                         .HasColumnType("bigint");
 
-                    b.Property<long?>("CompanyId")
+                    b.Property<long>("CompanyId")
                         .HasColumnType("bigint");
 
                     b.Property<DateTime>("DateTimeExpiringUtc")
@@ -1084,9 +975,6 @@ namespace JobSearchSiteBackend.Infrastructure.Persistence.EfCore.Migrations
                     b.Property<bool>("IsPublic")
                         .HasColumnType("bit");
 
-                    b.Property<long>("JobFolderId")
-                        .HasColumnType("bigint");
-
                     b.PrimitiveCollection<string>("NiceToHaves")
                         .HasColumnType("nvarchar(max)");
 
@@ -1105,8 +993,6 @@ namespace JobSearchSiteBackend.Infrastructure.Persistence.EfCore.Migrations
                     b.HasIndex("CategoryId");
 
                     b.HasIndex("CompanyId");
-
-                    b.HasIndex("JobFolderId");
 
                     b.ToTable("Jobs");
                 });
@@ -1690,63 +1576,6 @@ namespace JobSearchSiteBackend.Infrastructure.Persistence.EfCore.Migrations
                     b.Navigation("Country");
                 });
 
-            modelBuilder.Entity("JobSearchSiteBackend.Core.Domains.JobFolderClaims.UserJobFolderClaim", b =>
-                {
-                    b.HasOne("JobSearchSiteBackend.Core.Domains.JobFolderClaims.JobFolderClaim", "JobFolderClaim")
-                        .WithMany("UserJobFolderClaims")
-                        .HasForeignKey("ClaimId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.HasOne("JobSearchSiteBackend.Core.Domains.JobFolders.JobFolder", "JobFolder")
-                        .WithMany("UserJobFolderClaims")
-                        .HasForeignKey("FolderId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("JobSearchSiteBackend.Core.Domains.UserProfiles.UserProfile", "User")
-                        .WithMany("UserJobFolderClaims")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("JobFolder");
-
-                    b.Navigation("JobFolderClaim");
-
-                    b.Navigation("User");
-                });
-
-            modelBuilder.Entity("JobSearchSiteBackend.Core.Domains.JobFolders.JobFolder", b =>
-                {
-                    b.HasOne("JobSearchSiteBackend.Core.Domains.Companies.Company", "Company")
-                        .WithMany("JobFolders")
-                        .HasForeignKey("CompanyId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Company");
-                });
-
-            modelBuilder.Entity("JobSearchSiteBackend.Core.Domains.JobFolders.JobFolderRelation", b =>
-                {
-                    b.HasOne("JobSearchSiteBackend.Core.Domains.JobFolders.JobFolder", "Ancestor")
-                        .WithMany("RelationsWhereThisIsAncestor")
-                        .HasForeignKey("AncestorId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.HasOne("JobSearchSiteBackend.Core.Domains.JobFolders.JobFolder", "Descendant")
-                        .WithMany("RelationsWhereThisIsDescendant")
-                        .HasForeignKey("DescendantId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.Navigation("Ancestor");
-
-                    b.Navigation("Descendant");
-                });
-
             modelBuilder.Entity("JobSearchSiteBackend.Core.Domains.Jobs.Job", b =>
                 {
                     b.HasOne("JobSearchSiteBackend.Core.Domains.Categories.Category", "Category")
@@ -1755,19 +1584,15 @@ namespace JobSearchSiteBackend.Infrastructure.Persistence.EfCore.Migrations
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("JobSearchSiteBackend.Core.Domains.Companies.Company", null)
+                    b.HasOne("JobSearchSiteBackend.Core.Domains.Companies.Company", "Company")
                         .WithMany("Jobs")
-                        .HasForeignKey("CompanyId");
-
-                    b.HasOne("JobSearchSiteBackend.Core.Domains.JobFolders.JobFolder", "JobFolder")
-                        .WithMany("Jobs")
-                        .HasForeignKey("JobFolderId")
+                        .HasForeignKey("CompanyId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Category");
 
-                    b.Navigation("JobFolder");
+                    b.Navigation("Company");
                 });
 
             modelBuilder.Entity("JobSearchSiteBackend.Core.Domains.Jobs.JobPublicationInterval", b =>
@@ -1957,8 +1782,6 @@ namespace JobSearchSiteBackend.Infrastructure.Persistence.EfCore.Migrations
 
                     b.Navigation("CompanyBalanceTransactions");
 
-                    b.Navigation("JobFolders");
-
                     b.Navigation("Jobs");
 
                     b.Navigation("UserCompanyClaims");
@@ -1997,22 +1820,6 @@ namespace JobSearchSiteBackend.Infrastructure.Persistence.EfCore.Migrations
                     b.Navigation("UserJobApplicationBookmarks");
                 });
 
-            modelBuilder.Entity("JobSearchSiteBackend.Core.Domains.JobFolderClaims.JobFolderClaim", b =>
-                {
-                    b.Navigation("UserJobFolderClaims");
-                });
-
-            modelBuilder.Entity("JobSearchSiteBackend.Core.Domains.JobFolders.JobFolder", b =>
-                {
-                    b.Navigation("Jobs");
-
-                    b.Navigation("RelationsWhereThisIsAncestor");
-
-                    b.Navigation("RelationsWhereThisIsDescendant");
-
-                    b.Navigation("UserJobFolderClaims");
-                });
-
             modelBuilder.Entity("JobSearchSiteBackend.Core.Domains.Jobs.Job", b =>
                 {
                     b.Navigation("JobApplications");
@@ -2046,8 +1853,6 @@ namespace JobSearchSiteBackend.Infrastructure.Persistence.EfCore.Migrations
                     b.Navigation("UserJobApplicationBookmarks");
 
                     b.Navigation("UserJobBookmarks");
-
-                    b.Navigation("UserJobFolderClaims");
                 });
 #pragma warning restore 612, 618
         }

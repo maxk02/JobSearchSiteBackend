@@ -11,8 +11,7 @@ public class SyncJobsWithSearchRunner(MainDataContext dbContext,
     public async Task Run()
     {
         var recordsToSync = await dbContext.Jobs
-            .Include(j => j.JobFolder)
-            .ThenInclude(jf => jf!.Company)
+            .Include(j => j!.Company)
             .Where(j => j.DateTimeSyncedWithSearchUtc == null
                         || j.DateTimeSyncedWithSearchUtc < j.DateTimeUpdatedUtc)
             .ToListAsync();
@@ -22,7 +21,7 @@ public class SyncJobsWithSearchRunner(MainDataContext dbContext,
         
         var jobSearchModels = recordsToSync.Select(job => new JobSearchModel(
             job.Id,
-            job.JobFolder!.Company!.CountryId,
+            job.Company!.CountryId,
             job.CategoryId,
             job.Title,
             job.Description,

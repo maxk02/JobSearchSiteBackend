@@ -1,9 +1,9 @@
 ﻿using JobSearchSiteBackend.Core.Domains._Shared.EntityInterfaces;
 using JobSearchSiteBackend.Core.Domains.Categories;
+using JobSearchSiteBackend.Core.Domains.Companies;
 using JobSearchSiteBackend.Core.Domains.EmploymentOptions;
 using JobSearchSiteBackend.Core.Domains.JobApplications;
 using JobSearchSiteBackend.Core.Domains.JobContractTypes;
-using JobSearchSiteBackend.Core.Domains.JobFolders;
 using JobSearchSiteBackend.Core.Domains.Locations;
 using JobSearchSiteBackend.Core.Domains.UserProfiles;
 
@@ -14,13 +14,13 @@ public class Job : IEntityWithId, IEntityWithSearchSync
 #pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider adding the 'required' modifier or declaring as nullable.
     private Job() {}
 #pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider adding the 'required' modifier or declaring as nullable.
-    public Job(long categoryId, long jobFolderId, string title, string? description, bool isPublic,
+    public Job(long categoryId, long companyId, string title, string? description, bool isPublic,
         DateTime dateTimePublishedUtc, DateTime dateTimeExpiringUtc, ICollection<string> responsibilities,
         ICollection<string> requirements, ICollection<string> niceToHaves, JobSalaryInfo? salaryInfo,
         ICollection<EmploymentOption> employmentOptions)
     {
         CategoryId = categoryId;
-        JobFolderId = jobFolderId;
+        CompanyId = companyId;
         Title = title;
         Description = description;
         IsPublic = isPublic;
@@ -43,7 +43,7 @@ public class Job : IEntityWithId, IEntityWithSearchSync
 
     public long CategoryId { get; set; }
 
-    public long JobFolderId { get; set; }
+    public long CompanyId { get; set; }
 
     public string Title { get; set; }
 
@@ -66,7 +66,7 @@ public class Job : IEntityWithId, IEntityWithSearchSync
     public bool IsPublic { get; set; }
 
     public Category? Category { get; set; }
-    public JobFolder? JobFolder { get; set; }
+    public Company? Company { get; set; }
     public ICollection<JobApplication>? JobApplications { get; set; }
     public ICollection<JobContractType>? JobContractTypes { get; set; }
     public ICollection<Location>? Locations { get; set; }

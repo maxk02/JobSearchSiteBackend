@@ -1,13 +1,10 @@
 ﻿using System.Globalization;
 using Ardalis.Result;
-using AutoMapper;
 using JobSearchSiteBackend.Core.Domains._Shared.UseCaseStructure;
 using JobSearchSiteBackend.Core.Domains.Categories;
 using JobSearchSiteBackend.Core.Domains.Companies;
+using JobSearchSiteBackend.Core.Domains.CompanyClaims;
 using JobSearchSiteBackend.Core.Domains.EmploymentOptions;
-using JobSearchSiteBackend.Core.Domains.JobFolderClaims;
-using JobSearchSiteBackend.Core.Domains.JobFolders;
-using JobSearchSiteBackend.Core.Domains.JobFolders.Persistence;
 using JobSearchSiteBackend.Core.Persistence;
 using JobSearchSiteBackend.Core.Services.Auth;
 using Microsoft.EntityFrameworkCore;
@@ -27,7 +24,7 @@ public class AddJobHandler(
         
         var job = new Job(
             command.CategoryId,
-            command.JobFolderId,
+            command.CompanyId,
             command.Title,
             command.Description,
             command.IsPublic,
@@ -49,22 +46,14 @@ public class AddJobHandler(
         if (!Category.AllIds.Contains(command.CategoryId))
             return Result.Error();
 
-        var jobFolder = await context.JobFolders
-            .AsNoTracking()
-            .Include(jobFolder => jobFolder.Company)
-            .Where(jf => jf.Id == command.JobFolderId)
-            .SingleOrDefaultAsync(cancellationToken);
+        var hasPermissionInRequestedCompany =
+            await context.UserCompanyClaims
+                .Where(ucc => ucc.CompanyId == command.CompanyId
+                    && ucc.UserId == currentUserId
+                    && ucc.ClaimId == CompanyClaim.CanEditJobs.Id)
+                .AnyAsync();
 
-        if (jobFolder is null)
-            return Result.Error();
-
-        var hasPermissionInRequestedFolderOrAncestors =
-            await context.JobFolderRelations
-                .GetThisOrAncestorWhereUserHasClaim(command.JobFolderId, currentUserId,
-                    JobFolderClaim.CanEditJobs.Id)
-                .AnyAsync(cancellationToken);
-
-        if (!hasPermissionInRequestedFolderOrAncestors)
+        if (!hasPermissionInRequestedCompany)
             return Result.Forbidden();
 
         
@@ -74,7 +63,7 @@ public class AddJobHandler(
         // suppose we have implemented it only for one currency for now
         var jobPublicationInterval = await context.JobPublicationIntervals
             .Include(jpi => jpi.CountryCurrency)
-            .Where(jpi => jpi.CountryCurrency!.CountryId == jobFolder.CompanyId)
+            .Where(jpi => jpi.CountryCurrency!.CountryId == command.CompanyId)
             .Where(jpi => jpi.MaxDaysOfPublication >= daysCeiled)
             .OrderBy(v => v.MaxDaysOfPublication)
             .FirstOrDefaultAsync(cancellationToken);
@@ -85,7 +74,7 @@ public class AddJobHandler(
         await using var transaction = await context.Database.BeginTransactionAsync(cancellationToken);
         
         var currentBalance = await context.CompanyBalanceTransactions
-            .FromSqlInterpolated(sqlQueries.GetCompanyBalanceTransactionsWithRowLocks(jobFolder.CompanyId))
+            .FromSqlInterpolated(sqlQueries.GetCompanyBalanceTransactionsWithRowLocks(command.CompanyId))
             .SumAsync(t => (decimal?)t.Amount, cancellationToken) ?? 0m;
         
         var newBalance = currentBalance + jobPublicationInterval.Price;
@@ -93,7 +82,7 @@ public class AddJobHandler(
         if (newBalance < 0)
             return Result.Error();
         
-        var companyBalanceTransaction = new CompanyBalanceTransaction(jobFolder.CompanyId, -jobPublicationInterval.Price,
+        var companyBalanceTransaction = new CompanyBalanceTransaction(command.CompanyId, -jobPublicationInterval.Price,
             $"Publikacja ogłoszenia {command.Title} do {command.DateTimeExpiringUtc.ToString(CultureInfo.InvariantCulture)}",
             jobPublicationInterval.CountryCurrency!.CurrencyId, currentUserId);
         

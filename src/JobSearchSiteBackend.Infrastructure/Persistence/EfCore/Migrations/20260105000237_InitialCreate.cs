@@ -121,19 +121,6 @@ namespace JobSearchSiteBackend.Infrastructure.Persistence.EfCore.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "JobFolderClaims",
-                columns: table => new
-                {
-                    Id = table.Column<long>(type: "bigint", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_JobFolderClaims", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "AspNetRoleClaims",
                 columns: table => new
                 {
@@ -485,20 +472,36 @@ namespace JobSearchSiteBackend.Infrastructure.Persistence.EfCore.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "JobFolders",
+                name: "Jobs",
                 columns: table => new
                 {
                     Id = table.Column<long>(type: "bigint", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
+                    DateTimeUpdatedUtc = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    DateTimeSyncedWithSearchUtc = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    IsDeleted = table.Column<bool>(type: "bit", nullable: false),
+                    CategoryId = table.Column<long>(type: "bigint", nullable: false),
                     CompanyId = table.Column<long>(type: "bigint", nullable: false),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Description = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                    Title = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    DateTimePublishedUtc = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    DateTimeExpiringUtc = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    Responsibilities = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Requirements = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    NiceToHaves = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    IsPublic = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_JobFolders", x => x.Id);
+                    table.PrimaryKey("PK_Jobs", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_JobFolders_Companies_CompanyId",
+                        name: "FK_Jobs_Categories_CategoryId",
+                        column: x => x.CategoryId,
+                        principalTable: "Categories",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Jobs_Companies_CompanyId",
                         column: x => x.CompanyId,
                         principalTable: "Companies",
                         principalColumn: "Id",
@@ -582,107 +585,6 @@ namespace JobSearchSiteBackend.Infrastructure.Persistence.EfCore.Migrations
                         principalTable: "CountryCurrencies",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "JobFolderRelations",
-                columns: table => new
-                {
-                    AncestorId = table.Column<long>(type: "bigint", nullable: false),
-                    DescendantId = table.Column<long>(type: "bigint", nullable: false),
-                    Depth = table.Column<int>(type: "int", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_JobFolderRelations", x => new { x.AncestorId, x.DescendantId });
-                    table.ForeignKey(
-                        name: "FK_JobFolderRelations_JobFolders_AncestorId",
-                        column: x => x.AncestorId,
-                        principalTable: "JobFolders",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_JobFolderRelations_JobFolders_DescendantId",
-                        column: x => x.DescendantId,
-                        principalTable: "JobFolders",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Jobs",
-                columns: table => new
-                {
-                    Id = table.Column<long>(type: "bigint", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    DateTimeUpdatedUtc = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    DateTimeSyncedWithSearchUtc = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    IsDeleted = table.Column<bool>(type: "bit", nullable: false),
-                    CategoryId = table.Column<long>(type: "bigint", nullable: false),
-                    JobFolderId = table.Column<long>(type: "bigint", nullable: false),
-                    Title = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    DateTimePublishedUtc = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    DateTimeExpiringUtc = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    Responsibilities = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Requirements = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    NiceToHaves = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    IsPublic = table.Column<bool>(type: "bit", nullable: false),
-                    CompanyId = table.Column<long>(type: "bigint", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Jobs", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Jobs_Categories_CategoryId",
-                        column: x => x.CategoryId,
-                        principalTable: "Categories",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_Jobs_Companies_CompanyId",
-                        column: x => x.CompanyId,
-                        principalTable: "Companies",
-                        principalColumn: "Id");
-                    table.ForeignKey(
-                        name: "FK_Jobs_JobFolders_JobFolderId",
-                        column: x => x.JobFolderId,
-                        principalTable: "JobFolders",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "UserJobFolderClaims",
-                columns: table => new
-                {
-                    Id = table.Column<long>(type: "bigint", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    UserId = table.Column<long>(type: "bigint", nullable: false),
-                    FolderId = table.Column<long>(type: "bigint", nullable: false),
-                    ClaimId = table.Column<long>(type: "bigint", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_UserJobFolderClaims", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_UserJobFolderClaims_JobFolderClaims_ClaimId",
-                        column: x => x.ClaimId,
-                        principalTable: "JobFolderClaims",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_UserJobFolderClaims_JobFolders_FolderId",
-                        column: x => x.FolderId,
-                        principalTable: "JobFolders",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_UserJobFolderClaims_UserProfiles_UserId",
-                        column: x => x.UserId,
-                        principalTable: "UserProfiles",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -971,7 +873,10 @@ namespace JobSearchSiteBackend.Infrastructure.Persistence.EfCore.Migrations
                     { 2L, "IsAdmin" },
                     { 3L, "CanReadStats" },
                     { 4L, "CanEditProfile" },
-                    { 5L, "CanManageBalance" }
+                    { 5L, "CanManageBalance" },
+                    { 6L, "CanEditJobs" },
+                    { 7L, "CanReadJobs" },
+                    { 8L, "CanManageApplications" }
                 });
 
             migrationBuilder.InsertData(
@@ -1005,20 +910,6 @@ namespace JobSearchSiteBackend.Infrastructure.Persistence.EfCore.Migrations
                     { 4L, 1, "Zdalnie" },
                     { 5L, 1, "Hybrydowo" },
                     { 6L, 1, "Z wyjazdami" }
-                });
-
-            migrationBuilder.InsertData(
-                table: "JobFolderClaims",
-                columns: new[] { "Id", "Name" },
-                values: new object[,]
-                {
-                    { 1L, "IsOwner" },
-                    { 2L, "IsAdmin" },
-                    { 3L, "CanReadStats" },
-                    { 4L, "CanEditInfo" },
-                    { 5L, "CanEditJobs" },
-                    { 6L, "CanReadJobs" },
-                    { 7L, "CanManageApplications" }
                 });
 
             migrationBuilder.InsertData(
@@ -1177,16 +1068,6 @@ namespace JobSearchSiteBackend.Infrastructure.Persistence.EfCore.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_JobFolderRelations_DescendantId",
-                table: "JobFolderRelations",
-                column: "DescendantId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_JobFolders_CompanyId",
-                table: "JobFolders",
-                column: "CompanyId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_JobJobContractType_JobsId",
                 table: "JobJobContractType",
                 column: "JobsId");
@@ -1210,11 +1091,6 @@ namespace JobSearchSiteBackend.Infrastructure.Persistence.EfCore.Migrations
                 name: "IX_Jobs_CompanyId",
                 table: "Jobs",
                 column: "CompanyId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Jobs_JobFolderId",
-                table: "Jobs",
-                column: "JobFolderId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_LocationRelations_DescendantId",
@@ -1278,21 +1154,6 @@ namespace JobSearchSiteBackend.Infrastructure.Persistence.EfCore.Migrations
                 table: "UserJobBookmarks",
                 columns: new[] { "UserId", "JobId" },
                 unique: true);
-
-            migrationBuilder.CreateIndex(
-                name: "IX_UserJobFolderClaims_ClaimId",
-                table: "UserJobFolderClaims",
-                column: "ClaimId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_UserJobFolderClaims_FolderId",
-                table: "UserJobFolderClaims",
-                column: "FolderId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_UserJobFolderClaims_UserId",
-                table: "UserJobFolderClaims",
-                column: "UserId");
         }
 
         /// <inheritdoc />
@@ -1332,9 +1193,6 @@ namespace JobSearchSiteBackend.Infrastructure.Persistence.EfCore.Migrations
                 name: "JobApplicationTag");
 
             migrationBuilder.DropTable(
-                name: "JobFolderRelations");
-
-            migrationBuilder.DropTable(
                 name: "JobJobContractType");
 
             migrationBuilder.DropTable(
@@ -1362,9 +1220,6 @@ namespace JobSearchSiteBackend.Infrastructure.Persistence.EfCore.Migrations
                 name: "UserJobBookmarks");
 
             migrationBuilder.DropTable(
-                name: "UserJobFolderClaims");
-
-            migrationBuilder.DropTable(
                 name: "AspNetRoles");
 
             migrationBuilder.DropTable(
@@ -1386,9 +1241,6 @@ namespace JobSearchSiteBackend.Infrastructure.Persistence.EfCore.Migrations
                 name: "JobApplications");
 
             migrationBuilder.DropTable(
-                name: "JobFolderClaims");
-
-            migrationBuilder.DropTable(
                 name: "Currencies");
 
             migrationBuilder.DropTable(
@@ -1404,13 +1256,10 @@ namespace JobSearchSiteBackend.Infrastructure.Persistence.EfCore.Migrations
                 name: "Categories");
 
             migrationBuilder.DropTable(
-                name: "JobFolders");
+                name: "Companies");
 
             migrationBuilder.DropTable(
                 name: "AspNetUsers");
-
-            migrationBuilder.DropTable(
-                name: "Companies");
 
             migrationBuilder.DropTable(
                 name: "Countries");

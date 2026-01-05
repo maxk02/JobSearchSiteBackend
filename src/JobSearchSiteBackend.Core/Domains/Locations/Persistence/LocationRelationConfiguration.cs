@@ -1,5 +1,4 @@
-﻿using JobSearchSiteBackend.Core.Domains.JobFolders;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace JobSearchSiteBackend.Core.Domains.Locations.Persistence;

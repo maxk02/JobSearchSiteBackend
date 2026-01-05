@@ -4,8 +4,6 @@ using JobSearchSiteBackend.Core.Domains.CompanyClaims;
 using JobSearchSiteBackend.Core.Domains.EmploymentOptions;
 using JobSearchSiteBackend.Core.Domains.JobApplications;
 using JobSearchSiteBackend.Core.Domains.JobApplications.Enums;
-using JobSearchSiteBackend.Core.Domains.JobFolderClaims;
-using JobSearchSiteBackend.Core.Domains.JobFolders;
 using JobSearchSiteBackend.Core.Domains.Jobs;
 using JobSearchSiteBackend.Core.Domains.Locations;
 using JobSearchSiteBackend.Core.Domains.PersonalFiles;
@@ -22,7 +20,7 @@ namespace JobSearchSiteBackend.Infrastructure.Persistence.EfCore;
 public class MainDataContextSeeder(MainDataContext context,
     UserManager<MyIdentityUser> userManager, IConfiguration configuration)
 {
-    private record JobSeedingItem(long Id, bool IsPublic, long JobFolderId, long CategoryId, string Title, string? Description,
+    private record JobSeedingItem(long Id, bool IsPublic, long CompanyId, long CategoryId, string Title, string? Description,
         DateTime DateTimePublishedUtc, DateTime DateTimeExpiringUtc, List<long> EmploymentOptionIds, List<long> LocationIds,
         List<long> ContractTypeIds, List<string> Responsibilities, List<string> Requirements, List<string> NiceToHaves);
 
@@ -43,7 +41,6 @@ public class MainDataContextSeeder(MainDataContext context,
         await SeedCompanyAvatarsAsync();
         await SeedLocationsAsync();
         await SeedLocationRelationsAsync();
-        await SeedJobFoldersAsync();
         await SeedJobsAsync();
         await SeedJobSalaryInfosAsync();
         await SeedUsersWithClaimsAndApplicationsAsync();
@@ -147,49 +144,49 @@ public class MainDataContextSeeder(MainDataContext context,
         await transaction.CommitAsync();
     }
 
-    private async Task SeedJobFoldersAsync()
-    {
-        await using var transaction = context.Database.BeginTransaction();
+    // private async Task SeedJobFoldersAsync()
+    // {
+    //     await using var transaction = context.Database.BeginTransaction();
 
-        await context.Database.ExecuteSqlRawAsync("SET IDENTITY_INSERT dbo.JobFolders ON");
+    //     await context.Database.ExecuteSqlRawAsync("SET IDENTITY_INSERT dbo.JobFolders ON");
 
-        var jobFolders = await SeedFileHelper.LoadJsonAsync<List<JobFolder>>("Domains/JobFolders/Seed/job_folders.json");
+    //     var jobFolders = await SeedFileHelper.LoadJsonAsync<List<JobFolder>>("Domains/JobFolders/Seed/job_folders.json");
 
-        if (jobFolders is null || jobFolders.Count == 0)
-            throw new InvalidDataException();
+    //     if (jobFolders is null || jobFolders.Count == 0)
+    //         throw new InvalidDataException();
 
-        var sqlScript = "INSERT INTO dbo.JobFolders (Id, CompanyId, Name, Description) VALUES \n";
+    //     var sqlScript = "INSERT INTO dbo.JobFolders (Id, CompanyId, Name, Description) VALUES \n";
 
-        for (var i = 0; i < jobFolders.Count; i++)
-        {
-            sqlScript += $"({jobFolders[i].Id}, ";
+    //     for (var i = 0; i < jobFolders.Count; i++)
+    //     {
+    //         sqlScript += $"({jobFolders[i].Id}, ";
 
-            sqlScript += $"{jobFolders[i].CompanyId}, ";
+    //         sqlScript += $"{jobFolders[i].CompanyId}, ";
 
-            if (jobFolders[i].Name is null)
-                sqlScript += $"NULL, ";
-            else
-                sqlScript += $"\'{jobFolders[i].Name}\', ";
+    //         if (jobFolders[i].Name is null)
+    //             sqlScript += $"NULL, ";
+    //         else
+    //             sqlScript += $"\'{jobFolders[i].Name}\', ";
 
-            if (jobFolders[i].Description is null)
-                sqlScript += $"NULL)";
-            else
-                sqlScript += $"\'{jobFolders[i].Description}\')";
+    //         if (jobFolders[i].Description is null)
+    //             sqlScript += $"NULL)";
+    //         else
+    //             sqlScript += $"\'{jobFolders[i].Description}\')";
 
-            if (i < jobFolders.Count - 1)
-                sqlScript += ",\n\n";
-            else
-                sqlScript += ";";
-        }
+    //         if (i < jobFolders.Count - 1)
+    //             sqlScript += ",\n\n";
+    //         else
+    //             sqlScript += ";";
+    //     }
 
-        await context.Database.ExecuteSqlRawAsync(sqlScript);
+    //     await context.Database.ExecuteSqlRawAsync(sqlScript);
 
-        await context.Database.ExecuteSqlRawAsync("SET IDENTITY_INSERT dbo.JobFolders OFF");
+    //     await context.Database.ExecuteSqlRawAsync("SET IDENTITY_INSERT dbo.JobFolders OFF");
 
-        await context.Database.ExecuteSqlAsync($"DBCC CHECKIDENT (\'dbo.JobFolders\', RESEED, 1000);");
+    //     await context.Database.ExecuteSqlAsync($"DBCC CHECKIDENT (\'dbo.JobFolders\', RESEED, 1000);");
 
-        await transaction.CommitAsync();
-    }
+    //     await transaction.CommitAsync();
+    // }
 
     private async Task SeedJobsAsync()
     {
@@ -204,7 +201,7 @@ public class MainDataContextSeeder(MainDataContext context,
 
         var jobs = new List<Job>();
 
-        var sqlScript = "INSERT INTO Jobs (Id, DateTimeUpdatedUtc, DateTimeSyncedWithSearchUtc, IsDeleted, CategoryId, JobFolderId, Title, Description, DateTimePublishedUtc, DateTimeExpiringUtc, Responsibilities, Requirements, NiceToHaves, IsPublic) VALUES \n";
+        var sqlScript = "INSERT INTO Jobs (Id, DateTimeUpdatedUtc, DateTimeSyncedWithSearchUtc, IsDeleted, CategoryId, CompanyId, Title, Description, DateTimePublishedUtc, DateTimeExpiringUtc, Responsibilities, Requirements, NiceToHaves, IsPublic) VALUES \n";
 
         var sqlLocationsScript = "INSERT INTO JobLocation (JobsId, LocationsId) VALUES \n";
 
@@ -219,7 +216,7 @@ public class MainDataContextSeeder(MainDataContext context,
             sqlScript += $"NULL, ";
             sqlScript += $"0, ";
             sqlScript += $"{jobSeedingItems[i].CategoryId}, ";
-            sqlScript += $"{jobSeedingItems[i].JobFolderId}, ";
+            sqlScript += $"{jobSeedingItems[i].CompanyId}, ";
             sqlScript += $"\'{jobSeedingItems[i].Title}\', ";
             if (jobSeedingItems[i].Description is not null)
                 sqlScript += $"\'{jobSeedingItems[i].Description}\', ";
@@ -308,7 +305,7 @@ public class MainDataContextSeeder(MainDataContext context,
             .Where(c => c.Id == 4)
             .SingleAsync();
 
-        // global admin
+        // owner (global admin)
         var user1FromDb = await userManager.FindByEmailAsync("admin@transworld.pl");
 
         if (user1FromDb is null)
@@ -346,31 +343,22 @@ public class MainDataContextSeeder(MainDataContext context,
             context.UserCompanyClaims.AddRange(user1CompanyClaims);
 
 
-            List<JobFolderClaim> jobFolderClaims = JobFolderClaim.AllValues.ToList();
-
-            var user1JobFolderClaims = jobFolderClaims
-                .Select(x => new UserJobFolderClaim(user1Id, 4, x.Id))
-                .ToList();
-
-            context.UserJobFolderClaims.AddRange(user1JobFolderClaims);
-
-
             await context.SaveChangesAsync();
         }
 
-        // branch admin
-        var user2FromDb = await userManager.FindByEmailAsync("branch_admin@transworld.pl");
+        // partial admin
+        var user2FromDb = await userManager.FindByEmailAsync("partial_admin@transworld.pl");
 
         if (user2FromDb is null)
         {
             var user2 = new MyIdentityUser {
-                UserName = "branch_admin@transworld.pl",
-                Email = "branch_admin@transworld.pl",
+                UserName = "partial_admin@transworld.pl",
+                Email = "partial_admin@transworld.pl",
                 EmailConfirmed = true
             };
         
             var aspNetIdentityResult2 = await userManager
-                .CreateAsync(user2, configuration["branch_admin_at_transworld.pl_USER_PASSWORD"] ?? throw new ApplicationException());
+                .CreateAsync(user2, configuration["partial_admin_at_transworld.pl_USER_PASSWORD"] ?? throw new ApplicationException());
 
             if (!aspNetIdentityResult2.Succeeded)
                 throw new ApplicationException();
@@ -378,67 +366,66 @@ public class MainDataContextSeeder(MainDataContext context,
             long user2Id = user2.Id;
 
             var newUser2Profile = new UserProfile(user2Id, "Administrator",
-                "Działu", null, true);
+                "Częściowy", null, true);
 
             context.UserProfiles.Add(newUser2Profile);
             company.Employees!.Add(newUser2Profile);
 
             await context.SaveChangesAsync();
 
-            List<JobFolderClaim> jobFolderClaims = [
-                JobFolderClaim.CanReadJobs,
-                JobFolderClaim.CanReadStats,
-                JobFolderClaim.CanManageApplications,
-                JobFolderClaim.CanEditJobs,
-                JobFolderClaim.CanEditInfo,
-                JobFolderClaim.IsAdmin
+            List<CompanyClaim> companyClaims = [
+                CompanyClaim.CanReadJobs,
+                CompanyClaim.CanReadStats,
+                CompanyClaim.CanManageApplications,
+                CompanyClaim.CanEditJobs,
+                CompanyClaim.IsAdmin
             ];
 
-            var user2JobFolderClaims = jobFolderClaims
-                .Select(x => new UserJobFolderClaim(user2Id, 21, x.Id))
+            var user2CompanyClaims = companyClaims
+                .Select(x => new UserCompanyClaim(user2Id, 4, x.Id))
                 .ToList();
 
-            context.UserJobFolderClaims.AddRange(user2JobFolderClaims);
+            context.UserCompanyClaims.AddRange(user2CompanyClaims);
 
             await context.SaveChangesAsync();
         }
 
         // branch application reviewer
-        var user3FromDb = await userManager.FindByEmailAsync("branch_application_reviewer@transworld.pl");
+        var user3FromDb = await userManager.FindByEmailAsync("application_reviewer@transworld.pl");
 
         if (user3FromDb is null)
         {
             var user3 = new MyIdentityUser {
-                UserName = "branch_application_reviewer@transworld.pl",
-                Email = "branch_application_reviewer@transworld.pl",
+                UserName = "application_reviewer@transworld.pl",
+                Email = "application_reviewer@transworld.pl",
                 EmailConfirmed = true
             };
         
             var aspNetIdentityResult3 = await userManager
-                .CreateAsync(user3, configuration["branch_application_reviewer_at_transworld.pl_USER_PASSWORD"] ?? throw new ApplicationException());
+                .CreateAsync(user3, configuration["application_reviewer_at_transworld.pl_USER_PASSWORD"] ?? throw new ApplicationException());
 
             if (!aspNetIdentityResult3.Succeeded)
                 throw new ApplicationException();
 
             long user3Id = user3.Id;
 
-            var newUser3Profile = new UserProfile(user3Id, "Specjalista HR",
-                "Niższego Działu", null, true);
+            var newUser3Profile = new UserProfile(user3Id, "Specjalista",
+                "HR", null, true);
 
             context.UserProfiles.Add(newUser3Profile);
             company.Employees!.Add(newUser3Profile);
 
-            List<JobFolderClaim> jobFolderClaims = [
-                JobFolderClaim.CanReadJobs,
-                JobFolderClaim.CanReadStats,
-                JobFolderClaim.CanManageApplications
+            List<CompanyClaim> companyClaims = [
+                CompanyClaim.CanReadJobs,
+                CompanyClaim.CanReadStats,
+                CompanyClaim.CanManageApplications
             ];
 
-            var user3JobFolderClaims = jobFolderClaims
-                .Select(x => new UserJobFolderClaim(user3Id, 22, x.Id))
+            var user3CompanyClaims = companyClaims
+                .Select(x => new UserCompanyClaim(user3Id, 4, x.Id))
                 .ToList();
 
-            context.UserJobFolderClaims.AddRange(user3JobFolderClaims);
+            context.UserCompanyClaims.AddRange(user3CompanyClaims);
 
             await context.SaveChangesAsync();
         }

@@ -5,7 +5,6 @@ using JobSearchSiteBackend.Core.Domains.Companies;
 using JobSearchSiteBackend.Core.Domains.Companies.Persistence;
 using JobSearchSiteBackend.Core.Domains.Jobs.Dtos;
 using JobSearchSiteBackend.Core.Domains.Jobs.Search;
-using JobSearchSiteBackend.Core.Domains.Locations;
 using JobSearchSiteBackend.Core.Domains.Locations.Dtos;
 using JobSearchSiteBackend.Core.Persistence;
 using JobSearchSiteBackend.Core.Services.Auth;
@@ -68,7 +67,7 @@ public class GetJobsHandler(
             dbQuery = dbQuery.Where(job => query.CategoryIds.Contains(job.CategoryId));
 
         if (query.CountryIds is not null && query.CountryIds.Count != 0)
-            dbQuery = dbQuery.Where(job => query.CountryIds.Contains(job.JobFolder!.Company!.CountryId));
+            dbQuery = dbQuery.Where(job => query.CountryIds.Contains(job.Company!.CountryId));
 
         if (query.ContractTypeIds is not null && query.ContractTypeIds.Count != 0)
             dbQuery = dbQuery.Where(job => job.JobContractTypes!.Any(jct => query.ContractTypeIds.Contains(jct.Id)));
@@ -89,7 +88,7 @@ public class GetJobsHandler(
         {
             jobItems = await dbQuery
                 .Select(j => new JobItem(
-                        j.Id, j.JobFolder!.CompanyId, j.JobFolder!.Company!.Name,
+                        j.Id, j.CompanyId, j.Company!.Name,
                         j.Locations!
                             .Select(l => new LocationDto(l.Id, l.CountryId, l.FullName, l.DescriptionPl, l.Code)),
                         j.Title, j.DateTimePublishedUtc, j.DateTimeExpiringUtc,
@@ -99,7 +98,7 @@ public class GetJobsHandler(
                             : null,
                         j.JobContractTypes!.Select(jct => jct.Id),
                         j.EmploymentOptions!.Select(eo => eo.Id),
-                        j.JobFolder!.Company!.CompanyAvatars!,
+                        j.Company!.CompanyAvatars!,
                         false
                     )
                 )
@@ -109,7 +108,7 @@ public class GetJobsHandler(
         {
             jobItems = await dbQuery
                 .Select(j => new JobItem(
-                        j.Id, j.JobFolder!.CompanyId, j.JobFolder!.Company!.Name,
+                        j.Id, j.CompanyId, j.Company!.Name,
                         j.Locations!
                             .Select(l => new LocationDto(l.Id, l.CountryId, l.FullName, l.DescriptionPl, l.Code)),
                         j.Title, j.DateTimePublishedUtc, j.DateTimeExpiringUtc,
@@ -119,7 +118,7 @@ public class GetJobsHandler(
                             : null,
                         j.JobContractTypes!.Select(jct => jct.Id),
                         j.EmploymentOptions!.Select(eo => eo.Id),
-                        j.JobFolder!.Company!.CompanyAvatars!,
+                        j.Company!.CompanyAvatars!,
                         j.UserJobBookmarks!.Any(u => u.UserId == currentUserId)
                     )
                 )

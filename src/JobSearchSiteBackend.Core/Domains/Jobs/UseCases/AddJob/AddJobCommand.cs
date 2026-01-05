@@ -5,7 +5,7 @@ using JobSearchSiteBackend.Core.Domains.Jobs.Dtos;
 namespace JobSearchSiteBackend.Core.Domains.Jobs.UseCases.AddJob;
 
 public record AddJobCommand(
-    long JobFolderId,
+    long CompanyId,
     long CategoryId,
     string Title,
     string? Description,

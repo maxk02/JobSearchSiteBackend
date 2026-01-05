@@ -4,8 +4,6 @@ using JobSearchSiteBackend.Core.Domains.Companies;
 using JobSearchSiteBackend.Core.Domains.CompanyClaims;
 using JobSearchSiteBackend.Core.Domains.Countries;
 using JobSearchSiteBackend.Core.Domains.JobApplications;
-using JobSearchSiteBackend.Core.Domains.JobFolderClaims;
-using JobSearchSiteBackend.Core.Domains.JobFolders;
 using JobSearchSiteBackend.Core.Domains.Jobs;
 using JobSearchSiteBackend.Core.Domains.Locations;
 using JobSearchSiteBackend.Core.Domains.PersonalFiles;
@@ -28,8 +26,6 @@ public static class ServiceExtensions
         services.ConfigureCompanyUseCases();
         services.ConfigureCompanyClaimUseCases();
         services.ConfigureJobApplicationUseCases();
-        services.ConfigureJobFolderClaimUseCases();
-        services.ConfigureJobFolderUseCases();
         services.ConfigureJobUseCases();
         services.ConfigureLocationUseCases();
         services.ConfigurePersonalFileUseCases();

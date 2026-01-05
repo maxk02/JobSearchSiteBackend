@@ -2,7 +2,7 @@
   {
     "Id": 111,
     "IsPublic": true,
-    "JobFolderId": 8,
+    "CompanyId": 8,
     "CategoryId": 23,
     "Title": "Social Media Manager",
     "Description": "Szukamy kreatywnej duszy do prowadzenia profili naszych kluczowych klientów.",
@@ -30,7 +30,7 @@
   {
     "Id": 112,
     "IsPublic": true,
-    "JobFolderId": 2,
+    "CompanyId": 2,
     "CategoryId": 3,
     "Title": "Asystent Architekta / Młodszy Architekt",
     "Description": "Dołącz do zespołu projektowego przy dużych inwestycjach kubaturowych.",
@@ -59,7 +59,7 @@
   {
     "Id": 113,
     "IsPublic": true,
-    "JobFolderId": 14,
+    "CompanyId": 14,
     "CategoryId": 26,
     "Title": "Mechanik Samochodowy / Diagnosta",
     "Description": null,
@@ -88,7 +88,7 @@
   {
     "Id": 114,
     "IsPublic": true,
-    "JobFolderId": 20,
+    "CompanyId": 20,
     "CategoryId": 16,
     "Title": "Specjalista ds. SEO / SEM",
     "Description": "Zadbaj o widoczność naszych sklepów w sieci.",
@@ -117,7 +117,7 @@
   {
     "Id": 115,
     "IsPublic": true,
-    "JobFolderId": 18,
+    "CompanyId": 18,
     "CategoryId": 34,
     "Title": "Agronom / Doradca Agrotechniczny",
     "Description": "Praca w terenie oraz nadzór nad nowoczesnymi uprawami.",
@@ -143,7 +143,7 @@
   {
     "Id": 116,
     "IsPublic": true,
-    "JobFolderId": 16,
+    "CompanyId": 16,
     "CategoryId": 7,
     "Title": "Lektor Języka Angielskiego (Native Speaker lub poziom C2)",
     "Description": "Prowadzenie zajęć online oraz stacjonarnie w naszej szkole.",
@@ -172,7 +172,7 @@
   {
     "Id": 117,
     "IsPublic": true,
-    "JobFolderId": 4,
+    "CompanyId": 4,
     "CategoryId": 22,
     "Title": "Magazynier z uprawnieniami UDT",
     "Description": "Praca w nowoczesnym centrum logistycznym.",
@@ -198,7 +198,7 @@
   {
     "Id": 118,
     "IsPublic": true,
-    "JobFolderId": 17,
+    "CompanyId": 17,
     "CategoryId": 21,
     "Title": "Samodzielna Księgowa / Samodzielny Księgowy",
     "Description": null,
@@ -227,7 +227,7 @@
   {
     "Id": 119,
     "IsPublic": true,
-    "JobFolderId": 11,
+    "CompanyId": 11,
     "CategoryId": 41,
     "Title": "Recepcjonista / Recepcjonistka",
     "Description": "Jesteś wizytówką naszego hotelu. Dołącz do zespołu Royal & Spa.",
@@ -256,7 +256,7 @@
   {
     "Id": 120,
     "IsPublic": true,
-    "JobFolderId": 10,
+    "CompanyId": 10,
     "CategoryId": 33,
     "Title": "Operator Maszyn CNC",
     "Description": "Produkcja elementów meblowych na nowoczesnym parku maszynowym.",
@@ -285,7 +285,7 @@
   {
     "Id": 121,
     "IsPublic": true,
-    "JobFolderId": 1,
+    "CompanyId": 1,
     "CategoryId": 14,
     "Title": "IT Support Specialist (1st line)",
     "Description": "Pierwsza linia wsparcia dla naszych pracowników wewnętrznych.",
@@ -314,7 +314,7 @@
   {
     "Id": 122,
     "IsPublic": true,
-    "JobFolderId": 15,
+    "CompanyId": 15,
     "CategoryId": 29,
     "Title": "Koordynator Projektów Społecznych",
     "Description": "Pomóż nam zmieniać świat na lepsze realizując projekty edukacyjne.",
@@ -343,7 +343,7 @@
   {
     "Id": 123,
     "IsPublic": true,
-    "JobFolderId": 9,
+    "CompanyId": 9,
     "CategoryId": 35,
     "Title": "Instalator Fotowoltaiki / Elektryk",
     "Description": "Montaż instalacji PV oraz pomp ciepła u klientów indywidualnych.",
@@ -372,7 +372,7 @@
   {
     "Id": 124,
     "IsPublic": true,
-    "JobFolderId": 12,
+    "CompanyId": 12,
     "CategoryId": 13,
     "Title": "IT Recruiter / Researcher",
     "Description": null,
@@ -401,7 +401,7 @@
   {
     "Id": 125,
     "IsPublic": true,
-    "JobFolderId": 19,
+    "CompanyId": 19,
     "CategoryId": 28,
     "Title": "Kwalifikowany Pracownik Ochrony Fizycznej",
     "Description": "Ochrona obiektu przemysłowego w systemie 24/48.",
@@ -427,7 +427,7 @@
   {
     "Id": 126,
     "IsPublic": true,
-    "JobFolderId": 6,
+    "CompanyId": 6,
     "CategoryId": 37,
     "Title": "Doradca Klienta Detalicznego",
     "Description": "Praca w oddziale banku. Sprzedaż produktów kredytowych i obsługa kasowa.",
@@ -456,7 +456,7 @@
   {
     "Id": 127,
     "IsPublic": true,
-    "JobFolderId": 1,
+    "CompanyId": 1,
     "CategoryId": 19,
     "Title": "QA Automation Engineer (Python)",
     "Description": "Automatyzacja testów dla platformy chmurowej.",
@@ -485,7 +485,7 @@
   {
     "Id": 128,
     "IsPublic": true,
-    "JobFolderId": 2,
+    "CompanyId": 2,
     "CategoryId": 5,
     "Title": "Kosztorysant Robót Budowlanych",
     "Description": null,
@@ -511,7 +511,7 @@
   {
     "Id": 129,
     "IsPublic": true,
-    "JobFolderId": 11,
+    "CompanyId": 11,
     "CategoryId": 20,
     "Title": "Fizjoterapeuta / Masażysta SPA",
     "Description": "Praca w strefie Wellness luksusowego hotelu.",
@@ -540,7 +540,7 @@
   {
     "Id": 130,
     "IsPublic": true,
-    "JobFolderId": 5,
+    "CompanyId": 5,
     "CategoryId": 11,
     "Title": "Kelner / Kelnerka",
     "Description": "Restauracja z kuchnią polską w nowoczesnym wydaniu szuka obsługi.",
@@ -569,7 +569,7 @@
   {
     "Id": 131,
     "IsPublic": true,
-    "JobFolderId": 13,
+    "CompanyId": 13,
     "CategoryId": 18,
     "Title": "Kierownik Regionalny Sprzedaży",
     "Description": "Zarządzanie siecią 10-15 sklepów w regionie południowym.",
@@ -597,7 +597,7 @@
   {
     "Id": 132,
     "IsPublic": true,
-    "JobFolderId": 3,
+    "CompanyId": 3,
     "CategoryId": 1,
     "Title": "Asystentka / Sekretarka w Kancelarii",
     "Description": "Organizacja pracy biura kancelarii prawnej.",
@@ -626,7 +626,7 @@
   {
     "Id": 133,
     "IsPublic": true,
-    "JobFolderId": 15,
+    "CompanyId": 15,
     "CategoryId": 23,
     "Title": "Specjalista ds. Fundraisingu",
     "Description": null,
@@ -654,7 +654,7 @@
   {
     "Id": 134,
     "IsPublic": true,
-    "JobFolderId": 20,
+    "CompanyId": 20,
     "CategoryId": 12,
     "Title": "UI/UX Designer",
     "Description": "Projektowanie intuicyjnych interfejsów dla sklepów internetowych.",
@@ -683,7 +683,7 @@
   {
     "Id": 135,
     "IsPublic": true,
-    "JobFolderId": 4,
+    "CompanyId": 4,
     "CategoryId": 40,
     "Title": "Kierowca C+E (Transport Międzynarodowy)",
     "Description": "Stałe trasy na kierunku Polska - Niemcy - Holandia.",
@@ -712,7 +712,7 @@
   {
     "Id": 136,
     "IsPublic": true,
-    "JobFolderId": 10,
+    "CompanyId": 10,
     "CategoryId": 33,
     "Title": "Tapicer Meblowy",
     "Description": "Praca w renomowanym zakładzie produkcyjnym.",
@@ -741,7 +741,7 @@
   {
     "Id": 137,
     "IsPublic": true,
-    "JobFolderId": 1,
+    "CompanyId": 1,
     "CategoryId": 14,
     "Title": "IT Project Manager",
     "Description": "Zarządzanie projektami wdrożeniowymi dla sektora bankowego.",
@@ -770,7 +770,7 @@
   {
     "Id": 138,
     "IsPublic": true,
-    "JobFolderId": 17,
+    "CompanyId": 17,
     "CategoryId": 13,
     "Title": "Specjalista ds. Kadr i Płac",
     "Description": null,
@@ -799,7 +799,7 @@
   {
     "Id": 139,
     "IsPublic": true,
-    "JobFolderId": 8,
+    "CompanyId": 8,
     "CategoryId": 12,
     "Title": "Graphic Designer (Mid/Senior)",
     "Description": "Twórz z nami identyfikację wizualną dla marek z całego świata.",
@@ -828,7 +828,7 @@
   {
     "Id": 140,
     "IsPublic": true,
-    "JobFolderId": 7,
+    "CompanyId": 7,
     "CategoryId": 1,
     "Title": "Rejestratorka Medyczna",
     "Description": "Pierwszy kontakt dla pacjentów naszego centrum medycznego.",
@@ -857,7 +857,7 @@
   {
     "Id": 141,
     "IsPublic": true,
-    "JobFolderId": 14,
+    "CompanyId": 14,
     "CategoryId": 26,
     "Title": "Car Detailer / Specjalista ds. kosmetyki aut",
     "Description": "Praca dla pasjonata motoryzacji. Zadbaj o wygląd aut premium.",
@@ -886,7 +886,7 @@
   {
     "Id": 142,
     "IsPublic": true,
-    "JobFolderId": 5,
+    "CompanyId": 5,
     "CategoryId": 11,
     "Title": "Dostawca / Kierowca (Skuter/Samochód)",
     "Description": null,
@@ -914,7 +914,7 @@
   {
     "Id": 143,
     "IsPublic": true,
-    "JobFolderId": 19,
+    "CompanyId": 19,
     "CategoryId": 28,
     "Title": "Operator Monitoringu CCTV",
     "Description": "Praca siedząca w centrum monitorowania.",
@@ -943,7 +943,7 @@
   {
     "Id": 144,
     "IsPublic": true,
-    "JobFolderId": 16,
+    "CompanyId": 16,
     "CategoryId": 1,
     "Title": "Office Manager / Koordynator Biura",
     "Description": "Zarządzanie sekretariatem szkoły językowej.",
@@ -971,7 +971,7 @@
   {
     "Id": 145,
     "IsPublic": true,
-    "JobFolderId": 9,
+    "CompanyId": 9,
     "CategoryId": 37,
     "Title": "Przedstawiciel Handlowy (OZE)",
     "Description": "Sprzedaż nowoczesnych rozwiązań energetycznych dla biznesu.",
@@ -1000,7 +1000,7 @@
   {
     "Id": 146,
     "IsPublic": true,
-    "JobFolderId": 3,
+    "CompanyId": 3,
     "CategoryId": 32,
     "Title": "Radca Prawny / Adwokat",
     "Description": "Samodzielne stanowisko w dziale prawa gospodarczego.",
