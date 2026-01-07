@@ -4,6 +4,7 @@ using JobSearchSiteBackend.Core.Domains.Companies.UseCases.AddCompany;
 using JobSearchSiteBackend.Core.Domains.Companies.UseCases.GetCompany;
 using JobSearchSiteBackend.Core.Domains.Companies.UseCases.GetCompanyBalance;
 using JobSearchSiteBackend.Core.Domains.Companies.UseCases.GetCompanyEmployees;
+using JobSearchSiteBackend.Core.Domains.Companies.UseCases.GetCompanyJobManagementCardDtos;
 using JobSearchSiteBackend.Core.Domains.Companies.UseCases.GetCompanyJobs;
 using JobSearchSiteBackend.Core.Domains.Companies.UseCases.GetCompanyLastVisitedJobs;
 using JobSearchSiteBackend.Core.Domains.Companies.UseCases.GetCompanyManagementNavbarDto;
@@ -21,6 +22,8 @@ public class CompaniesControllerDtosMapper : Profile
         CreateMap<GetCompanyBalanceResult, GetCompanyBalanceResponse>();
         
         CreateMap<GetCompanyEmployeesResult, GetCompanyEmployeesResponse>();
+        
+        CreateMap<GetCompanyJobManagementCardDtosResult, GetCompanyJobManagementCardDtosResponse>();
         
         CreateMap<GetCompanyJobsResult, GetCompanyJobsResponse>();
         

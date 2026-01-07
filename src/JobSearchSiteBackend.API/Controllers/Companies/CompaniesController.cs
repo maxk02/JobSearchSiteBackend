@@ -8,6 +8,7 @@ using JobSearchSiteBackend.Core.Domains.Companies.UseCases.DeleteCompany;
 using JobSearchSiteBackend.Core.Domains.Companies.UseCases.GetCompany;
 using JobSearchSiteBackend.Core.Domains.Companies.UseCases.GetCompanyBalance;
 using JobSearchSiteBackend.Core.Domains.Companies.UseCases.GetCompanyEmployees;
+using JobSearchSiteBackend.Core.Domains.Companies.UseCases.GetCompanyJobManagementCardDtos;
 using JobSearchSiteBackend.Core.Domains.Companies.UseCases.GetCompanyJobs;
 using JobSearchSiteBackend.Core.Domains.Companies.UseCases.GetCompanyLastVisitedJobs;
 using JobSearchSiteBackend.Core.Domains.Companies.UseCases.GetCompanyManagementNavbarDto;
@@ -103,6 +104,22 @@ public class CompaniesController(IMapper mapper) : ControllerBase
         var result = await handler.Handle(query, cancellationToken);
     
         return this.ToActionResult(result.Map(x => mapper.Map<GetCompanyEmployeesResponse>(x)));
+    }
+    
+    [HttpGet]
+    [Route("{id:long:min(1)}/management/jobs")]
+    public async Task<ActionResult<GetCompanyJobManagementCardDtosResponse>> GetCompanyJobManagementCardDtos(
+        [FromRoute] long id,
+        [FromQuery] GetCompanyJobManagementCardDtosRequest request,
+        [FromServices] GetCompanyJobManagementCardDtosHandler handler,
+        CancellationToken cancellationToken)
+    {
+        var query = new GetCompanyJobManagementCardDtosQuery(id, request.Query, request.Page,
+            request.Size, request.MustHaveSalaryRecord, request.LocationId, request.EmploymentTypeIds,
+            request.CategoryIds, request.ContractTypeIds);
+        var result = await handler.Handle(query, cancellationToken);
+    
+        return this.ToActionResult(result.Map(x => mapper.Map<GetCompanyJobManagementCardDtosResponse>(x)));
     }
     
     [HttpGet]
