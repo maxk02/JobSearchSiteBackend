@@ -31,9 +31,6 @@ public class GetJobManagementDtoHandler(
                 .OrderBy(a => a.DateTimeUpdatedUtc))
             .Include(job => job.SalaryInfo)
             .Include(job => job.EmploymentOptions)
-            .Include(job => job.Responsibilities)
-            .Include(job => job.Requirements)
-            .Include(job => job.NiceToHaves)
             .Include(job => job.JobContractTypes)
             .Include(job => job.Locations)
             .SingleOrDefaultAsync(cancellationToken);
@@ -41,12 +38,12 @@ public class GetJobManagementDtoHandler(
         if (job is null)
             return Result<GetJobManagementDtoResult>.NotFound();
 
-        var hasPermissionInRequestedCompany =
-            await context.UserCompanyClaims
-                .Where(ucc => ucc.CompanyId == job.CompanyId
-                    && ucc.UserId == currentUserId
-                    && ucc.ClaimId == CompanyClaim.CanEditJobs.Id)
-                .AnyAsync();
+        var claimIdsForCurrentUser = await context.UserCompanyClaims
+            .Where(ucc => ucc.CompanyId == job.CompanyId && ucc.UserId == currentUserId)
+            .Select(ucc => ucc.ClaimId)
+            .ToListAsync();
+
+        var hasPermissionInRequestedCompany = claimIdsForCurrentUser.Contains(CompanyClaim.CanReadJobs.Id);
 
         if (!hasPermissionInRequestedCompany)
             return Result.Forbidden();
@@ -81,7 +78,8 @@ public class GetJobManagementDtoHandler(
             job.SalaryInfo?.ToJobSalaryInfoDto(),
             job.EmploymentOptions!.Select(x => x.Id).ToList(),
             job.JobContractTypes!.Select(x => x.Id).ToList(),
-            job.IsPublic
+            job.IsPublic,
+            claimIdsForCurrentUser
             );
         
         return new GetJobManagementDtoResult(jobManagementDto);

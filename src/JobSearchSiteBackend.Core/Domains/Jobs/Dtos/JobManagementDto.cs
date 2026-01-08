@@ -20,4 +20,5 @@ public record JobManagementDto(
     JobSalaryInfoDto? SalaryInfoDto,
     ICollection<long>? EmploymentOptionIds,
     ICollection<long>? ContractTypeIds,
-    bool IsPublic);
+    bool IsPublic,
+    ICollection<long> ClaimIds);

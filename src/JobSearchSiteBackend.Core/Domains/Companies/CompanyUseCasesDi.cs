@@ -4,6 +4,7 @@ using JobSearchSiteBackend.Core.Domains.Companies.UseCases.DeleteCompany;
 using JobSearchSiteBackend.Core.Domains.Companies.UseCases.GetCompany;
 using JobSearchSiteBackend.Core.Domains.Companies.UseCases.GetCompanyBalance;
 using JobSearchSiteBackend.Core.Domains.Companies.UseCases.GetCompanyEmployees;
+using JobSearchSiteBackend.Core.Domains.Companies.UseCases.GetCompanyJobManagementCardDtos;
 using JobSearchSiteBackend.Core.Domains.Companies.UseCases.GetCompanyJobs;
 using JobSearchSiteBackend.Core.Domains.Companies.UseCases.GetCompanyLastVisitedJobs;
 using JobSearchSiteBackend.Core.Domains.Companies.UseCases.GetCompanyManagementNavbarDto;
@@ -27,6 +28,7 @@ public static class CompanyUseCasesDi
         serviceCollection.AddScoped<GetCompanyHandler>();
         serviceCollection.AddScoped<GetCompanyBalanceHandler>();
         serviceCollection.AddScoped<GetCompanyEmployeesHandler>();
+        serviceCollection.AddScoped<GetCompanyJobManagementCardDtosHandler>();
         serviceCollection.AddScoped<GetCompanyJobsHandler>();
         serviceCollection.AddScoped<GetCompanyLastVisitedJobsHandler>();
         serviceCollection.AddScoped<GetCompanyManagementNavbarDtoHandler>();
