@@ -630,7 +630,7 @@
     "CategoryId": 23,
     "Title": "Specjalista ds. Fundraisingu",
     "Description": null,
-    "DateTimePublishedUtc": "2025-11-01T09:00:00Z",
+    "DateTimePublishedUtc": "2025-12-26T09:00:00Z",
     "DateTimeExpiringUtc": "2026-01-30T15:00:00Z",
     "EmploymentOptionIds": [2, 5],
     "LocationIds": [25],
@@ -658,8 +658,8 @@
     "CategoryId": 12,
     "Title": "UI/UX Designer",
     "Description": "Projektowanie intuicyjnych interfejsów dla sklepów internetowych.",
-    "DateTimePublishedUtc": "2025-12-05T10:00:00Z",
-    "DateTimeExpiringUtc": "2026-03-01T18:00:00Z",
+    "DateTimePublishedUtc": "2025-12-25T10:00:00Z",
+    "DateTimeExpiringUtc": "2026-02-21T18:00:00Z",
     "EmploymentOptionIds": [1, 4],
     "LocationIds": [25],
     "ContractTypeIds": [1, 2, 3],
@@ -1024,6 +1024,431 @@
     "NiceToHaves": [
       "Znajomość prawa zamówień publicznych",
       "Biegły angielski (Legal English)"
+    ]
+  },
+
+
+  {
+    "Id": 147,
+    "IsPublic": true,
+    "CompanyId": 4,
+    "CategoryId": 22,
+    "Title": "Agent Celny / Specjalista ds. Celnych",
+    "Description": "Obsługa zgłoszeń celnych w imporcie i eksporcie.",
+    "DateTimePublishedUtc": "2025-12-20T09:00:00Z",
+    "DateTimeExpiringUtc": "2026-02-28T17:00:00Z",
+    "EmploymentOptionIds": [1, 5],
+    "LocationIds": [25],
+    "ContractTypeIds": [1, 4],
+    "Responsibilities": [
+      "Dokonywanie zgłoszeń celnych w systemach AIS/AES/NCTS",
+      "Weryfikacja dokumentacji handlowej pod kątem wymogów celnych",
+      "Kontakt z Urzędem Celno-Skarbowym",
+      "Doradztwo dla klientów w zakresie taryfikacji towarów"
+    ],
+    "Requirements": [
+      "Wpis na listę Agentów Celnych (mile widziane)",
+      "Znajomość przepisów Kodeksu Celnego",
+      "Doświadczenie w pracy w agencji celnej",
+      "Dobra znajomość języka angielskiego"
+    ],
+    "NiceToHaves": [
+      "Znajomość procedur uproszczonych",
+      "Obsługa programu Huzar"
+    ]
+  },
+  {
+    "Id": 148,
+    "IsPublic": true,
+    "CompanyId": 4,
+    "CategoryId": 40,
+    "Title": "Koordynator Floty Samochodowej",
+    "Description": "Zarządzanie flotą pojazdów ciężarowych i dostawczych.",
+    "DateTimePublishedUtc": "2025-12-05T08:00:00Z",
+    "DateTimeExpiringUtc": "2026-01-08T16:00:00Z",
+    "EmploymentOptionIds": [1, 3],
+    "LocationIds": [9],
+    "ContractTypeIds": [1],
+    "Responsibilities": [
+      "Nadzór nad stanem technicznym pojazdów i terminowością badań",
+      "Rozliczanie zużycia paliwa i czasu pracy kierowców",
+      "Współpraca z serwisami i ubezpieczycielami",
+      "Optymalizacja kosztów utrzymania floty"
+    ],
+    "Requirements": [
+      "Doświadczenie na podobnym stanowisku w firmie transportowej",
+      "Dobra znajomość budowy pojazdów ciężarowych",
+      "Umiejętność pracy pod presją czasu",
+      "Biegła obsługa Excela"
+    ],
+    "NiceToHaves": [
+      "Certyfikat Kompetencji Zawodowych Przewoźnika",
+      "Prawo jazdy kat. C"
+    ]
+  },
+  {
+    "Id": 149,
+    "IsPublic": true,
+    "CompanyId": 4,
+    "CategoryId": 40,
+    "Title": "Kurier / Kierowca kat. B (Lokalny)",
+    "Description": "Dystrybucja przesyłek drobnicowych na terenie województwa.",
+    "DateTimePublishedUtc": "2025-12-15T07:00:00Z",
+    "DateTimeExpiringUtc": "2026-01-30T18:00:00Z",
+    "EmploymentOptionIds": [1, 6],
+    "LocationIds": [25],
+    "ContractTypeIds": [1, 3],
+    "Responsibilities": [
+      "Załadunek towaru i planowanie trasy doręczeń",
+      "Terminowe dostarczanie przesyłek do klientów biznesowych",
+      "Obsługa terminala mobilnego i dokumentacji przewozowej",
+      "Dbanie o powierzony samochód dostawczy"
+    ],
+    "Requirements": [
+      "Prawo jazdy kat. B (min. 2 lata)",
+      "Dobra orientacja w terenie i umiejętność korzystania z nawigacji",
+      "Kultura osobista",
+      "Niekaralność"
+    ],
+    "NiceToHaves": [
+      "Doświadczenie w firmie kurierskiej"
+    ]
+  },
+  {
+    "Id": 150,
+    "IsPublic": true,
+    "CompanyId": 4,
+    "CategoryId": 22,
+    "Title": "Kierownik Zmiany Magazynu",
+    "Description": "Zarządzanie 20-osobowym zespołem na magazynie przeładunkowym.",
+    "DateTimePublishedUtc": "2025-12-10T14:00:00Z",
+    "DateTimeExpiringUtc": "2026-02-10T22:00:00Z",
+    "EmploymentOptionIds": [1, 3],
+    "LocationIds": [9],
+    "ContractTypeIds": [1],
+    "Responsibilities": [
+      "Organizacja pracy podległego zespołu magazynierów",
+      "Nadzór nad procesami przyjęć i wydań towarów",
+      "Raportowanie wyników zmiany do Kierownika Magazynu",
+      "Dbanie o przestrzeganie zasad BHP"
+    ],
+    "Requirements": [
+      "Min. 2 lata doświadczenia w zarządzaniu zespołem",
+      "Uprawnienia na wózki widłowe (UDT)",
+      "Umiejętność rozwiązywania konfliktów",
+      "Gotowość do pracy w systemie zmianowym"
+    ],
+    "NiceToHaves": [
+      "Znajomość systemu WMS",
+      "Szkolenia z zakresu Lean Management"
+    ]
+  },
+  {
+    "Id": 151,
+    "IsPublic": true,
+    "CompanyId": 4,
+    "CategoryId": 40,
+    "Title": "Młodszy Spedytor (Junior)",
+    "Description": "Rozpocznij karierę w logistyce pod okiem doświadczonych mentorów.",
+    "DateTimePublishedUtc": "2025-12-18T10:00:00Z",
+    "DateTimeExpiringUtc": "2026-01-31T16:00:00Z",
+    "EmploymentOptionIds": [1, 3],
+    "LocationIds": [25],
+    "ContractTypeIds": [1, 3],
+    "Responsibilities": [
+      "Wprowadzanie zleceń transportowych do systemu",
+      "Monitorowanie realizacji transportów",
+      "Wsparcie spedytorów w bieżącej obsłudze klientów",
+      "Weryfikacja dokumentów przewozowych"
+    ],
+    "Requirements": [
+      "Status studenta lub absolwenta (Logistyka/Transport)",
+      "Dobra znajomość języka angielskiego (min. B2)",
+      "Chęć nauki i rozwoju",
+      "Komunikatywność"
+    ],
+    "NiceToHaves": [
+      "Znajomość drugiego języka obcego"
+    ]
+  },
+
+
+  {
+    "Id": 152,
+    "IsPublic": true,
+    "CompanyId": 4,
+    "CategoryId": 40,
+    "Title": "Specjalista ds. Sprzedaży Usług TSL",
+    "Description": "Pozyskiwanie klientów biznesowych na usługi transportowe.",
+    "DateTimePublishedUtc": "2025-12-15T09:00:00Z",
+    "DateTimeExpiringUtc": "2026-02-15T17:00:00Z",
+    "EmploymentOptionIds": [1, 5],
+    "LocationIds": [9],
+    "ContractTypeIds": [4],
+    "Responsibilities": [
+      "Aktywna sprzedaż usług transportowych i spedycyjnych (Cold Calling)",
+      "Budowanie portfela klientów i utrzymywanie relacji",
+      "Negocjowanie stawek i warunków współpracy",
+      "Realizacja indywidualnych planów sprzedażowych"
+    ],
+    "Requirements": [
+      "Minimum rok doświadczenia w sprzedaży B2B (mile widziane w TSL)",
+      "Determinacja w dążeniu do celu",
+      "Łatwość w nawiązywaniu kontaktów",
+      "Prawo jazdy kat. B"
+    ],
+    "NiceToHaves": [
+      "Własna baza klientów",
+      "Znajomość języka angielskiego"
+    ]
+  },
+  {
+    "Id": 153,
+    "IsPublic": true,
+    "CompanyId": 4,
+    "CategoryId": 40,
+    "Title": "Dyspozytor Transportu Międzynarodowego",
+    "Description": "Zarządzanie pracą kierowców w trasach po UE.",
+    "DateTimePublishedUtc": "2025-12-01T08:00:00Z",
+    "DateTimeExpiringUtc": "2026-02-17T16:00:00Z",
+    "EmploymentOptionIds": [1, 3],
+    "LocationIds": [25],
+    "ContractTypeIds": [1, 3],
+    "Responsibilities": [
+      "Planowanie i optymalizacja tras przejazdu",
+      "Bieżący kontakt z kierowcami i rozwiązywanie problemów w trasie",
+      "Kontrola czasu pracy kierowców",
+      "Obsługa giełd transportowych w celu niwelowania pustych przebiegów"
+    ],
+    "Requirements": [
+      "Doświadczenie na stanowisku dyspozytora",
+      "Znajomość konwencji CMR i czasu pracy kierowców",
+      "Odporność na stres i umiejętność szybkiego podejmowania decyzji",
+      "Dyspozycyjność (telefon służbowy)"
+    ],
+    "NiceToHaves": [
+      "Znajomość języka niemieckiego lub francuskiego"
+    ]
+  },
+  {
+    "Id": 154,
+    "IsPublic": true,
+    "CompanyId": 4,
+    "CategoryId": 22,
+    "Title": "Pomocnik Magazyniera / Pakowacz",
+    "Description": "Prosta praca fizyczna przy kompletacji towaru.",
+    "DateTimePublishedUtc": "2025-12-10T06:00:00Z",
+    "DateTimeExpiringUtc": "2026-01-20T22:00:00Z",
+    "EmploymentOptionIds": [1, 2, 3],
+    "LocationIds": [9],
+    "ContractTypeIds": [3],
+    "Responsibilities": [
+      "Ręczny rozładunek i załadunek lekkich paczek",
+      "Foliowanie palet (streczowanie)",
+      "Dbanie o porządek w strefie pakowania",
+      "Etykietowanie towarów"
+    ],
+    "Requirements": [
+      "Chęci do pracy fizycznej",
+      "Punktualność i rzetelność",
+      "Gotowość do pracy w systemie zmianowym"
+    ],
+    "NiceToHaves": [
+      "Uprawnienia na wózki unoszące (elektryczne paleciaki)"
+    ]
+  },
+  {
+    "Id": 155,
+    "IsPublic": true,
+    "CompanyId": 4,
+    "CategoryId": 22,
+    "Title": "Analityk Łańcucha Dostaw (Supply Chain Analyst)",
+    "Description": "Optymalizacja procesów logistycznych w oparciu o dane.",
+    "DateTimePublishedUtc": "2025-12-20T09:30:00Z",
+    "DateTimeExpiringUtc": "2026-01-25T17:00:00Z",
+    "EmploymentOptionIds": [1, 5],
+    "LocationIds": [25],
+    "ContractTypeIds": [1],
+    "Responsibilities": [
+      "Analiza wskaźników KPI logistycznych",
+      "Tworzenie prognoz zapotrzebowania i planów dystrybucji",
+      "Identyfikacja wąskich gardeł w procesach magazynowych",
+      "Przygotowywanie raportów dla zarządu (Power BI / Excel)"
+    ],
+    "Requirements": [
+      "Wykształcenie wyższe (Logistyka, Ekonomia, Analiza Danych)",
+      "Zaawansowana znajomość MS Excel i Power BI",
+      "Umiejętność analitycznego myślenia",
+      "Znajomość języka angielskiego (B2)"
+    ],
+    "NiceToHaves": [
+      "Znajomość SQL",
+      "Doświadczenie z systemami SAP"
+    ]
+  },
+  {
+    "Id": 156,
+    "IsPublic": true,
+    "CompanyId": 4,
+    "CategoryId": 40,
+    "Title": "Kierowca C+E (Transport Krajowy)",
+    "Description": "Codzienne powroty do domu lub system co drugi dzień.",
+    "DateTimePublishedUtc": "2025-11-30T07:00:00Z",
+    "DateTimeExpiringUtc": "2026-01-30T18:00:00Z",
+    "EmploymentOptionIds": [1, 6],
+    "LocationIds": [9],
+    "ContractTypeIds": [1, 4],
+    "Responsibilities": [
+      "Transport towarów pomiędzy oddziałami firmy w Polsce",
+      "Dbałość o dokumentację przewozową",
+      "Bezpieczna i ekonomiczna jazda (Eco-driving)"
+    ],
+    "Requirements": [
+      "Prawo jazdy kat. C+E z kodem 95",
+      "Karta kierowcy",
+      "Badania lekarskie i psychologiczne",
+      "Min. 6 miesięcy doświadczenia"
+    ],
+    "NiceToHaves": [
+      "Uprawnienia ADR"
+    ]
+  },
+  {
+    "Id": 157,
+    "IsPublic": true,
+    "CompanyId": 4,
+    "CategoryId": 14,
+    "Title": "Administrator Systemów TMS (Transport Management System)",
+    "Description": "Wsparcie IT dla działu spedycji i logistyki.",
+    "DateTimePublishedUtc": "2025-12-05T08:30:00Z",
+    "DateTimeExpiringUtc": "2026-02-01T16:00:00Z",
+    "EmploymentOptionIds": [1, 5],
+    "LocationIds": [25],
+    "ContractTypeIds": [1],
+    "Responsibilities": [
+      "Administracja i konfiguracja systemu TMS",
+      "Wsparcie techniczne użytkowników (spedytorów)",
+      "Współpraca z dostawcą oprogramowania przy wdrażaniu nowych modułów",
+      "Tworzenie raportów i wydruków w systemie"
+    ],
+    "Requirements": [
+      "Wykształcenie informatyczne lub pokrewne",
+      "Znajomość procesów logistycznych",
+      "Podstawowa znajomość baz danych SQL",
+      "Umiejętność rozwiązywania problemów technicznych"
+    ],
+    "NiceToHaves": [
+      "Doświadczenie z systemem InterLAN, Speed lub Transporeon"
+    ]
+  },
+  {
+    "Id": 158,
+    "IsPublic": true,
+    "CompanyId": 4,
+    "CategoryId": 21,
+    "Title": "Młodsza Księgowa / Młodszy Księgowy",
+    "Description": "Wsparcie działu finansowego w bieżącej pracy.",
+    "DateTimePublishedUtc": "2025-12-25T10:00:00Z",
+    "DateTimeExpiringUtc": "2026-01-16T16:00:00Z",
+    "EmploymentOptionIds": [1, 3],
+    "LocationIds": [9],
+    "ContractTypeIds": [1, 7],
+    "Responsibilities": [
+      "Księgowanie faktur kosztowych i zakupowych",
+      "Weryfikacja dokumentów pod względem formalno-rachunkowym",
+      "Potwierdzanie sald z kontrahentami",
+      "Archiwizacja dokumentacji"
+    ],
+    "Requirements": [
+      "Wykształcenie kierunkowe (finanse/rachunkowość) lub w trakcie studiów",
+      "Dobra znajomość MS Excel",
+      "Sumienność i dokładność",
+      "Chęć nauki"
+    ],
+    "NiceToHaves": [
+      "Znajomość systemu Optima"
+    ]
+  },
+  {
+    "Id": 159,
+    "IsPublic": true,
+    "CompanyId": 4,
+    "CategoryId": 35,
+    "Title": "Konserwator / Pracownik Gospodarczy",
+    "Description": "Dbanie o stan techniczny budynków biurowych i magazynowych.",
+    "DateTimePublishedUtc": "2025-12-12T07:00:00Z",
+    "DateTimeExpiringUtc": "2026-01-12T15:00:00Z",
+    "EmploymentOptionIds": [1, 3],
+    "LocationIds": [25],
+    "ContractTypeIds": [1, 3],
+    "Responsibilities": [
+      "Wykonywanie drobnych napraw i prac remontowych",
+      "Nadzór nad instalacjami w budynku",
+      "Dbanie o teren zewnętrzny (odśnieżanie, koszenie trawy)",
+      "Współpraca z serwisami zewnętrznymi"
+    ],
+    "Requirements": [
+      "Złota rączka - umiejętności techniczne",
+      "Prawo jazdy kat. B",
+      "Samodzielność w działaniu"
+    ],
+    "NiceToHaves": [
+      "Uprawnienia SEP do 1kV"
+    ]
+  },
+  {
+    "Id": 160,
+    "IsPublic": true,
+    "CompanyId": 4,
+    "CategoryId": 37,
+    "Title": "Key Account Manager (Logistyka)",
+    "Description": "Opieka nad kluczowymi klientami firmy.",
+    "DateTimePublishedUtc": "2025-12-10T11:00:00Z",
+    "DateTimeExpiringUtc": "2026-02-10T19:00:00Z",
+    "EmploymentOptionIds": [1, 5],
+    "LocationIds": [9],
+    "ContractTypeIds": [4],
+    "Responsibilities": [
+      "Budowanie długofalowych relacji z kluczowymi klientami",
+      "Analiza potrzeb klienta i doradztwo w zakresie rozwiązań logistycznych",
+      "Monitorowanie poziomu satysfakcji klientów",
+      "Negocjowanie kontraktów rocznych"
+    ],
+    "Requirements": [
+      "Minimum 3 lata doświadczenia w obsłudze klienta kluczowego",
+      "Wysokie kompetencje negocjacyjne",
+      "Biegły język angielski (C1)",
+      "Gotowość do wyjazdów służbowych"
+    ],
+    "NiceToHaves": [
+      "Doświadczenie w branży Automotive lub FMCG"
+    ]
+  },
+  {
+    "Id": 161,
+    "IsPublic": true,
+    "CompanyId": 4,
+    "CategoryId": 35,
+    "Title": "Elektromechanik Pojazdów Ciężarowych",
+    "Description": "Serwis floty własnej w warsztacie firmowym.",
+    "DateTimePublishedUtc": "2025-12-25T06:00:00Z",
+    "DateTimeExpiringUtc": "2026-01-29T22:00:00Z",
+    "EmploymentOptionIds": [1, 3],
+    "LocationIds": [25],
+    "ContractTypeIds": [1],
+    "Responsibilities": [
+      "Diagnozowanie usterek układów elektrycznych w ciągnikach siodłowych",
+      "Naprawa instalacji elektrycznych, rozruszników, alternatorów",
+      "Obsługa komputera diagnostycznego (Texa/Jaltest)",
+      "Montaż dodatkowego wyposażenia (GPS, CB radio)"
+    ],
+    "Requirements": [
+      "Wykształcenie kierunkowe",
+      "Doświadczenie w naprawie pojazdów ciężarowych",
+      "Umiejętność czytania schematów elektrycznych"
+    ],
+    "NiceToHaves": [
+      "Prawo jazdy kat. C"
     ]
   }
 ]

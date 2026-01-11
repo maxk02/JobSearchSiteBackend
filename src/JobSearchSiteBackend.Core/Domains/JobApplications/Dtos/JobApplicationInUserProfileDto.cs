@@ -19,4 +19,4 @@ public record JobApplicationInUserProfileDto(
     ICollection<long>? ContractTypeIds,
     DateTime DateTimeAppliedUtc,
     ICollection<PersonalFileInfoDto> PersonalFileInfoDtos,
-    JobApplicationStatus Status);
+    int Status);

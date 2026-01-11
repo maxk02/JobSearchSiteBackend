@@ -430,6 +430,71 @@ public class MainDataContextSeeder(MainDataContext context,
             await context.SaveChangesAsync();
         }
 
+        // branch application reviewer
+        var user4FromDb = await userManager.FindByEmailAsync("test_user@transworld.pl");
+
+        if (user4FromDb is null)
+        {
+            var user4 = new MyIdentityUser {
+                UserName = "test_user@transworld.pl",
+                Email = "test_user@transworld.pl",
+                EmailConfirmed = true
+            };
+        
+            var aspNetIdentityResult4 = await userManager
+                .CreateAsync(user4, configuration["test_user_at_transworld.pl_USER_PASSWORD"] ?? throw new ApplicationException());
+
+            if (!aspNetIdentityResult4.Succeeded)
+                throw new ApplicationException();
+
+            long user4Id = user4.Id;
+
+            var newUser4Profile = new UserProfile(user4Id, "Użytkownik",
+                "Testowy", null, true);
+
+            context.UserProfiles.Add(newUser4Profile);
+
+            var personalFile = new PersonalFile(user4.Id, $"CV",
+                "pdf", 5453628, "wsparcie techniczne znajomość sql transporeon");
+
+            personalFile.IsUploadedSuccessfully = true;
+
+            var personalFile2 = new PersonalFile(user4.Id, $"Certyfikat z kursu SQL",
+                "pdf", 3847389, "sql server bazy danych");
+
+            personalFile2.IsUploadedSuccessfully = true;
+
+            newUser4Profile.PersonalFiles = [personalFile, personalFile2];
+
+            await context.SaveChangesAsync();
+
+            var jobs = await context.Jobs
+                .Include(j => j.Locations)
+                .Where(j => j.Id >= 100 && j.Id <= 137)
+                .ToListAsync();
+
+            List<JobApplication> jobApplications = [];
+
+            var rnd = new Random();
+
+            foreach (var j in jobs)
+            {
+                int jobAppStatus = rnd.Next(1, 5);
+
+                var jobApplication = new JobApplication(user4Id, j.Id, j.Locations!.First().Id, (JobApplicationStatus)jobAppStatus);
+
+                jobApplication.PersonalFiles = [personalFile];
+
+                jobApplications.Add(jobApplication);
+
+                context.UserJobBookmarks.Add(new UserJobBookmark(user4Id, j.Id));
+            }
+
+            newUser4Profile.JobApplications = jobApplications;
+
+            await context.SaveChangesAsync();
+        }
+
         // users that send applications
         for (var i = 0; i < 50; i++)
         {

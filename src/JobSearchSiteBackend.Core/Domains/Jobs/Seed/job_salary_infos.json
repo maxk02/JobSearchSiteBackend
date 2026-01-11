@@ -102,5 +102,73 @@
     "Maximum": null,
     "UnitOfTime": 4,
     "IsAfterTaxes": false
+  },
+
+
+  {
+    "JobId": 147,
+    "CurrencyId": 1,
+    "Minimum": 6500.00,
+    "Maximum": 9000.00,
+    "UnitOfTime": 4,
+    "IsAfterTaxes": false
+  },
+  {
+    "JobId": 149,
+    "CurrencyId": 1,
+    "Minimum": 4500.00,
+    "Maximum": 6500.00,
+    "UnitOfTime": 4,
+    "IsAfterTaxes": true
+  },
+  {
+    "JobId": 150,
+    "CurrencyId": 1,
+    "Minimum": 7000.00,
+    "Maximum": 10000.00,
+    "UnitOfTime": 4,
+    "IsAfterTaxes": false
+  },
+
+
+  {
+    "JobId": 152,
+    "CurrencyId": 1,
+    "Minimum": 6000.00,
+    "Maximum": 14000.00,
+    "UnitOfTime": 4,
+    "IsAfterTaxes": false
+  },
+  {
+    "JobId": 154,
+    "CurrencyId": 1,
+    "Minimum": 28.50,
+    "Maximum": 33.00,
+    "UnitOfTime": 1,
+    "IsAfterTaxes": false
+  },
+  {
+    "JobId": 156,
+    "CurrencyId": 1,
+    "Minimum": 6000.00,
+    "Maximum": 8500.00,
+    "UnitOfTime": 4,
+    "IsAfterTaxes": true
+  },
+  {
+    "JobId": 157,
+    "CurrencyId": 1,
+    "Minimum": 8000.00,
+    "Maximum": 12000.00,
+    "UnitOfTime": 4,
+    "IsAfterTaxes": false
+  },
+  {
+    "JobId": 160,
+    "CurrencyId": 1,
+    "Minimum": 11000.00,
+    "Maximum": 18000.00,
+    "UnitOfTime": 4,
+    "IsAfterTaxes": false
   }
 ]

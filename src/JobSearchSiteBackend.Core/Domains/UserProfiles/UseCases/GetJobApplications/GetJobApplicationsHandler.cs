@@ -85,7 +85,7 @@ public class GetJobApplicationsHandler(
                 jai.ContractTypeIds.ToList(),
                 jai.DateTimeAppliedUtc,
                 jai.PersonalFiles.Select(pf => pf.ToPersonalFileInfoDto()).ToList(),
-                jai.Status
+                (int)jai.Status
             );
             
             jobApplicationInUserProfileDtos.Add(jobApplicationDto);
