@@ -13,6 +13,12 @@ public class AddJobBookmarkHandler(ICurrentAccountService currentAccountService,
     {
         var currentAccountId = currentAccountService.GetIdOrThrow();
 
+        var bookmarkExists = await context.UserJobBookmarks
+            .AnyAsync(ujb => ujb.JobId == command.JobId && ujb.UserId == currentAccountId, cancellationToken);
+
+        if (bookmarkExists)
+            return Result.Error();
+
         var userJobBookmark = new UserJobBookmark(currentAccountId, command.JobId);
         
         context.UserJobBookmarks.Add(userJobBookmark);

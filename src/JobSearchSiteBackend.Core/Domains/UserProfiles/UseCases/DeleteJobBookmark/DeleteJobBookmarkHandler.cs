@@ -18,9 +18,7 @@ public class DeleteJobBookmarkHandler(ICurrentAccountService currentAccountServi
             .SingleOrDefaultAsync(cancellationToken);
 
         if (userJobBookmark is null)
-        {
             return Result.Error();
-        }
         
         context.UserJobBookmarks.Remove(userJobBookmark);
         await context.SaveChangesAsync(cancellationToken);

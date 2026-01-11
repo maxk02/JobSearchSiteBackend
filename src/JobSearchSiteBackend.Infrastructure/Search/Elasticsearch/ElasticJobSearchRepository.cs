@@ -145,14 +145,17 @@ public class ElasticJobSearchRepository(IElasticClient client) : IJobSearchRepos
                         .MultiMatch(mm => mm
                             .Query(query)
                             .Type(TextQueryType.BestFields)
-                            .Fields("*")
+                            .Fields(f => f
+                                .Field(p => p.Title, boost: 3)
+                                .Field(p => p.Description)
+                                .Field(p => p.Responsibilities)
+                                .Field(p => p.Requirements)
+                                .Field(p => p.NiceToHaves)
+                            )
                             .Fuzziness(Fuzziness.Auto)
                         )
                     )
                 )
-            )
-            .Sort(sort => sort
-                    .Descending(SortSpecialField.Score)
             ), 
             cancellationToken
         );
@@ -175,11 +178,15 @@ public class ElasticJobSearchRepository(IElasticClient client) : IJobSearchRepos
                 .MultiMatch(mm => mm
                     .Query(query)
                     .Type(TextQueryType.BestFields)
-                    .Fields("*")
+                    .Fields(f => f
+                        .Field(p => p.Title, boost: 3)
+                        .Field(p => p.Description)
+                        .Field(p => p.Responsibilities)
+                        .Field(p => p.Requirements)
+                        .Field(p => p.NiceToHaves)
+                    )
+                    .Fuzziness(Fuzziness.Auto)
                 )
-            )
-            .Sort(sort => sort
-                .Descending(SortSpecialField.Score)
             ), 
             cancellationToken
         );
@@ -230,16 +237,20 @@ public class ElasticJobSearchRepository(IElasticClient client) : IJobSearchRepos
                             .MultiMatch(mm => mm
                                 .Query(query)
                                 .Type(TextQueryType.BestFields)
-                                .Fields("*")
+                                .Fields(f => f
+                                    .Field(p => p.Title, boost: 3)
+                                    .Field(p => p.Description)
+                                    .Field(p => p.Responsibilities)
+                                    .Field(p => p.Requirements)
+                                    .Field(p => p.NiceToHaves)
+                                )
+                                .Fuzziness(Fuzziness.Auto)
                             )
                         );
 
                         return b;
                     }
                 )
-            )
-            .Sort(sort => sort
-                .Descending(SortSpecialField.Score)
             ), 
             cancellationToken
         );

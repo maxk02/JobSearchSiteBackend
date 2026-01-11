@@ -48,10 +48,8 @@ public class GetJobHandler(
 
             applicationId = fetchedJob.JobApplications?.FirstOrDefault()?.Id;
             
-            isBookmarked = await context.Jobs
-                .Where(j => j.Id == query.Id)
-                .Where(j => j.UserJobBookmarks!.Any(u => u.UserId == currentUserId.Value))
-                .AnyAsync(cancellationToken);
+            isBookmarked = await context.UserJobBookmarks
+                .AnyAsync(ujb => ujb.JobId == query.Id && ujb.UserId == currentUserId, cancellationToken);
         }
         else
         {
@@ -91,7 +89,7 @@ public class GetJobHandler(
             fetchedJob.Responsibilities!,
             fetchedJob.Requirements!,
             fetchedJob.NiceToHaves!,
-            fetchedJob.SalaryInfo!.ToJobSalaryInfoDto(),
+            fetchedJob.SalaryInfo != null ? fetchedJob.SalaryInfo.ToJobSalaryInfoDto() : null,
             fetchedJob.EmploymentOptions!.Select(eo => eo.Id).ToList(),
             fetchedJob.JobContractTypes!.Select(ct => ct.Id).ToList(),
             isBookmarked,
