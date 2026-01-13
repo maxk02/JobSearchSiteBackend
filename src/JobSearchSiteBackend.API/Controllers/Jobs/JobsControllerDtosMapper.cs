@@ -18,6 +18,8 @@ public class JobsControllerDtosMapper : Profile
         
         CreateMap<GetApplicationsForJobResult, GetApplicationsForJobResponse>();
         
+        CreateMap<GetJobDataForCurrentAccountResult, GetJobDataForCurrentAccountResponse>();
+
         CreateMap<GetJobManagementDtoResult, GetJobManagementDtoResponse>();
         
         CreateMap<GetJobResult, GetJobResponse>();

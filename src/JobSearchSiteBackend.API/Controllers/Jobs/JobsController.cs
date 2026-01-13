@@ -66,6 +66,20 @@ public class JobsController(IMapper mapper) : ControllerBase
     }
 
     [HttpGet]
+    [Route("{id:long:min(1)}/current-account-data")]
+    public async Task<ActionResult<GetJobDataForCurrentAccountResponse>> GetJobDataForCurrentAccount(
+        [FromRoute] long id,
+        [FromServices] GetJobDataForCurrentAccountHandler handler,
+        CancellationToken cancellationToken)
+    {
+        var query = new GetJobDataForCurrentAccountQuery(id);
+
+        var result = await handler.Handle(query, cancellationToken);
+
+        return this.ToActionResult(result.Map(x => mapper.Map<GetJobDataForCurrentAccountResponse>(x)));
+    }
+
+    [HttpGet]
     [Route("{id:long:min(1)}")]
     [AllowAnonymous]
     public async Task<ActionResult<GetJobResponse>> GetJob(

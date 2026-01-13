@@ -19,6 +19,4 @@ public record JobDetailedDto(
     ICollection<string> NiceToHaves,
     JobSalaryInfoDto? SalaryInfoDto,
     ICollection<long>? EmploymentOptionIds,
-    ICollection<long>? ContractTypeIds,
-    bool IsBookmarked,
-    long? ApplicationId);
+    ICollection<long>? ContractTypeIds);
