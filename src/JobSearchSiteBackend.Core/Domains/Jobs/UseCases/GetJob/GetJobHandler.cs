@@ -21,9 +21,7 @@ public class GetJobHandler(
     public async Task<Result<GetJobResult>> Handle(GetJobQuery query,
         CancellationToken cancellationToken = default)
     {
-        var currentUserId = currentAccountService.GetId();
-        
-        var dbQuery = context.Jobs
+        var fetchedJob = await context.Jobs
             .AsNoTracking()
             .Where(j => j.Id == query.Id)
             .Include(j => j.Company)
@@ -31,30 +29,8 @@ public class GetJobHandler(
             .Include(job => job.SalaryInfo)
             .Include(job => job.EmploymentOptions)
             .Include(job => job.JobContractTypes)
-            .Include(job => job.Locations);
-
-        Job? fetchedJob = null;
-        var isBookmarked = false;
-        long? applicationId = null;
-        
-        if (currentUserId is not null)
-        {
-            fetchedJob = await dbQuery
-                .Include(job => job.JobApplications!.Where(ja => ja.UserId == currentUserId.Value))
-                .SingleOrDefaultAsync(cancellationToken);
-            
-            if (fetchedJob is null)
-                return Result.NotFound();
-
-            applicationId = fetchedJob.JobApplications?.FirstOrDefault()?.Id;
-            
-            isBookmarked = await context.UserJobBookmarks
-                .AnyAsync(ujb => ujb.JobId == query.Id && ujb.UserId == currentUserId, cancellationToken);
-        }
-        else
-        {
-            fetchedJob = await dbQuery.SingleOrDefaultAsync(cancellationToken);
-        }
+            .Include(job => job.Locations)
+            .SingleOrDefaultAsync(cancellationToken);
 
         if (fetchedJob is null)
             return Result.NotFound();
@@ -89,11 +65,9 @@ public class GetJobHandler(
             fetchedJob.Responsibilities!,
             fetchedJob.Requirements!,
             fetchedJob.NiceToHaves!,
-            fetchedJob.SalaryInfo != null ? fetchedJob.SalaryInfo.ToJobSalaryInfoDto() : null,
+            fetchedJob.SalaryInfo?.ToJobSalaryInfoDto(),
             fetchedJob.EmploymentOptions!.Select(eo => eo.Id).ToList(),
-            fetchedJob.JobContractTypes!.Select(ct => ct.Id).ToList(),
-            isBookmarked,
-            applicationId);
+            fetchedJob.JobContractTypes!.Select(ct => ct.Id).ToList());
         
         return new GetJobResult(jobDetailedDto);
     }

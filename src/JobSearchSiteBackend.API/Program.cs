@@ -59,7 +59,7 @@ builder.Services.AddCors(options =>
     options.AddPolicy("AllowNextJs", policyBuilder =>
     {
         policyBuilder
-            .WithOrigins("https://localhost:3000")
+            .WithOrigins("https://localhost:3000", "https://127.0.0.1:3000")
             .AllowAnyMethod()
             .AllowAnyHeader()
             .AllowCredentials();
@@ -68,7 +68,7 @@ builder.Services.AddCors(options =>
     options.AddPolicy("AllowNextJsHttp", policyBuilder =>
     {
         policyBuilder
-            .WithOrigins("http://localhost:3000")
+            .WithOrigins("http://localhost:3000", "http://127.0.0.1:3000")
             .AllowAnyMethod()
             .AllowAnyHeader()
             .AllowCredentials();

@@ -28,12 +28,15 @@ public class GetCompanyClaimsOverviewHandler(
 
         var dbQuery = context.UserCompanyClaims
             .Where(ucp => ucp.CompanyId == query.CompanyId);
+        
+        var count = await dbQuery.CountAsync(cancellationToken);
 
         if (!string.IsNullOrEmpty(query.UserQuery))
         {
             dbQuery = dbQuery
                 .Where(ucp => ucp.User!.FirstName.ToLower().Contains(query.UserQuery.ToLower())
-                ||  ucp.User!.LastName.ToLower().Contains(query.UserQuery.ToLower()));
+                || ucp.User!.LastName.ToLower().Contains(query.UserQuery.ToLower())
+                || ucp.User!.Account!.Email!.ToLower().Contains(query.UserQuery.ToLower()));
         }
 
         if (query.CompanyClaimIds is not null && query.CompanyClaimIds.Count > 0)
@@ -55,11 +58,9 @@ public class GetCompanyClaimsOverviewHandler(
                 ucp.User!.Account!.Email!,
                 ucp.ClaimId
             ));
-        
-        var count = await dtoDbQuery.CountAsync(cancellationToken);
 
         var dtoDbQueryResult = await dtoDbQuery.ToListAsync(cancellationToken);
-        var paginationResponse = new PaginationResponse(query.Page,  query.Size, count);
+        var paginationResponse = new PaginationResponse(query.Page, query.Size, count);
 
         var result = new GetCompanyClaimsOverviewResult(dtoDbQueryResult, paginationResponse);
         
