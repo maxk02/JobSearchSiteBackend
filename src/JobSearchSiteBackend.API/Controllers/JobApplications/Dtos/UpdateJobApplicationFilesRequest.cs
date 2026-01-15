@@ -1,3 +1,3 @@
 ﻿namespace JobSearchSiteBackend.API.Controllers.JobApplications.Dtos;
 
-public record UpdateJobApplicationFilesRequest(ICollection<long> PersonalFileIds);
+public record UpdateJobApplicationFilesRequest(long LocationId, ICollection<long> PersonalFileIds);

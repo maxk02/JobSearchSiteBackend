@@ -51,7 +51,7 @@ public class JobApplicationsController(IMapper mapper) : ControllerBase
         [FromServices] UpdateJobApplicationFilesHandler handler,
         CancellationToken cancellationToken)
     {
-        var command = new UpdateJobApplicationFilesCommand(id, request.PersonalFileIds);
+        var command = new UpdateJobApplicationFilesCommand(id, request.LocationId, request.PersonalFileIds);
         
         var result = await handler.Handle(command, cancellationToken);
         

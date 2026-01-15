@@ -13,4 +13,4 @@ public record JobApplicationForManagersDto(
     ICollection<string> Tags,
     DateTime DateTimeAppliedUtc,
     ICollection<PersonalFileInfoDto> PersonalFiles,
-    JobApplicationStatus Status);
+    int Status);

@@ -545,6 +545,7 @@ public class MainDataContextSeeder(MainDataContext context,
             var randApplicationStatusNumber = random.Next(1, 5);
 
             var jobApplication = new JobApplication(sampleUser.Id, 117, 7, (JobApplicationStatus)randApplicationStatusNumber);
+            jobApplication.PersonalFiles = personalFilesToAddApplicationWith;
             context.JobApplications.Add(jobApplication);
 
             await context.SaveChangesAsync();

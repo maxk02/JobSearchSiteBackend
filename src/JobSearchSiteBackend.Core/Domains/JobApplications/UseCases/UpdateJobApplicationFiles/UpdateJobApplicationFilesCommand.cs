@@ -3,5 +3,5 @@ using Ardalis.Result;
 
 namespace JobSearchSiteBackend.Core.Domains.JobApplications.UseCases.UpdateJobApplicationFiles;
 
-public record UpdateJobApplicationFilesCommand(long Id,
+public record UpdateJobApplicationFilesCommand(long Id, long LocationId,
     ICollection<long> PersonalFileIds) : IRequest<Result>;

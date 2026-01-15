@@ -26,6 +26,22 @@ public class GetApplicationsForJobHandler(
     {
         var currentUserId = currentAccountService.GetIdOrThrow();
 
+        var companyId = await context.Jobs
+            .Where(j => j.Id == query.Id)
+            .Select(j => j.CompanyId)
+            .SingleOrDefaultAsync(cancellationToken);
+
+        var hasManageApplicationsPermission = await context.UserCompanyClaims
+            .Where(ucc => ucc.ClaimId == CompanyClaim.CanManageApplications.Id)
+            .Where(ucc => ucc.CompanyId == companyId)
+            .Where(ucc => ucc.UserId == currentUserId)
+            .AnyAsync(cancellationToken);
+
+        if (!hasManageApplicationsPermission)
+        {
+            return Result.Forbidden();
+        }
+
         var dbQuery = context.JobApplications
             .Where(ja => ja.JobId == query.Id);
 
@@ -69,40 +85,21 @@ public class GetApplicationsForJobHandler(
             .Skip((query.Page - 1) * query.Size)
             .Take(query.Size);
 
-        var jobApplicationDbQueryItem = await dbQuery
-            .GroupBy(ja => ja.Job!.Company!)
-            .Select(g => new
+        var jobApplicationItems = await dbQuery
+            .Select(ja => new
             {
-                HasManageApplicationsPermission = g.Key.UserCompanyClaims!
-                    .Any(ucc => ucc.ClaimId == CompanyClaim.CanManageApplications.Id && ucc.UserId == currentUserId),
-                CompanyId = g.Key.Id,
-                JobApplicationItems = g.Select(ja => new
-                {
-                    Id = ja.Id,
-                    UserId = ja.UserId,
-                    UserFullName = ja.User!.FirstName + " " + ja.User!.LastName,
-                    UserAvatars = ja.User!.UserAvatars!,
-                    Email = ja.User!.Account!.Email!,
-                    Phone = ja.User!.Phone,
-                    Tags = ja.Tags!,
-                    DateTimeAppliedUtc = ja.DateTimeCreatedUtc,
-                    PersonalFiles = ja.PersonalFiles,
-                    Status = ja.Status
-                })
+                Id = ja.Id,
+                UserId = ja.UserId,
+                UserFullName = ja.User!.FirstName + " " + ja.User!.LastName,
+                UserAvatars = ja.User!.UserAvatars!,
+                Email = ja.User!.Account!.Email!,
+                Phone = ja.User!.Phone,
+                Tags = ja.Tags!,
+                DateTimeAppliedUtc = ja.DateTimeCreatedUtc,
+                PersonalFiles = ja.PersonalFiles,
+                Status = ja.Status
             })
-            .SingleOrDefaultAsync(cancellationToken);
-
-        if (jobApplicationDbQueryItem is null)
-        {
-            return Result.NotFound();
-        }
-
-        if (!jobApplicationDbQueryItem.HasManageApplicationsPermission)
-        {
-            return Result.Forbidden();
-        }
-
-        var jobApplicationItems = jobApplicationDbQueryItem.JobApplicationItems.ToList();
+            .ToListAsync(cancellationToken);
         
         if (jobApplicationItems.Count == 0)
             return Result.NotFound();
@@ -131,14 +128,14 @@ public class GetApplicationsForJobHandler(
                 jaItem.Tags.Select(t => t.Tag).ToList(),
                 jaItem.DateTimeAppliedUtc,
                 jaItem.PersonalFiles!.Select(pf => pf.ToPersonalFileInfoDto()).ToList(),
-                jaItem.Status
+                (int)jaItem.Status
             );
             
             jobApplicationForManagersDtos.Add(jobApplicationDto);
         }
         
         await cacheRepo.AddLastVisitedAsync(currentUserId.ToString(),
-            jobApplicationDbQueryItem.CompanyId.ToString(), query.Id.ToString());
+            companyId.ToString(), query.Id.ToString());
 
         var paginationResponse = new PaginationResponse(query.Page, query.Size, totalCount);
         
