@@ -37,9 +37,9 @@ public class UpdateJobHandler(
         if (!hasPermissionInRequestedCompany)
             return Result.Forbidden();
 
-        if (command.NewDateTimeExpiringUtc is not null)
+        if (command.NewDateTimeExpiringUtc is not null && command.NewDateTimeExpiringUtc > job.MaxDateTimeExpiringUtcEverSet)
         {
-            var oldDiff = job.DateTimeExpiringUtc.Subtract(job.DateTimePublishedUtc).TotalDays;
+            var oldDiff = job.MaxDateTimeExpiringUtcEverSet.Subtract(job.DateTimePublishedUtc).TotalDays;
             var oldDaysCeiled = (int)Math.Ceiling(oldDiff);
             
             var newDiff = command.NewDateTimeExpiringUtc.Value.Subtract(job.DateTimePublishedUtc).TotalDays;
@@ -81,6 +81,8 @@ public class UpdateJobHandler(
         
                 context.CompanyBalanceTransactions.Add(companyBalanceTransaction);
             }
+
+            job.MaxDateTimeExpiringUtcEverSet = command.NewDateTimeExpiringUtc.Value;
         }
 
         if (command.CategoryId is not null)

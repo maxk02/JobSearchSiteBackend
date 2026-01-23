@@ -30,6 +30,7 @@ public class AddJobHandler(
             command.IsPublic,
             dateTimePublishedUtc,
             command.DateTimeExpiringUtc,
+            command.DateTimeExpiringUtc,
             command.Responsibilities,
             command.Requirements,
             command.NiceToHaves,

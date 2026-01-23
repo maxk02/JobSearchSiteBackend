@@ -15,9 +15,9 @@ public class Job : IEntityWithId, IEntityWithSearchSync
     private Job() {}
 #pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider adding the 'required' modifier or declaring as nullable.
     public Job(long categoryId, long companyId, string title, string? description, bool isPublic,
-        DateTime dateTimePublishedUtc, DateTime dateTimeExpiringUtc, ICollection<string> responsibilities,
-        ICollection<string> requirements, ICollection<string> niceToHaves, JobSalaryInfo? salaryInfo,
-        ICollection<EmploymentOption> employmentOptions)
+        DateTime dateTimePublishedUtc, DateTime dateTimeExpiringUtc, DateTime maxDateTimeExpiringUtcEverSet,
+        ICollection<string> responsibilities, ICollection<string> requirements, ICollection<string> niceToHaves,
+        JobSalaryInfo? salaryInfo, ICollection<EmploymentOption> employmentOptions)
     {
         CategoryId = categoryId;
         CompanyId = companyId;
@@ -26,6 +26,7 @@ public class Job : IEntityWithId, IEntityWithSearchSync
         IsPublic = isPublic;
         DateTimePublishedUtc = dateTimePublishedUtc;
         DateTimeExpiringUtc = dateTimeExpiringUtc;
+        MaxDateTimeExpiringUtcEverSet = maxDateTimeExpiringUtcEverSet;
         Responsibilities = responsibilities.ToList();
         Requirements = requirements.ToList();
         NiceToHaves = niceToHaves.ToList();
@@ -52,6 +53,8 @@ public class Job : IEntityWithId, IEntityWithSearchSync
     public DateTime DateTimePublishedUtc { get; set; }
 
     public DateTime DateTimeExpiringUtc { get; set; }
+
+    public DateTime MaxDateTimeExpiringUtcEverSet { get; set; }
 
     public JobSalaryInfo? SalaryInfo { get; set; }
 

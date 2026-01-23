@@ -201,7 +201,7 @@ public class MainDataContextSeeder(MainDataContext context,
 
         var jobs = new List<Job>();
 
-        var sqlScript = "INSERT INTO Jobs (Id, DateTimeUpdatedUtc, DateTimeSyncedWithSearchUtc, IsDeleted, CategoryId, CompanyId, Title, Description, DateTimePublishedUtc, DateTimeExpiringUtc, Responsibilities, Requirements, NiceToHaves, IsPublic) VALUES \n";
+        var sqlScript = "INSERT INTO Jobs (Id, DateTimeUpdatedUtc, DateTimeSyncedWithSearchUtc, IsDeleted, CategoryId, CompanyId, Title, Description, DateTimePublishedUtc, DateTimeExpiringUtc, MaxDateTimeExpiringUtcEverSet, Responsibilities, Requirements, NiceToHaves, IsPublic) VALUES \n";
 
         var sqlLocationsScript = "INSERT INTO JobLocation (JobsId, LocationsId) VALUES \n";
 
@@ -222,6 +222,8 @@ public class MainDataContextSeeder(MainDataContext context,
                 sqlScript += $"\'{jobSeedingItems[i].Description}\', ";
             else sqlScript += $"NULL, ";
             sqlScript += $"\'{jobSeedingItems[i].DateTimePublishedUtc.ToString("yyyy-MM-ddTHH:mm:ss.fff")}\', ";
+            sqlScript += $"\'{jobSeedingItems[i].DateTimeExpiringUtc.ToString("yyyy-MM-ddTHH:mm:ss.fff")}\', ";
+            // maxDateTimeExpiringUtcEverSet (same as dateTimeExpiringUtc)
             sqlScript += $"\'{jobSeedingItems[i].DateTimeExpiringUtc.ToString("yyyy-MM-ddTHH:mm:ss.fff")}\', ";
             sqlScript += $"N\'" + JsonConvert.SerializeObject(jobSeedingItems[i].Responsibilities) + "\', ";
             sqlScript += $"N\'" + JsonConvert.SerializeObject(jobSeedingItems[i].Requirements) + "\', ";

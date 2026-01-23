@@ -486,6 +486,7 @@ namespace JobSearchSiteBackend.Infrastructure.Persistence.EfCore.Migrations
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     DateTimePublishedUtc = table.Column<DateTime>(type: "datetime2", nullable: false),
                     DateTimeExpiringUtc = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    MaxDateTimeExpiringUtcEverSet = table.Column<DateTime>(type: "datetime2", nullable: false),
                     Responsibilities = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Requirements = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     NiceToHaves = table.Column<string>(type: "nvarchar(max)", nullable: true),

@@ -972,6 +972,9 @@ namespace JobSearchSiteBackend.Infrastructure.Persistence.EfCore.Migrations
                     b.Property<bool>("IsPublic")
                         .HasColumnType("bit");
 
+                    b.Property<DateTime>("MaxDateTimeExpiringUtcEverSet")
+                        .HasColumnType("datetime2");
+
                     b.PrimitiveCollection<string>("NiceToHaves")
                         .HasColumnType("nvarchar(max)");
 

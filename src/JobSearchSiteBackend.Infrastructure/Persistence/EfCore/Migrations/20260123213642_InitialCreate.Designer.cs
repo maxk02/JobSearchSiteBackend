@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace JobSearchSiteBackend.Infrastructure.Persistence.EfCore.Migrations
 {
     [DbContext(typeof(MainDataContext))]
-    [Migration("20260105000237_InitialCreate")]
+    [Migration("20260123213642_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -974,6 +974,9 @@ namespace JobSearchSiteBackend.Infrastructure.Persistence.EfCore.Migrations
 
                     b.Property<bool>("IsPublic")
                         .HasColumnType("bit");
+
+                    b.Property<DateTime>("MaxDateTimeExpiringUtcEverSet")
+                        .HasColumnType("datetime2");
 
                     b.PrimitiveCollection<string>("NiceToHaves")
                         .HasColumnType("nvarchar(max)");
