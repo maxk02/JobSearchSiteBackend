@@ -14,6 +14,7 @@ using JobSearchSiteBackend.Core.Services.Cookies;
 using JobSearchSiteBackend.Core.Services.Search;
 using JobSearchSiteBackend.Infrastructure;
 using JobSearchSiteBackend.Infrastructure.BackgroundJobs;
+using JobSearchSiteBackend.Infrastructure.BackgroundJobs.Hangfire.AuthorizationFilters;
 using JobSearchSiteBackend.Infrastructure.Persistence.EfCore;
 using JobSearchSiteBackend.Shared.MyAppSettings;
 using JobSearchSiteBackend.Shared.MyAppSettings.Email;
@@ -40,6 +41,12 @@ builder.Services
 builder.Services
     .AddOptions<MySmtpSettings>()
     .Bind(builder.Configuration.GetSection(nameof(MySmtpSettings)))
+    .ValidateDataAnnotations()
+    .ValidateOnStart();
+
+builder.Services
+    .AddOptions<MyDefaultEmailSenderSettings>()
+    .Bind(builder.Configuration.GetSection(nameof(MyDefaultEmailSenderSettings)))
     .ValidateDataAnnotations()
     .ValidateOnStart();
 
@@ -197,11 +204,21 @@ app.UseCors("AllowNextJsHttp");
 app.UseAuthentication();
 app.UseAuthorization();
 
+if (app.Environment.IsDevelopment())
+{
+    app.UseHangfireDashboard("/hangfire", new DashboardOptions
+    {
+        Authorization = new[] { new AllowAllAuthorizationFilter() }
+    });
+}
+else
+{
+    app.UseHangfireDashboard();
+}
+
 app.UseMiddleware<RequireAuthWithEmailConfirmedMiddleware>();
 app.UseMiddleware<CheckUserTokenMiddleware>();
 
 app.MapControllers();
-
-app.UseHangfireDashboard("/hangfire");
 
 app.Run();

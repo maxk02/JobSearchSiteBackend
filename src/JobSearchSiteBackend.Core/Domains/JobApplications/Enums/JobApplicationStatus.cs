@@ -3,7 +3,7 @@
 public enum JobApplicationStatus
 {
     Submitted = 1,
-    Shortlisted = 2,
-    OfferSent = 3,
+    Seen = 2,
+    Shortlisted = 3,
     Rejected = 4,
 }

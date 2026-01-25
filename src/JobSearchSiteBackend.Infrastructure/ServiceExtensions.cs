@@ -226,8 +226,22 @@ public static class ServiceExtensions
         if (string.IsNullOrEmpty(connectionString))
             throw new ArgumentNullException();
         
-        serviceCollection.AddHangfire(config =>
-            config.UseSqlServerStorage(connectionString));
+        // serviceCollection.AddHangfire(config =>
+        //     config.UseSqlServerStorage(connectionString));
+
+        serviceCollection.AddHangfire(config => config
+            .SetDataCompatibilityLevel(CompatibilityLevel.Version_180)
+            .UseSimpleAssemblyNameTypeSerializer()
+            .UseRecommendedSerializerSettings()
+            .UseSqlServerStorage(connectionString, new Hangfire.SqlServer.SqlServerStorageOptions
+            {
+                CommandBatchMaxTimeout = TimeSpan.FromMinutes(5),
+                SlidingInvisibilityTimeout = TimeSpan.FromMinutes(5),
+                QueuePollInterval = TimeSpan.Zero,
+                UseRecommendedIsolationLevel = true,
+                DisableGlobalLocks = true,
+                PrepareSchemaIfNecessary = true 
+            }));
         
         serviceCollection.AddHangfireServer(options =>
         {

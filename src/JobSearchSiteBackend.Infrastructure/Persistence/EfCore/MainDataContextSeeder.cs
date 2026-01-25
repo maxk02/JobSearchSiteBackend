@@ -540,6 +540,8 @@ public class MainDataContextSeeder(MainDataContext context,
                 var personalFile = new PersonalFile(sampleUser.Id, $"plik_{f}",
                     GetFileExtensionFromNumber(randFileExtensionNumber), randFileSizeInBytes, fileText);
 
+                personalFile.IsUploadedSuccessfully = true;
+
                 context.PersonalFiles.Add(personalFile);
                 personalFilesToAddApplicationWith.Add(personalFile);
             }

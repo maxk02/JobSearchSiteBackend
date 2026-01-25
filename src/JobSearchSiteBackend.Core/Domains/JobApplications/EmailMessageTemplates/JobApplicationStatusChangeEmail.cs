@@ -9,7 +9,7 @@ public class JobApplicationStatusChangeEmail(JobApplicationStatus newStatus, str
     
     public string Content => newStatus switch
     {
-        JobApplicationStatus.Rejected => $"""
+         JobApplicationStatus.Rejected => $"""
                                           <p>
                                              Witamy, 
                                              <br><br>
@@ -25,7 +25,23 @@ public class JobApplicationStatusChangeEmail(JobApplicationStatus newStatus, str
                                              Zespół znajdzprace.pl
                                           </p>
                                           """,
-        JobApplicationStatus.Shortlisted => $"""
+         JobApplicationStatus.Seen => $"""
+                                       <p>
+                                          Witamy, 
+                                          <br><br>
+                                          Mamy dobrą wiadomość! Twoja aplikacja na stanowisko {jobName} w firmie {companyName} została właśnie wyświetlona przez rekrutera.
+                                          <br>
+                                          Oznacza to, że pracodawca zapoznaje się obecnie z Twoim profilem oraz przesłanymi dokumentami. 
+                                          <br>
+                                          Prosimy o cierpliwość – proces analizy kandydatur może chwilę potrwać. Jeśli Twoje zgłoszenie spotka się z zainteresowaniem, otrzymasz powiadomienie o zmianie statusu lub bezpośredni kontakt ze strony firmy.
+                                          <br>
+                                          Trzymamy kciuki!
+                                          <br>
+                                          Z wyrazami szacunku,
+                                          Zespół znajdzprace.pl
+                                       </p>
+                                       """,
+         JobApplicationStatus.Shortlisted => $"""
                                              <p>
                                                 Witamy, 
                                                 <br><br>
@@ -41,20 +57,6 @@ public class JobApplicationStatusChangeEmail(JobApplicationStatus newStatus, str
                                                 Zespół znajdzprace.pl
                                              </p>
                                              """,
-        JobApplicationStatus.OfferSent => $"""
-                                           <p>
-                                              Witamy, 
-                                              <br><br>
-                                              Gratulujemy! Otrzymaliśmy informację od ${companyName}, że w ramach procesu rekrutacyjnego na stanowisko {jobName} została dla Pani/Pana przygotowana oferta zatrudnienia.
-                                              <br>
-                                              Wkrótce otrzymają Państwo od pracodawcy szczegółowe informacje dotyczące warunków współpracy oraz dalszych kroków.
-                                              <br>
-                                              Życzymy powodzenia w finalizacji procesu oraz dalszych sukcesów zawodowych.
-                                              <br>
-                                              Z wyrazami szacunku,
-                                              Zespół znajdzprace.pl
-                                           </p>
-                                           """,
         _ => throw new ArgumentException()
     };
 }

@@ -15,7 +15,7 @@ public class SendPasswordResetLinkHandler(
     IOptions<MyAppSettings> injectedAppSettings,
     ISendPasswordResetLinkRunner sendPasswordResetLinkRunner,
     StandardEmailRenderer emailRenderer,
-    IOptions<MyDefaultEmailSenderOptions> emailSenderSettings) : IRequestHandler<SendPasswordResetLinkCommand, Result>
+    IOptions<MyDefaultEmailSenderSettings> emailSenderSettings) : IRequestHandler<SendPasswordResetLinkCommand, Result>
 {
     public async Task<Result> Handle(SendPasswordResetLinkCommand command, CancellationToken cancellationToken = default)
     {

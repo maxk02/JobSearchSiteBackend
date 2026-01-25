@@ -1,0 +1,3 @@
+﻿namespace JobSearchSiteBackend.Core.Domains.JobApplications.UseCases.AddJobApplication;
+
+public record GetFileDownloadLinkFromJobApplicationResponse(string DownloadLink);

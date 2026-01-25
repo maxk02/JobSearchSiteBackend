@@ -17,7 +17,7 @@ public class ResendEmailConfirmationLinkHandler(
     IResendEmailConfirmationLinkRunner resendEmailConfirmationLinkRunner,
     IOptions<MyAppSettings> injectedAppSettings,
     StandardEmailRenderer emailRenderer,
-    IOptions<MyDefaultEmailSenderOptions> emailSenderSettings) : IRequestHandler<ResendEmailConfirmationLinkCommand, Result>
+    IOptions<MyDefaultEmailSenderSettings> emailSenderSettings) : IRequestHandler<ResendEmailConfirmationLinkCommand, Result>
 {
     public async Task<Result> Handle(ResendEmailConfirmationLinkCommand command,
         CancellationToken cancellationToken = default)

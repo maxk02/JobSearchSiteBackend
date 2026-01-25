@@ -17,7 +17,7 @@ public class CreateAccountHandler(
     MainDataContext context,
     ISendAccountCreatedEmailRunner sendAccountCreatedEmailRunner,
     StandardEmailRenderer emailRenderer,
-    IOptions<MyDefaultEmailSenderOptions> emailSenderSettings) 
+    IOptions<MyDefaultEmailSenderSettings> emailSenderSettings) 
     : IRequestHandler<CreateAccountCommand, Result<CreateAccountResult>>
 {
     public async Task<Result<CreateAccountResult>> Handle(CreateAccountCommand command,

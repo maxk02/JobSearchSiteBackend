@@ -4,6 +4,7 @@ using AutoMapper;
 using JobSearchSiteBackend.API.Controllers.JobApplications.Dtos;
 using JobSearchSiteBackend.Core.Domains.JobApplications.UseCases.AddJobApplication;
 using JobSearchSiteBackend.Core.Domains.JobApplications.UseCases.DeleteJobApplication;
+using JobSearchSiteBackend.Core.Domains.JobApplications.UseCases.GetFileDownloadLinkFromJobApplication;
 using JobSearchSiteBackend.Core.Domains.JobApplications.UseCases.UpdateJobApplicationFiles;
 using JobSearchSiteBackend.Core.Domains.JobApplications.UseCases.UpdateJobApplicationStatus;
 using Microsoft.AspNetCore.Authorization;
@@ -41,6 +42,21 @@ public class JobApplicationsController(IMapper mapper) : ControllerBase
         var result = await handler.Handle(command, cancellationToken);
         
         return this.ToActionResult(result);
+    }
+
+    [HttpGet]
+    [Route("{id:long:min(1)}/files/{fileId:long:min(1)}")]
+    public async Task<ActionResult<GetFileDownloadLinkFromJobApplicationResponse>> GetFileDownloadLinkFromJobApplication(
+        [FromRoute] long id,
+        [FromRoute] long fileId,
+        [FromServices] GetFileDownloadLinkFromJobApplicationHandler handler,
+        CancellationToken cancellationToken)
+    {
+        var query = new GetFileDownloadLinkFromJobApplicationQuery(id, fileId);
+        
+        var result = await handler.Handle(query, cancellationToken);
+        
+        return this.ToActionResult(result.Map(x => mapper.Map<GetFileDownloadLinkFromJobApplicationResponse>(x)));
     }
     
     [HttpPut]
