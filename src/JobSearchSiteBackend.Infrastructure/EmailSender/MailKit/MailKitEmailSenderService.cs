@@ -25,12 +25,12 @@ public class MailKitEmailSenderService(IOptions<MySmtpSettings> settings) : IEma
             email.Bcc.Add(new MailboxAddress(emailToSend.Bcc, emailToSend.Bcc));
         }
 
-        if (email.Subject is not null)
+        if (emailToSend.Subject is not null)
         {
             email.Subject = emailToSend.Subject;
         }
 
-        if (email.Body is not null)
+        if (emailToSend.Body is not null)
         {
             email.Body = new TextPart(emailToSend.IsHtml ? "html" : "plain") { Text = emailToSend.Body };
         }
