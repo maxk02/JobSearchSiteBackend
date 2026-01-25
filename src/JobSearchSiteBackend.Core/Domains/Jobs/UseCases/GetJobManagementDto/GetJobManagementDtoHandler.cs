@@ -72,6 +72,7 @@ public class GetJobManagementDtoHandler(
             job.Description,
             job.DateTimePublishedUtc,
             job.DateTimeExpiringUtc,
+            job.MaxDateTimeExpiringUtcEverSet,
             job.Responsibilities!,
             job.Requirements!,
             job.NiceToHaves!,

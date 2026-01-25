@@ -17,6 +17,7 @@ public static class JobUseCasesDi
         serviceCollection.AddScoped<DeleteJobHandler>();
         serviceCollection.AddScoped<GetApplicationsForJobHandler>();
         serviceCollection.AddScoped<GetJobHandler>();
+        serviceCollection.AddScoped<GetJobDataForCurrentAccountHandler>();
         serviceCollection.AddScoped<GetJobManagementDtoHandler>();
         serviceCollection.AddScoped<GetJobsHandler>();
         serviceCollection.AddScoped<UpdateJobHandler>();

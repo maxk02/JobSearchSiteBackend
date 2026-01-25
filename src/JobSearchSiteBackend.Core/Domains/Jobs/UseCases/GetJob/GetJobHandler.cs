@@ -13,7 +13,6 @@ using Microsoft.EntityFrameworkCore;
 namespace JobSearchSiteBackend.Core.Domains.Jobs.UseCases.GetJob;
 
 public class GetJobHandler(
-    ICurrentAccountService currentAccountService,
     MainDataContext context,
     IPageVisitCacheRepository cacheRepo,
     IFileStorageService fileStorageService) : IRequestHandler<GetJobQuery, Result<GetJobResult>>

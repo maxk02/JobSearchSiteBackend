@@ -14,6 +14,7 @@ public record JobManagementDto(
     string? Description,
     DateTime DateTimePublishedUtc,
     DateTime DateTimeExpiringUtc,
+    DateTime MaxDateTimeExpiringUtcEverSet,
     ICollection<string> Responsibilities,
     ICollection<string> Requirements,
     ICollection<string> NiceToHaves,
