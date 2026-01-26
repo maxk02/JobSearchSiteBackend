@@ -45,4 +45,7 @@ public class UserProfile : IEntityWithId
     public ICollection<Company>? CompaniesWhereEmployed { get; set; }
     
     public ICollection<CompanyBalanceTransaction>? CompanyBalanceTransactions { get; set; }
+
+    public ICollection<CompanyEmployeeInvitation>? CompanyEmployeeInvitationsSent { get; set; }
+    public ICollection<CompanyEmployeeInvitation>? CompanyEmployeeInvitationsReceived { get; set; }
 }

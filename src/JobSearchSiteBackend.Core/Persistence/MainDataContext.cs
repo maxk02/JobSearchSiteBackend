@@ -22,6 +22,7 @@ public class MainDataContext : IdentityDbContext<MyIdentityUser, MyIdentityRole,
     public DbSet<Company> Companies { get; set; }
     public DbSet<CompanyAvatar> CompanyAvatars { get; set; }
     public DbSet<CompanyBalanceTransaction> CompanyBalanceTransactions { get; set; }
+    public DbSet<CompanyEmployeeInvitation> CompanyEmployeeInvitations { get; set; }
     public DbSet<JobContractType> ContractTypes { get; set; }
     public DbSet<Country> Countries { get; set; }
     public DbSet<CountryCurrency> CountryCurrencies { get; set; }

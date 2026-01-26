@@ -45,6 +45,8 @@ public class Company : IEntityWithId, IEntityWithSearchSync
     public ICollection<CompanyAvatar>? CompanyAvatars { get; set; }
     
     public ICollection<CompanyBalanceTransaction>? CompanyBalanceTransactions { get; set; }
+
+    public ICollection<CompanyEmployeeInvitation>? CompanyEmployeeInvitations { get; set; }
     
     public ICollection<UserProfile>? Employees { get; set; }
 }

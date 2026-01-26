@@ -448,6 +448,39 @@ namespace JobSearchSiteBackend.Infrastructure.Persistence.EfCore.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "CompanyEmployeeInvitations",
+                columns: table => new
+                {
+                    Id = table.Column<long>(type: "bigint", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    GuidIdentifier = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    DateTimeCreatedUtc = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    CompanyId = table.Column<long>(type: "bigint", nullable: false),
+                    InvitedUserId = table.Column<long>(type: "bigint", nullable: false),
+                    SenderUserId = table.Column<long>(type: "bigint", nullable: false),
+                    IsAccepted = table.Column<bool>(type: "bit", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_CompanyEmployeeInvitations", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_CompanyEmployeeInvitations_Companies_CompanyId",
+                        column: x => x.CompanyId,
+                        principalTable: "Companies",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_CompanyEmployeeInvitations_UserProfiles_InvitedUserId",
+                        column: x => x.InvitedUserId,
+                        principalTable: "UserProfiles",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_CompanyEmployeeInvitations_UserProfiles_SenderUserId",
+                        column: x => x.SenderUserId,
+                        principalTable: "UserProfiles",
+                        principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
                 name: "CompanyUserProfile",
                 columns: table => new
                 {
@@ -1011,6 +1044,27 @@ namespace JobSearchSiteBackend.Infrastructure.Persistence.EfCore.Migrations
                 column: "UserProfileId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_CompanyEmployeeInvitations_CompanyId",
+                table: "CompanyEmployeeInvitations",
+                column: "CompanyId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_CompanyEmployeeInvitations_GuidIdentifier",
+                table: "CompanyEmployeeInvitations",
+                column: "GuidIdentifier",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_CompanyEmployeeInvitations_InvitedUserId",
+                table: "CompanyEmployeeInvitations",
+                column: "InvitedUserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_CompanyEmployeeInvitations_SenderUserId",
+                table: "CompanyEmployeeInvitations",
+                column: "SenderUserId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_CompanyUserProfile_EmployeesId",
                 table: "CompanyUserProfile",
                 column: "EmployeesId");
@@ -1180,6 +1234,9 @@ namespace JobSearchSiteBackend.Infrastructure.Persistence.EfCore.Migrations
 
             migrationBuilder.DropTable(
                 name: "CompanyBalanceTransactions");
+
+            migrationBuilder.DropTable(
+                name: "CompanyEmployeeInvitations");
 
             migrationBuilder.DropTable(
                 name: "CompanyUserProfile");

@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace JobSearchSiteBackend.Infrastructure.Persistence.EfCore.Migrations
 {
     [DbContext(typeof(MainDataContext))]
-    [Migration("20260123213642_InitialCreate")]
+    [Migration("20260126220356_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -561,6 +561,46 @@ namespace JobSearchSiteBackend.Infrastructure.Persistence.EfCore.Migrations
                     b.HasIndex("UserProfileId");
 
                     b.ToTable("CompanyBalanceTransactions");
+                });
+
+            modelBuilder.Entity("JobSearchSiteBackend.Core.Domains.Companies.CompanyEmployeeInvitation", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
+
+                    b.Property<long>("CompanyId")
+                        .HasColumnType("bigint");
+
+                    b.Property<DateTime>("DateTimeCreatedUtc")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid>("GuidIdentifier")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<long>("InvitedUserId")
+                        .HasColumnType("bigint");
+
+                    b.Property<bool>("IsAccepted")
+                        .HasColumnType("bit");
+
+                    b.Property<long>("SenderUserId")
+                        .HasColumnType("bigint");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CompanyId");
+
+                    b.HasIndex("GuidIdentifier")
+                        .IsUnique();
+
+                    b.HasIndex("InvitedUserId");
+
+                    b.HasIndex("SenderUserId");
+
+                    b.ToTable("CompanyEmployeeInvitations");
                 });
 
             modelBuilder.Entity("JobSearchSiteBackend.Core.Domains.CompanyClaims.CompanyClaim", b =>
@@ -1484,6 +1524,33 @@ namespace JobSearchSiteBackend.Infrastructure.Persistence.EfCore.Migrations
                     b.Navigation("UserProfile");
                 });
 
+            modelBuilder.Entity("JobSearchSiteBackend.Core.Domains.Companies.CompanyEmployeeInvitation", b =>
+                {
+                    b.HasOne("JobSearchSiteBackend.Core.Domains.Companies.Company", "Company")
+                        .WithMany("CompanyEmployeeInvitations")
+                        .HasForeignKey("CompanyId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.HasOne("JobSearchSiteBackend.Core.Domains.UserProfiles.UserProfile", "InvitedUser")
+                        .WithMany("CompanyEmployeeInvitationsReceived")
+                        .HasForeignKey("InvitedUserId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.HasOne("JobSearchSiteBackend.Core.Domains.UserProfiles.UserProfile", "SenderUser")
+                        .WithMany("CompanyEmployeeInvitationsSent")
+                        .HasForeignKey("SenderUserId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.Navigation("Company");
+
+                    b.Navigation("InvitedUser");
+
+                    b.Navigation("SenderUser");
+                });
+
             modelBuilder.Entity("JobSearchSiteBackend.Core.Domains.CompanyClaims.UserCompanyClaim", b =>
                 {
                     b.HasOne("JobSearchSiteBackend.Core.Domains.CompanyClaims.CompanyClaim", "CompanyClaim")
@@ -1785,6 +1852,8 @@ namespace JobSearchSiteBackend.Infrastructure.Persistence.EfCore.Migrations
 
                     b.Navigation("CompanyBalanceTransactions");
 
+                    b.Navigation("CompanyEmployeeInvitations");
+
                     b.Navigation("Jobs");
 
                     b.Navigation("UserCompanyClaims");
@@ -1844,6 +1913,10 @@ namespace JobSearchSiteBackend.Infrastructure.Persistence.EfCore.Migrations
             modelBuilder.Entity("JobSearchSiteBackend.Core.Domains.UserProfiles.UserProfile", b =>
                 {
                     b.Navigation("CompanyBalanceTransactions");
+
+                    b.Navigation("CompanyEmployeeInvitationsReceived");
+
+                    b.Navigation("CompanyEmployeeInvitationsSent");
 
                     b.Navigation("JobApplications");
 
