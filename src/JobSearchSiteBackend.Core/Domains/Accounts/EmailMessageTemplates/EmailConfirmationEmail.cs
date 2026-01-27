@@ -14,7 +14,11 @@ public class EmailConfirmationEmail(string confirmationLink) : IEmailTemplate
             <br><br>
             Prosimy o podtwierdzenie adresu e-mail poprzez kliknięcie w link poniżej w celu aktywacji konta:
             <br>
-            <a href='{confirmationLink}'>link</a>
+            <a href='{confirmationLink}'>{confirmationLink}</a>
+            <br><br>
+            Z wyrazami szacunku,
+            <br>
+            Zespół znajdzprace.pl
          </p>
          """;
 }

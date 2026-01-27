@@ -25,9 +25,9 @@ public class SendPasswordResetLinkHandler(
 
         var token = await userManager.GeneratePasswordResetTokenAsync(user);
         
-        var domainName = injectedAppSettings.Value.DomainName;
+        var domainName = injectedAppSettings.Value.FrontendDomainName;
         
-        var link = $"https://{domainName}/account/reset-password/{token}";
+        var link = $"https://{domainName}/account/reset-password?token={token}";
 
         var emailTemplate = new ResetPasswordEmail(link);
         

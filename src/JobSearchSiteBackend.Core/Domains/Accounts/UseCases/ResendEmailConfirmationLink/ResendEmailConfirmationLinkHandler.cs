@@ -41,9 +41,9 @@ public class ResendEmailConfirmationLinkHandler(
 
         var token = await userManager.GenerateEmailConfirmationTokenAsync(user);
         
-        var domainName = injectedAppSettings.Value.DomainName;
+        var domainName = injectedAppSettings.Value.FrontendDomainName;
         
-        var link = $"https://{domainName}/account/confirm-email/{token}";
+        var link = $"https://{domainName}/account/confirm-email?token={token}";
 
         var emailTemplate = new EmailConfirmationEmail(link);
 

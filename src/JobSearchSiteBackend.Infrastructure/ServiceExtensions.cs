@@ -45,6 +45,7 @@ using Microsoft.IdentityModel.Tokens;
 using Nest;
 using StackExchange.Redis;
 using System.IdentityModel.Tokens.Jwt;
+using JobSearchSiteBackend.Core.Domains.Companies.BackgroundJobRunners;
 
 namespace JobSearchSiteBackend.Infrastructure;
 
@@ -256,6 +257,7 @@ public static class ServiceExtensions
         serviceCollection
             .AddSingleton<ISendApplicationStatusUpdatedEmailRunner, SendApplicationStatusUpdatedEmailRunner>();
         serviceCollection.AddSingleton<ISendPasswordResetLinkRunner, SendPasswordResetLinkRunner>();
+        serviceCollection.AddSingleton<ISendCompanyEmployeeInvitationEmailRunner, SendCompanyEmployeeInvitationEmailRunner>();
 
         serviceCollection.AddScoped<IClearCompanyAvatarsRunner, ClearCompanyAvatarsRunner>();
         serviceCollection.AddScoped<IDeleteNonUploadedFilesRunner, DeleteNonUploadedFilesRunner>();

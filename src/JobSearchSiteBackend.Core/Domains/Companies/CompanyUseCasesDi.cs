@@ -1,5 +1,6 @@
 ﻿using JobSearchSiteBackend.Core.Domains.Companies.UseCases.AddCompany;
 using JobSearchSiteBackend.Core.Domains.Companies.UseCases.AddCompanyEmployee;
+using JobSearchSiteBackend.Core.Domains.Companies.UseCases.AddCompanyEmployeeInvitation;
 using JobSearchSiteBackend.Core.Domains.Companies.UseCases.DeleteCompany;
 using JobSearchSiteBackend.Core.Domains.Companies.UseCases.GetCompany;
 using JobSearchSiteBackend.Core.Domains.Companies.UseCases.GetCompanyBalance;
@@ -24,6 +25,7 @@ public static class CompanyUseCasesDi
     {
         serviceCollection.AddScoped<AddCompanyHandler>();
         serviceCollection.AddScoped<AddCompanyEmployeeHandler>();
+        serviceCollection.AddScoped<AddCompanyEmployeeInvitationHandler>();
         serviceCollection.AddScoped<DeleteCompanyHandler>();
         serviceCollection.AddScoped<GetCompanyHandler>();
         serviceCollection.AddScoped<GetCompanyBalanceHandler>();

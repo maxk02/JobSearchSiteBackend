@@ -4,6 +4,7 @@ using AutoMapper;
 using JobSearchSiteBackend.API.Controllers.Companies.Dtos;
 using JobSearchSiteBackend.Core.Domains.Companies.UseCases.AddCompany;
 using JobSearchSiteBackend.Core.Domains.Companies.UseCases.AddCompanyEmployee;
+using JobSearchSiteBackend.Core.Domains.Companies.UseCases.AddCompanyEmployeeInvitation;
 using JobSearchSiteBackend.Core.Domains.Companies.UseCases.DeleteCompany;
 using JobSearchSiteBackend.Core.Domains.Companies.UseCases.GetCompany;
 using JobSearchSiteBackend.Core.Domains.Companies.UseCases.GetCompanyBalance;
@@ -50,6 +51,20 @@ public class CompaniesController(IMapper mapper) : ControllerBase
         CancellationToken cancellationToken)
     {
         var command = new AddCompanyEmployeeCommand(companyId, request.UserId);
+        var result = await handler.Handle(command, cancellationToken);
+    
+        return this.ToActionResult(result);
+    }
+
+    [HttpPost]
+    [Route("{companyId:long:min(1)}/management/employees/invitations")]
+    public async Task<ActionResult> AddCompanyEmployeeInvitation(
+        [FromRoute] long companyId,
+        [FromBody] AddCompanyEmployeeInvitationRequest request,
+        [FromServices] AddCompanyEmployeeInvitationHandler handler,
+        CancellationToken cancellationToken)
+    {
+        var command = new AddCompanyEmployeeInvitationCommand(companyId, request.InvitedUserEmail);
         var result = await handler.Handle(command, cancellationToken);
     
         return this.ToActionResult(result);

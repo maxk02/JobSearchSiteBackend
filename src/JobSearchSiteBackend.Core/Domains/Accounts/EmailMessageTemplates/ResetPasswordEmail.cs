@@ -14,6 +14,10 @@ public class ResetPasswordEmail(string resetLink) : IEmailTemplate
             Prosimy o kliknięcie w link poniżej w celu resetowania hasła lub o ignorowanie tej wiadomości w razie niewysyłania tego żądania.
             <br>
             Link: <a href='{resetLink}'>{resetLink}</a>
+            <br><br>
+            Z wyrazami szacunku,
+            <br>
+            Zespół znajdzprace.pl
          </p>
          """;
 }

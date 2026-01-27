@@ -39,9 +39,9 @@ public class CreateAccountHandler(
 
         var token = await userManager.GenerateEmailConfirmationTokenAsync(user);
         
-        var domainName = settings.Value.DomainName;
+        var domainName = settings.Value.FrontendDomainName;
 
-        var link = $"https://{domainName}/account/confirm-email/{token}";
+        var link = $"https://{domainName}/account/confirm-email?token={token}";
         
         var emailTemplate = new EmailConfirmationEmail(link);
 

@@ -1,10 +1,13 @@
 ﻿using Ardalis.Result;
 using JobSearchSiteBackend.Core.Domains._Shared.UseCaseStructure;
 using JobSearchSiteBackend.Core.Domains.Accounts;
+using JobSearchSiteBackend.Core.Domains.Companies.BackgroundJobRunners;
+using JobSearchSiteBackend.Core.Domains.Companies.EmailMessageTemplates;
 using JobSearchSiteBackend.Core.Domains.CompanyClaims;
 using JobSearchSiteBackend.Core.Persistence;
 using JobSearchSiteBackend.Core.Services.Auth;
 using JobSearchSiteBackend.Core.Services.EmailSender;
+using JobSearchSiteBackend.Shared.MyAppSettings;
 using JobSearchSiteBackend.Shared.MyAppSettings.Email;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -17,7 +20,9 @@ public class AddCompanyEmployeeInvitationHandler(
     MainDataContext context,
     UserManager<MyIdentityUser> userManager,
     StandardEmailRenderer emailRenderer,
-    IOptions<MyDefaultEmailSenderSettings> emailSenderSettings)
+    IOptions<MyDefaultEmailSenderSettings> emailSenderSettings,
+    IOptions<MyAppSettings> appSettings,
+    ISendCompanyEmployeeInvitationEmailRunner sendCompanyEmployeeInvitationEmailRunner)
     : IRequestHandler<AddCompanyEmployeeInvitationCommand, Result>
 {
     public async Task<Result> Handle(AddCompanyEmployeeInvitationCommand command,
@@ -59,17 +64,21 @@ public class AddCompanyEmployeeInvitationHandler(
         
         await context.SaveChangesAsync(cancellationToken);
 
-        // var emailTemplate = new CompanyEmployeeInvitationEmail(command.CompanyId, companyName, invitation.GuidIdentifier.ToString());
+        var domainName = appSettings.Value.FrontendDomainName;
         
-        // var renderedEmail = await emailRenderer.RenderAsync(emailTemplate);
+        var link = $"https://{domainName}/company/{command.CompanyId}/accept-invitation?token={invitation.GuidIdentifier}";
+
+        var emailTemplate = new CompanyEmployeeInvitationEmail(link, companyName);
+        
+        var renderedEmail = await emailRenderer.RenderAsync(emailTemplate);
         
         var senderName = emailSenderSettings.Value.Name;
         var senderEmail = emailSenderSettings.Value.EmailAddress;
         
-        // var emailToSend = new EmailToSend(Guid.NewGuid(), senderName, senderEmail, command.InvitedUserEmail,
-        //     null, null, renderedEmail.Subject, renderedEmail.Content, renderedEmail.IsHtml);
+        var emailToSend = new EmailToSend(Guid.NewGuid(), senderName, senderEmail, command.InvitedUserEmail,
+            null, null, renderedEmail.Subject, renderedEmail.Content, renderedEmail.IsHtml);
 
-        // await sendCompanyEmployeeInvitationEmailRunner.RunAsync(emailToSend);
+        await sendCompanyEmployeeInvitationEmailRunner.RunAsync(emailToSend);
 
         return Result.Success();
     }
