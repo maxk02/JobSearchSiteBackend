@@ -46,6 +46,9 @@ using Nest;
 using StackExchange.Redis;
 using System.IdentityModel.Tokens.Jwt;
 using JobSearchSiteBackend.Core.Domains.Companies.BackgroundJobRunners;
+using JobSearchSiteBackend.Infrastructure.FileStorage.CloudflareR2;
+using Amazon.Runtime;
+using Amazon;
 
 namespace JobSearchSiteBackend.Infrastructure;
 
@@ -176,14 +179,47 @@ public static class ServiceExtensions
         serviceCollection.AddSingleton<IJwtTokenGenerationService, JwtTokenGenerationService>();
     }
     
+    // public static void ConfigureFileStorage(this IServiceCollection serviceCollection, IConfiguration configuration)
+    // {
+    //     serviceCollection.AddDefaultAWSOptions(configuration.GetAWSOptions());
+        
+    //     serviceCollection.AddAWSService<IAmazonS3>();
+        
+    //     serviceCollection.AddSingleton<IFileStorageService, AmazonS3FileStorageService>(provider => 
+    //         new AmazonS3FileStorageService(provider.GetRequiredService<IAmazonS3>(), configuration));
+    // }
+
     public static void ConfigureFileStorage(this IServiceCollection serviceCollection, IConfiguration configuration)
     {
-        serviceCollection.AddDefaultAWSOptions(configuration.GetAWSOptions());
-        
-        serviceCollection.AddAWSService<IAmazonS3>();
-        
-        serviceCollection.AddSingleton<IFileStorageService, AmazonS3FileStorageService>(provider => 
-            new AmazonS3FileStorageService(provider.GetRequiredService<IAmazonS3>(), configuration));
+        var r2AccountId = configuration["CLOUDFLARE_R2_ACCOUNT_ID"];
+        var accessKey = configuration["CLOUDFLARE_R2_ACCESS_KEY_ID"];
+        var secretKey = configuration["CLOUDFLARE_R2_SECRET_KEY"];
+
+        if (string.IsNullOrWhiteSpace(r2AccountId) || 
+            string.IsNullOrWhiteSpace(accessKey) || 
+            string.IsNullOrWhiteSpace(secretKey))
+        {
+            throw new ArgumentNullException("Cloudflare R2 configuration is missing.");
+        }
+
+        AWSConfigsS3.UseSignatureVersion4 = true;
+
+        var r2Url = $"https://{r2AccountId}.r2.cloudflarestorage.com";
+
+        var credentials = new BasicAWSCredentials(accessKey, secretKey);
+
+        var s3Config = new AmazonS3Config
+        {
+            ServiceURL = r2Url,
+            SignatureVersion = "4"
+        };
+
+        // 3. Register the AmazonS3Client manually
+        serviceCollection.AddSingleton<IAmazonS3>(sp => 
+            new AmazonS3Client(credentials, s3Config));
+
+        // 4. Register your new R2 Service
+        serviceCollection.AddSingleton<IFileStorageService, CloudflareR2FileStorageService>();
     }
     
     public static void ConfigureSearch(this IServiceCollection serviceCollection, IConfiguration configuration)
