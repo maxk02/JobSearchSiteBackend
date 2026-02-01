@@ -39,8 +39,8 @@ public class GetCompanyJobManagementCardDtosHandler(
         if (query.MustHaveSalaryRecord is not null && query.MustHaveSalaryRecord.Value)
             dbQuery = dbQuery.Where(job => job.SalaryInfo != null);
 
-        if (query.EmploymentTypeIds is not null && query.EmploymentTypeIds.Count != 0)
-            dbQuery = dbQuery.Where(job => job.EmploymentOptions!.Any(x => query.EmploymentTypeIds.Contains(x.Id)));
+        if (query.EmploymentOptionIds is not null && query.EmploymentOptionIds.Count != 0)
+            dbQuery = dbQuery.Where(job => job.EmploymentOptions!.Any(x => query.EmploymentOptionIds.Contains(x.Id)));
 
         if (query.CategoryIds is not null && query.CategoryIds.Count != 0)
             dbQuery = dbQuery.Where(job => query.CategoryIds.Contains(job.CategoryId));

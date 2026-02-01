@@ -130,7 +130,7 @@ public class CompaniesController(IMapper mapper) : ControllerBase
         CancellationToken cancellationToken)
     {
         var query = new GetCompanyJobManagementCardDtosQuery(id, request.Query, request.Page,
-            request.Size, request.MustHaveSalaryRecord, request.LocationId, request.EmploymentTypeIds,
+            request.Size, request.MustHaveSalaryRecord, request.LocationId, request.EmploymentOptionIds,
             request.CategoryIds, request.ContractTypeIds);
         var result = await handler.Handle(query, cancellationToken);
     

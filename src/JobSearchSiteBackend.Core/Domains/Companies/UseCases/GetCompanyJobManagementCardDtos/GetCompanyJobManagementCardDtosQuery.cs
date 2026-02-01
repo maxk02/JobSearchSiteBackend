@@ -10,6 +10,6 @@ public record GetCompanyJobManagementCardDtosQuery(
     int Size,
     bool? MustHaveSalaryRecord,
     long? LocationId,
-    ICollection<long>? EmploymentTypeIds,
+    ICollection<long>? EmploymentOptionIds,
     ICollection<long>? CategoryIds,
     ICollection<long>? ContractTypeIds) : IRequest<Result<GetCompanyJobManagementCardDtosResult>>;

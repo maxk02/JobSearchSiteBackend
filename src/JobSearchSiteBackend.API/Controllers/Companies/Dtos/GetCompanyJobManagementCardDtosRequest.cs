@@ -1,4 +1,7 @@
-﻿namespace JobSearchSiteBackend.API.Controllers.Companies.Dtos;
+﻿using JobSearchSiteBackend.API.ModelBinders;
+using Microsoft.AspNetCore.Mvc;
+
+namespace JobSearchSiteBackend.API.Controllers.Companies.Dtos;
 
 public record GetCompanyJobManagementCardDtosRequest(
     string? Query,
@@ -6,6 +9,9 @@ public record GetCompanyJobManagementCardDtosRequest(
     int Size,
     bool? MustHaveSalaryRecord,
     long? LocationId,
-    ICollection<long>? EmploymentTypeIds,
+    [ModelBinder(BinderType = typeof(CommaSeparatedArrayModelBinder))]
+    ICollection<long>? EmploymentOptionIds,
+    [ModelBinder(BinderType = typeof(CommaSeparatedArrayModelBinder))]
     ICollection<long>? CategoryIds,
+    [ModelBinder(BinderType = typeof(CommaSeparatedArrayModelBinder))]
     ICollection<long>? ContractTypeIds);
