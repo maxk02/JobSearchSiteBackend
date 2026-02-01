@@ -8,6 +8,7 @@ using JobSearchSiteBackend.Core.Domains.Companies.UseCases.AddCompanyEmployeeInv
 using JobSearchSiteBackend.Core.Domains.Companies.UseCases.DeleteCompany;
 using JobSearchSiteBackend.Core.Domains.Companies.UseCases.GetCompany;
 using JobSearchSiteBackend.Core.Domains.Companies.UseCases.GetCompanyBalance;
+using JobSearchSiteBackend.Core.Domains.Companies.UseCases.GetCompanyBalanceTransactions;
 using JobSearchSiteBackend.Core.Domains.Companies.UseCases.GetCompanyEmployees;
 using JobSearchSiteBackend.Core.Domains.Companies.UseCases.GetCompanyJobManagementCardDtos;
 using JobSearchSiteBackend.Core.Domains.Companies.UseCases.GetCompanyJobs;
@@ -101,10 +102,23 @@ public class CompaniesController(IMapper mapper) : ControllerBase
         [FromServices] GetCompanyBalanceHandler handler,
         CancellationToken cancellationToken)
     {
-        var request = new GetCompanyBalanceQuery(companyId);
-        var result = await handler.Handle(request, cancellationToken);
+        var query = new GetCompanyBalanceQuery(companyId);
+        var result = await handler.Handle(query, cancellationToken);
 
         return this.ToActionResult(result.Map(x => mapper.Map<GetCompanyBalanceResponse>(x)));
+    }
+
+    [HttpGet("{companyId:long:min(1)}/management/balance/transactions")]
+    public async Task<ActionResult<GetCompanyBalanceTransactionsResponse>> GetCompanyBalanceTransactions(
+        [FromRoute] long companyId,
+        [FromQuery] GetCompanyBalanceTransactionsRequest request,
+        [FromServices] GetCompanyBalanceTransactionsHandler handler,
+        CancellationToken cancellationToken)
+    {
+        var query = new GetCompanyBalanceTransactionsQuery(companyId, request.Page, request.Size);
+        var result = await handler.Handle(query, cancellationToken);
+
+        return this.ToActionResult(result.Map(x => mapper.Map<GetCompanyBalanceTransactionsResponse>(x)));
     }
     
     [HttpGet]

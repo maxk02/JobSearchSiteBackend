@@ -39,6 +39,6 @@ public class GetCompanyBalanceHandler(
             return Result<GetCompanyBalanceResult>.NotFound();
         
         
-        return new GetCompanyBalanceResult("PLN",  companyWithBalance.Balance);
+        return new GetCompanyBalanceResult("PLN", companyWithBalance.Balance);
     }
 }

@@ -19,5 +19,7 @@ public class JobPublicationIntervalConfiguration : IEntityTypeConfiguration<JobP
         builder
             .Property(jobPublicationInterval => jobPublicationInterval.Price)
             .HasColumnType("decimal(10,2)");
+
+        builder.HasData(JobPublicationInterval.AllValues);
     }
 }

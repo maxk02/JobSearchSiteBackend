@@ -1,4 +1,5 @@
-﻿using JobSearchSiteBackend.Core.Domains.Accounts;
+﻿using System.Globalization;
+using JobSearchSiteBackend.Core.Domains.Accounts;
 using JobSearchSiteBackend.Core.Domains.Companies;
 using JobSearchSiteBackend.Core.Domains.CompanyClaims;
 using JobSearchSiteBackend.Core.Domains.EmploymentOptions;
@@ -41,9 +42,10 @@ public class MainDataContextSeeder(MainDataContext context,
         await SeedCompanyAvatarsAsync();
         await SeedLocationsAsync();
         await SeedLocationRelationsAsync();
+        await SeedUsersThatHaveClaimsAsync();
         await SeedJobsAsync();
         await SeedJobSalaryInfosAsync();
-        await SeedUsersWithClaimsAndApplicationsAsync();
+        await SeedUsersThatApplyForJobsAsync();
     }
 
     private async Task SeedLocationsAsync()
@@ -144,50 +146,6 @@ public class MainDataContextSeeder(MainDataContext context,
         await transaction.CommitAsync();
     }
 
-    // private async Task SeedJobFoldersAsync()
-    // {
-    //     await using var transaction = context.Database.BeginTransaction();
-
-    //     await context.Database.ExecuteSqlRawAsync("SET IDENTITY_INSERT dbo.JobFolders ON");
-
-    //     var jobFolders = await SeedFileHelper.LoadJsonAsync<List<JobFolder>>("Domains/JobFolders/Seed/job_folders.json");
-
-    //     if (jobFolders is null || jobFolders.Count == 0)
-    //         throw new InvalidDataException();
-
-    //     var sqlScript = "INSERT INTO dbo.JobFolders (Id, CompanyId, Name, Description) VALUES \n";
-
-    //     for (var i = 0; i < jobFolders.Count; i++)
-    //     {
-    //         sqlScript += $"({jobFolders[i].Id}, ";
-
-    //         sqlScript += $"{jobFolders[i].CompanyId}, ";
-
-    //         if (jobFolders[i].Name is null)
-    //             sqlScript += $"NULL, ";
-    //         else
-    //             sqlScript += $"\'{jobFolders[i].Name}\', ";
-
-    //         if (jobFolders[i].Description is null)
-    //             sqlScript += $"NULL)";
-    //         else
-    //             sqlScript += $"\'{jobFolders[i].Description}\')";
-
-    //         if (i < jobFolders.Count - 1)
-    //             sqlScript += ",\n\n";
-    //         else
-    //             sqlScript += ";";
-    //     }
-
-    //     await context.Database.ExecuteSqlRawAsync(sqlScript);
-
-    //     await context.Database.ExecuteSqlRawAsync("SET IDENTITY_INSERT dbo.JobFolders OFF");
-
-    //     await context.Database.ExecuteSqlAsync($"DBCC CHECKIDENT (\'dbo.JobFolders\', RESEED, 1000);");
-
-    //     await transaction.CommitAsync();
-    // }
-
     private async Task SeedJobsAsync()
     {
         await using var transaction = context.Database.BeginTransaction();
@@ -208,6 +166,9 @@ public class MainDataContextSeeder(MainDataContext context,
         var sqlEmploymentOptionsScript = "INSERT INTO EmploymentOptionJob (JobsId, EmploymentOptionsId) VALUES \n";
 
         var sqlContractTypesScript = "INSERT INTO JobJobContractType (JobsId, JobContractTypesId) VALUES \n";
+
+        List<CompanyBalanceTransaction> companyBalanceTransactionsToAdd = [];
+        decimal balanceSumNeededToAdd = decimal.Zero;
 
         for (var i = 0; i < jobSeedingItems.Count; i++)
         {
@@ -275,6 +236,34 @@ public class MainDataContextSeeder(MainDataContext context,
                 else
                     sqlContractTypesScript += ", \n";
             }
+
+
+            //
+
+            var diff = jobSeedingItems[i].DateTimeExpiringUtc.Subtract(jobSeedingItems[i].DateTimePublishedUtc).TotalDays;
+            var daysCeiled = (int)Math.Ceiling(diff);
+            
+            // suppose we have implemented it only for one currency for now
+            var jobPublicationInterval = await context.JobPublicationIntervals
+                .Include(jpi => jpi.CountryCurrency)
+                .Where(jpi => jpi.CountryCurrency!.CountryId == 1)
+                .Where(jpi => jpi.MaxDaysOfPublication >= daysCeiled)
+                .OrderBy(v => v.MaxDaysOfPublication)
+                .FirstOrDefaultAsync();
+            
+            if (jobPublicationInterval is null)
+                throw new ApplicationException($"Job publication interval error on job id = {jobSeedingItems[i].Id}");
+            
+            var companyBalanceTransaction = new CompanyBalanceTransaction(4, -jobPublicationInterval.Price,
+                $"Publikacja ogłoszenia \"{jobSeedingItems[i].Title}\" do {jobSeedingItems[i].DateTimeExpiringUtc.ToString(CultureInfo.InvariantCulture)}",
+                jobPublicationInterval.CountryCurrency!.CurrencyId, 1);
+
+            companyBalanceTransaction.DateTimeCommittedUtc = jobSeedingItems[i].DateTimePublishedUtc;
+            
+            companyBalanceTransactionsToAdd.Add(companyBalanceTransaction);
+            balanceSumNeededToAdd += jobPublicationInterval.Price;
+
+            //
         }
 
         await context.Database.ExecuteSqlRawAsync(sqlScript);
@@ -287,6 +276,19 @@ public class MainDataContextSeeder(MainDataContext context,
         await context.Database.ExecuteSqlAsync($"DBCC CHECKIDENT (\'dbo.Jobs\', RESEED, 1000);");
 
         await transaction.CommitAsync();
+
+        var topUpCompanyBalanceTransaction = new CompanyBalanceTransaction(4, balanceSumNeededToAdd + 150,
+            $"Doładowanie konta", 1, 1);
+
+        topUpCompanyBalanceTransaction.DateTimeCommittedUtc = DateTime.UtcNow.AddMonths(-4);
+        
+        context.CompanyBalanceTransactions.Add(topUpCompanyBalanceTransaction);
+
+        await context.SaveChangesAsync();
+
+        context.CompanyBalanceTransactions.AddRange(companyBalanceTransactionsToAdd);
+
+        await context.SaveChangesAsync();
     }
 
     private async Task SeedJobSalaryInfosAsync()
@@ -300,7 +302,7 @@ public class MainDataContextSeeder(MainDataContext context,
         await context.SaveChangesAsync();
     }
 
-    private async Task SeedUsersWithClaimsAndApplicationsAsync()
+    private async Task SeedUsersThatHaveClaimsAsync()
     {
         var company = await context.Companies
             .Include(c => c.Employees)
@@ -411,7 +413,7 @@ public class MainDataContextSeeder(MainDataContext context,
 
             long user3Id = user3.Id;
 
-            var newUser3Profile = new UserProfile(user3Id, "Specjalista",
+            var newUser3Profile = new UserProfile(user3Id, "Pracownik",
                 "HR", null, true);
 
             context.UserProfiles.Add(newUser3Profile);
@@ -431,8 +433,11 @@ public class MainDataContextSeeder(MainDataContext context,
 
             await context.SaveChangesAsync();
         }
+    }
 
-        // branch application reviewer
+    private async Task SeedUsersThatApplyForJobsAsync()
+    {
+        // test user who will apply for jobs
         var user4FromDb = await userManager.FindByEmailAsync("test_user@transworld.pl");
 
         if (user4FromDb is null)

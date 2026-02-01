@@ -57,6 +57,10 @@ public class AddJobHandler(
         if (!hasPermissionInRequestedCompany)
             return Result.Forbidden();
 
+        var countryId = await context.Companies
+            .Where(c => c.Id == command.CompanyId)
+            .Select(c => c.CountryId)
+            .SingleOrDefaultAsync(cancellationToken);
         
         var diff = command.DateTimeExpiringUtc.Subtract(dateTimePublishedUtc).TotalDays;
         var daysCeiled = (int)Math.Ceiling(diff);
@@ -64,7 +68,7 @@ public class AddJobHandler(
         // suppose we have implemented it only for one currency for now
         var jobPublicationInterval = await context.JobPublicationIntervals
             .Include(jpi => jpi.CountryCurrency)
-            .Where(jpi => jpi.CountryCurrency!.CountryId == command.CompanyId)
+            .Where(jpi => jpi.CountryCurrency!.CountryId == countryId)
             .Where(jpi => jpi.MaxDaysOfPublication >= daysCeiled)
             .OrderBy(v => v.MaxDaysOfPublication)
             .FirstOrDefaultAsync(cancellationToken);
@@ -84,7 +88,7 @@ public class AddJobHandler(
             return Result.Error();
         
         var companyBalanceTransaction = new CompanyBalanceTransaction(command.CompanyId, -jobPublicationInterval.Price,
-            $"Publikacja ogłoszenia {command.Title} do {command.DateTimeExpiringUtc.ToString(CultureInfo.InvariantCulture)}",
+            $"Publikacja ogłoszenia \"{command.Title}\" do {command.DateTimeExpiringUtc.ToString(CultureInfo.InvariantCulture)}",
             jobPublicationInterval.CountryCurrency!.CurrencyId, currentUserId);
         
         context.CompanyBalanceTransactions.Add(companyBalanceTransaction);
