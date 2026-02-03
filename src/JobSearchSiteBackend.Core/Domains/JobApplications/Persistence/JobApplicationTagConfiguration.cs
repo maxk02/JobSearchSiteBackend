@@ -7,11 +7,8 @@ public class JobApplicationTagConfiguration : IEntityTypeConfiguration<JobApplic
 {
     public void Configure(EntityTypeBuilder<JobApplicationTag> builder)
     {
-        builder.HasKey(jobApplication => jobApplication.Id);
-        
         builder
-            .HasIndex(jobApplicationTag => new { jobApplicationTag.JobApplicationId, jobApplicationTag.Tag })
-            .IsUnique();
+            .HasKey(jobApplicationTag => new { jobApplicationTag.JobApplicationId, jobApplicationTag.Tag });
         
         builder
             .HasOne(jobApplicationTag => jobApplicationTag.JobApplication)

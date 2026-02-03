@@ -5,10 +5,10 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #pragma warning disable CA1814 // Prefer jagged arrays over multidimensional
 
-namespace JobSearchSiteBackend.Infrastructure.Persistence.EfCore.Migrations
+namespace JobSearchSiteBackend.Infrastructure.Persistence.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialCreate : Migration
+    public partial class InitialMigration : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -805,14 +805,12 @@ namespace JobSearchSiteBackend.Infrastructure.Persistence.EfCore.Migrations
                 name: "JobApplicationTag",
                 columns: table => new
                 {
-                    Id = table.Column<long>(type: "bigint", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
                     JobApplicationId = table.Column<long>(type: "bigint", nullable: false),
                     Tag = table.Column<string>(type: "nvarchar(450)", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_JobApplicationTag", x => x.Id);
+                    table.PrimaryKey("PK_JobApplicationTag", x => new { x.JobApplicationId, x.Tag });
                     table.ForeignKey(
                         name: "FK_JobApplicationTag_JobApplications_JobApplicationId",
                         column: x => x.JobApplicationId,
@@ -966,6 +964,17 @@ namespace JobSearchSiteBackend.Infrastructure.Persistence.EfCore.Migrations
                 columns: new[] { "Id", "CountryId", "CurrencyId" },
                 values: new object[] { 1L, 1L, 1L });
 
+            migrationBuilder.InsertData(
+                table: "JobPublicationIntervals",
+                columns: new[] { "Id", "CountryCurrencyId", "MaxDaysOfPublication", "Price" },
+                values: new object[,]
+                {
+                    { 1L, 1L, 5, 35m },
+                    { 2L, 1L, 30, 60m },
+                    { 3L, 1L, 60, 90m },
+                    { 4L, 1L, 90, 120m }
+                });
+
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",
                 table: "AspNetRoleClaims",
@@ -1115,12 +1124,6 @@ namespace JobSearchSiteBackend.Infrastructure.Persistence.EfCore.Migrations
                 name: "IX_JobApplications_UserId",
                 table: "JobApplications",
                 column: "UserId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_JobApplicationTag_JobApplicationId_Tag",
-                table: "JobApplicationTag",
-                columns: new[] { "JobApplicationId", "Tag" },
-                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_JobJobContractType_JobsId",

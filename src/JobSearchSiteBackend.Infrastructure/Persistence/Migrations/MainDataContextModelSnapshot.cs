@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
 
-namespace JobSearchSiteBackend.Infrastructure.Persistence.EfCore.Migrations
+namespace JobSearchSiteBackend.Infrastructure.Persistence.Migrations
 {
     [DbContext(typeof(MainDataContext))]
     partial class MainDataContextModelSnapshot : ModelSnapshot
@@ -883,23 +883,13 @@ namespace JobSearchSiteBackend.Infrastructure.Persistence.EfCore.Migrations
 
             modelBuilder.Entity("JobSearchSiteBackend.Core.Domains.JobApplications.JobApplicationTag", b =>
                 {
-                    b.Property<long>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
-
                     b.Property<long>("JobApplicationId")
                         .HasColumnType("bigint");
 
                     b.Property<string>("Tag")
-                        .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
-                    b.HasKey("Id");
-
-                    b.HasIndex("JobApplicationId", "Tag")
-                        .IsUnique();
+                    b.HasKey("JobApplicationId", "Tag");
 
                     b.ToTable("JobApplicationTag");
                 });
@@ -1059,6 +1049,36 @@ namespace JobSearchSiteBackend.Infrastructure.Persistence.EfCore.Migrations
                     b.HasIndex("CountryCurrencyId");
 
                     b.ToTable("JobPublicationIntervals");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1L,
+                            CountryCurrencyId = 1L,
+                            MaxDaysOfPublication = 5,
+                            Price = 35m
+                        },
+                        new
+                        {
+                            Id = 2L,
+                            CountryCurrencyId = 1L,
+                            MaxDaysOfPublication = 30,
+                            Price = 60m
+                        },
+                        new
+                        {
+                            Id = 3L,
+                            CountryCurrencyId = 1L,
+                            MaxDaysOfPublication = 60,
+                            Price = 90m
+                        },
+                        new
+                        {
+                            Id = 4L,
+                            CountryCurrencyId = 1L,
+                            MaxDaysOfPublication = 90,
+                            Price = 120m
+                        });
                 });
 
             modelBuilder.Entity("JobSearchSiteBackend.Core.Domains.Jobs.JobSalaryInfo", b =>

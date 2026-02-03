@@ -1,12 +1,6 @@
-﻿using JobSearchSiteBackend.Core.Domains._Shared.EntityInterfaces;
-using JobSearchSiteBackend.Core.Domains.JobApplications.Enums;
-using JobSearchSiteBackend.Core.Domains.Jobs;
-using JobSearchSiteBackend.Core.Domains.PersonalFiles;
-using JobSearchSiteBackend.Core.Domains.UserProfiles;
+﻿namespace JobSearchSiteBackend.Core.Domains.JobApplications;
 
-namespace JobSearchSiteBackend.Core.Domains.JobApplications;
-
-public class JobApplicationTag : IEntityWithId
+public class JobApplicationTag
 {
     public JobApplicationTag(long jobApplicationId, string tag)
     {
@@ -14,7 +8,6 @@ public class JobApplicationTag : IEntityWithId
         Tag = tag;
     }
     
-    public long Id { get; private set; }
     public long JobApplicationId { get; private set; }
     
     public string Tag { get; private set; }
