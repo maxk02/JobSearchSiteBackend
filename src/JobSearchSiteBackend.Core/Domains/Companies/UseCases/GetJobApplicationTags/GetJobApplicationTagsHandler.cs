@@ -2,19 +2,18 @@
 using JobSearchSiteBackend.Core.Domains._Shared.Pagination;
 using JobSearchSiteBackend.Core.Domains._Shared.UseCaseStructure;
 using JobSearchSiteBackend.Core.Domains.CompanyClaims;
-using JobSearchSiteBackend.Core.Domains.JobApplications.UseCases.AddJobApplicationTag;
 using JobSearchSiteBackend.Core.Persistence;
 using JobSearchSiteBackend.Core.Services.Auth;
 using Microsoft.EntityFrameworkCore;
 
-namespace JobSearchSiteBackend.Core.Domains.JobApplications.UseCases.GetJobApplicationTagsForCompany;
+namespace JobSearchSiteBackend.Core.Domains.Companies.UseCases.GetJobApplicationTags;
 
-public class GetJobApplicationTagsForCompanyHandler(
+public class GetJobApplicationTagsHandler(
     ICurrentAccountService currentAccountService,
     MainDataContext context)
-    : IRequestHandler<GetJobApplicationTagsForCompanyQuery, Result<GetJobApplicationTagsForCompanyResult>>
+    : IRequestHandler<GetJobApplicationTagsQuery, Result<GetJobApplicationTagsResult>>
 {
-    public async Task<Result<GetJobApplicationTagsForCompanyResult>> Handle(GetJobApplicationTagsForCompanyQuery query,
+    public async Task<Result<GetJobApplicationTagsResult>> Handle(GetJobApplicationTagsQuery query,
         CancellationToken cancellationToken = default)
     {
         var currentUserId = currentAccountService.GetIdOrThrow();
@@ -49,7 +48,7 @@ public class GetJobApplicationTagsForCompanyHandler(
 
         var paginationResponse = new PaginationResponse(1, query.Size, count);
 
-        var result = new GetJobApplicationTagsForCompanyResult(jobApplicationTags, paginationResponse);
+        var result = new GetJobApplicationTagsResult(jobApplicationTags, paginationResponse);
         
         return Result.Success(result);
     }

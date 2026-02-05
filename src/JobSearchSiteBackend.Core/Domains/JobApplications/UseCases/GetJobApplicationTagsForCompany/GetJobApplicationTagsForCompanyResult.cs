@@ -1,5 +1,0 @@
-﻿using JobSearchSiteBackend.Core.Domains._Shared.Pagination;
-
-namespace JobSearchSiteBackend.Core.Domains.JobApplications.UseCases.GetJobApplicationTagsForCompany;
-
-public record GetJobApplicationTagsForCompanyResult(ICollection<string> Tags, PaginationResponse PaginationResponse);

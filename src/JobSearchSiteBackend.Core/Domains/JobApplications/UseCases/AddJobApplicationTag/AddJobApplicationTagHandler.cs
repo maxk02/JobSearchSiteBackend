@@ -11,9 +11,9 @@ namespace JobSearchSiteBackend.Core.Domains.JobApplications.UseCases.AddJobAppli
 public class AddJobApplicationTagHandler(
     ICurrentAccountService currentAccountService,
     MainDataContext context)
-    : IRequestHandler<AddJobApplicationTagCommand, Result<AddJobApplicationTagResult>>
+    : IRequestHandler<AddJobApplicationTagCommand, Result>
 {
-    public async Task<Result<AddJobApplicationTagResult>> Handle(AddJobApplicationTagCommand command,
+    public async Task<Result> Handle(AddJobApplicationTagCommand command,
         CancellationToken cancellationToken = default)
     {
         var currentUserId = currentAccountService.GetIdOrThrow();

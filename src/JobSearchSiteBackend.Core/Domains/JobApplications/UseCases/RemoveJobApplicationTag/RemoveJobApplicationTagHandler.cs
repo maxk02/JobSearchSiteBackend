@@ -10,9 +10,9 @@ namespace JobSearchSiteBackend.Core.Domains.JobApplications.UseCases.RemoveJobAp
 public class RemoveJobApplicationTagHandler(
     ICurrentAccountService currentAccountService,
     MainDataContext context)
-    : IRequestHandler<RemoveJobApplicationTagCommand, Result<RemoveJobApplicationTagResult>>
+    : IRequestHandler<RemoveJobApplicationTagCommand, Result>
 {
-    public async Task<Result<RemoveJobApplicationTagResult>> Handle(RemoveJobApplicationTagCommand command,
+    public async Task<Result> Handle(RemoveJobApplicationTagCommand command,
         CancellationToken cancellationToken = default)
     {
         var currentUserId = currentAccountService.GetIdOrThrow();

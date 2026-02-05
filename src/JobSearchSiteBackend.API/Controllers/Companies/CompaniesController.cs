@@ -14,6 +14,7 @@ using JobSearchSiteBackend.Core.Domains.Companies.UseCases.GetCompanyJobManageme
 using JobSearchSiteBackend.Core.Domains.Companies.UseCases.GetCompanyJobs;
 using JobSearchSiteBackend.Core.Domains.Companies.UseCases.GetCompanyLastVisitedJobs;
 using JobSearchSiteBackend.Core.Domains.Companies.UseCases.GetCompanyManagementNavbarDto;
+using JobSearchSiteBackend.Core.Domains.Companies.UseCases.GetJobApplicationTags;
 using JobSearchSiteBackend.Core.Domains.Companies.UseCases.RemoveCompanyEmployee;
 using JobSearchSiteBackend.Core.Domains.Companies.UseCases.RemoveCompanyLastVisitedJobs;
 using JobSearchSiteBackend.Core.Domains.Companies.UseCases.SearchCompanySharedJobs;
@@ -191,6 +192,20 @@ public class CompaniesController(IMapper mapper) : ControllerBase
         var result = await handler.Handle(query, cancellationToken);
     
         return this.ToActionResult(result.Map(x => mapper.Map<GetCompanyManagementNavbarDtoResponse>(x)));
+    }
+
+    [HttpGet]
+    [Route("{id:long:min(1)}/management/job-application-tags")]
+    public async Task<ActionResult<GetJobApplicationTagsResponse>> GetJobApplicationTags(
+        [FromRoute] long id,
+        [FromQuery] GetJobApplicationTagsRequest request,
+        [FromServices] GetJobApplicationTagsHandler handler,
+        CancellationToken cancellationToken)
+    {
+        var query = new GetJobApplicationTagsQuery(id, request.SearchQuery, request.Size);
+        var result = await handler.Handle(query, cancellationToken);
+    
+        return this.ToActionResult(result.Map(x => mapper.Map<GetJobApplicationTagsResponse>(x)));
     }
     
     [HttpDelete]

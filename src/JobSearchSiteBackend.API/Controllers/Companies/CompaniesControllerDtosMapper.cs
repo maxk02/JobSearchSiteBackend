@@ -9,6 +9,7 @@ using JobSearchSiteBackend.Core.Domains.Companies.UseCases.GetCompanyJobManageme
 using JobSearchSiteBackend.Core.Domains.Companies.UseCases.GetCompanyJobs;
 using JobSearchSiteBackend.Core.Domains.Companies.UseCases.GetCompanyLastVisitedJobs;
 using JobSearchSiteBackend.Core.Domains.Companies.UseCases.GetCompanyManagementNavbarDto;
+using JobSearchSiteBackend.Core.Domains.Companies.UseCases.GetJobApplicationTags;
 using JobSearchSiteBackend.Core.Domains.Companies.UseCases.SearchCompanySharedJobs;
 using JobSearchSiteBackend.Core.Domains.Companies.UseCases.UploadCompanyAvatar;
 
@@ -35,6 +36,8 @@ public class CompaniesControllerDtosMapper : Profile
         CreateMap<GetCompanyManagementNavbarDtoResult, GetCompanyManagementNavbarDtoResponse>();
         
         CreateMap<GetCompanyResult, GetCompanyResponse>();
+
+        CreateMap<GetJobApplicationTagsResult, GetJobApplicationTagsResponse>();
         
         CreateMap<SearchCompanySharedJobsResult, SearchCompanySharedJobsResponse>();
 

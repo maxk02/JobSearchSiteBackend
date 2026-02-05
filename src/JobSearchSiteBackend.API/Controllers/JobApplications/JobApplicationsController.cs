@@ -3,8 +3,10 @@ using Ardalis.Result.AspNetCore;
 using AutoMapper;
 using JobSearchSiteBackend.API.Controllers.JobApplications.Dtos;
 using JobSearchSiteBackend.Core.Domains.JobApplications.UseCases.AddJobApplication;
+using JobSearchSiteBackend.Core.Domains.JobApplications.UseCases.AddJobApplicationTag;
 using JobSearchSiteBackend.Core.Domains.JobApplications.UseCases.DeleteJobApplication;
 using JobSearchSiteBackend.Core.Domains.JobApplications.UseCases.GetFileDownloadLinkFromJobApplication;
+using JobSearchSiteBackend.Core.Domains.JobApplications.UseCases.RemoveJobApplicationTag;
 using JobSearchSiteBackend.Core.Domains.JobApplications.UseCases.UpdateJobApplicationFiles;
 using JobSearchSiteBackend.Core.Domains.JobApplications.UseCases.UpdateJobApplicationStatus;
 using Microsoft.AspNetCore.Authorization;
@@ -28,6 +30,21 @@ public class JobApplicationsController(IMapper mapper) : ControllerBase
         var result = await handler.Handle(command, cancellationToken);
         
         return this.ToActionResult(result.Map(x => mapper.Map<AddJobApplicationResponse>(x)));
+    }
+
+    [HttpPost]
+    [Route("{id:long:min(1)}/tags")]
+    public async Task<ActionResult> AddJobApplicationTag(
+        [FromRoute] long id,
+        [FromBody] AddJobApplicationTagRequest request,
+        [FromServices] AddJobApplicationTagHandler handler,
+        CancellationToken cancellationToken)
+    {
+        var command = new AddJobApplicationTagCommand(id, request.Name);
+        
+        var result = await handler.Handle(command, cancellationToken);
+        
+        return this.ToActionResult(result);
     }
     
     [HttpDelete]
@@ -57,6 +74,21 @@ public class JobApplicationsController(IMapper mapper) : ControllerBase
         var result = await handler.Handle(query, cancellationToken);
         
         return this.ToActionResult(result.Map(x => mapper.Map<GetFileDownloadLinkFromJobApplicationResponse>(x)));
+    }
+
+    [HttpDelete]
+    [Route("{id:long:min(1)}/tags/{tag:minLength(1)}")]
+    public async Task<ActionResult> RemoveJobApplication(
+        [FromRoute] long id,
+        [FromRoute] string tag,
+        [FromServices] RemoveJobApplicationTagHandler handler,
+        CancellationToken cancellationToken)
+    {
+        var command = new RemoveJobApplicationTagCommand(id, tag);
+        
+        var result = await handler.Handle(command, cancellationToken);
+        
+        return this.ToActionResult(result);
     }
     
     [HttpPut]
