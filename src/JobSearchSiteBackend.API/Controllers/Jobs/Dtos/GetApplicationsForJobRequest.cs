@@ -1,10 +1,16 @@
-﻿namespace JobSearchSiteBackend.API.Controllers.Jobs.Dtos;
+﻿using JobSearchSiteBackend.API.ModelBinders;
+using Microsoft.AspNetCore.Mvc;
+
+namespace JobSearchSiteBackend.API.Controllers.Jobs.Dtos;
 
 public record GetApplicationsForJobRequest(
+    [ModelBinder(BinderType = typeof(CommaSeparatedArrayModelBinder))]
     ICollection<long>? StatusIds,
     string? Query,
-    string? SortOption,  // todo frontend
+    string? SortOption,
+    [ModelBinder(BinderType = typeof(CommaSeparatedArrayModelBinder))]
     ICollection<string>? IncludedTags,
+    [ModelBinder(BinderType = typeof(CommaSeparatedArrayModelBinder))]
     ICollection<string>? ExcludedTags,
     int Page,
     int Size);

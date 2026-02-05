@@ -4,6 +4,7 @@ using JobSearchSiteBackend.Core.Domains._Shared.Pagination;
 using JobSearchSiteBackend.Core.Domains._Shared.UseCaseStructure;
 using JobSearchSiteBackend.Core.Domains.CompanyClaims;
 using JobSearchSiteBackend.Core.Domains.JobApplications.Dtos;
+using JobSearchSiteBackend.Core.Domains.Locations;
 using JobSearchSiteBackend.Core.Domains.PersonalFiles;
 using JobSearchSiteBackend.Core.Domains.UserProfiles.Persistence;
 using JobSearchSiteBackend.Core.Persistence;
@@ -67,7 +68,7 @@ public class GetApplicationsForJobHandler(
         if (query.ExcludedTags.Count > 0)
         {
             dbQuery = dbQuery
-                .Where(ja => !ja.Tags!.Any(t => query.IncludedTags.Contains(t.Tag)));
+                .Where(ja => !ja.Tags!.Any(t => query.ExcludedTags.Contains(t.Tag)));
         }
         
         var totalCount = await dbQuery.CountAsync(cancellationToken);
@@ -97,7 +98,8 @@ public class GetApplicationsForJobHandler(
                 Tags = ja.Tags!,
                 DateTimeAppliedUtc = ja.DateTimeCreatedUtc,
                 PersonalFiles = ja.PersonalFiles,
-                Status = ja.Status
+                Status = ja.Status,
+                Location = ja.Location
             })
             .ToListAsync(cancellationToken);
         
@@ -128,7 +130,8 @@ public class GetApplicationsForJobHandler(
                 jaItem.Tags.Select(t => t.Tag).ToList(),
                 jaItem.DateTimeAppliedUtc,
                 jaItem.PersonalFiles!.Select(pf => pf.ToPersonalFileInfoDto()).ToList(),
-                (int)jaItem.Status
+                (int)jaItem.Status,
+                jaItem.Location!.ToLocationDto()
             );
             
             jobApplicationForManagersDtos.Add(jobApplicationDto);

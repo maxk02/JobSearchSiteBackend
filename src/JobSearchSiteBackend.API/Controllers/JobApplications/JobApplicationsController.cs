@@ -78,7 +78,7 @@ public class JobApplicationsController(IMapper mapper) : ControllerBase
 
     [HttpDelete]
     [Route("{id:long:min(1)}/tags/{tag:minLength(1)}")]
-    public async Task<ActionResult> RemoveJobApplication(
+    public async Task<ActionResult> RemoveJobApplicationTag(
         [FromRoute] long id,
         [FromRoute] string tag,
         [FromServices] RemoveJobApplicationTagHandler handler,
