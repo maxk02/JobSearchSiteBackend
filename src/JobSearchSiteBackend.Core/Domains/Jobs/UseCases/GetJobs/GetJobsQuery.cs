@@ -8,7 +8,8 @@ public record GetJobsQuery(
     int Page,
     int Size,
     bool? MustHaveSalaryRecord,
-    ICollection<long>? EmploymentTypeIds,
+    ICollection<long>? EmploymentOptionIds,
+    ICollection<long>? LocationIds,
     ICollection<long>? CountryIds,
     ICollection<long>? CategoryIds,
     ICollection<long>? ContractTypeIds) : IRequest<Result<GetJobsResult>>;

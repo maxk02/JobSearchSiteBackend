@@ -60,8 +60,11 @@ public class GetJobsHandler(
         if (query.MustHaveSalaryRecord is not null && query.MustHaveSalaryRecord.Value)
             dbQuery = dbQuery.Where(job => job.SalaryInfo != null);
 
-        if (query.EmploymentTypeIds is not null && query.EmploymentTypeIds.Count != 0)
-            dbQuery = dbQuery.Where(job => job.EmploymentOptions!.Any(x => query.EmploymentTypeIds.Contains(x.Id)));
+        if (query.EmploymentOptionIds is not null && query.EmploymentOptionIds.Count != 0)
+            dbQuery = dbQuery.Where(job => job.EmploymentOptions!.Any(x => query.EmploymentOptionIds.Contains(x.Id)));
+
+        if (query.LocationIds is not null && query.LocationIds.Count != 0)
+            dbQuery = dbQuery.Where(job => job.Locations!.Any(l => l.RelationsWhereThisIsDescendant!.Any(r => query.LocationIds.Contains(r.AncestorId))));
 
         if (query.CategoryIds is not null && query.CategoryIds.Count != 0)
             dbQuery = dbQuery.Where(job => query.CategoryIds.Contains(job.CategoryId));

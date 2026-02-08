@@ -42,6 +42,9 @@ public class GetCompanyJobManagementCardDtosHandler(
         if (query.EmploymentOptionIds is not null && query.EmploymentOptionIds.Count != 0)
             dbQuery = dbQuery.Where(job => job.EmploymentOptions!.Any(x => query.EmploymentOptionIds.Contains(x.Id)));
 
+        if (query.LocationId is not null)
+            dbQuery = dbQuery.Where(job => job.Locations!.Any(l => l.RelationsWhereThisIsDescendant!.Any(r => r.AncestorId == query.LocationId)));
+
         if (query.CategoryIds is not null && query.CategoryIds.Count != 0)
             dbQuery = dbQuery.Where(job => query.CategoryIds.Contains(job.CategoryId));
 

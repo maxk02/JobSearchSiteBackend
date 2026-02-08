@@ -553,7 +553,12 @@ public class MainDataContextSeeder(MainDataContext context,
 
             var randApplicationStatusNumber = random.Next(1, 5);
 
-            var jobApplication = new JobApplication(sampleUser.Id, 117, 7, (JobApplicationStatus)randApplicationStatusNumber);
+            // 1 or 2 for 50/50 probability between id 7 and 8
+            var randApplicationLocationNumber = random.Next(1, 3);
+
+            var jobApplication = new JobApplication(sampleUser.Id, 117,
+                randApplicationLocationNumber == 1 ? 7 : 8, (JobApplicationStatus)randApplicationStatusNumber);
+
             jobApplication.PersonalFiles = personalFilesToAddApplicationWith;
             context.JobApplications.Add(jobApplication);
 

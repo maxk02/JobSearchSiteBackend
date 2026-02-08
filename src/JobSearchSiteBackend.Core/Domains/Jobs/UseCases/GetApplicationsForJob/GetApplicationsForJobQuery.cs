@@ -6,6 +6,7 @@ namespace JobSearchSiteBackend.Core.Domains.Jobs.UseCases.GetApplicationsForJob;
 
 public record GetApplicationsForJobQuery(
     long Id,
+    long LocationId,
     ICollection<long> StatusIds,
     string? Query,
     string? SortOption,

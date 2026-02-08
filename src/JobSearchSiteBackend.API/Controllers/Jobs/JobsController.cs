@@ -57,7 +57,7 @@ public class JobsController(IMapper mapper) : ControllerBase
         [FromServices] GetApplicationsForJobHandler handler,
         CancellationToken cancellationToken)
     {
-        var query = new GetApplicationsForJobQuery(id, request.StatusIds ?? [], request.Query, request.SortOption,
+        var query = new GetApplicationsForJobQuery(id, request.LocationId, request.StatusIds ?? [], request.Query, request.SortOption,
             request.IncludedTags ?? [], request.ExcludedTags ?? [], request.Page, request.Size);
 
         var result = await handler.Handle(query, cancellationToken);
@@ -116,7 +116,7 @@ public class JobsController(IMapper mapper) : ControllerBase
         CancellationToken cancellationToken)
     {
         var query = new GetJobsQuery(request.Query, request.Page, request.Size, request.MustHaveSalaryRecord,
-            request.EmploymentOptionIds, null, request.CategoryIds, request.ContractTypeIds);
+            request.EmploymentOptionIds, request.LocationIds, request.CountryIds, request.CategoryIds, request.ContractTypeIds);
 
         var result = await handler.Handle(query, cancellationToken);
 

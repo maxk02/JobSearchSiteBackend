@@ -13,6 +13,8 @@ public record GetJobsRequest(
     [ModelBinder(BinderType = typeof(CommaSeparatedArrayModelBinder))]
     ICollection<long>? LocationIds,
     [ModelBinder(BinderType = typeof(CommaSeparatedArrayModelBinder))]
+    ICollection<long>? CountryIds,
+    [ModelBinder(BinderType = typeof(CommaSeparatedArrayModelBinder))]
     ICollection<long>? CategoryIds,
     [ModelBinder(BinderType = typeof(CommaSeparatedArrayModelBinder))]
     ICollection<long>? ContractTypeIds);

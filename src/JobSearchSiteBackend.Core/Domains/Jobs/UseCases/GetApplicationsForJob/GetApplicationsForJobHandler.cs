@@ -44,7 +44,8 @@ public class GetApplicationsForJobHandler(
         }
 
         var dbQuery = context.JobApplications
-            .Where(ja => ja.JobId == query.Id);
+            .Where(ja => ja.JobId == query.Id)
+            .Where(ja => ja.LocationId == query.LocationId);
 
         if (!string.IsNullOrEmpty(query.Query))
         {
