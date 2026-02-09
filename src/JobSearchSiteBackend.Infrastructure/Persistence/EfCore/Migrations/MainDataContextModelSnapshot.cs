@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
 
-namespace JobSearchSiteBackend.Infrastructure.Persistence.Migrations
+namespace JobSearchSiteBackend.Infrastructure.Persistence.EfCore.Migrations
 {
     [DbContext(typeof(MainDataContext))]
     partial class MainDataContextModelSnapshot : ModelSnapshot
@@ -572,6 +572,9 @@ namespace JobSearchSiteBackend.Infrastructure.Persistence.Migrations
                         .HasColumnType("bigint");
 
                     b.Property<DateTime>("DateTimeCreatedUtc")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("DateTimeValidUtc")
                         .HasColumnType("datetime2");
 
                     b.Property<Guid>("GuidIdentifier")

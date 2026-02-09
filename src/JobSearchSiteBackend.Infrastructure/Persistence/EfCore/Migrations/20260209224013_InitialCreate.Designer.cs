@@ -9,11 +9,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
 
-namespace JobSearchSiteBackend.Infrastructure.Persistence.Migrations
+namespace JobSearchSiteBackend.Infrastructure.Persistence.EfCore.Migrations
 {
     [DbContext(typeof(MainDataContext))]
-    [Migration("20260203092214_InitialMigration")]
-    partial class InitialMigration
+    [Migration("20260209224013_InitialCreate")]
+    partial class InitialCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -575,6 +575,9 @@ namespace JobSearchSiteBackend.Infrastructure.Persistence.Migrations
                         .HasColumnType("bigint");
 
                     b.Property<DateTime>("DateTimeCreatedUtc")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("DateTimeValidUtc")
                         .HasColumnType("datetime2");
 
                     b.Property<Guid>("GuidIdentifier")

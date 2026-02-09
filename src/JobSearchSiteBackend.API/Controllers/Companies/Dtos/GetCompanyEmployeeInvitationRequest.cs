@@ -1,0 +1,3 @@
+﻿namespace JobSearchSiteBackend.API.Controllers.Companies.Dtos;
+
+public record GetCompanyEmployeeInvitationRequest(string InvitedUserEmail);

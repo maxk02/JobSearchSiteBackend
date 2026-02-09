@@ -2,13 +2,13 @@
 using Ardalis.Result.AspNetCore;
 using AutoMapper;
 using JobSearchSiteBackend.API.Controllers.Companies.Dtos;
+using JobSearchSiteBackend.Core.Domains.Companies.UseCases.AcceptCompanyEmployeeInvitation;
 using JobSearchSiteBackend.Core.Domains.Companies.UseCases.AddCompany;
-using JobSearchSiteBackend.Core.Domains.Companies.UseCases.AddCompanyEmployee;
-using JobSearchSiteBackend.Core.Domains.Companies.UseCases.AddCompanyEmployeeInvitation;
 using JobSearchSiteBackend.Core.Domains.Companies.UseCases.DeleteCompany;
 using JobSearchSiteBackend.Core.Domains.Companies.UseCases.GetCompany;
 using JobSearchSiteBackend.Core.Domains.Companies.UseCases.GetCompanyBalance;
 using JobSearchSiteBackend.Core.Domains.Companies.UseCases.GetCompanyBalanceTransactions;
+using JobSearchSiteBackend.Core.Domains.Companies.UseCases.GetCompanyEmployeeInvitation;
 using JobSearchSiteBackend.Core.Domains.Companies.UseCases.GetCompanyEmployees;
 using JobSearchSiteBackend.Core.Domains.Companies.UseCases.GetCompanyJobManagementCardDtos;
 using JobSearchSiteBackend.Core.Domains.Companies.UseCases.GetCompanyJobs;
@@ -18,6 +18,7 @@ using JobSearchSiteBackend.Core.Domains.Companies.UseCases.GetJobApplicationTags
 using JobSearchSiteBackend.Core.Domains.Companies.UseCases.RemoveCompanyEmployee;
 using JobSearchSiteBackend.Core.Domains.Companies.UseCases.RemoveCompanyLastVisitedJobs;
 using JobSearchSiteBackend.Core.Domains.Companies.UseCases.SearchCompanySharedJobs;
+using JobSearchSiteBackend.Core.Domains.Companies.UseCases.SendCompanyEmployeeInvitation;
 using JobSearchSiteBackend.Core.Domains.Companies.UseCases.TopUpCompanyBalance;
 using JobSearchSiteBackend.Core.Domains.Companies.UseCases.UpdateCompany;
 using JobSearchSiteBackend.Core.Domains.Companies.UseCases.UploadCompanyAvatar;
@@ -32,6 +33,20 @@ namespace JobSearchSiteBackend.API.Controllers.Companies;
 public class CompaniesController(IMapper mapper) : ControllerBase
 {
     [HttpPost]
+    [Route("{companyId:long:min(1)}/management/employees")]
+    public async Task<ActionResult> AcceptCompanyEmployeeInvitation(
+        [FromRoute] long companyId,
+        [FromBody] AcceptCompanyEmployeeInvitationRequest request,
+        [FromServices] AcceptCompanyEmployeeInvitationHandler handler,
+        CancellationToken cancellationToken)
+    {
+        var command = new AcceptCompanyEmployeeInvitationCommand(companyId, request.UserId, request.Token);
+        var result = await handler.Handle(command, cancellationToken);
+    
+        return this.ToActionResult(result);
+    }
+    
+    [HttpPost]
     public async Task<ActionResult<AddCompanyResponse>> AddCompany(
         [FromBody] AddCompanyRequest request,
         [FromServices] AddCompanyHandler handler,
@@ -44,33 +59,6 @@ public class CompaniesController(IMapper mapper) : ControllerBase
         return this.ToActionResult(result.Map(x => mapper.Map<AddCompanyResponse>(x)));
     }
     
-    [HttpPost]
-    [Route("{companyId:long:min(1)}/management/employees")]
-    public async Task<ActionResult<AddCompanyResponse>> AddCompanyEmployee(
-        [FromRoute] long companyId,
-        [FromBody] AddCompanyEmployeeRequest request,
-        [FromServices] AddCompanyEmployeeHandler handler,
-        CancellationToken cancellationToken)
-    {
-        var command = new AddCompanyEmployeeCommand(companyId, request.UserId);
-        var result = await handler.Handle(command, cancellationToken);
-    
-        return this.ToActionResult(result);
-    }
-
-    [HttpPost]
-    [Route("{companyId:long:min(1)}/management/employees/invitations")]
-    public async Task<ActionResult> AddCompanyEmployeeInvitation(
-        [FromRoute] long companyId,
-        [FromBody] AddCompanyEmployeeInvitationRequest request,
-        [FromServices] AddCompanyEmployeeInvitationHandler handler,
-        CancellationToken cancellationToken)
-    {
-        var command = new AddCompanyEmployeeInvitationCommand(companyId, request.InvitedUserEmail);
-        var result = await handler.Handle(command, cancellationToken);
-    
-        return this.ToActionResult(result);
-    }
 
     [HttpDelete("{id:long:min(1)}")]
     public async Task<ActionResult> DeleteCompany(
@@ -97,29 +85,43 @@ public class CompaniesController(IMapper mapper) : ControllerBase
         return this.ToActionResult(result.Map(x => mapper.Map<GetCompanyResponse>(x)));
     }
     
-    [HttpGet("{companyId:long:min(1)}/management/balance")]
+    [HttpGet("{id:long:min(1)}/management/balance")]
     public async Task<ActionResult<GetCompanyBalanceResponse>> GetCompanyBalance(
-        [FromRoute] long companyId,
+        [FromRoute] long id,
         [FromServices] GetCompanyBalanceHandler handler,
         CancellationToken cancellationToken)
     {
-        var query = new GetCompanyBalanceQuery(companyId);
+        var query = new GetCompanyBalanceQuery(id);
         var result = await handler.Handle(query, cancellationToken);
 
         return this.ToActionResult(result.Map(x => mapper.Map<GetCompanyBalanceResponse>(x)));
     }
 
-    [HttpGet("{companyId:long:min(1)}/management/balance/transactions")]
+    [HttpGet("{id:long:min(1)}/management/balance/transactions")]
     public async Task<ActionResult<GetCompanyBalanceTransactionsResponse>> GetCompanyBalanceTransactions(
-        [FromRoute] long companyId,
+        [FromRoute] long id,
         [FromQuery] GetCompanyBalanceTransactionsRequest request,
         [FromServices] GetCompanyBalanceTransactionsHandler handler,
         CancellationToken cancellationToken)
     {
-        var query = new GetCompanyBalanceTransactionsQuery(companyId, request.Page, request.Size);
+        var query = new GetCompanyBalanceTransactionsQuery(id, request.Page, request.Size);
         var result = await handler.Handle(query, cancellationToken);
 
         return this.ToActionResult(result.Map(x => mapper.Map<GetCompanyBalanceTransactionsResponse>(x)));
+    }
+    
+    [HttpGet]
+    [Route("{id:long:min(1)}/management/employees/invitation")]
+    public async Task<ActionResult<GetCompanyEmployeeInvitationResponse>> GetCompanyEmployeeInvitation(
+        [FromRoute] long id,
+        [FromQuery] GetCompanyEmployeeInvitationRequest request,
+        [FromServices] GetCompanyEmployeeInvitationHandler handler,
+        CancellationToken cancellationToken)
+    {
+        var query = new GetCompanyEmployeeInvitationQuery(id, request.InvitedUserEmail);
+        var result = await handler.Handle(query, cancellationToken);
+    
+        return this.ToActionResult(result.Map(x => mapper.Map<GetCompanyEmployeeInvitationResponse>(x)));
     }
     
     [HttpGet]
@@ -263,6 +265,20 @@ public class CompaniesController(IMapper mapper) : ControllerBase
         var result = await handler.Handle(query, cancellationToken);
     
         return this.ToActionResult(result.Map(x => mapper.Map<SearchCompanySharedJobsResponse>(x)));
+    }
+    
+    [HttpPost]
+    [Route("{companyId:long:min(1)}/management/employees/invitations")]
+    public async Task<ActionResult> SendCompanyEmployeeInvitation(
+        [FromRoute] long companyId,
+        [FromBody] SendCompanyEmployeeInvitationRequest request,
+        [FromServices] SendCompanyEmployeeInvitationHandler handler,
+        CancellationToken cancellationToken)
+    {
+        var command = new SendCompanyEmployeeInvitationCommand(companyId, request.InvitedUserEmail);
+        var result = await handler.Handle(command, cancellationToken);
+    
+        return this.ToActionResult(result);
     }
 
     [HttpPatch("{id:long:min(1)}")]

@@ -13,9 +13,9 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 
-namespace JobSearchSiteBackend.Core.Domains.Companies.UseCases.AddCompanyEmployeeInvitation;
+namespace JobSearchSiteBackend.Core.Domains.Companies.UseCases.SendCompanyEmployeeInvitation;
 
-public class AddCompanyEmployeeInvitationHandler(
+public class SendCompanyEmployeeInvitationHandler(
     ICurrentAccountService currentAccountService,
     MainDataContext context,
     UserManager<MyIdentityUser> userManager,
@@ -23,9 +23,9 @@ public class AddCompanyEmployeeInvitationHandler(
     IOptions<MyDefaultEmailSenderSettings> emailSenderSettings,
     IOptions<MyAppSettings> appSettings,
     ISendCompanyEmployeeInvitationEmailRunner sendCompanyEmployeeInvitationEmailRunner)
-    : IRequestHandler<AddCompanyEmployeeInvitationCommand, Result>
+    : IRequestHandler<SendCompanyEmployeeInvitationCommand, Result>
 {
-    public async Task<Result> Handle(AddCompanyEmployeeInvitationCommand command,
+    public async Task<Result> Handle(SendCompanyEmployeeInvitationCommand command,
         CancellationToken cancellationToken = default)
     {
         var currentUserId = currentAccountService.GetIdOrThrow();

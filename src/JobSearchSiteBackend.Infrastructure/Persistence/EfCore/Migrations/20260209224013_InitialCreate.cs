@@ -5,10 +5,10 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #pragma warning disable CA1814 // Prefer jagged arrays over multidimensional
 
-namespace JobSearchSiteBackend.Infrastructure.Persistence.Migrations
+namespace JobSearchSiteBackend.Infrastructure.Persistence.EfCore.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialMigration : Migration
+    public partial class InitialCreate : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -455,6 +455,7 @@ namespace JobSearchSiteBackend.Infrastructure.Persistence.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     GuidIdentifier = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     DateTimeCreatedUtc = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    DateTimeValidUtc = table.Column<DateTime>(type: "datetime2", nullable: false),
                     CompanyId = table.Column<long>(type: "bigint", nullable: false),
                     InvitedUserId = table.Column<long>(type: "bigint", nullable: false),
                     SenderUserId = table.Column<long>(type: "bigint", nullable: false),

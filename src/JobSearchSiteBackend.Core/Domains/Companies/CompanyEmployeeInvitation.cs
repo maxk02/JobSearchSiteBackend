@@ -16,7 +16,8 @@ public class CompanyEmployeeInvitation : IEntityWithId, IEntityWithGuid, IEntity
     
     public Guid GuidIdentifier { get; set; } = Guid.NewGuid();
     
-    public DateTime DateTimeCreatedUtc { get; set; }
+    public DateTime DateTimeCreatedUtc { get; set; } = DateTime.UtcNow;
+    public DateTime DateTimeValidUtc { get; set; }  = DateTime.UtcNow.AddHours(1);
     
     public long CompanyId { get; set; }
 
