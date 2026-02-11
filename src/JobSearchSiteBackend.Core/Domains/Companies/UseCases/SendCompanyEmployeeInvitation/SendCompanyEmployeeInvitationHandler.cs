@@ -2,6 +2,7 @@
 using JobSearchSiteBackend.Core.Domains._Shared.UseCaseStructure;
 using JobSearchSiteBackend.Core.Domains.Accounts;
 using JobSearchSiteBackend.Core.Domains.Companies.BackgroundJobRunners;
+using JobSearchSiteBackend.Core.Domains.Companies.Dtos;
 using JobSearchSiteBackend.Core.Domains.Companies.EmailMessageTemplates;
 using JobSearchSiteBackend.Core.Domains.CompanyClaims;
 using JobSearchSiteBackend.Core.Persistence;
@@ -23,9 +24,9 @@ public class SendCompanyEmployeeInvitationHandler(
     IOptions<MyDefaultEmailSenderSettings> emailSenderSettings,
     IOptions<MyAppSettings> appSettings,
     ISendCompanyEmployeeInvitationEmailRunner sendCompanyEmployeeInvitationEmailRunner)
-    : IRequestHandler<SendCompanyEmployeeInvitationCommand, Result>
+    : IRequestHandler<SendCompanyEmployeeInvitationCommand, Result<SendCompanyEmployeeInvitationResult>>
 {
-    public async Task<Result> Handle(SendCompanyEmployeeInvitationCommand command,
+    public async Task<Result<SendCompanyEmployeeInvitationResult>> Handle(SendCompanyEmployeeInvitationCommand command,
         CancellationToken cancellationToken = default)
     {
         var currentUserId = currentAccountService.GetIdOrThrow();
@@ -63,6 +64,9 @@ public class SendCompanyEmployeeInvitationHandler(
         context.CompanyEmployeeInvitations.Add(invitation);
         
         await context.SaveChangesAsync(cancellationToken);
+        
+        var invitationDto = new CompanyEmployeeInvitationDto(invitation.Id, invitation.DateTimeCreatedUtc,
+            invitation.DateTimeValidUtc, invitation.IsAccepted);
 
         var domainName = appSettings.Value.FrontendDomainName;
         
@@ -80,6 +84,8 @@ public class SendCompanyEmployeeInvitationHandler(
 
         await sendCompanyEmployeeInvitationEmailRunner.RunAsync(emailToSend);
 
-        return Result.Success();
+        var result = new SendCompanyEmployeeInvitationResult(invitationDto);
+        
+        return Result.Success(result);
     }
 }

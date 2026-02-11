@@ -269,7 +269,7 @@ public class CompaniesController(IMapper mapper) : ControllerBase
     
     [HttpPost]
     [Route("{companyId:long:min(1)}/management/employees/invitations")]
-    public async Task<ActionResult> SendCompanyEmployeeInvitation(
+    public async Task<ActionResult<SendCompanyEmployeeInvitationResponse>> SendCompanyEmployeeInvitation(
         [FromRoute] long companyId,
         [FromBody] SendCompanyEmployeeInvitationRequest request,
         [FromServices] SendCompanyEmployeeInvitationHandler handler,
@@ -278,7 +278,7 @@ public class CompaniesController(IMapper mapper) : ControllerBase
         var command = new SendCompanyEmployeeInvitationCommand(companyId, request.InvitedUserEmail);
         var result = await handler.Handle(command, cancellationToken);
     
-        return this.ToActionResult(result);
+        return this.ToActionResult(result.Map(x => mapper.Map<SendCompanyEmployeeInvitationResponse>(x)));
     }
 
     [HttpPatch("{id:long:min(1)}")]
