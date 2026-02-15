@@ -457,9 +457,10 @@ namespace JobSearchSiteBackend.Infrastructure.Persistence.EfCore.Migrations
                     DateTimeCreatedUtc = table.Column<DateTime>(type: "datetime2", nullable: false),
                     DateTimeValidUtc = table.Column<DateTime>(type: "datetime2", nullable: false),
                     CompanyId = table.Column<long>(type: "bigint", nullable: false),
-                    InvitedUserId = table.Column<long>(type: "bigint", nullable: false),
+                    InvitedUserEmail = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     SenderUserId = table.Column<long>(type: "bigint", nullable: false),
-                    IsAccepted = table.Column<bool>(type: "bit", nullable: false)
+                    IsAccepted = table.Column<bool>(type: "bit", nullable: false),
+                    UserProfileId = table.Column<long>(type: "bigint", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -470,13 +471,13 @@ namespace JobSearchSiteBackend.Infrastructure.Persistence.EfCore.Migrations
                         principalTable: "Companies",
                         principalColumn: "Id");
                     table.ForeignKey(
-                        name: "FK_CompanyEmployeeInvitations_UserProfiles_InvitedUserId",
-                        column: x => x.InvitedUserId,
+                        name: "FK_CompanyEmployeeInvitations_UserProfiles_SenderUserId",
+                        column: x => x.SenderUserId,
                         principalTable: "UserProfiles",
                         principalColumn: "Id");
                     table.ForeignKey(
-                        name: "FK_CompanyEmployeeInvitations_UserProfiles_SenderUserId",
-                        column: x => x.SenderUserId,
+                        name: "FK_CompanyEmployeeInvitations_UserProfiles_UserProfileId",
+                        column: x => x.UserProfileId,
                         principalTable: "UserProfiles",
                         principalColumn: "Id");
                 });
@@ -1065,14 +1066,14 @@ namespace JobSearchSiteBackend.Infrastructure.Persistence.EfCore.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_CompanyEmployeeInvitations_InvitedUserId",
-                table: "CompanyEmployeeInvitations",
-                column: "InvitedUserId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_CompanyEmployeeInvitations_SenderUserId",
                 table: "CompanyEmployeeInvitations",
                 column: "SenderUserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_CompanyEmployeeInvitations_UserProfileId",
+                table: "CompanyEmployeeInvitations",
+                column: "UserProfileId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_CompanyUserProfile_EmployeesId",

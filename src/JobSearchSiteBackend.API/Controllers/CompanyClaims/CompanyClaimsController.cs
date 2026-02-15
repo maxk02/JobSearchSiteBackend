@@ -55,7 +55,8 @@ public class CompanyClaimsController(IMapper mapper) : ControllerBase
         [FromServices] UpdateCompanyClaimIdsForUserHandler handler,
         CancellationToken cancellationToken)
     {
-        var command = new UpdateCompanyClaimIdsForUserCommand(userId, companyId, request.CompanyClaimIds);
+        var command = new UpdateCompanyClaimIdsForUserCommand(userId, companyId,
+            request.CompanyClaimIds, request.PasswordForConfirmation);
         
         var result = await handler.Handle(command, cancellationToken);
         

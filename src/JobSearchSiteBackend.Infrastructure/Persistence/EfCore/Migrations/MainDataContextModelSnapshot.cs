@@ -580,13 +580,17 @@ namespace JobSearchSiteBackend.Infrastructure.Persistence.EfCore.Migrations
                     b.Property<Guid>("GuidIdentifier")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<long>("InvitedUserId")
-                        .HasColumnType("bigint");
+                    b.Property<string>("InvitedUserEmail")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("IsAccepted")
                         .HasColumnType("bit");
 
                     b.Property<long>("SenderUserId")
+                        .HasColumnType("bigint");
+
+                    b.Property<long?>("UserProfileId")
                         .HasColumnType("bigint");
 
                     b.HasKey("Id");
@@ -596,9 +600,9 @@ namespace JobSearchSiteBackend.Infrastructure.Persistence.EfCore.Migrations
                     b.HasIndex("GuidIdentifier")
                         .IsUnique();
 
-                    b.HasIndex("InvitedUserId");
-
                     b.HasIndex("SenderUserId");
+
+                    b.HasIndex("UserProfileId");
 
                     b.ToTable("CompanyEmployeeInvitations");
                 });
@@ -1552,21 +1556,17 @@ namespace JobSearchSiteBackend.Infrastructure.Persistence.EfCore.Migrations
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
-                    b.HasOne("JobSearchSiteBackend.Core.Domains.UserProfiles.UserProfile", "InvitedUser")
-                        .WithMany("CompanyEmployeeInvitationsReceived")
-                        .HasForeignKey("InvitedUserId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
                     b.HasOne("JobSearchSiteBackend.Core.Domains.UserProfiles.UserProfile", "SenderUser")
                         .WithMany("CompanyEmployeeInvitationsSent")
                         .HasForeignKey("SenderUserId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
-                    b.Navigation("Company");
+                    b.HasOne("JobSearchSiteBackend.Core.Domains.UserProfiles.UserProfile", null)
+                        .WithMany("CompanyEmployeeInvitationsReceived")
+                        .HasForeignKey("UserProfileId");
 
-                    b.Navigation("InvitedUser");
+                    b.Navigation("Company");
 
                     b.Navigation("SenderUser");
                 });

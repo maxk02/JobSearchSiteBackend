@@ -59,7 +59,7 @@ public class SendCompanyEmployeeInvitationHandler(
             return Result.Forbidden();
         }
 
-        var invitation = new CompanyEmployeeInvitation(command.CompanyId, identityUser.Id, currentUserId);
+        var invitation = new CompanyEmployeeInvitation(command.CompanyId, command.InvitedUserEmail, currentUserId);
 
         context.CompanyEmployeeInvitations.Add(invitation);
         

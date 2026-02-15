@@ -32,7 +32,7 @@ public class GetCompanyEmployeeInvitationHandler(
         
         var invitation = await context.CompanyEmployeeInvitations
             .Where(cei => cei.CompanyId == query.CompanyId
-                && cei.InvitedUser!.Account!.Email! == query.InvitedUserEmail)
+                && cei.InvitedUserEmail == query.InvitedUserEmail)
             .SingleOrDefaultAsync(cancellationToken);
         
         if (invitation is null)

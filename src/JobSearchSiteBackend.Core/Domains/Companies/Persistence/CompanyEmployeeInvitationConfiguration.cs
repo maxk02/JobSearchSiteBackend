@@ -17,11 +17,11 @@ public class CompanyEmployeeInvitationConfiguration : IEntityTypeConfiguration<C
             .HasForeignKey(companyEmployeeInvitation => companyEmployeeInvitation.CompanyId)
             .OnDelete(DeleteBehavior.NoAction);
 
-        builder
-            .HasOne(companyEmployeeInvitation => companyEmployeeInvitation.InvitedUser)
-            .WithMany(userProfile => userProfile.CompanyEmployeeInvitationsReceived)
-            .HasForeignKey(companyEmployeeInvitation => companyEmployeeInvitation.InvitedUserId)
-            .OnDelete(DeleteBehavior.NoAction);
+        // builder
+        //     .HasOne(companyEmployeeInvitation => companyEmployeeInvitation.InvitedUser)
+        //     .WithMany(userProfile => userProfile.CompanyEmployeeInvitationsReceived)
+        //     .HasForeignKey(companyEmployeeInvitation => companyEmployeeInvitation.InvitedUserId)
+        //     .OnDelete(DeleteBehavior.NoAction);
 
         builder
             .HasOne(companyEmployeeInvitation => companyEmployeeInvitation.SenderUser)

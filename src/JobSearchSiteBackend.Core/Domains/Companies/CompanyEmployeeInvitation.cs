@@ -5,10 +5,10 @@ namespace JobSearchSiteBackend.Core.Domains.Companies;
 
 public class CompanyEmployeeInvitation : IEntityWithId, IEntityWithGuid, IEntityWithDateTimeCreatedUtc
 {
-    public CompanyEmployeeInvitation(long companyId, long invitedUserId, long senderUserId)
+    public CompanyEmployeeInvitation(long companyId, string invitedUserEmail, long senderUserId)
     {
         CompanyId = companyId;
-        InvitedUserId = invitedUserId;
+        InvitedUserEmail = invitedUserEmail;
         SenderUserId = senderUserId;
     }
     
@@ -21,13 +21,12 @@ public class CompanyEmployeeInvitation : IEntityWithId, IEntityWithGuid, IEntity
     
     public long CompanyId { get; set; }
 
-    public long InvitedUserId { get; set; }
+    public string InvitedUserEmail { get; set; }
 
     public long SenderUserId { get; set; }
 
     public bool IsAccepted { get; set; }
     
     public Company? Company { get; set; }
-    public UserProfile? InvitedUser { get; set; }
     public UserProfile? SenderUser { get; set; }
 }

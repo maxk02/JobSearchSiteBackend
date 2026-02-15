@@ -3,13 +3,16 @@ using JobSearchSiteBackend.Core.Services.Auth;
 using Microsoft.EntityFrameworkCore;
 using Ardalis.Result;
 using Ardalis.Result.FluentValidation;
+using JobSearchSiteBackend.Core.Domains.Accounts;
 using JobSearchSiteBackend.Core.Persistence;
+using Microsoft.AspNetCore.Identity;
 
 namespace JobSearchSiteBackend.Core.Domains.CompanyClaims.UseCases.UpdateCompanyClaimIdsForUser;
 
 public class UpdateCompanyClaimIdsForUserHandler(
     ICurrentAccountService currentAccountService,
-    MainDataContext context)
+    MainDataContext context,
+    UserManager<MyIdentityUser> userManager)
     : IRequestHandler<UpdateCompanyClaimIdsForUserCommand, Result>
 {
     public async Task<Result> Handle(UpdateCompanyClaimIdsForUserCommand command,
@@ -55,10 +58,33 @@ public class UpdateCompanyClaimIdsForUserHandler(
 
         if (targetUserClaimIds.Contains(CompanyClaim.IsOwner.Id))
             return Result.Forbidden();
+        
+        if (targetUserClaimIds.Contains(CompanyClaim.IsAdmin.Id)
+            && !currentUserClaimIds.Contains(CompanyClaim.IsOwner.Id))
+            return Result.Forbidden();
 
-        // if (targetUserClaimIds.Contains(CompanyClaim.IsAdmin.Id)
-        //     && !targetUserClaimIds.Contains(CompanyClaim.IsOwner.Id))
-        //     return Result.Forbidden(); todo
+        if (command.CompanyClaimIds.Contains(CompanyClaim.IsOwner.Id))
+        {
+            if (string.IsNullOrEmpty(command.PasswordForConfirmation))
+                return Result.Unauthorized();
+            
+            var user = await userManager.FindByIdAsync(currentUserId.ToString());
+            if (user is null)
+                return Result.Error();
+            
+            var isPasswordCorrect = await userManager.CheckPasswordAsync(user, command.PasswordForConfirmation);
+
+            if (!isPasswordCorrect)
+                return Result.Unauthorized();
+            
+            var ownerClaimToRemove = await context.UserCompanyClaims
+                .Where(ucp => ucp.UserId == currentUserId 
+                              && ucp.CompanyId == command.CompanyId 
+                              && ucp.ClaimId == CompanyClaim.IsOwner.Id)
+                .SingleAsync(cancellationToken);
+            
+            context.UserCompanyClaims.Remove(ownerClaimToRemove);
+        }
 
         var claimIdsToRemove =
             currentUserClaimIds
