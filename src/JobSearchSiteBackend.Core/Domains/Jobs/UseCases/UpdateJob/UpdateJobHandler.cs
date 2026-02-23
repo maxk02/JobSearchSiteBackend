@@ -141,7 +141,7 @@ public class UpdateJobHandler(
 
         if (command.ContractTypeIds is not null)
         {
-            var contractTypes = await context.ContractTypes
+            var contractTypes = await context.JobContractTypes
                 .Where(jobContractType => command.ContractTypeIds.Contains(jobContractType.Id))
                 .ToListAsync(cancellationToken);
 

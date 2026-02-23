@@ -94,7 +94,7 @@ public class AddJobHandler(
         context.CompanyBalanceTransactions.Add(companyBalanceTransaction);
         
 
-        var contractTypes = await context.ContractTypes
+        var contractTypes = await context.JobContractTypes
             .AsNoTracking()
             .Where(jobContractType => command.ContractTypeIds.Contains(jobContractType.Id))
             .ToListAsync(cancellationToken);
