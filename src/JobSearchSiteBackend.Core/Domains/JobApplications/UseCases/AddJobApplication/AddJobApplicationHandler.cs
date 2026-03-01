@@ -29,7 +29,7 @@ public class AddJobApplicationHandler(
             command.LocationId, JobApplicationStatus.Submitted);
 
         var requestedPersonalFilesOfUser = await context.PersonalFiles
-            .Where(pf => command.PersonalFileIds.Contains(pf.Id) && pf.UserId == currentUserId)
+            .Where(pf => command.PersonalFileIds.Contains(pf.Id) && pf.UserId == currentUserId && pf.IsUploadedSuccessfully)
             .ToListAsync(cancellationToken);
 
         if (!command.PersonalFileIds.All(requestedPersonalFilesOfUser.Select(x => x.Id).Contains))

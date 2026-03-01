@@ -10,7 +10,7 @@ public class DeleteNonUploadedFilesRunner(MainDataContext dbContext) : IDeleteNo
     {
         var query = dbContext.PersonalFiles
             .Where(cv => cv.IsUploadedSuccessfully == false 
-                         && cv.DateTimeUpdatedUtc < DateTime.UtcNow.AddDays(-deleteOlderThanDays));
+                         && cv.DateTimeCreatedUtc < DateTime.UtcNow.AddDays(-deleteOlderThanDays));
 
         var recordsToDelete = await query.ToListAsync();
         

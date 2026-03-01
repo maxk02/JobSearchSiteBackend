@@ -1,5 +1,6 @@
 ﻿using Hangfire;
 using JobSearchSiteBackend.Core.Domains.Companies.RecurringJobRunners;
+using JobSearchSiteBackend.Core.Domains.JobApplications.RecurringJobRunners;
 using JobSearchSiteBackend.Core.Domains.Jobs.RecurringJobRunners;
 using JobSearchSiteBackend.Core.Domains.PersonalFiles.RecurringJobRunners;
 
@@ -18,7 +19,7 @@ public class HangfireRecurringJobRegisterer(IRecurringJobManager recurringJobMan
         recurringJobManager.AddOrUpdate<IDeleteNonUploadedFilesRunner>("sql-delete-non-uploaded-cv-or-cert-files", 
             deleteNonUploadedFilesRunner => deleteNonUploadedFilesRunner.Run(1), $"0 0 * * *");
         
-        recurringJobManager.AddOrUpdate<ISyncTextFilesWithSearchRunner>("sql-search-sync-text-files",
+        recurringJobManager.AddOrUpdate<ISyncJobApplicationsWithSearchRunner>("sql-search-sync-job-applications",
             syncTextFilesWithSearchRunner => syncTextFilesWithSearchRunner.Run(), $"*/1 * * * *");
 
         return Task.CompletedTask;

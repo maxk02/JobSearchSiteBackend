@@ -1,12 +1,12 @@
-﻿using JobSearchSiteBackend.Core.Domains.PersonalFiles.Search;
-using Elasticsearch.Net;
+﻿using Elasticsearch.Net;
+using JobSearchSiteBackend.Core.Domains.JobApplications.Search;
 using Nest;
 
 namespace JobSearchSiteBackend.Infrastructure.Search.Elasticsearch;
 
-public class ElasticPersonalFileSearchRepository(IElasticClient client) : IPersonalFileSearchRepository
+public class ElasticJobApplicationSearchRepository(IElasticClient client) : IJobApplicationSearchRepository
 {
-    public string IndexName => "personal_files";
+    public string IndexName => "job_applications";
     
     public async Task SeedAsync()
     {
@@ -26,7 +26,7 @@ public class ElasticPersonalFileSearchRepository(IElasticClient client) : IPerso
         await CreateIndexAsync();
     }
 
-    public async Task UpsertMultipleAsync(ICollection<PersonalFileSearchModel> searchModels,
+    public async Task UpsertMultipleAsync(ICollection<JobApplicationSearchModel> searchModels,
         CancellationToken cancellationToken = default)
     {
         try
@@ -69,14 +69,18 @@ public class ElasticPersonalFileSearchRepository(IElasticClient client) : IPerso
                         )
                     )
                 )
-                .Map<PersonalFileSearchModel>(map => map
+                .Map<JobApplicationSearchModel>(map => map
                     .Properties(properties => properties
                         .Number(num => num
                             .Name(n => n.Id)
                             .Type(NumberType.Long)
                         )
+                        .Number(num => num
+                            .Name(n => n.JobId)
+                            .Type(NumberType.Long)
+                        )
                         .Text(t => t
-                            .Name(n => n.Text)
+                            .Name(n => n.FileTexts)
                             .Analyzer("autocomplete_analyzer") // Index partial words
                             .SearchAnalyzer("search_analyzer") // Search using whole words
                         )
@@ -106,7 +110,7 @@ public class ElasticPersonalFileSearchRepository(IElasticClient client) : IPerso
     public async Task<ICollection<long>> SearchFromIdsAsync(ICollection<long> ids, string query,
         CancellationToken cancellationToken = default)
     {
-        var searchResponse = await client.SearchAsync<PersonalFileSearchModel>(s => s
+        var searchResponse = await client.SearchAsync<JobApplicationSearchModel>(s => s
             .Index(IndexName)
             .Source(src => src.
                 Includes(i => i.
@@ -124,7 +128,7 @@ public class ElasticPersonalFileSearchRepository(IElasticClient client) : IPerso
                     .Must(m => m
                         .Match(mt => mt
                             .Query(query)
-                            .Field(doc => doc.Text)
+                            .Field(doc => doc.FileTexts)
                         )
                     )
                 )
@@ -142,7 +146,7 @@ public class ElasticPersonalFileSearchRepository(IElasticClient client) : IPerso
 
     public async Task<ICollection<long>> SearchFromAllAsync(string query, CancellationToken cancellationToken = default)
     {
-        var searchResponse = await client.SearchAsync<PersonalFileSearchModel>(s => s
+        var searchResponse = await client.SearchAsync<JobApplicationSearchModel>(s => s
             .Index(IndexName)
             .Source(src => src.
                 Includes(i => i.
@@ -152,12 +156,48 @@ public class ElasticPersonalFileSearchRepository(IElasticClient client) : IPerso
             .Query(q => q
                 .Match(mt => mt
                     .Query(query)
-                    .Field(doc => doc.Text)
+                    .Field(doc => doc.FileTexts)
                 )
             )
             .Sort(sort => sort
                 .Descending(SortSpecialField.Score)
             ), 
+            cancellationToken
+        );
+
+        var resultIds = searchResponse.Hits.Select(h => h.Source.Id).ToList();
+        
+        return resultIds;
+    }
+    
+    public async Task<ICollection<long>> SearchFromJobAsync(long jobId, string query, CancellationToken cancellationToken = default)
+    {
+        var searchResponse = await client.SearchAsync<JobApplicationSearchModel>(s => s
+                .Index(IndexName)
+                .Source(src => src.
+                    Includes(i => i.
+                        Field(f => f.Id)
+                    )
+                )
+                .Query(q => q
+                    .Bool(b => b
+                        .Filter(f => f
+                            .Term(t => t
+                                .Field(doc => doc.Id)
+                                .Value(jobId)
+                            )
+                        )
+                        .Must(m => m
+                            .Match(mt => mt
+                                .Query(query)
+                                .Field(doc => doc.FileTexts)
+                            )
+                        )
+                    )
+                )
+                .Sort(sort => sort
+                    .Descending(SortSpecialField.Score)
+                ), 
             cancellationToken
         );
 

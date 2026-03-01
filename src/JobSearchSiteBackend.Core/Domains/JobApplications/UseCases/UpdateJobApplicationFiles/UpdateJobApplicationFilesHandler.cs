@@ -30,8 +30,9 @@ public class UpdateJobApplicationFilesHandler(
             .Where(pf => command.PersonalFileIds.Contains(pf.Id))
             .ToListAsync(cancellationToken);
 
-        if (!command.PersonalFileIds.All(newPersonalFiles.Select(x => x.Id).Contains) ||
-            newPersonalFiles.Any(x => x.UserId != currentUserId))
+        if (!command.PersonalFileIds.All(newPersonalFiles.Select(x => x.Id).Contains)
+            || newPersonalFiles.Any(x => x.UserId != currentUserId)
+            || newPersonalFiles.Any(x => !x.IsUploadedSuccessfully))
         {
             return Result.Error();
         }

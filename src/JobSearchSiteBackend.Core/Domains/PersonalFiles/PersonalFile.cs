@@ -6,7 +6,7 @@ using Ardalis.Result.FluentValidation;
 
 namespace JobSearchSiteBackend.Core.Domains.PersonalFiles;
 
-public class PersonalFile : IEntityWithId, IEntityWithGuid, IEntityWithSearchSync, IEntityWithUploadStatus
+public class PersonalFile : IEntityWithId, IEntityWithGuid, IEntityWithUploadStatus, IEntityWithDateTimeCreatedUtc
 {
     public PersonalFile(long userId, string name, string extension, long size, string text)
     {
@@ -21,11 +21,7 @@ public class PersonalFile : IEntityWithId, IEntityWithGuid, IEntityWithSearchSyn
     
     public Guid GuidIdentifier { get; private set; } = Guid.NewGuid();
     
-    public DateTime DateTimeUpdatedUtc { get; set; }
-    
-    public DateTime? DateTimeSyncedWithSearchUtc { get; set; }
-    
-    public bool IsDeleted { get; set; }
+    public DateTime DateTimeCreatedUtc { get; private set; } = DateTime.UtcNow;
     
     public long UserId { get; private set; }
     

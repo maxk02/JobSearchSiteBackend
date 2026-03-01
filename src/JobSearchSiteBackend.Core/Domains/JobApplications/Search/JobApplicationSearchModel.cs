@@ -1,10 +1,11 @@
 ﻿using JobSearchSiteBackend.Core.Services.Search;
 
-namespace JobSearchSiteBackend.Core.Domains.PersonalFiles.Search;
+namespace JobSearchSiteBackend.Core.Domains.JobApplications.Search;
 
-public record PersonalFileSearchModel(
+public record JobApplicationSearchModel(
     long Id,
-    string Text,
+    long JobId,
+    ICollection<string> FileTexts,
     DateTime DateTimeUpdatedUtc,
     bool IsDeleted
 ) : ISearchModelWithId, IUpdatableSearchModel;

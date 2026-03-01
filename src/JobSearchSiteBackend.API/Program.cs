@@ -5,20 +5,18 @@ using Hangfire;
 using JobSearchSiteBackend.API.Middleware;
 using JobSearchSiteBackend.API.Services;
 using JobSearchSiteBackend.Core;
+using JobSearchSiteBackend.Core.Domains.JobApplications.Search;
 using JobSearchSiteBackend.Core.Domains.Jobs.Search;
 using JobSearchSiteBackend.Core.Domains.Locations.Search;
-using JobSearchSiteBackend.Core.Domains.PersonalFiles.Search;
-using JobSearchSiteBackend.Core.Persistence;
 using JobSearchSiteBackend.Core.Services.Auth;
 using JobSearchSiteBackend.Core.Services.Cookies;
-using JobSearchSiteBackend.Core.Services.Search;
 using JobSearchSiteBackend.Infrastructure;
 using JobSearchSiteBackend.Infrastructure.BackgroundJobs;
 using JobSearchSiteBackend.Infrastructure.BackgroundJobs.Hangfire.AuthorizationFilters;
 using JobSearchSiteBackend.Infrastructure.Persistence.EfCore;
 using JobSearchSiteBackend.Shared.MyAppSettings;
 using JobSearchSiteBackend.Shared.MyAppSettings.Email;
-using Microsoft.EntityFrameworkCore.Infrastructure.Internal;
+using ServiceExtensions = JobSearchSiteBackend.Infrastructure.ServiceExtensions;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -131,13 +129,13 @@ builder.WebHost.ConfigureKestrel(options =>
 var app = builder.Build();
 
 // Getting assembly by some type
-var infrastructureAssembly = typeof(JobSearchSiteBackend.Infrastructure.ServiceExtensions).Assembly;
+var infrastructureAssembly = typeof(ServiceExtensions).Assembly;
 
 // Implemented search repo types
 List<Type> searchRepositories = [
     typeof(IJobSearchRepository),
     typeof(ILocationSearchRepository),
-    typeof(IPersonalFileSearchRepository),
+    typeof(IJobApplicationSearchRepository),
 ];
 
 // Seeding

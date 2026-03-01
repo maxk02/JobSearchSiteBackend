@@ -4,6 +4,7 @@ using JobSearchSiteBackend.Core.Domains._Shared.Pagination;
 using JobSearchSiteBackend.Core.Domains._Shared.UseCaseStructure;
 using JobSearchSiteBackend.Core.Domains.CompanyClaims;
 using JobSearchSiteBackend.Core.Domains.JobApplications.Dtos;
+using JobSearchSiteBackend.Core.Domains.JobApplications.Search;
 using JobSearchSiteBackend.Core.Domains.Locations;
 using JobSearchSiteBackend.Core.Domains.PersonalFiles;
 using JobSearchSiteBackend.Core.Domains.UserProfiles.Persistence;
@@ -19,7 +20,8 @@ public class GetApplicationsForJobHandler(
     ICurrentAccountService currentAccountService,
     MainDataContext context,
     ICompanyLastVisitedJobsCacheRepository cacheRepo,
-    IFileStorageService fileStorageService)
+    IFileStorageService fileStorageService,
+    IJobApplicationSearchRepository jobApplicationSearchRepository)
     : IRequestHandler<GetApplicationsForJobQuery, Result<GetApplicationsForJobResult>>
 {
     public async Task<Result<GetApplicationsForJobResult>> Handle(GetApplicationsForJobQuery query,
@@ -49,9 +51,13 @@ public class GetApplicationsForJobHandler(
 
         if (!string.IsNullOrEmpty(query.Query))
         {
+            var hitIds = await jobApplicationSearchRepository
+                .SearchFromJobAsync(query.Id, query.Query, cancellationToken);
+            
             dbQuery = dbQuery
                 .Where(ja => ja.User!.FirstName.ToLower().Contains(query.Query.ToLower())
-                || ja.User.LastName.ToLower().Contains(query.Query.ToLower()));
+                || ja.User.LastName.ToLower().Contains(query.Query.ToLower())
+                || hitIds.Contains(ja.Id));
         }
         
         if (query.StatusIds.Count > 0)

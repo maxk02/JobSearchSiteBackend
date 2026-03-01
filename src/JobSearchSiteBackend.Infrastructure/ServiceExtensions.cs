@@ -1,26 +1,29 @@
 ﻿using System.Reflection;
-using System.Security.Authentication;
 using System.Text;
+using Amazon;
+using Amazon.Runtime;
 using Amazon.S3;
+using Elasticsearch.Net;
+using Hangfire;
+using Hangfire.SqlServer;
 using JobSearchSiteBackend.Core.Domains.Accounts;
-using JobSearchSiteBackend.Core.Domains.Companies.Search;
+using JobSearchSiteBackend.Core.Domains.Accounts.BackgroundJobRunners;
+using JobSearchSiteBackend.Core.Domains.Companies.BackgroundJobRunners;
+using JobSearchSiteBackend.Core.Domains.Companies.RecurringJobRunners;
+using JobSearchSiteBackend.Core.Domains.JobApplications.BackgroundJobRunners;
+using JobSearchSiteBackend.Core.Domains.JobApplications.RecurringJobRunners;
+using JobSearchSiteBackend.Core.Domains.JobApplications.Search;
+using JobSearchSiteBackend.Core.Domains.Jobs.RecurringJobRunners;
 using JobSearchSiteBackend.Core.Domains.Jobs.Search;
 using JobSearchSiteBackend.Core.Domains.Locations.Search;
-using JobSearchSiteBackend.Core.Domains.PersonalFiles.Search;
+using JobSearchSiteBackend.Core.Domains.PersonalFiles.BackgroundJobRunners;
+using JobSearchSiteBackend.Core.Domains.PersonalFiles.RecurringJobRunners;
 using JobSearchSiteBackend.Core.Persistence;
 using JobSearchSiteBackend.Core.Services.Auth;
 using JobSearchSiteBackend.Core.Services.Caching;
 using JobSearchSiteBackend.Core.Services.EmailSender;
 using JobSearchSiteBackend.Core.Services.FileStorage;
 using JobSearchSiteBackend.Core.Services.TextExtraction;
-using Elasticsearch.Net;
-using Hangfire;
-using JobSearchSiteBackend.Core.Domains.Accounts.BackgroundJobRunners;
-using JobSearchSiteBackend.Core.Domains.Companies.RecurringJobRunners;
-using JobSearchSiteBackend.Core.Domains.JobApplications.BackgroundJobRunners;
-using JobSearchSiteBackend.Core.Domains.Jobs.RecurringJobRunners;
-using JobSearchSiteBackend.Core.Domains.PersonalFiles.BackgroundJobRunners;
-using JobSearchSiteBackend.Core.Domains.PersonalFiles.RecurringJobRunners;
 using JobSearchSiteBackend.Infrastructure.Auth;
 using JobSearchSiteBackend.Infrastructure.BackgroundJobs;
 using JobSearchSiteBackend.Infrastructure.BackgroundJobs.Hangfire;
@@ -28,13 +31,11 @@ using JobSearchSiteBackend.Infrastructure.BackgroundJobs.Hangfire.BackgroundJobs
 using JobSearchSiteBackend.Infrastructure.BackgroundJobs.Hangfire.RecurringJobsRunners;
 using JobSearchSiteBackend.Infrastructure.Caching;
 using JobSearchSiteBackend.Infrastructure.EmailSender.MailKit;
-using JobSearchSiteBackend.Infrastructure.FileStorage.AmazonS3;
-using JobSearchSiteBackend.Infrastructure.Persistence;
+using JobSearchSiteBackend.Infrastructure.FileStorage.CloudflareR2;
 using JobSearchSiteBackend.Infrastructure.Persistence.EfCore;
 using JobSearchSiteBackend.Infrastructure.Persistence.SqlServer;
 using JobSearchSiteBackend.Infrastructure.Search.Elasticsearch;
 using JobSearchSiteBackend.Infrastructure.TextExtraction;
-using JobSearchSiteBackend.Shared.MyAppSettings;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
@@ -44,11 +45,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using Nest;
 using StackExchange.Redis;
-using System.IdentityModel.Tokens.Jwt;
-using JobSearchSiteBackend.Core.Domains.Companies.BackgroundJobRunners;
-using JobSearchSiteBackend.Infrastructure.FileStorage.CloudflareR2;
-using Amazon.Runtime;
-using Amazon;
+using LogLevel = Microsoft.Extensions.Logging.LogLevel;
 
 namespace JobSearchSiteBackend.Infrastructure;
 
@@ -66,7 +63,7 @@ public static class ServiceExtensions
                 .UseSqlServer(configuration["SQL_SERVER_DEFAULT_CONNECTION_STRING"],
                     b => b.MigrationsAssembly(Assembly.GetExecutingAssembly()))
                 .AddInterceptors(interceptor)
-                .LogTo(Console.WriteLine, Microsoft.Extensions.Logging.LogLevel.Information)
+                .LogTo(Console.WriteLine, LogLevel.Information)
                 .EnableSensitiveDataLogging();
         });
         
@@ -247,7 +244,7 @@ public static class ServiceExtensions
         
         serviceCollection.AddSingleton<IJobSearchRepository, ElasticJobSearchRepository>();
         serviceCollection.AddSingleton<ILocationSearchRepository, ElasticLocationSearchRepository>();
-        serviceCollection.AddSingleton<IPersonalFileSearchRepository, ElasticPersonalFileSearchRepository>();
+        serviceCollection.AddSingleton<IJobApplicationSearchRepository, ElasticJobApplicationSearchRepository>();
     }
     
     public static void ConfigureTextExtraction(this IServiceCollection serviceCollection)
@@ -270,7 +267,7 @@ public static class ServiceExtensions
             .SetDataCompatibilityLevel(CompatibilityLevel.Version_180)
             .UseSimpleAssemblyNameTypeSerializer()
             .UseRecommendedSerializerSettings()
-            .UseSqlServerStorage(connectionString, new Hangfire.SqlServer.SqlServerStorageOptions
+            .UseSqlServerStorage(connectionString, new SqlServerStorageOptions
             {
                 CommandBatchMaxTimeout = TimeSpan.FromMinutes(5),
                 SlidingInvisibilityTimeout = TimeSpan.FromMinutes(5),
@@ -298,7 +295,7 @@ public static class ServiceExtensions
         serviceCollection.AddScoped<IClearCompanyAvatarsRunner, ClearCompanyAvatarsRunner>();
         serviceCollection.AddScoped<IDeleteNonUploadedFilesRunner, DeleteNonUploadedFilesRunner>();
         serviceCollection.AddScoped<ISyncJobsWithSearchRunner, SyncJobsWithSearchRunner>();
-        serviceCollection.AddScoped<ISyncTextFilesWithSearchRunner, SyncTextFilesWithSearchRunner>();
+        serviceCollection.AddScoped<ISyncJobApplicationsWithSearchRunner, SyncJobApplicationsWithSearchRunner>();
     }
 
     public static void ConfigureEmailSender(this IServiceCollection serviceCollection)

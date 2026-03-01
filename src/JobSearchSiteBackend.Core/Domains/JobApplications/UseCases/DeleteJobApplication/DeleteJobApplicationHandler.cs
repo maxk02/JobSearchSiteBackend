@@ -15,7 +15,6 @@ public class DeleteJobApplicationHandler(
         var currentUserId = currentAccountService.GetIdOrThrow();
 
         var jobApplication = await context.JobApplications
-            .Include(ja => ja.PersonalFiles)
             .Where(ja => ja.Id == command.Id)
             .SingleOrDefaultAsync(cancellationToken);
 
@@ -25,7 +24,9 @@ public class DeleteJobApplicationHandler(
         if (jobApplication.UserId != currentUserId)
             return Result.Forbidden();
         
-        context.JobApplications.Remove(jobApplication);
+        jobApplication.IsDeleted = true;
+        
+        context.JobApplications.Update(jobApplication);
         await context.SaveChangesAsync(cancellationToken);
 
         return Result.Success();

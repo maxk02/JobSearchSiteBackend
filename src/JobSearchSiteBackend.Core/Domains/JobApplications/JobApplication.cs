@@ -7,7 +7,7 @@ using JobSearchSiteBackend.Core.Domains.UserProfiles;
 
 namespace JobSearchSiteBackend.Core.Domains.JobApplications;
 
-public class JobApplication : IEntityWithId, IEntityWithDateTimeCreatedUtc
+public class JobApplication : IEntityWithId, IEntityWithDateTimeCreatedUtc, IEntityWithSearchSync
 {
     public JobApplication(long userId, long jobId, long locationId, JobApplicationStatus status)
     {
@@ -20,6 +20,12 @@ public class JobApplication : IEntityWithId, IEntityWithDateTimeCreatedUtc
     public long Id { get; private set; }
     
     public DateTime DateTimeCreatedUtc { get; private set; } = DateTime.UtcNow;
+    
+    public DateTime DateTimeUpdatedUtc { get; set; }
+    
+    public DateTime? DateTimeSyncedWithSearchUtc { get; set; }
+    
+    public bool IsDeleted { get; set; }
     
     public long LocationId { get; private set; }
     public long UserId { get; private set; }
