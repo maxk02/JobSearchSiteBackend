@@ -10,35 +10,40 @@ public class SyncJobApplicationsWithSearchRunner(MainDataContext dbContext,
 {
     public async Task Run()
     {
-        var recordsToSync = await dbContext.JobApplications
-            .Include(jobApplication => jobApplication.PersonalFiles)
-            .Where(pf => pf.DateTimeSyncedWithSearchUtc == null
-                         || pf.DateTimeSyncedWithSearchUtc < pf.DateTimeUpdatedUtc)
-            .ToListAsync();
+        var recordsToSyncQuery = dbContext.JobApplications
+            .Where(ja => ja.VersionIdSyncedWithSearch == null
+                         || ja.VersionId != ja.VersionIdSyncedWithSearch);
         
-        if (recordsToSync.Count == 0)
+        var count = await recordsToSyncQuery.CountAsync();
+        
+        if (count == 0)
             return;
 
-        var personalFileSearchModels = recordsToSync
+        var jobApplicationSearchModels = await recordsToSyncQuery
             .Select(jobApplication => new JobApplicationSearchModel(
                 jobApplication.Id,
                 jobApplication.JobId,
                 jobApplication.PersonalFiles!.Select(pf => pf.Text).ToList(),
-                jobApplication.DateTimeUpdatedUtc,
+                jobApplication.VersionId,
                 jobApplication.IsDeleted
             ))
-            .ToList();
+            .ToListAsync();
 
-        await jobApplicationSearchRepository.UpsertMultipleAsync(personalFileSearchModels);
+        await jobApplicationSearchRepository.UpsertMultipleAsync(jobApplicationSearchModels);
 
-        var idsToUpdate = recordsToSync.Select(x => x.Id).ToList();
+        var idsToUpdate = jobApplicationSearchModels.Select(x => x.Id).ToList();
 
         // EXECUTE UPDATE:
         // This generates a direct SQL UPDATE statement.
         // It bypasses the ChangeTracker, effectively skipping all SaveChanges interceptors.
+        // await dbContext.JobApplications
+        //     .Where(ja => idsToUpdate.Contains(ja.Id))
+        //     .ExecuteUpdateAsync(setters => setters
+        //         .SetProperty(ja => ja.DateTimeSyncedWithSearchUtc, pf => DateTime.UtcNow));
+        
         await dbContext.JobApplications
             .Where(ja => idsToUpdate.Contains(ja.Id))
             .ExecuteUpdateAsync(setters => setters
-                .SetProperty(ja => ja.DateTimeSyncedWithSearchUtc, pf => DateTime.UtcNow));
+                .SetProperty(ja => ja.VersionIdSyncedWithSearch, ja => ja.VersionId));
     }
 }

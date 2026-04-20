@@ -17,6 +17,10 @@ public class EmploymentOption
     ];
     
     public static readonly ImmutableArray<long> AllIds = [..AllValues.Select(category => category.Id)];
+    
+    public static readonly EmploymentOption FullTime = AllValues.First(eo => eo.Id == 1);
+    
+    public static readonly EmploymentOption PartTime = AllValues.First(eo => eo.Id == 2);
 
     private EmploymentOption(long id, EmploymentOptionType employmentOptionType, string namePl)
     {

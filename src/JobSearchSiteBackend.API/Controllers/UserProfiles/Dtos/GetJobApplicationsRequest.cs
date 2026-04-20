@@ -2,4 +2,4 @@
 
 namespace JobSearchSiteBackend.API.Controllers.UserProfiles.Dtos;
 
-public record GetJobApplicationsRequest(JobApplicationStatus? StatusId, int Page, int Size);
+public record GetJobApplicationsRequest(int? StatusId, int Page, int Size);

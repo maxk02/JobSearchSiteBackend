@@ -17,7 +17,7 @@ public class GetLocationsHandler(
         CancellationToken cancellationToken = default)
     {
         var hits = await locationSearchRepository
-            .SearchFromCountryIdAsync(query.CountryId, query.Query, query.Size, cancellationToken);
+            .SearchFromCountryIdAsync(query.CountryId, query.Query, query.IsConcrete, query.Size, cancellationToken);
 
         var locationDtos = hits
             .Select(h => new LocationDto(h.Id, h.CountryId,h.FullName, h.Description, h.Code))

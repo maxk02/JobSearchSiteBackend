@@ -3,14 +3,15 @@ using JobSearchSiteBackend.Core.Persistence;
 using JobSearchSiteBackend.Core.Services.Auth;
 using JobSearchSiteBackend.Core.Services.Caching;
 using JobSearchSiteBackend.Core.Services.Cookies;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.Extensions.Caching.Memory;
 
 namespace JobSearchSiteBackend.API.Middleware;
 
-public class CheckUserTokenMiddleware(
-    RequestDelegate next)
+public class CheckUserTokenMiddleware(RequestDelegate next)
 {
-    public async Task InvokeAsync(HttpContext httpContext, MainDataContext dbContext,
+    public async Task InvokeAsync(HttpContext httpContext,
+        MainDataContext dbContext,
         ICurrentAccountService currentAccountService,
         IUserSessionCacheRepository sessionCache,
         ICookieService cookieService)
@@ -22,10 +23,10 @@ public class CheckUserTokenMiddleware(
             httpContext.Response.StatusCode = StatusCodes.Status500InternalServerError;
             return;
         }
+        
+        var allowAnonymous = endpoint.Metadata.GetMetadata<IAllowAnonymous>() != null;
 
-        if (httpContext.Items.TryGetValue("IsAnonAllowed", out var val)
-            && val is bool anonAllowed
-            && anonAllowed == true)
+        if (allowAnonymous)
         {
             await next(httpContext);
             return;
@@ -38,8 +39,6 @@ public class CheckUserTokenMiddleware(
             httpContext.Response.StatusCode = StatusCodes.Status401Unauthorized;
             return;
         }
-        
-        var cancellationToken = httpContext.RequestAborted;
 
         var tokenId = currentAccountService.GetTokenIdentifierOrThrow();
         var userId = currentAccountService.GetIdOrThrow();

@@ -30,6 +30,7 @@ public class GetCompanyJobManagementCardDtosHandler(
             return Result.Forbidden();
 
         var dbQuery = context.Jobs
+            .OrderByDescending(job => job.DateTimePublishedUtc)
             .Where(job => job.CompanyId == query.CompanyId)
             .Where(job => !job.IsDeleted);
 

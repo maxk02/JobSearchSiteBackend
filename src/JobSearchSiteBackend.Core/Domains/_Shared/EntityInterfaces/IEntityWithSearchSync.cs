@@ -1,6 +1,8 @@
 ﻿namespace JobSearchSiteBackend.Core.Domains._Shared.EntityInterfaces;
 
-public interface IEntityWithSearchSync : IEntityWithUpdDelDate
+public interface IEntityWithSearchSync
 {
-    public DateTime? DateTimeSyncedWithSearchUtc { get; set; }
+    public bool IsDeleted { get; set; }
+    public Guid VersionId { get; set; }
+    public Guid? VersionIdSyncedWithSearch { get; set; }
 }

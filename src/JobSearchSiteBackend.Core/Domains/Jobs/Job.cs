@@ -34,11 +34,11 @@ public class Job : IEntityWithId, IEntityWithSearchSync
         EmploymentOptions = employmentOptions;
     }
     
-    public long Id { get; private set; }
+    public long Id { get; set; }
 
-    public DateTime DateTimeUpdatedUtc { get; set; }
+    public Guid VersionId { get; set; } = Guid.NewGuid();
     
-    public DateTime? DateTimeSyncedWithSearchUtc { get; set; }
+    public Guid? VersionIdSyncedWithSearch { get; set; } = null;
     
     public bool IsDeleted { get; set; }
 

@@ -2,6 +2,6 @@
 
 public interface IUpdatableSearchModel
 {
-    public DateTime DateTimeUpdatedUtc { get; }
+    public Guid VersionId { get; }
     public bool IsDeleted { get; }
 }

@@ -13,7 +13,7 @@ public class UserAvatar : IEntityWithId, IEntityWithGuid, IEntityWithUpdDelDate,
     
     public long Id { get; private set; }
     
-    public Guid GuidIdentifier { get; private set; } = Guid.NewGuid();
+    public Guid GuidIdentifier { get; set; } = Guid.NewGuid();
     
     public DateTime DateTimeUpdatedUtc { get; set; }
     public bool IsDeleted { get; set; }

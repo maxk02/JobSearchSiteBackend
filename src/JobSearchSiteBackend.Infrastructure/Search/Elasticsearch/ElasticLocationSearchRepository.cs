@@ -75,6 +75,9 @@ public class ElasticLocationSearchRepository(IElasticClient client) : ILocationS
                             .Analyzer("autocomplete_analyzer") // Index partial words
                             .SearchAnalyzer("search_analyzer") // Search using whole words
                         )
+                        .Boolean(b => b
+                            .Name(model => model.IsConcrete)
+                        )
                         .Text(t => t
                             .Name(n => n.Description)
                         )
@@ -166,20 +169,37 @@ public class ElasticLocationSearchRepository(IElasticClient client) : ILocationS
     }
     
     public async Task<ICollection<LocationSearchModel>> SearchFromCountryIdAsync(long countryId, string query,
-        int size, CancellationToken cancellationToken = default)
+        bool? isConcrete, int size, CancellationToken cancellationToken = default)
     {
-        await client.Indices.RefreshAsync(IndexName);
+        await client.Indices.RefreshAsync(IndexName, ct: cancellationToken);
 
         var searchResponse = await client.SearchAsync<LocationSearchModel>(s => s
                 .Index(IndexName)
                 .Query(q => q
                     .Bool(b => b
-                        .Filter(f => f
-                            .Term(t => t
+                        // .Filter(f => f
+                        //     .Term(t => t
+                        //         .Field(model => model.CountryId)
+                        //         .Value(countryId)
+                        //     )
+                        // )
+                        .Filter(f => 
+                        {
+                            var filterQuery = f.Term(t => t
                                 .Field(model => model.CountryId)
                                 .Value(countryId)
-                            )
-                        )
+                            );
+                            
+                            if (isConcrete.HasValue)
+                            {
+                                filterQuery &= f.Term(t => t
+                                    .Field(model => model.IsConcrete) 
+                                    .Value(isConcrete.Value)
+                                );
+                            }
+
+                            return filterQuery;
+                        })
                         .Must(m => m
                             .Match(m => m
                                 .Field(f => f.FullName) // single field

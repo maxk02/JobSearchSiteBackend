@@ -277,7 +277,7 @@ public class MainDataContextSeeder(MainDataContext context,
 
         await transaction.CommitAsync();
 
-        var topUpCompanyBalanceTransaction = new CompanyBalanceTransaction(4, balanceSumNeededToAdd + 150,
+        var topUpCompanyBalanceTransaction = new CompanyBalanceTransaction(4, balanceSumNeededToAdd + 30,
             $"Doładowanie konta", 1, 1);
 
         topUpCompanyBalanceTransaction.DateTimeCommittedUtc = DateTime.UtcNow.AddMonths(-4);
@@ -472,6 +472,14 @@ public class MainDataContextSeeder(MainDataContext context,
             personalFile2.IsUploadedSuccessfully = true;
 
             newUser4Profile.PersonalFiles = [personalFile, personalFile2];
+            
+            var user4AvatarFile = new UserAvatar(user4Id, "webp", 47006)
+            {
+                GuidIdentifier = new Guid("f5ae2bfe-2a6b-4d8f-bee0-ab20e098133a"),
+                IsUploadedSuccessfully = true
+            };
+            
+            newUser4Profile.UserAvatars = [user4AvatarFile];
 
             await context.SaveChangesAsync();
 
@@ -486,11 +494,28 @@ public class MainDataContextSeeder(MainDataContext context,
 
             foreach (var j in jobs)
             {
-                int jobAppStatus = rnd.Next(1, 5);
+                var jobAppStatus = rnd.Next(1, 5);
+
+                while (true)
+                {
+                    if (jobAppStatus == 3)
+                    {
+                        jobAppStatus = rnd.Next(1, 5);
+                    }
+                    else
+                    {
+                        break;
+                    }
+                }
 
                 var jobApplication = new JobApplication(user4Id, j.Id, j.Locations!.First().Id, (JobApplicationStatus)jobAppStatus);
 
                 jobApplication.PersonalFiles = [personalFile];
+
+                if (j.Id == 137)
+                {
+                    jobApplication.PersonalFiles.Add(personalFile2);
+                }
 
                 jobApplications.Add(jobApplication);
 
@@ -552,8 +577,19 @@ public class MainDataContextSeeder(MainDataContext context,
             }
 
             var randApplicationStatusNumber = random.Next(1, 5);
+            while (true)
+            {
+                if (randApplicationStatusNumber == 3)
+                {
+                    randApplicationStatusNumber = random.Next(1, 5);
+                }
+                else
+                {
+                    break;
+                }
+            }
 
-            // 1 or 2 for 50/50 probability between id 7 and 8
+            // 1 or 2 for 50/50 probability between location id 7 and 8
             var randApplicationLocationNumber = random.Next(1, 3);
 
             var jobApplication = new JobApplication(sampleUser.Id, 117,

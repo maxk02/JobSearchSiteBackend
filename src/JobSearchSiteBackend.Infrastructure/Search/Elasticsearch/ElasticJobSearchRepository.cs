@@ -71,9 +71,17 @@ public class ElasticJobSearchRepository(IElasticClient client) : IJobSearchRepos
                 )
                 .Map<JobSearchModel>(map => map
                     .Properties(properties => properties
-                        .Number(num => num
+                        .Keyword(num => num
                             .Name(n => n.Id)
-                            .Type(NumberType.Long)
+                        )
+                        .Keyword(num => num
+                            .Name(n => n.CountryId)
+                        )
+                        .Keyword(num => num
+                            .Name(n => n.CategoryId)
+                        )
+                        .Keyword(num => num
+                            .Name(n => n.CompanyId)
                         )
                         .Text(t => t
                             .Name(n => n.Title)
@@ -84,6 +92,18 @@ public class ElasticJobSearchRepository(IElasticClient client) : IJobSearchRepos
                             .Name(n => n.Description)
                             .Analyzer("autocomplete_analyzer") // Index partial words
                             .SearchAnalyzer("search_analyzer") // Search using whole words
+                        )
+                        .Boolean(b => b
+                            .Name(n => n.IsPublic)
+                            .Index()
+                        )
+                        .Date(d => d
+                            .Name(n => n.DateTimePublishedUtc)
+                            .Index()
+                        )
+                        .Date(d => d
+                            .Name(n => n.DateTimeExpiringUtc)
+                            .Index()
                         )
                         .Text(t => t
                             .Name(n => n.Responsibilities)
@@ -100,13 +120,28 @@ public class ElasticJobSearchRepository(IElasticClient client) : IJobSearchRepos
                             .Analyzer("autocomplete_analyzer") // Index partial words
                             .SearchAnalyzer("search_analyzer") // Search using whole words
                         )
-                        .Date(d => d
-                            .Name(n => n.DateTimeUpdatedUtc)
+                        .Keyword(num => num
+                            .Name(n => n.EmploymentOptionIds)
+                        )
+                        .Keyword(num => num
+                            .Name(n => n.JobContractTypeIds)
+                        )
+                        .Keyword(num => num
+                            .Name(n => n.LocationIds)
+                        )
+                        .Keyword(num => num
+                            .Name(n => n.ParentLocationIds)
+                        )
+                        .Keyword(num => num
+                            .Name(n => n.ChildLocationIds)
+                        )
+                        .Keyword(guid => guid
+                            .Name(n => n.VersionId)
                             .Index(false)
                         )
                         .Boolean(b => b
                             .Name(n => n.IsDeleted)
-                            .Index(false)
+                            .Index()
                         )
                     )
                 ),

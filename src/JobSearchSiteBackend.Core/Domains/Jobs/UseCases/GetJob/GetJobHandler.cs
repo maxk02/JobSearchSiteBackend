@@ -14,7 +14,7 @@ namespace JobSearchSiteBackend.Core.Domains.Jobs.UseCases.GetJob;
 
 public class GetJobHandler(
     MainDataContext context,
-    IPageVisitCacheRepository cacheRepo,
+    IJobPageVisitCacheRepository cacheRepo,
     IFileStorageService fileStorageService) : IRequestHandler<GetJobQuery, Result<GetJobResult>>
 {
     public async Task<Result<GetJobResult>> Handle(GetJobQuery query,

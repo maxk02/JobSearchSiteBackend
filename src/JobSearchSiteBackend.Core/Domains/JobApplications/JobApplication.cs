@@ -21,9 +21,9 @@ public class JobApplication : IEntityWithId, IEntityWithDateTimeCreatedUtc, IEnt
     
     public DateTime DateTimeCreatedUtc { get; private set; } = DateTime.UtcNow;
     
-    public DateTime DateTimeUpdatedUtc { get; set; }
+    public Guid VersionId { get; set; } = Guid.NewGuid();
     
-    public DateTime? DateTimeSyncedWithSearchUtc { get; set; }
+    public Guid? VersionIdSyncedWithSearch { get; set; } = null;
     
     public bool IsDeleted { get; set; }
     

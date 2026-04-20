@@ -40,15 +40,8 @@ public class UpdateCompanyHandler(
         if (command.Name is not null) company.Name = command.Name;
         if (command.Description is not null) company.Description = command.Description;
         if (command.IsPublic is not null) company.IsPublic = command.IsPublic.Value;
-
-        var companySearchModel = new CompanySearchModel(
-            company.Id,
-            company.CountryId,
-            company.Name,
-            company.Description,
-            new DateTime(), //company.DateTimeUpdatedUtc
-            false //company.isDeleted
-        );
+        
+        company.VersionId = Guid.NewGuid();
 
         context.Companies.Update(company);
         

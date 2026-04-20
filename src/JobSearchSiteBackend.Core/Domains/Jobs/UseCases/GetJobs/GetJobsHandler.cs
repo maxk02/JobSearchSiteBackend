@@ -3,6 +3,7 @@ using JobSearchSiteBackend.Core.Domains._Shared.Pagination;
 using JobSearchSiteBackend.Core.Domains._Shared.UseCaseStructure;
 using JobSearchSiteBackend.Core.Domains.Companies;
 using JobSearchSiteBackend.Core.Domains.Companies.Persistence;
+using JobSearchSiteBackend.Core.Domains.EmploymentOptions;
 using JobSearchSiteBackend.Core.Domains.Jobs.Dtos;
 using JobSearchSiteBackend.Core.Domains.Jobs.Search;
 using JobSearchSiteBackend.Core.Domains.Locations.Dtos;
@@ -61,7 +62,15 @@ public class GetJobsHandler(
             dbQuery = dbQuery.Where(job => job.SalaryInfo != null);
 
         if (query.EmploymentOptionIds is not null && query.EmploymentOptionIds.Count != 0)
+        {
             dbQuery = dbQuery.Where(job => job.EmploymentOptions!.Any(x => query.EmploymentOptionIds.Contains(x.Id)));
+            
+            if (query.EmploymentOptionIds.Contains(EmploymentOption.FullTime.Id) && !query.EmploymentOptionIds.Contains(EmploymentOption.PartTime.Id))
+                dbQuery = dbQuery.Where(job => !job.EmploymentOptions!.Any(x => query.EmploymentOptionIds.Contains(EmploymentOption.PartTime.Id)));
+            
+            if (query.EmploymentOptionIds.Contains(EmploymentOption.PartTime.Id) && !query.EmploymentOptionIds.Contains(EmploymentOption.FullTime.Id))
+                dbQuery = dbQuery.Where(job => !job.EmploymentOptions!.Any(x => query.EmploymentOptionIds.Contains(EmploymentOption.FullTime.Id)));
+        }
 
         if (query.LocationIds is not null && query.LocationIds.Count != 0)
             dbQuery = dbQuery.Where(job => job.Locations!.Any(l => l.RelationsWhereThisIsDescendant!.Any(r => query.LocationIds.Contains(r.AncestorId))));

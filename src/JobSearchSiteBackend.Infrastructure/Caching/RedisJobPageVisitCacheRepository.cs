@@ -6,12 +6,12 @@ using StackExchange.Redis;
 
 namespace JobSearchSiteBackend.Infrastructure.Caching;
 
-public class RedisPageVisitCacheRepository : IPageVisitCacheRepository
+public class RedisJobPageVisitCacheRepository : IJobPageVisitCacheRepository
 {
     private readonly IDatabase _database;
     private readonly IConnectionMultiplexer _connectionMultiplexer;
     
-    public RedisPageVisitCacheRepository(IConnectionMultiplexer connectionMultiplexer)
+    public RedisJobPageVisitCacheRepository(IConnectionMultiplexer connectionMultiplexer)
     {
         _connectionMultiplexer = connectionMultiplexer;
         _database = connectionMultiplexer.GetDatabase();

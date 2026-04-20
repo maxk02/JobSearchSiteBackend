@@ -84,13 +84,13 @@ public class ElasticJobApplicationSearchRepository(IElasticClient client) : IJob
                             .Analyzer("autocomplete_analyzer") // Index partial words
                             .SearchAnalyzer("search_analyzer") // Search using whole words
                         )
-                        .Date(d => d
-                            .Name(n => n.DateTimeUpdatedUtc)
+                        .Keyword(guid => guid
+                            .Name(n => n.VersionId)
                             .Index(false)
                         )
                         .Boolean(b => b
                             .Name(n => n.IsDeleted)
-                            .Index(false)
+                            .Index()
                         )
                     )
                 ),

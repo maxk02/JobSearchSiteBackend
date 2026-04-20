@@ -64,7 +64,7 @@ public class AccountController(IMapper mapper) : ControllerBase
         return this.ToActionResult(result.Map(x => mapper.Map<CreateAccountResponse>(x)));
     }
     
-    [HttpPost]
+    [HttpDelete]
     public async Task<ActionResult> DeleteAccount(
         [FromServices] DeleteAccountHandler handler,
         CancellationToken cancellationToken)

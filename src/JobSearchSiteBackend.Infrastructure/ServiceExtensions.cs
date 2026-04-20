@@ -210,12 +210,10 @@ public static class ServiceExtensions
             ServiceURL = r2Url,
             SignatureVersion = "4"
         };
-
-        // 3. Register the AmazonS3Client manually
+        
         serviceCollection.AddSingleton<IAmazonS3>(sp => 
             new AmazonS3Client(credentials, s3Config));
-
-        // 4. Register your new R2 Service
+        
         serviceCollection.AddSingleton<IFileStorageService, CloudflareR2FileStorageService>();
     }
     
@@ -336,7 +334,7 @@ public static class ServiceExtensions
         // 2. Register your abstraction
         serviceCollection.AddScoped<IGeneralCacheRepository, RedisGeneralCacheRepository>();
         serviceCollection.AddScoped<IUserSessionCacheRepository, RedisUserSessionCacheRepository>();
-        serviceCollection.AddScoped<IPageVisitCacheRepository, RedisPageVisitCacheRepository>();
+        serviceCollection.AddScoped<IJobPageVisitCacheRepository, RedisJobPageVisitCacheRepository>();
         serviceCollection.AddScoped<ICompanyLastVisitedJobsCacheRepository, RedisCompanyLastVisitedJobsCacheRepository>();
     }
 }

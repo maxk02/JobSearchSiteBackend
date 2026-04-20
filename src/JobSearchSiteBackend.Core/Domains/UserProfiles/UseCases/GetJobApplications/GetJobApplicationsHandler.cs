@@ -28,6 +28,12 @@ public class GetJobApplicationsHandler(
 
         var dbQuery = context.JobApplications
             .Where(jobApplication => jobApplication.UserId == currentAccountId);
+
+        if (query.StatusId is not null)
+        {
+            dbQuery = dbQuery
+                .Where(jobApplication => (int)jobApplication.Status == query.StatusId);
+        }
         
         var count = await dbQuery.CountAsync(cancellationToken);
 

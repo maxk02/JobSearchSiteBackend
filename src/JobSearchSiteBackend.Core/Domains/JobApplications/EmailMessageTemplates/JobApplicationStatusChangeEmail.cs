@@ -21,7 +21,7 @@ public class JobApplicationStatusChangeEmail(JobApplicationStatus newStatus, str
                                              <br><br>
                                              Życzymy powodzenia w kolejnych etapach poszukiwania pracy.
                                              <br><br>
-                                             Z wyrazami szacunku,
+                                             Pozdrawiamy,
                                              <br>
                                              Zespół znajdzprace.pl
                                           </p>
@@ -38,7 +38,7 @@ public class JobApplicationStatusChangeEmail(JobApplicationStatus newStatus, str
                                           <br><br>
                                           Trzymamy kciuki!
                                           <br><br>
-                                          Z wyrazami szacunku,
+                                          Pozdrawiamy,
                                           <br>
                                           Zespół znajdzprace.pl
                                        </p>
@@ -49,13 +49,13 @@ public class JobApplicationStatusChangeEmail(JobApplicationStatus newStatus, str
                                                 <br><br>
                                                 Dziękujemy za zgłoszenie na ofertę pracy oraz przesłanie swojej aplikacji na stanowisko {jobName}.
                                                 <br><br>
-                                                Otrzymaliśmy informację od ${companyName}, że Państwa kandydatura została dodana do puli osób rozważanych do przeprowadzenia rozmowy kwalifikacyjnej.
+                                                Otrzymaliśmy informację od {companyName}, że Państwa kandydatura została dodana do puli osób rozważanych do przeprowadzenia rozmowy kwalifikacyjnej.
                                                 <br><br>
                                                 W najbliższym czasie pracodawca może skontaktować się z Panią/Panem bezpośrednio, aby przekazać dalsze informacje lub zaprosić do kolejnego etapu rekrutacji. Zachęcamy do regularnego sprawdzania swojej skrzynki odbiorczej oraz danych kontaktowych podanych w aplikacji.
                                                 <br><br>
                                                 Życzymy powodzenia w kolejnych etapach poszukiwania pracy.
                                                 <br><br>
-                                                Z wyrazami szacunku,
+                                                Pozdrawiamy,
                                                 <br>
                                                 Zespół znajdzprace.pl
                                              </p>

@@ -86,7 +86,7 @@ public class UserProfilesController(IMapper mapper) : ControllerBase
         [FromServices] GetJobApplicationsHandler handler,
         CancellationToken cancellationToken)
     {
-        var query = new GetJobApplicationsQuery(request.Page, request.Size);
+        var query = new GetJobApplicationsQuery(request.StatusId, request.Page, request.Size);
         
         var result = await handler.Handle(query, cancellationToken);
         

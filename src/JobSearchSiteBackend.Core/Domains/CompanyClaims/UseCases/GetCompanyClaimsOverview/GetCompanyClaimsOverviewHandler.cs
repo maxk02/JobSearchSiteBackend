@@ -20,7 +20,7 @@ public class GetCompanyClaimsOverviewHandler(
 
         var currentUserClaimIds = await context.UserCompanyClaims
             .Where(ucp => ucp.UserId == currentUserId && ucp.CompanyId == query.CompanyId)
-            .Select(ucp => ucp.Id)
+            .Select(ucp => ucp.ClaimId)
             .ToListAsync(cancellationToken);
 
         if (!currentUserClaimIds.Contains(CompanyClaim.IsAdmin.Id))
@@ -28,8 +28,12 @@ public class GetCompanyClaimsOverviewHandler(
 
         var dbQuery = context.UserCompanyClaims
             .Where(ucp => ucp.CompanyId == query.CompanyId);
-        
-        var count = await dbQuery.CountAsync(cancellationToken);
+
+        if (!currentUserClaimIds.Contains(CompanyClaim.IsOwner.Id))
+        {
+            dbQuery = dbQuery
+                .Where(ucp => currentUserClaimIds.Contains(ucp.ClaimId));
+        }
 
         if (!string.IsNullOrEmpty(query.UserQuery))
         {
@@ -45,7 +49,11 @@ public class GetCompanyClaimsOverviewHandler(
                 .Where(ucp => query.CompanyClaimIds.Contains(ucp.ClaimId));
         }
         
+        var count = await dbQuery.CountAsync(cancellationToken);
+        
         dbQuery = dbQuery
+            .OrderBy(ucp => ucp.UserId)
+            .ThenBy(ucp => ucp.ClaimId)
             .Skip(query.Size * (query.Page - 1))
             .Take(query.Size);
 

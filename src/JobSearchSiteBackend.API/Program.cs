@@ -69,27 +69,6 @@ builder.Services.AddCors(options =>
             .AllowAnyHeader()
             .AllowCredentials();
     });
-    
-    options.AddPolicy("AllowNextJsHttp", policyBuilder =>
-    {
-        policyBuilder
-            .WithOrigins("http://localhost:3000", "http://127.0.0.1:3000")
-            .AllowAnyMethod()
-            .AllowAnyHeader()
-            .AllowCredentials();
-    });
-});
-
-builder.Services.AddCors(options =>
-{
-    options.AddPolicy("AllowAll", policy =>
-    {
-        policy
-            .SetIsOriginAllowed(_ => true) // allow any origin dynamically
-            .AllowAnyMethod()
-            .AllowAnyHeader()
-            .AllowCredentials();
-    });
 });
 
 builder.Services.AddHttpContextAccessor();
@@ -195,7 +174,6 @@ app.UseHttpsRedirection();
 app.UseRouting();
 
 app.UseCors("AllowNextJs");
-app.UseCors("AllowNextJsHttp");
 
 // app.UseMiddleware<CsrfProtectionMiddleware>();
 

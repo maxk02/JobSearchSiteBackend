@@ -18,7 +18,7 @@ public class GetCompanyClaimIdsForUserHandler(
 
         var currentUserClaimIds = await context.UserCompanyClaims
             .Where(ucp => ucp.UserId == currentUserId && ucp.CompanyId == query.CompanyId)
-            .Select(ucp => ucp.Id)
+            .Select(ucp => ucp.ClaimId)
             .ToListAsync(cancellationToken);
         
         if (query.UserId == currentUserId)

@@ -6,6 +6,6 @@ public record JobApplicationSearchModel(
     long Id,
     long JobId,
     ICollection<string> FileTexts,
-    DateTime DateTimeUpdatedUtc,
+    Guid VersionId,
     bool IsDeleted
 ) : ISearchModelWithId, IUpdatableSearchModel;

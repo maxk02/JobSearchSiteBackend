@@ -7,6 +7,6 @@ public record CompanySearchModel(
     long CountryId,
     string Name,
     string? Description,
-    DateTime DateTimeUpdatedUtc,
+    Guid VersionId,
     bool IsDeleted
 ) : ISearchModelWithId, IUpdatableSearchModel;
