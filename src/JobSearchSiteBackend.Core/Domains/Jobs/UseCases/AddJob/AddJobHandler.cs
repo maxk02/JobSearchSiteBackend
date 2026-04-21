@@ -85,7 +85,7 @@ public class AddJobHandler(
         var newBalance = currentBalance + jobPublicationInterval.Price;
 
         if (newBalance < 0)
-            return Result.Error();
+            return Result.Error("JOB_TIME_PERIOD_INSUFFICIENT_BALANCE");
         
         var companyBalanceTransaction = new CompanyBalanceTransaction(command.CompanyId, -jobPublicationInterval.Price,
             $"Publikacja ogłoszenia \"{command.Title}\" do {command.DateTimeExpiringUtc.ToString(CultureInfo.InvariantCulture)}",
