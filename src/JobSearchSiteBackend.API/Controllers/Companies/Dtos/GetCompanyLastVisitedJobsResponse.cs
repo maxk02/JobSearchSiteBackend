@@ -2,4 +2,4 @@
 
 namespace JobSearchSiteBackend.API.Controllers.Companies.Dtos;
 
-public record GetCompanyLastVisitedJobsResponse(ICollection<CompanyJobListItemDto> Jobs);
+public record GetCompanyLastVisitedJobsResponse(ICollection<CompanyJobListItemDto> Jobs, CompanyDashboardStatsDto? DashboardStatsDto);
