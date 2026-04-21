@@ -47,8 +47,8 @@ public class LogInHandler(UserManager<MyIdentityUser> userManager,
         
         var account = await userManager.FindByEmailAsync(command.Email);
 
-        if (account is null)
-            return Result.NotFound();
+        if (account is null || !account.EmailConfirmed)
+            return Result.Unauthorized();
 
         var isPasswordCorrect = await userManager.CheckPasswordAsync(account, command.Password);
 

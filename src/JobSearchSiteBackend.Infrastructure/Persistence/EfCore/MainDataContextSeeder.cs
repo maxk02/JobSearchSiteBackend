@@ -80,7 +80,7 @@ public class MainDataContextSeeder(MainDataContext context,
         if (companies is null || companies.Count == 0)
             throw new InvalidDataException();
 
-        var sqlScript = $"INSERT INTO dbo.Companies (Id, CountryId, IsPublic, Name, Description, CountrySpecificFieldsJson, IsDeleted, DateTimeUpdatedUtc) VALUES ";
+        var sqlScript = $"INSERT INTO dbo.Companies (Id, CountryId, IsPublic, IsDeleted, Name, Description, CountrySpecificFieldsJson) VALUES ";
 
         for (var i = 0; i < companies.Count; i++)
         {
@@ -88,6 +88,7 @@ public class MainDataContextSeeder(MainDataContext context,
             sqlScript += $"{companies[i].CountryId}, ";
             sqlScript += companies[i].IsPublic ? "1" : "0";
             sqlScript += ", ";
+            sqlScript += "0, ";
             sqlScript += $"\'{companies[i].Name.Replace("\'", "\'\'")}\', ";
 
             var description = companies[i].Description?.Replace("\'", "\'\'");
@@ -96,10 +97,8 @@ public class MainDataContextSeeder(MainDataContext context,
             else
                 sqlScript += $"\'{description}\', ";
 
-            sqlScript += $"N\'{{" + companies[i].CountrySpecificFieldsJson + "}\', ";
-
-            sqlScript += "0, GETUTCDATE())";
-
+            sqlScript += $"N\'{{" + companies[i].CountrySpecificFieldsJson + "}\')";
+            
             if (i < companies.Count - 1)
                 sqlScript += ",\n\n";
             else
@@ -159,7 +158,7 @@ public class MainDataContextSeeder(MainDataContext context,
 
         var jobs = new List<Job>();
 
-        var sqlScript = "INSERT INTO Jobs (Id, DateTimeUpdatedUtc, DateTimeSyncedWithSearchUtc, IsDeleted, CategoryId, CompanyId, Title, Description, DateTimePublishedUtc, DateTimeExpiringUtc, MaxDateTimeExpiringUtcEverSet, Responsibilities, Requirements, NiceToHaves, IsPublic) VALUES \n";
+        var sqlScript = "INSERT INTO Jobs (Id, VersionId, VersionIdSyncedWithSearch, IsDeleted, CategoryId, CompanyId, Title, Description, DateTimePublishedUtc, DateTimeExpiringUtc, MaxDateTimeExpiringUtcEverSet, Responsibilities, Requirements, NiceToHaves, IsPublic) VALUES \n";
 
         var sqlLocationsScript = "INSERT INTO JobLocation (JobsId, LocationsId) VALUES \n";
 
@@ -172,8 +171,10 @@ public class MainDataContextSeeder(MainDataContext context,
 
         for (var i = 0; i < jobSeedingItems.Count; i++)
         {
+            var versionGuid = Guid.NewGuid();
+            
             sqlScript += $"({jobSeedingItems[i].Id}, ";
-            sqlScript += $"GETDATE(), ";
+            sqlScript += $"\'{versionGuid.ToString()}\', ";
             sqlScript += $"NULL, ";
             sqlScript += $"0, ";
             sqlScript += $"{jobSeedingItems[i].CategoryId}, ";

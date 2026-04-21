@@ -6,7 +6,7 @@ using JobSearchSiteBackend.Core.Domains.UserProfiles;
 
 namespace JobSearchSiteBackend.Core.Domains.Companies;
 
-public class Company : IEntityWithId, IEntityWithSearchSync
+public class Company : IEntityWithId
 {
     public Company(string name, string? description, bool isPublic,
         long countryId, string countrySpecificFieldsJson)
@@ -16,13 +16,14 @@ public class Company : IEntityWithId, IEntityWithSearchSync
         Description = description;
         IsPublic = isPublic;
         CountrySpecificFieldsJson = countrySpecificFieldsJson;
+        IsVerified = true;
     }
     
     public long Id { get; set; }
     
-    public Guid VersionId { get; set; } = Guid.NewGuid();
-    
-    public Guid? VersionIdSyncedWithSearch { get; set; } = null;
+    // public Guid VersionId { get; set; } = Guid.NewGuid();
+    //
+    // public Guid? VersionIdSyncedWithSearch { get; set; } = null;
     
     public bool IsDeleted { get; set; }
     
@@ -35,6 +36,8 @@ public class Company : IEntityWithId, IEntityWithSearchSync
     public bool IsPublic { get; set; }
     
     public string CountrySpecificFieldsJson { get; set; }
+    
+    public bool IsVerified { get; set; }
     
     public Country? Country { get; set; }
     

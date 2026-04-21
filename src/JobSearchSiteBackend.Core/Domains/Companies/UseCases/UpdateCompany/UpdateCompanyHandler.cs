@@ -40,8 +40,6 @@ public class UpdateCompanyHandler(
         if (command.Name is not null) company.Name = command.Name;
         if (command.Description is not null) company.Description = command.Description;
         if (command.IsPublic is not null) company.IsPublic = command.IsPublic.Value;
-        
-        company.VersionId = Guid.NewGuid();
 
         context.Companies.Update(company);
         

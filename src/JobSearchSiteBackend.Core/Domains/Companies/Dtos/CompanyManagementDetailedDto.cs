@@ -7,4 +7,5 @@ public record CompanyManagementDetailedDto(
     long CountryId,
     string? AvatarLink,
     ICollection<long> ClaimIds,
-    string CountrySpecificFieldsJson);
+    string CountrySpecificFieldsJson,
+    bool IsConfirmed);

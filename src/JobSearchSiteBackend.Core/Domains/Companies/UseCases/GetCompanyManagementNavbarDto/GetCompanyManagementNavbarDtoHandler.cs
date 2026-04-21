@@ -48,7 +48,8 @@ public class GetCompanyManagementNavbarDtoHandler(
             company.CountryId,
             companyLogoLink,
             company.UserCompanyClaims!.Select(x => x.ClaimId).ToList(),
-            company.CountrySpecificFieldsJson
+            company.CountrySpecificFieldsJson,
+            company.IsVerified
             );
 
         var result = new GetCompanyManagementNavbarDtoResult(companyManagementDetailedDto);
