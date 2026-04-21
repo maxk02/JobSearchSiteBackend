@@ -52,7 +52,7 @@ public class AddJobHandler(
                 .Where(ucc => ucc.CompanyId == command.CompanyId
                     && ucc.UserId == currentUserId
                     && ucc.ClaimId == CompanyClaim.CanEditJobs.Id)
-                .AnyAsync();
+                .AnyAsync(cancellationToken);
 
         if (!hasPermissionInRequestedCompany)
             return Result.Forbidden();
@@ -78,11 +78,15 @@ public class AddJobHandler(
 
         await using var transaction = await context.Database.BeginTransactionAsync(cancellationToken);
         
+        await context.Database.ExecuteSqlInterpolatedAsync(
+            sqlQueries.LockCompanyRow(command.CompanyId), 
+            cancellationToken);
+        
         var currentBalance = await context.CompanyBalanceTransactions
-            .FromSqlInterpolated(sqlQueries.GetCompanyBalanceTransactionsWithRowLocks(command.CompanyId))
+            .Where(t => t.CompanyId == command.CompanyId)
             .SumAsync(t => (decimal?)t.Amount, cancellationToken) ?? 0m;
         
-        var newBalance = currentBalance + jobPublicationInterval.Price;
+        var newBalance = currentBalance - jobPublicationInterval.Price;
 
         if (newBalance < 0)
             return Result.Error("JOB_TIME_PERIOD_INSUFFICIENT_BALANCE");

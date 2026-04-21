@@ -4,10 +4,10 @@ namespace JobSearchSiteBackend.Infrastructure.Persistence.SqlServer;
 
 public class SqlServerInjectableSqlQueries : IInjectableSqlQueries
 {
-    public FormattableString GetCompanyBalanceTransactionsWithRowLocks(long companyId) =>
-        $"""
-            SELECT *
-            FROM CompanyBalanceTransactions WITH (UPDLOCK, ROWLOCK, HOLDLOCK)
-            WHERE CompanyId = {companyId}
+    public FormattableString LockCompanyRow(long companyId) =>
+        $$"""
+            SELECT 1
+            FROM Companies WITH (UPDLOCK, ROWLOCK)
+            WHERE Id = {companyId}
         """;
 }

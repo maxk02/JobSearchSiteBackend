@@ -13,7 +13,8 @@ namespace JobSearchSiteBackend.Core.Domains.Jobs.UseCases.UpdateJob;
 
 public class UpdateJobHandler(
     ICurrentAccountService currentAccountService,
-    MainDataContext context) : IRequestHandler<UpdateJobCommand, Result>
+    MainDataContext context,
+    IInjectableSqlQueries sqlQueries) : IRequestHandler<UpdateJobCommand, Result>
 {
     public async Task<Result> Handle(UpdateJobCommand command, CancellationToken cancellationToken = default)
     {
@@ -32,10 +33,12 @@ public class UpdateJobHandler(
                 .Where(ucc => ucc.CompanyId == job.CompanyId
                     && ucc.UserId == currentUserId
                     && ucc.ClaimId == CompanyClaim.CanEditJobs.Id)
-                .AnyAsync();
+                .AnyAsync(cancellationToken);
 
         if (!hasPermissionInRequestedCompany)
             return Result.Forbidden();
+        
+        await using var transaction = await context.Database.BeginTransactionAsync(cancellationToken);
 
         if (command.NewDateTimeExpiringUtc is not null && command.NewDateTimeExpiringUtc > job.MaxDateTimeExpiringUtcEverSet)
         {
@@ -55,7 +58,7 @@ public class UpdateJobHandler(
             if (oldJobPublicationInterval is null)
                 return Result.Error();
             
-            // suppose we have implemented it only for one currency for now
+            // first currency
             var newJobPublicationInterval = await context.JobPublicationIntervals
                 .Include(jpi => jpi.CountryCurrency)
                 .Where(jpi => jpi.CountryCurrency!.CountryId == job.Company!.CountryId)
@@ -74,6 +77,19 @@ public class UpdateJobHandler(
 
             if (priceDifference > 0)
             {
+                await context.Database.ExecuteSqlInterpolatedAsync(
+                    sqlQueries.LockCompanyRow(job.CompanyId), 
+                    cancellationToken);
+                
+                var currentBalance = await context.CompanyBalanceTransactions
+                    .Where(t => t.CompanyId == job.CompanyId)
+                    .SumAsync(t => (decimal?)t.Amount, cancellationToken) ?? 0m;
+        
+                var newBalance = currentBalance - priceDifference;
+
+                if (newBalance < 0)
+                    return Result.Error("JOB_TIME_PERIOD_INSUFFICIENT_BALANCE");
+                
                 var companyBalanceTransaction = new CompanyBalanceTransaction(job.CompanyId, -priceDifference,
                     $"Aktualizacja terminu wygaśnięcia ogłoszenia {job.Id} do " +
                     $"{command.NewDateTimeExpiringUtc.Value.ToString(CultureInfo.InvariantCulture)}",
@@ -103,14 +119,7 @@ public class UpdateJobHandler(
             job.IsPublic = command.IsPublic.Value;
 
         if (command.NewDateTimeExpiringUtc is not null)
-        {
-            var difference = command.NewDateTimeExpiringUtc.Value - DateTime.UtcNow;
-
-            if (difference.Minutes < 1 || difference.Days > 30)
-                return Result.Error();
-
             job.DateTimeExpiringUtc = command.NewDateTimeExpiringUtc.Value;
-        }
 
         if (command.Responsibilities is not null)
             job.Responsibilities = command.Responsibilities;
@@ -179,6 +188,7 @@ public class UpdateJobHandler(
         context.Jobs.Update(job);
         
         await context.SaveChangesAsync(cancellationToken);
+        await transaction.CommitAsync(cancellationToken);
 
         return Result.Success();
     }

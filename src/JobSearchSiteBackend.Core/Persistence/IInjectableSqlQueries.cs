@@ -2,5 +2,5 @@
 
 public interface IInjectableSqlQueries
 {
-    public FormattableString GetCompanyBalanceTransactionsWithRowLocks(long companyId);
+    public FormattableString LockCompanyRow(long companyId);
 }
