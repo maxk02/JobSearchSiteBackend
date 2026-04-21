@@ -2,6 +2,8 @@
 using JobSearchSiteBackend.API.Controllers.Jobs.Dtos;
 using JobSearchSiteBackend.Core.Domains.Jobs.UseCases.AddJob;
 using JobSearchSiteBackend.Core.Domains.Jobs.UseCases.GetApplicationsForJob;
+using JobSearchSiteBackend.Core.Domains.Jobs.UseCases.GetDailyApplicationsForJobForDateRange;
+using JobSearchSiteBackend.Core.Domains.Jobs.UseCases.GetDailyViewsForJobForDateRange;
 using JobSearchSiteBackend.Core.Domains.Jobs.UseCases.GetJob;
 using JobSearchSiteBackend.Core.Domains.Jobs.UseCases.GetJobManagementDto;
 using JobSearchSiteBackend.Core.Domains.Jobs.UseCases.GetJobs;
@@ -17,6 +19,10 @@ public class JobsControllerDtosMapper : Profile
         CreateMap<AddJobResult, AddJobResponse>();
         
         CreateMap<GetApplicationsForJobResult, GetApplicationsForJobResponse>();
+        
+        CreateMap<GetDailyApplicationsForJobForDateRangeResult, GetDailyApplicationsForJobForDateRangeResponse>();
+        
+        CreateMap<GetDailyViewsForJobForDateRangeResult, GetDailyViewsForJobForDateRangeResponse>();
         
         CreateMap<GetJobDataForCurrentAccountResult, GetJobDataForCurrentAccountResponse>();
 

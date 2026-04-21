@@ -5,6 +5,8 @@ using JobSearchSiteBackend.API.Controllers.Jobs.Dtos;
 using JobSearchSiteBackend.Core.Domains.Jobs.UseCases.AddJob;
 using JobSearchSiteBackend.Core.Domains.Jobs.UseCases.DeleteJob;
 using JobSearchSiteBackend.Core.Domains.Jobs.UseCases.GetApplicationsForJob;
+using JobSearchSiteBackend.Core.Domains.Jobs.UseCases.GetDailyApplicationsForJobForDateRange;
+using JobSearchSiteBackend.Core.Domains.Jobs.UseCases.GetDailyViewsForJobForDateRange;
 using JobSearchSiteBackend.Core.Domains.Jobs.UseCases.GetJob;
 using JobSearchSiteBackend.Core.Domains.Jobs.UseCases.GetJobManagementDto;
 using JobSearchSiteBackend.Core.Domains.Jobs.UseCases.GetJobs;
@@ -63,6 +65,36 @@ public class JobsController(IMapper mapper) : ControllerBase
         var result = await handler.Handle(query, cancellationToken);
 
         return this.ToActionResult(result.Map(x => mapper.Map<GetApplicationsForJobResponse>(x)));
+    }
+    
+    [HttpGet]
+    [Route("{id:long:min(1)}/application-stats")]
+    public async Task<ActionResult<GetDailyApplicationsForJobForDateRangeResponse>> GetDailyApplicationsForJobForDateRange(
+        [FromRoute] long id,
+        [FromQuery] GetDailyApplicationsForJobForDateRangeRequest request,
+        [FromServices] GetDailyApplicationsForJobForDateRangeHandler handler,
+        CancellationToken cancellationToken)
+    {
+        var query = new GetDailyApplicationsForJobForDateRangeQuery(id, request.StartDate, request.EndDate);
+
+        var result = await handler.Handle(query, cancellationToken);
+
+        return this.ToActionResult(result.Map(x => mapper.Map<GetDailyApplicationsForJobForDateRangeResponse>(x)));
+    }
+    
+    [HttpGet]
+    [Route("{id:long:min(1)}/view-stats")]
+    public async Task<ActionResult<GetDailyViewsForJobForDateRangeResponse>> GetDailyViewsForJobForDateRange(
+        [FromRoute] long id,
+        [FromQuery] GetDailyViewsForJobForDateRangeRequest request,
+        [FromServices] GetDailyViewsForJobForDateRangeHandler handler,
+        CancellationToken cancellationToken)
+    {
+        var query = new GetDailyViewsForJobForDateRangeQuery(id, request.StartDate, request.EndDate);
+
+        var result = await handler.Handle(query, cancellationToken);
+
+        return this.ToActionResult(result.Map(x => mapper.Map<GetDailyViewsForJobForDateRangeResponse>(x)));
     }
 
     [HttpGet]
