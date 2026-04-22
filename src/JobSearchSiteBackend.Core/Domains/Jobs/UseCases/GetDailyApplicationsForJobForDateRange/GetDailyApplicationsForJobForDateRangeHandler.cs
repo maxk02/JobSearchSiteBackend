@@ -34,6 +34,7 @@ public class GetDailyApplicationsForJobForDateRangeHandler(
             return Result.Forbidden();
 
         var dbResults = await context.JobApplications
+            .Where(x => x.JobId == query.Id)
             .Where(x => x.DateTimeCreatedUtc >= query.StartDate && x.DateTimeCreatedUtc <= query.EndDate)
             .GroupBy(x => x.DateTimeCreatedUtc.Date)
             .Select(g => new 

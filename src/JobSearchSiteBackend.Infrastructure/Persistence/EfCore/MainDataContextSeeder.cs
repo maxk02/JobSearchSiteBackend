@@ -80,12 +80,13 @@ public class MainDataContextSeeder(MainDataContext context,
         if (companies is null || companies.Count == 0)
             throw new InvalidDataException();
 
-        var sqlScript = $"INSERT INTO dbo.Companies (Id, CountryId, IsPublic, IsDeleted, Name, Description, CountrySpecificFieldsJson) VALUES ";
+        var sqlScript = $"INSERT INTO dbo.Companies (Id, CountryId, IsVerified, IsPublic, IsDeleted, Name, Description, CountrySpecificFieldsJson) VALUES ";
 
         for (var i = 0; i < companies.Count; i++)
         {
             sqlScript += $"({companies[i].Id}, ";
             sqlScript += $"{companies[i].CountryId}, ";
+            sqlScript += $"1, ";
             sqlScript += companies[i].IsPublic ? "1" : "0";
             sqlScript += ", ";
             sqlScript += "0, ";
