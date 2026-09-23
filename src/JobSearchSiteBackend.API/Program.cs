@@ -82,7 +82,10 @@ builder.Services.AddMemoryCache(options =>
 // JobSearchSiteBackend.API services
 builder.Services.AddScoped<ICookieService, CookieService>();
 builder.Services.AddScoped<ICurrentAccountService, JwtCurrentAccountService>();
-builder.Services.AddAutoMapper(Assembly.GetExecutingAssembly());
+builder.Services.AddAutoMapper(cfg =>
+{
+    cfg.LicenseKey = builder.Configuration["AutoMapper:LicenseKey"] ?? string.Empty;
+}, Assembly.GetExecutingAssembly());
 
 // Infrastructure services
 builder.Services.ConfigurePersistenceWithIdentity(builder.Configuration);
@@ -96,7 +99,7 @@ builder.Services.ConfigureSearch(builder.Configuration);
 builder.Services.ConfigureTextExtraction();
 
 // Core services
-builder.Services.ConfigureCoreAutoMapper();
+builder.Services.ConfigureCoreAutoMapper(builder.Configuration);
 builder.Services.ConfigureUseCases();
 builder.Services.ConfigureEmailRenderers();
 

@@ -9,15 +9,19 @@ using JobSearchSiteBackend.Core.Domains.Locations;
 using JobSearchSiteBackend.Core.Domains.PersonalFiles;
 using JobSearchSiteBackend.Core.Domains.UserProfiles;
 using JobSearchSiteBackend.Core.Services.EmailSender;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace JobSearchSiteBackend.Core;
 
 public static class ServiceExtensions
 {
-    public static void ConfigureCoreAutoMapper(this IServiceCollection services)
+    public static void ConfigureCoreAutoMapper(this IServiceCollection services, IConfiguration configuration)
     {
-        services.AddAutoMapper(Assembly.GetExecutingAssembly());
+        services.AddAutoMapper(cfg =>
+        {
+            cfg.LicenseKey = configuration["AutoMapper:LicenseKey"] ?? string.Empty;
+        }, Assembly.GetExecutingAssembly());
     }
     
     public static void ConfigureUseCases(this IServiceCollection services)

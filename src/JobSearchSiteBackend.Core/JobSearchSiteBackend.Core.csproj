@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <TargetFramework>net9.0</TargetFramework>
+        <TargetFramework>net10.0</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
     </PropertyGroup>
@@ -37,21 +37,21 @@
     <ItemGroup>
       <PackageReference Include="Ardalis.Result" Version="10.1.0" />
       <PackageReference Include="Ardalis.Result.FluentValidation" Version="10.1.0" />
-      <PackageReference Include="AutoMapper" Version="14.0.0" />
-      <PackageReference Include="FluentValidation" Version="11.11.0" />
-      <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="9.0.3" />
-      <PackageReference Include="Microsoft.AspNetCore.Identity" Version="2.3.1" />
-      <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="9.0.11" />
-      <PackageReference Include="Microsoft.EntityFrameworkCore" Version="9.0.11" />
-      <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="9.0.11" />
-      <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="9.0.11" />
-      <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="9.0.11">
+      <PackageReference Include="AutoMapper" Version="16.2.0" />
+      <PackageReference Include="FluentValidation" Version="12.1.1" />
+      <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="10.0.12" />
+      <PackageReference Include="Microsoft.AspNetCore.Identity" Version="2.3.13" />
+      <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="10.0.12" />
+      <PackageReference Include="Microsoft.EntityFrameworkCore" Version="10.0.12" />
+      <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="10.0.12" />
+      <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="10.0.12" />
+      <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="10.0.12">
         <PrivateAssets>all</PrivateAssets>
         <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       </PackageReference>
       <PackageReference Include="Newtonsoft.Json" Version="13.0.4" />
       <PackageReference Include="Newtonsoft.Json.Schema" Version="4.0.1" />
-      <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="8.7.0" />
+      <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="8.23.0" />
     </ItemGroup>
 
 </Project>

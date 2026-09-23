@@ -199,16 +199,13 @@ public static class ServiceExtensions
             throw new ArgumentNullException("Cloudflare R2 configuration is missing.");
         }
 
-        AWSConfigsS3.UseSignatureVersion4 = true;
-
         var r2Url = $"https://{r2AccountId}.r2.cloudflarestorage.com";
 
         var credentials = new BasicAWSCredentials(accessKey, secretKey);
 
         var s3Config = new AmazonS3Config
         {
-            ServiceURL = r2Url,
-            SignatureVersion = "4"
+            ServiceURL = r2Url
         };
         
         serviceCollection.AddSingleton<IAmazonS3>(sp => 

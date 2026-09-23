@@ -52,9 +52,9 @@ public class RedisCompanyLastVisitedJobsCacheRepository : ICompanyLastVisitedJob
 
         if (listObjects.Length == 0)
             return [];
-
+        
         var longIds = listObjects
-            .Select(v => long.TryParse(v, out var num) ? num : 0L)
+            .Select(v => long.TryParse((string?)v, out var num) ? num : 0L)
             .ToList();
 
         return longIds;
