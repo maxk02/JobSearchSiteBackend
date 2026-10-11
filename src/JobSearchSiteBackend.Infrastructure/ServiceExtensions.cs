@@ -250,7 +250,7 @@ public static class ServiceExtensions
     public static void ConfigureBackgroundJobScheduler(this IServiceCollection serviceCollection,
         IConfiguration configuration)
     {
-        var connectionString = configuration["HANGFIRE_DEFAULT_SQL_SERVER_CONNECTION_STRING"];
+        var connectionString = configuration["SQL_SERVER_HANGFIRE_CONNECTION_STRING"];
         
         if (string.IsNullOrEmpty(connectionString))
             throw new ArgumentNullException();

@@ -1,0 +1,81 @@
+﻿services:
+  # ---------------------------------------------------------
+  # SQL Server Instance #1 (EF Core migrations)
+  # ---------------------------------------------------------
+  mssql1:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: mssql1
+    environment:
+      - ACCEPT_EULA=Y
+      - SA_PASSWORD=${SQL_SERVER_DEFAULT_PASSWORD}
+      - MSSQL_PID=Developer
+      - MSSQL_TLS_LEVEL=0
+    ports:
+      - "${SERVICES_SERVER_IP}:${SQL_SERVER_DEFAULT_PORT}:1433"
+    volumes:
+      - mssql1_data:/var/opt/mssql
+    restart: unless-stopped
+
+  # ---------------------------------------------------------
+  # SQL Server Instance #2 (Hangfire)
+  # ---------------------------------------------------------
+  mssql2:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: mssql2
+    environment:
+      - ACCEPT_EULA=Y
+      - SA_PASSWORD=${SQL_SERVER_HANGFIRE_PASSWORD}
+      - MSSQL_PID=Developer
+      - MSSQL_TLS_LEVEL=0
+    ports:
+      - "${SERVICES_SERVER_IP}:${SQL_SERVER_HANGFIRE_PORT}:1433"
+    volumes:
+      - mssql2_data:/var/opt/mssql
+    restart: unless-stopped
+
+  # ---------------------------------------------------------
+  # Elasticsearch
+  # ---------------------------------------------------------
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.17.29
+    container_name: elasticsearch
+    environment:
+      - discovery.type=single-node
+      # - ELASTIC_PASSWORD=${ELASTICSEARCH_PASSWORD}
+      - xpack.security.enabled=false
+      # - xpack.security.enrollment.enabled=false
+    ports:
+      - "${SERVICES_SERVER_IP}:${ELASTICSEARCH_PORT}:9200"
+    volumes:
+      - esdata:/usr/share/elasticsearch/data
+    restart: unless-stopped
+
+  # ---------------------------------------------------------
+  # Redis
+  # ---------------------------------------------------------
+  redis:
+    image: redis:7-alpine
+    container_name: redis
+    command: ["redis-server", "--requirepass", "${REDIS_PASSWORD}"]
+    ports:
+      - "${SERVICES_SERVER_IP}:${REDIS_PORT}:6379"
+    volumes:
+      - redisdata:/data
+    restart: unless-stopped
+
+  # ---------------------------------------------------------
+  # MailHog
+  # ---------------------------------------------------------
+  mailhog:
+    image: mailhog/mailhog
+    container_name: mailhog
+    ports:
+      - "${SERVICES_SERVER_IP}:${MAILHOG_SMTP_PORT}:1025"
+      - "${SERVICES_SERVER_IP}:${MAILHOG_UI_PORT}:8025"
+    restart: unless-stopped
+
+volumes:
+  mssql1_data:
+  mssql2_data:
+  esdata:
+  redisdata:

@@ -26,7 +26,7 @@ var builder = WebApplication.CreateBuilder(args);
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
 
-Env.Load("./vars.env");
+Env.Load("../../.env");
 
 builder.Configuration.AddEnvironmentVariables();
 
@@ -59,12 +59,16 @@ builder.Services.AddControllers()
 //     options.HeaderName = "X-CSRF-TOKEN";
 // });
 
+var allowedOrigins = builder.Configuration
+    .GetSection("Cors:AllowedOriginsNextJs")
+    .Get<string[]>() ?? [];
+
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowNextJs", policyBuilder =>
     {
         policyBuilder
-            .WithOrigins("https://localhost:3000", "https://127.0.0.1:3000")
+            .WithOrigins(allowedOrigins)
             .AllowAnyMethod()
             .AllowAnyHeader()
             .AllowCredentials();
@@ -109,9 +113,6 @@ builder.WebHost.ConfigureKestrel(options =>
 });
 
 var app = builder.Build();
-
-// Getting assembly by some type
-var infrastructureAssembly = typeof(ServiceExtensions).Assembly;
 
 // Implemented search repo types
 List<Type> searchRepositories = [

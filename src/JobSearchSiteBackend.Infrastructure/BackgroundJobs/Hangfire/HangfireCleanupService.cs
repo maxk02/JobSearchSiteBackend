@@ -8,7 +8,7 @@ public class HangfireCleanupService(IConfiguration configuration) : IHostedServi
 {
     public async Task StartAsync(CancellationToken cancellationToken)
     {
-        var connectionString = configuration["HANGFIRE_DEFAULT_SQL_SERVER_CONNECTION_STRING"];
+        var connectionString = configuration["SQL_SERVER_HANGFIRE_CONNECTION_STRING"];
 
         await using var connection = new SqlConnection(connectionString);
         await connection.OpenAsync(cancellationToken);
