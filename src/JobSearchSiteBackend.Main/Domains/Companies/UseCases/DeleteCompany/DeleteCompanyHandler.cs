@@ -1,0 +1,51 @@
+﻿using Ardalis.Result;
+using JobSearchSiteBackend.Core.Domains._Shared.UseCaseStructure;
+using JobSearchSiteBackend.Core.Domains.CompanyClaims;
+using JobSearchSiteBackend.Core.Persistence;
+using JobSearchSiteBackend.Core.Services.Auth;
+using Microsoft.EntityFrameworkCore;
+
+namespace JobSearchSiteBackend.Core.Domains.Companies.UseCases.DeleteCompany;
+
+public class DeleteCompanyHandler(
+    ICurrentAccountService currentAccountService,
+    MainDataContext context)
+    : IRequestHandler<DeleteCompanyCommand, Result>
+{
+    public async Task<Result> Handle(DeleteCompanyCommand command, CancellationToken cancellationToken = default)
+    {
+        var currentUserId = currentAccountService.GetIdOrThrow();
+
+        var companyWithPermissionIdsQuery =
+            from company in context.Companies
+            join ucp in context.UserCompanyClaims on company.Id equals ucp.CompanyId into ucpGroup
+            from ucp in ucpGroup.DefaultIfEmpty()
+            where company.Id == command.Id && ucp.UserId == currentUserId
+            group ucp.ClaimId by new { Company = company, UserId = ucp.UserId }
+            into grouped
+            select new { grouped.Key.Company, PermissionIds = grouped.ToList() };
+
+        var companyWithPermissionIds = await companyWithPermissionIdsQuery.SingleOrDefaultAsync(cancellationToken);
+
+        if (companyWithPermissionIds is null)
+            return Result.NotFound();
+
+        if (!companyWithPermissionIds.PermissionIds.Contains(CompanyClaim.IsOwner.Id))
+            return Result.Forbidden("Insufficient permissions for requested company deletion.");
+
+        context.Companies.Remove(companyWithPermissionIds.Company);
+
+        var companyAvatars = await context.CompanyAvatars
+            .Where(ca => ca.CompanyId == companyWithPermissionIds.Company.Id)
+            .ToListAsync(cancellationToken);
+        
+        foreach (var companyAvatar in companyAvatars)
+            companyAvatar.IsDeleted = true;
+
+        context.CompanyAvatars.UpdateRange(companyAvatars);
+        
+        await context.SaveChangesAsync(cancellationToken);
+
+        return Result.Success();
+    }
+}

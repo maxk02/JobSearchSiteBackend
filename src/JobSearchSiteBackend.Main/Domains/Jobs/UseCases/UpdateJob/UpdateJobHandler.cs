@@ -1,0 +1,195 @@
+﻿using System.Globalization;
+using JobSearchSiteBackend.Core.Domains._Shared.UseCaseStructure;
+using JobSearchSiteBackend.Core.Domains.Categories;
+using JobSearchSiteBackend.Core.Services.Auth;
+using Microsoft.EntityFrameworkCore;
+using Ardalis.Result;
+using JobSearchSiteBackend.Core.Domains.Companies;
+using JobSearchSiteBackend.Core.Domains.EmploymentOptions;
+using JobSearchSiteBackend.Core.Persistence;
+using JobSearchSiteBackend.Core.Domains.CompanyClaims;
+
+namespace JobSearchSiteBackend.Core.Domains.Jobs.UseCases.UpdateJob;
+
+public class UpdateJobHandler(
+    ICurrentAccountService currentAccountService,
+    MainDataContext context,
+    IInjectableSqlQueries sqlQueries) : IRequestHandler<UpdateJobCommand, Result>
+{
+    public async Task<Result> Handle(UpdateJobCommand command, CancellationToken cancellationToken = default)
+    {
+        var currentUserId = currentAccountService.GetIdOrThrow();
+
+        var job = await context.Jobs
+            .Include(job => job!.Company)
+            .Where(job => job.Id == command.Id)
+            .SingleOrDefaultAsync(cancellationToken);
+
+        if (job is null)
+            return Result.Error();
+
+        var hasPermissionInRequestedCompany =
+            await context.UserCompanyClaims
+                .Where(ucc => ucc.CompanyId == job.CompanyId
+                    && ucc.UserId == currentUserId
+                    && ucc.ClaimId == CompanyClaim.CanEditJobs.Id)
+                .AnyAsync(cancellationToken);
+
+        if (!hasPermissionInRequestedCompany)
+            return Result.Forbidden();
+        
+        await using var transaction = await context.Database.BeginTransactionAsync(cancellationToken);
+
+        if (command.NewDateTimeExpiringUtc is not null && command.NewDateTimeExpiringUtc > job.MaxDateTimeExpiringUtcEverSet)
+        {
+            var oldDiff = job.MaxDateTimeExpiringUtcEverSet.Subtract(job.DateTimePublishedUtc).TotalDays;
+            var oldDaysCeiled = (int)Math.Ceiling(oldDiff);
+            
+            var newDiff = command.NewDateTimeExpiringUtc.Value.Subtract(job.DateTimePublishedUtc).TotalDays;
+            var newDaysCeiled = (int)Math.Ceiling(newDiff);
+            
+            var oldJobPublicationInterval = await context.JobPublicationIntervals
+                .Include(jpi => jpi.CountryCurrency)
+                .Where(jpi => jpi.CountryCurrency!.CountryId == job.Company!.CountryId)
+                .Where(jpi => jpi.MaxDaysOfPublication >= oldDaysCeiled)
+                .OrderBy(v => v.MaxDaysOfPublication)
+                .FirstOrDefaultAsync(cancellationToken);
+            
+            if (oldJobPublicationInterval is null)
+                return Result.Error();
+            
+            // first currency
+            var newJobPublicationInterval = await context.JobPublicationIntervals
+                .Include(jpi => jpi.CountryCurrency)
+                .Where(jpi => jpi.CountryCurrency!.CountryId == job.Company!.CountryId)
+                .Where(jpi => jpi.MaxDaysOfPublication >= newDaysCeiled)
+                .OrderBy(v => v.MaxDaysOfPublication)
+                .FirstOrDefaultAsync(cancellationToken);
+        
+            if (newJobPublicationInterval is null)
+                return Result.Error();
+            
+            if (oldJobPublicationInterval.CountryCurrency!.CurrencyId 
+                != newJobPublicationInterval.CountryCurrency!.CurrencyId)
+                return Result.Error();
+
+            var priceDifference = newJobPublicationInterval.Price - oldJobPublicationInterval.Price;
+
+            if (priceDifference > 0)
+            {
+                await context.Database.ExecuteSqlInterpolatedAsync(
+                    sqlQueries.LockCompanyRow(job.CompanyId), 
+                    cancellationToken);
+                
+                var currentBalance = await context.CompanyBalanceTransactions
+                    .Where(t => t.CompanyId == job.CompanyId)
+                    .SumAsync(t => (decimal?)t.Amount, cancellationToken) ?? 0m;
+        
+                var newBalance = currentBalance - priceDifference;
+
+                if (newBalance < 0)
+                    return Result.Error("JOB_TIME_PERIOD_INSUFFICIENT_BALANCE");
+                
+                var companyBalanceTransaction = new CompanyBalanceTransaction(job.CompanyId, -priceDifference,
+                    $"Aktualizacja terminu wygaśnięcia ogłoszenia {job.Id} do " +
+                    $"{command.NewDateTimeExpiringUtc.Value.ToString(CultureInfo.InvariantCulture)}",
+                    newJobPublicationInterval.CountryCurrency!.CurrencyId, currentUserId);
+        
+                context.CompanyBalanceTransactions.Add(companyBalanceTransaction);
+            }
+
+            job.MaxDateTimeExpiringUtcEverSet = command.NewDateTimeExpiringUtc.Value;
+        }
+
+        if (command.CategoryId is not null)
+        {
+            if (!Category.AllIds.Contains(command.CategoryId.Value))
+                return Result.Error();
+
+            job.CategoryId = command.CategoryId.Value;
+        }
+
+        if (command.Title is not null)
+            job.Title = command.Title;
+
+        if (command.Description is not null)
+            job.Description = command.Description;
+
+        if (command.IsPublic is not null)
+            job.IsPublic = command.IsPublic.Value;
+
+        if (command.NewDateTimeExpiringUtc is not null)
+            job.DateTimeExpiringUtc = command.NewDateTimeExpiringUtc.Value;
+
+        if (command.Responsibilities is not null)
+            job.Responsibilities = command.Responsibilities;
+
+        if (command.Requirements is not null)
+            job.Requirements = command.Requirements;
+
+        if (command.NiceToHaves is not null)
+            job.NiceToHaves = command.NiceToHaves;
+
+        if (command.SalaryInfo is not null)
+            job.SalaryInfo = command.SalaryInfo.ToJobSalaryInfo(command.Id);
+        
+        if (command.EmploymentOptionIds is not null)
+        {
+            var employmentTypes = EmploymentOption.AllValues
+                .Where(employmentType => command.EmploymentOptionIds.Contains(employmentType.Id))
+                .ToList();
+
+            var nonExistentEmploymentTypeIds =
+                command.EmploymentOptionIds.Except(employmentTypes.Select(employmentType => employmentType.Id));
+
+            if (nonExistentEmploymentTypeIds.Any())
+                return Result.Error();
+
+            job.EmploymentOptions = employmentTypes;
+        }
+
+        if (command.ContractTypeIds is not null)
+        {
+            var contractTypes = await context.JobContractTypes
+                .Where(jobContractType => command.ContractTypeIds.Contains(jobContractType.Id))
+                .ToListAsync(cancellationToken);
+
+            var nonExistentContractTypeIds =
+                command.ContractTypeIds.Except(contractTypes.Select(contractType => contractType.Id));
+
+            if (nonExistentContractTypeIds.Any())
+                return Result.Error();
+
+            job.JobContractTypes = contractTypes;
+        }
+
+        if (command.LocationIds is not null)
+        {
+            var locations = await context.Locations
+                .Where(location => command.LocationIds.Contains(location.Id))
+                .ToListAsync(cancellationToken);
+
+            var nonExistentLocationIds =
+                command.LocationIds.Except(locations.Select(location => location.Id));
+
+            if (nonExistentLocationIds.Any())
+                return Result.Error();
+
+            job.Locations = locations;
+        }
+
+        var validator = new JobValidator();
+
+        var validationResult = await validator.ValidateAsync(job, cancellationToken);
+
+        if (!validationResult.IsValid)
+            return Result.Error();
+        
+        context.Jobs.Update(job);
+        
+        await context.SaveChangesAsync(cancellationToken);
+        await transaction.CommitAsync(cancellationToken);
+
+        return Result.Success();
+    }
+}
