@@ -3,7 +3,7 @@ using JobSearchSiteBackend.Core.Domains.Jobs.Search;
 using JobSearchSiteBackend.Core.Persistence;
 using Microsoft.EntityFrameworkCore;
 
-namespace JobSearchSiteBackend.Infrastructure.BackgroundJobs.Hangfire.RecurringJobsRunners;
+namespace JobSearchSiteBackend.Main.Domains.Jobs.RecurringJobRunners.Hangfire;
 
 public class SyncJobsWithSearchRunner(MainDataContext dbContext,
     IJobSearchRepository jobSearchRepository) : ISyncJobsWithSearchRunner

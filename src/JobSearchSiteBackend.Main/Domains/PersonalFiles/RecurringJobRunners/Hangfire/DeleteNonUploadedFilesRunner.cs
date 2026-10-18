@@ -2,7 +2,7 @@
 using JobSearchSiteBackend.Core.Persistence;
 using Microsoft.EntityFrameworkCore;
 
-namespace JobSearchSiteBackend.Infrastructure.BackgroundJobs.Hangfire.RecurringJobsRunners;
+namespace JobSearchSiteBackend.Main.Domains.PersonalFiles.RecurringJobRunners.Hangfire;
 
 public class DeleteNonUploadedFilesRunner(MainDataContext dbContext) : IDeleteNonUploadedFilesRunner
 {

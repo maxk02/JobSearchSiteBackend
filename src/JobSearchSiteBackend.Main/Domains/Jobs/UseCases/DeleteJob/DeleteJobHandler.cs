@@ -1,9 +1,9 @@
 ﻿using JobSearchSiteBackend.Core.Domains._Shared.UseCaseStructure;
-using JobSearchSiteBackend.Core.Services.Auth;
 using Microsoft.EntityFrameworkCore;
 using Ardalis.Result;
 using JobSearchSiteBackend.Core.Persistence;
 using JobSearchSiteBackend.Core.Domains.CompanyClaims;
+using JobSearchSiteBackend.Main.Services.Auth;
 
 namespace JobSearchSiteBackend.Core.Domains.Jobs.UseCases.DeleteJob;
 

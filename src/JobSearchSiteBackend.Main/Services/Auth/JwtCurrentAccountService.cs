@@ -1,9 +1,8 @@
 ﻿using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
-using JobSearchSiteBackend.Core.Services.Auth;
-using JobSearchSiteBackend.Core.Services.Auth.Exceptions;
+using JobSearchSiteBackend.Main.Services.Auth.Exceptions;
 
-namespace JobSearchSiteBackend.API.Services;
+namespace JobSearchSiteBackend.Main.Services.Auth;
 
 public class JwtCurrentAccountService(IHttpContextAccessor httpContextAccessor) : ICurrentAccountService
 {

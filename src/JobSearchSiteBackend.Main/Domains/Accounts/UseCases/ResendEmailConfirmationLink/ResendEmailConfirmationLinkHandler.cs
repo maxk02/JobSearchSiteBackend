@@ -1,9 +1,9 @@
 ﻿using Ardalis.Result;
 using JobSearchSiteBackend.Core.Domains._Shared.UseCaseStructure;
-using JobSearchSiteBackend.Core.Domains.Accounts.BackgroundJobRunners;
-using JobSearchSiteBackend.Core.Domains.Accounts.EmailMessageTemplates;
-using JobSearchSiteBackend.Core.Services.Auth;
 using JobSearchSiteBackend.Core.Services.EmailSender;
+using JobSearchSiteBackend.Main.Domains.Accounts.BackgroundJobRunners;
+using JobSearchSiteBackend.Main.Domains.Accounts.EmailMessageTemplates;
+using JobSearchSiteBackend.Main.Services.Auth;
 using JobSearchSiteBackend.Shared.MyAppSettings;
 using JobSearchSiteBackend.Shared.MyAppSettings.Email;
 using Microsoft.AspNetCore.Identity;

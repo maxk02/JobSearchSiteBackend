@@ -6,7 +6,7 @@ using JobSearchSiteBackend.Core.Domains._Shared.UseCaseStructure;
 using JobSearchSiteBackend.Core.Domains.PersonalFiles;
 using JobSearchSiteBackend.Core.Domains.PersonalFiles.Dtos;
 using JobSearchSiteBackend.Core.Persistence;
-using JobSearchSiteBackend.Core.Services.Auth;
+using JobSearchSiteBackend.Main.Services.Auth;
 using Microsoft.EntityFrameworkCore;
 
 namespace JobSearchSiteBackend.Core.Domains.UserProfiles.UseCases.GetPersonalFiles;

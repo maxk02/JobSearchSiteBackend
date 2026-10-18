@@ -1,4 +1,4 @@
-﻿namespace JobSearchSiteBackend.Core.Services.Cookies;
+﻿namespace JobSearchSiteBackend.Main.Services.Cookies;
 
 public interface ICookieService
 {

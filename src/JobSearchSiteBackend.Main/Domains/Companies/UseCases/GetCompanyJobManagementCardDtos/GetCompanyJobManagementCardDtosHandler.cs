@@ -5,7 +5,7 @@ using JobSearchSiteBackend.Core.Domains.CompanyClaims;
 using JobSearchSiteBackend.Core.Domains.Jobs.Dtos;
 using JobSearchSiteBackend.Core.Domains.Locations.Dtos;
 using JobSearchSiteBackend.Core.Persistence;
-using JobSearchSiteBackend.Core.Services.Auth;
+using JobSearchSiteBackend.Main.Services.Auth;
 using Microsoft.EntityFrameworkCore;
 
 namespace JobSearchSiteBackend.Core.Domains.Companies.UseCases.GetCompanyJobManagementCardDtos;

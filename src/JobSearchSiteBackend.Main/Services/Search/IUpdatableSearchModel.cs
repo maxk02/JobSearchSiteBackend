@@ -1,4 +1,4 @@
-﻿namespace JobSearchSiteBackend.Core.Services.Search;
+﻿namespace JobSearchSiteBackend.Main.Services.Search;
 
 public interface IUpdatableSearchModel
 {

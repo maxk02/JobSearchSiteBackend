@@ -2,8 +2,7 @@
 using JobSearchSiteBackend.Core.Domains._Shared.UseCaseStructure;
 using JobSearchSiteBackend.Core.Domains.CompanyClaims;
 using JobSearchSiteBackend.Core.Persistence;
-using JobSearchSiteBackend.Core.Services.Auth;
-using JobSearchSiteBackend.Core.Services.Caching;
+using JobSearchSiteBackend.Main.Services.Auth;
 using Microsoft.EntityFrameworkCore;
 
 namespace JobSearchSiteBackend.Core.Domains.Jobs.UseCases.GetDailyApplicationsForJobForDateRange;

@@ -1,4 +1,4 @@
-﻿namespace JobSearchSiteBackend.Core.Services.FileStorage;
+﻿namespace JobSearchSiteBackend.Main.Services.FileStorage;
 
 public enum FileStorageBucketName
 {

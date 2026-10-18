@@ -1,14 +1,14 @@
 ﻿using JobSearchSiteBackend.Core.Domains._Shared.UseCaseStructure;
 using JobSearchSiteBackend.Core.Domains.JobApplications.Enums;
-using JobSearchSiteBackend.Core.Services.Auth;
 using Microsoft.EntityFrameworkCore;
 using Ardalis.Result;
 using JobSearchSiteBackend.Core.Persistence;
-using JobSearchSiteBackend.Core.Services.FileStorage;
 using JobSearchSiteBackend.Core.Domains.CompanyClaims;
 using JobSearchSiteBackend.Core.Domains.JobApplications.EmailMessageTemplates;
 using JobSearchSiteBackend.Core.Domains.JobApplications.BackgroundJobRunners;
 using JobSearchSiteBackend.Core.Services.EmailSender;
+using JobSearchSiteBackend.Main.Services.Auth;
+using JobSearchSiteBackend.Main.Services.FileStorage;
 using Microsoft.Extensions.Options;
 using JobSearchSiteBackend.Shared.MyAppSettings.Email;
 

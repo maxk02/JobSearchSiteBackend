@@ -1,10 +1,10 @@
 ﻿using Hangfire;
-using JobSearchSiteBackend.Core.Domains.Accounts.BackgroundJobRunners;
+using JobSearchSiteBackend.Core.Domains.JobApplications.BackgroundJobRunners;
 using JobSearchSiteBackend.Core.Services.EmailSender;
 
-namespace JobSearchSiteBackend.Infrastructure.BackgroundJobs.Hangfire.BackgroundJobsRunners;
+namespace JobSearchSiteBackend.Main.Domains.JobApplications.BackgroundJobRunners.Hangfire;
 
-public class ResendEmailConfirmationLinkRunner(IBackgroundJobClient backgroundJobClient) : IResendEmailConfirmationLinkRunner
+public class SendApplicationStatusUpdatedEmailRunner(IBackgroundJobClient backgroundJobClient) : ISendApplicationStatusUpdatedEmailRunner
 {
     public async Task RunAsync(EmailToSend emailToSend)
     {

@@ -1,9 +1,9 @@
 ﻿using JobSearchSiteBackend.Core.Domains._Shared.UseCaseStructure;
 using JobSearchSiteBackend.Core.Domains.JobApplications.Enums;
-using JobSearchSiteBackend.Core.Services.Auth;
 using Microsoft.EntityFrameworkCore;
 using Ardalis.Result;
 using JobSearchSiteBackend.Core.Persistence;
+using JobSearchSiteBackend.Main.Services.Auth;
 
 namespace JobSearchSiteBackend.Core.Domains.JobApplications.UseCases.AddJobApplication;
 

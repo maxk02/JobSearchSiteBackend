@@ -1,4 +1,4 @@
-﻿namespace JobSearchSiteBackend.Core.Services.Caching;
+﻿namespace JobSearchSiteBackend.Main.Services.Caching;
 
 
 public interface IGeneralCacheRepository

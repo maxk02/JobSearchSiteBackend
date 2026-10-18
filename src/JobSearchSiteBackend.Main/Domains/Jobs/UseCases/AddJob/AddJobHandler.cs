@@ -6,7 +6,7 @@ using JobSearchSiteBackend.Core.Domains.Companies;
 using JobSearchSiteBackend.Core.Domains.CompanyClaims;
 using JobSearchSiteBackend.Core.Domains.EmploymentOptions;
 using JobSearchSiteBackend.Core.Persistence;
-using JobSearchSiteBackend.Core.Services.Auth;
+using JobSearchSiteBackend.Main.Services.Auth;
 using Microsoft.EntityFrameworkCore;
 
 namespace JobSearchSiteBackend.Core.Domains.Jobs.UseCases.AddJob;

@@ -1,4 +1,4 @@
-﻿namespace JobSearchSiteBackend.Infrastructure.BackgroundJobs;
+﻿namespace JobSearchSiteBackend.Main.Services.BackgroundJobs;
 
 public interface IRecurringJobRegisterer
 {

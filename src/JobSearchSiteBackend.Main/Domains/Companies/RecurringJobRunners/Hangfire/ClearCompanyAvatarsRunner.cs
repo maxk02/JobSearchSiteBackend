@@ -1,9 +1,9 @@
 ﻿using JobSearchSiteBackend.Core.Domains.Companies.RecurringJobRunners;
 using JobSearchSiteBackend.Core.Persistence;
-using JobSearchSiteBackend.Core.Services.FileStorage;
+using JobSearchSiteBackend.Main.Services.FileStorage;
 using Microsoft.EntityFrameworkCore;
 
-namespace JobSearchSiteBackend.Infrastructure.BackgroundJobs.Hangfire.RecurringJobsRunners;
+namespace JobSearchSiteBackend.Main.Domains.Companies.RecurringJobRunners.Hangfire;
 
 public class ClearCompanyAvatarsRunner(MainDataContext dbContext,
     IFileStorageService fileStorageService) : IClearCompanyAvatarsRunner

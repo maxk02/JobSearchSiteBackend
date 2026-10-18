@@ -1,12 +1,10 @@
 using Amazon.S3;
 using Amazon.S3.Model;
 using Amazon.S3.Transfer;
-using JobSearchSiteBackend.Core.Services.FileStorage;
-using Microsoft.Extensions.Configuration;
 
-namespace JobSearchSiteBackend.Infrastructure.FileStorage.CloudflareR2;
+namespace JobSearchSiteBackend.Main.Services.FileStorage.CloudflareR2;
 
-public class CloudflareR2FileStorageService(IAmazonS3 s3Client, IConfiguration configuration) : IFileStorageService
+public class FileStorageService(IAmazonS3 s3Client, IConfiguration configuration) : IFileStorageService
 {
     private string GetBucketName(FileStorageBucketName bucketNameEnum) => bucketNameEnum switch
     {

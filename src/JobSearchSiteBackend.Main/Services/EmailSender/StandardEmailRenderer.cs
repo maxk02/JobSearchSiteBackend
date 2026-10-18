@@ -1,6 +1,4 @@
-﻿using JobSearchSiteBackend.Core.Services.FileStorage;
-
-namespace JobSearchSiteBackend.Core.Services.EmailSender;
+﻿namespace JobSearchSiteBackend.Core.Services.EmailSender;
 
 public class StandardEmailRenderer()
 {

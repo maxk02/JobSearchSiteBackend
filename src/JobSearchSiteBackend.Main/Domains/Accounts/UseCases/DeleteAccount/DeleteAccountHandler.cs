@@ -1,9 +1,8 @@
 ﻿using JobSearchSiteBackend.Core.Domains._Shared.UseCaseStructure;
-using JobSearchSiteBackend.Core.Services.Auth;
 using Microsoft.AspNetCore.Identity;
 using Ardalis.Result;
 using JobSearchSiteBackend.Core.Persistence;
-using JobSearchSiteBackend.Core.Services.Caching;
+using JobSearchSiteBackend.Main.Services.Auth;
 using Microsoft.EntityFrameworkCore;
 
 namespace JobSearchSiteBackend.Core.Domains.Accounts.UseCases.DeleteAccount;

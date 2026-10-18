@@ -1,10 +1,9 @@
 ﻿using Hangfire;
-using JobSearchSiteBackend.Core.Domains.Companies.BackgroundJobRunners;
 using JobSearchSiteBackend.Core.Services.EmailSender;
 
-namespace JobSearchSiteBackend.Infrastructure.BackgroundJobs.Hangfire.BackgroundJobsRunners;
+namespace JobSearchSiteBackend.Main.Domains.Accounts.BackgroundJobRunners.Hangfire;
 
-public class SendCompanyEmployeeInvitationEmailRunner(IBackgroundJobClient backgroundJobClient) : ISendCompanyEmployeeInvitationEmailRunner
+public class SendPasswordResetLinkRunner(IBackgroundJobClient backgroundJobClient) : ISendPasswordResetLinkRunner
 {
     public async Task RunAsync(EmailToSend emailToSend)
     {

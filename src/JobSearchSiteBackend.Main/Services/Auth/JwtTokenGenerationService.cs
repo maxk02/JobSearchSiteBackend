@@ -1,13 +1,9 @@
 ﻿using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
-using JobSearchSiteBackend.Core.Services.Auth;
-using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
-using JobSearchSiteBackend.Shared.MyAppSettings;
-using Microsoft.Extensions.Configuration;
 
-namespace JobSearchSiteBackend.Infrastructure.Auth;
+namespace JobSearchSiteBackend.Main.Services.Auth;
 
 public class JwtTokenGenerationService(IConfiguration configuration) : IJwtTokenGenerationService
 {

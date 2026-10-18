@@ -1,8 +1,7 @@
 ﻿using Hangfire;
-using JobSearchSiteBackend.Core.Domains.PersonalFiles.BackgroundJobRunners;
-using JobSearchSiteBackend.Core.Services.FileStorage;
+using JobSearchSiteBackend.Main.Services.FileStorage;
 
-namespace JobSearchSiteBackend.Infrastructure.BackgroundJobs.Hangfire.BackgroundJobsRunners;
+namespace JobSearchSiteBackend.Main.Domains.PersonalFiles.BackgroundJobRunners.Hangfire;
 
 public class DeletePersonalFileFromStorageRunner(IBackgroundJobClient backgroundJobClient)
     : IDeletePersonalFileFromStorageRunner

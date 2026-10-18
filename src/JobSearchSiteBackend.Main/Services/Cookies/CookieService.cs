@@ -1,6 +1,4 @@
-﻿using JobSearchSiteBackend.Core.Services.Cookies;
-
-namespace JobSearchSiteBackend.API.Services;
+﻿namespace JobSearchSiteBackend.Main.Services.Cookies;
 
 public class CookieService(IHttpContextAccessor httpContextAccessor) : ICookieService
 {

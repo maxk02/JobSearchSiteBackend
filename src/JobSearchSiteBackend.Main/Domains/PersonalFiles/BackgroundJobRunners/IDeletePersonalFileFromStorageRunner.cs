@@ -1,6 +1,6 @@
-﻿using JobSearchSiteBackend.Core.Services.FileStorage;
+﻿using JobSearchSiteBackend.Main.Services.FileStorage;
 
-namespace JobSearchSiteBackend.Core.Domains.PersonalFiles.BackgroundJobRunners;
+namespace JobSearchSiteBackend.Main.Domains.PersonalFiles.BackgroundJobRunners;
 
 public interface IDeletePersonalFileFromStorageRunner
 {

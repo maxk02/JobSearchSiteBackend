@@ -2,8 +2,8 @@
 using JobSearchSiteBackend.Core.Domains._Shared.UseCaseStructure;
 using JobSearchSiteBackend.Core.Domains.UserProfiles.Persistence;
 using JobSearchSiteBackend.Core.Persistence;
-using JobSearchSiteBackend.Core.Services.Auth;
-using JobSearchSiteBackend.Core.Services.FileStorage;
+using JobSearchSiteBackend.Main.Services.Auth;
+using JobSearchSiteBackend.Main.Services.FileStorage;
 using Microsoft.EntityFrameworkCore;
 
 namespace JobSearchSiteBackend.Core.Domains.UserProfiles.UseCases.GetUserProfile;

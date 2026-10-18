@@ -1,4 +1,4 @@
-﻿using JobSearchSiteBackend.Core.Services.Search;
+﻿using JobSearchSiteBackend.Main.Services.Search;
 
 namespace JobSearchSiteBackend.Core.Domains.JobApplications.Search;
 

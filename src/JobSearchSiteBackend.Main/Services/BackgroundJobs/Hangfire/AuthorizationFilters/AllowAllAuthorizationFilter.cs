@@ -1,6 +1,6 @@
 using Hangfire.Dashboard;
 
-namespace JobSearchSiteBackend.Infrastructure.BackgroundJobs.Hangfire.AuthorizationFilters;
+namespace JobSearchSiteBackend.Main.Services.BackgroundJobs.Hangfire.AuthorizationFilters;
 
 public class AllowAllAuthorizationFilter : IDashboardAuthorizationFilter
 {

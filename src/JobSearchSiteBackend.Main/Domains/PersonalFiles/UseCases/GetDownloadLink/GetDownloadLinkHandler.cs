@@ -2,8 +2,8 @@
 using AutoMapper;
 using JobSearchSiteBackend.Core.Domains._Shared.UseCaseStructure;
 using JobSearchSiteBackend.Core.Persistence;
-using JobSearchSiteBackend.Core.Services.Auth;
-using JobSearchSiteBackend.Core.Services.FileStorage;
+using JobSearchSiteBackend.Main.Services.Auth;
+using JobSearchSiteBackend.Main.Services.FileStorage;
 
 namespace JobSearchSiteBackend.Core.Domains.PersonalFiles.UseCases.GetDownloadLink;
 

@@ -1,10 +1,10 @@
 ﻿using JobSearchSiteBackend.Core.Domains._Shared.UseCaseStructure;
-using JobSearchSiteBackend.Core.Services.Auth;
 using Microsoft.EntityFrameworkCore;
 using Ardalis.Result;
 using Ardalis.Result.FluentValidation;
 using JobSearchSiteBackend.Core.Domains.Accounts;
 using JobSearchSiteBackend.Core.Persistence;
+using JobSearchSiteBackend.Main.Services.Auth;
 using Microsoft.AspNetCore.Identity;
 
 namespace JobSearchSiteBackend.Core.Domains.CompanyClaims.UseCases.UpdateCompanyClaimIdsForUser;

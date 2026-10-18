@@ -1,7 +1,6 @@
-﻿using JobSearchSiteBackend.Core.Services.Caching;
-using StackExchange.Redis;
+﻿using StackExchange.Redis;
 
-namespace JobSearchSiteBackend.Infrastructure.Caching;
+namespace JobSearchSiteBackend.Main.Services.Caching;
 
 public class RedisGeneralCacheRepository : IGeneralCacheRepository
 {

@@ -1,7 +1,7 @@
 ﻿using Ardalis.Result;
 using JobSearchSiteBackend.Core.Domains._Shared.UseCaseStructure;
 using JobSearchSiteBackend.Core.Persistence;
-using JobSearchSiteBackend.Core.Services.Auth;
+using JobSearchSiteBackend.Main.Services.Auth;
 
 namespace JobSearchSiteBackend.Core.Domains.UserProfiles.UseCases.UploadUserAvatar;
 

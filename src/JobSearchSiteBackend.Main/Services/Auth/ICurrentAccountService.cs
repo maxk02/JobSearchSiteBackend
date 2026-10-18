@@ -1,4 +1,4 @@
-﻿namespace JobSearchSiteBackend.Core.Services.Auth;
+﻿namespace JobSearchSiteBackend.Main.Services.Auth;
 
 public interface ICurrentAccountService
 {

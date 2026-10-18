@@ -1,9 +1,8 @@
 ﻿using JobSearchSiteBackend.Core.Domains._Shared.UseCaseStructure;
-using JobSearchSiteBackend.Core.Services.Auth;
 using Ardalis.Result;
 using JobSearchSiteBackend.Core.Persistence;
-using JobSearchSiteBackend.Core.Services.Caching;
-using JobSearchSiteBackend.Core.Services.Cookies;
+using JobSearchSiteBackend.Main.Services.Auth;
+using JobSearchSiteBackend.Main.Services.Cookies;
 
 namespace JobSearchSiteBackend.Core.Domains.Accounts.UseCases.LogOut;
 

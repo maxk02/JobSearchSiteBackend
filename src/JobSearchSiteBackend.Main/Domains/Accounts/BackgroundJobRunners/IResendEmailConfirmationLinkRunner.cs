@@ -1,6 +1,6 @@
 ﻿using JobSearchSiteBackend.Core.Services.EmailSender;
 
-namespace JobSearchSiteBackend.Core.Domains.Accounts.BackgroundJobRunners;
+namespace JobSearchSiteBackend.Main.Domains.Accounts.BackgroundJobRunners;
 
 public interface IResendEmailConfirmationLinkRunner
 {

@@ -1,18 +1,17 @@
 ﻿using JobSearchSiteBackend.Core.Domains._Shared.UseCaseStructure;
-using JobSearchSiteBackend.Core.Services.Auth;
 using Microsoft.AspNetCore.Identity;
 using Ardalis.Result;
 using AutoMapper;
 using AutoMapper.QueryableExtensions;
-using JobSearchSiteBackend.Core.Domains.Accounts.Dtos;
 using JobSearchSiteBackend.Core.Domains.Companies;
 using JobSearchSiteBackend.Core.Domains.Companies.Dtos;
 using JobSearchSiteBackend.Core.Domains.Companies.Persistence;
 using JobSearchSiteBackend.Core.Domains.UserProfiles.Persistence;
 using JobSearchSiteBackend.Core.Persistence;
-using JobSearchSiteBackend.Core.Services.Caching;
-using JobSearchSiteBackend.Core.Services.Cookies;
-using JobSearchSiteBackend.Core.Services.FileStorage;
+using JobSearchSiteBackend.Main.Domains.Accounts.Dtos;
+using JobSearchSiteBackend.Main.Services.Auth;
+using JobSearchSiteBackend.Main.Services.Cookies;
+using JobSearchSiteBackend.Main.Services.FileStorage;
 using Microsoft.EntityFrameworkCore;
 
 namespace JobSearchSiteBackend.Core.Domains.Accounts.UseCases.LogIn;

@@ -1,13 +1,10 @@
 ﻿using System.Reflection;
 using System.Text;
-using Amazon;
 using Amazon.Runtime;
 using Amazon.S3;
-using Elasticsearch.Net;
 using Hangfire;
 using Hangfire.SqlServer;
 using JobSearchSiteBackend.Core.Domains.Accounts;
-using JobSearchSiteBackend.Core.Domains.Accounts.BackgroundJobRunners;
 using JobSearchSiteBackend.Core.Domains.Companies.BackgroundJobRunners;
 using JobSearchSiteBackend.Core.Domains.Companies.RecurringJobRunners;
 using JobSearchSiteBackend.Core.Domains.JobApplications.BackgroundJobRunners;
@@ -16,38 +13,37 @@ using JobSearchSiteBackend.Core.Domains.JobApplications.Search;
 using JobSearchSiteBackend.Core.Domains.Jobs.RecurringJobRunners;
 using JobSearchSiteBackend.Core.Domains.Jobs.Search;
 using JobSearchSiteBackend.Core.Domains.Locations.Search;
-using JobSearchSiteBackend.Core.Domains.PersonalFiles.BackgroundJobRunners;
 using JobSearchSiteBackend.Core.Domains.PersonalFiles.RecurringJobRunners;
 using JobSearchSiteBackend.Core.Persistence;
-using JobSearchSiteBackend.Core.Services.Auth;
-using JobSearchSiteBackend.Core.Services.Caching;
 using JobSearchSiteBackend.Core.Services.EmailSender;
-using JobSearchSiteBackend.Core.Services.FileStorage;
-using JobSearchSiteBackend.Core.Services.TextExtraction;
-using JobSearchSiteBackend.Infrastructure.Auth;
-using JobSearchSiteBackend.Infrastructure.BackgroundJobs;
-using JobSearchSiteBackend.Infrastructure.BackgroundJobs.Hangfire;
-using JobSearchSiteBackend.Infrastructure.BackgroundJobs.Hangfire.BackgroundJobsRunners;
-using JobSearchSiteBackend.Infrastructure.BackgroundJobs.Hangfire.RecurringJobsRunners;
-using JobSearchSiteBackend.Infrastructure.Caching;
 using JobSearchSiteBackend.Infrastructure.EmailSender.MailKit;
-using JobSearchSiteBackend.Infrastructure.FileStorage.CloudflareR2;
 using JobSearchSiteBackend.Infrastructure.Persistence.EfCore;
 using JobSearchSiteBackend.Infrastructure.Persistence.SqlServer;
-using JobSearchSiteBackend.Infrastructure.Search.Elasticsearch;
-using JobSearchSiteBackend.Infrastructure.TextExtraction;
+using JobSearchSiteBackend.Main.Domains.Accounts.BackgroundJobRunners;
+using JobSearchSiteBackend.Main.Domains.Accounts.BackgroundJobRunners.Hangfire;
+using JobSearchSiteBackend.Main.Domains.Companies.BackgroundJobRunners.Hangfire;
+using JobSearchSiteBackend.Main.Domains.Companies.RecurringJobRunners.Hangfire;
+using JobSearchSiteBackend.Main.Domains.JobApplications.BackgroundJobRunners.Hangfire;
+using JobSearchSiteBackend.Main.Domains.JobApplications.RecurringJobRunners.Hangfire;
+using JobSearchSiteBackend.Main.Domains.Jobs.RecurringJobRunners.Hangfire;
+using JobSearchSiteBackend.Main.Domains.PersonalFiles.BackgroundJobRunners;
+using JobSearchSiteBackend.Main.Domains.PersonalFiles.BackgroundJobRunners.Hangfire;
+using JobSearchSiteBackend.Main.Domains.PersonalFiles.RecurringJobRunners.Hangfire;
+using JobSearchSiteBackend.Main.Services.Auth;
+using JobSearchSiteBackend.Main.Services.BackgroundJobs;
+using JobSearchSiteBackend.Main.Services.BackgroundJobs.Hangfire;
+using JobSearchSiteBackend.Main.Services.Caching;
+using JobSearchSiteBackend.Main.Services.FileStorage;
+using JobSearchSiteBackend.Main.Services.FileStorage.CloudflareR2;
+using JobSearchSiteBackend.Main.Services.TextExtraction;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
-using Nest;
 using StackExchange.Redis;
 using LogLevel = Microsoft.Extensions.Logging.LogLevel;
 
-namespace JobSearchSiteBackend.Infrastructure;
+namespace JobSearchSiteBackend.Main.Services;
 
 public static class ServiceExtensions
 {
@@ -175,16 +171,6 @@ public static class ServiceExtensions
     {
         serviceCollection.AddSingleton<IJwtTokenGenerationService, JwtTokenGenerationService>();
     }
-    
-    // public static void ConfigureFileStorage(this IServiceCollection serviceCollection, IConfiguration configuration)
-    // {
-    //     serviceCollection.AddDefaultAWSOptions(configuration.GetAWSOptions());
-        
-    //     serviceCollection.AddAWSService<IAmazonS3>();
-        
-    //     serviceCollection.AddSingleton<IFileStorageService, AmazonS3FileStorageService>(provider => 
-    //         new AmazonS3FileStorageService(provider.GetRequiredService<IAmazonS3>(), configuration));
-    // }
 
     public static void ConfigureFileStorage(this IServiceCollection serviceCollection, IConfiguration configuration)
     {
@@ -211,36 +197,36 @@ public static class ServiceExtensions
         serviceCollection.AddSingleton<IAmazonS3>(sp => 
             new AmazonS3Client(credentials, s3Config));
         
-        serviceCollection.AddSingleton<IFileStorageService, CloudflareR2FileStorageService>();
+        serviceCollection.AddSingleton<IFileStorageService, FileStorageService>();
     }
     
-    public static void ConfigureSearch(this IServiceCollection serviceCollection, IConfiguration configuration)
-    {
-        serviceCollection.AddSingleton<IElasticClient>(provider =>
-        {
-            var uri = configuration["ELASTICSEARCH_URI"];
-            var username = configuration["ELASTICSEARCH_USERNAME"];
-            var password = configuration["ELASTICSEARCH_PASSWORD"];
-
-            if (string.IsNullOrEmpty(uri)
-                || string.IsNullOrEmpty(username)
-                || string.IsNullOrEmpty(password))
-            {
-                throw new ArgumentNullException();
-            }
-
-            var node = new Uri(uri);
-            var connectionPool = new SingleNodeConnectionPool(node);
-            var connectionSettings = new ConnectionSettings(connectionPool);
-
-            var client = new ElasticClient(connectionSettings);
-            return client;
-        });
-        
-        serviceCollection.AddSingleton<IJobSearchRepository, ElasticJobSearchRepository>();
-        serviceCollection.AddSingleton<ILocationSearchRepository, ElasticLocationSearchRepository>();
-        serviceCollection.AddSingleton<IJobApplicationSearchRepository, ElasticJobApplicationSearchRepository>();
-    }
+    // public static void ConfigureSearch(this IServiceCollection serviceCollection, IConfiguration configuration)
+    // {
+    //     serviceCollection.AddSingleton<IElasticClient>(provider =>
+    //     {
+    //         var uri = configuration["ELASTICSEARCH_URI"];
+    //         var username = configuration["ELASTICSEARCH_USERNAME"];
+    //         var password = configuration["ELASTICSEARCH_PASSWORD"];
+    //
+    //         if (string.IsNullOrEmpty(uri)
+    //             || string.IsNullOrEmpty(username)
+    //             || string.IsNullOrEmpty(password))
+    //         {
+    //             throw new ArgumentNullException();
+    //         }
+    //
+    //         var node = new Uri(uri);
+    //         var connectionPool = new SingleNodeConnectionPool(node);
+    //         var connectionSettings = new ConnectionSettings(connectionPool);
+    //
+    //         var client = new ElasticClient(connectionSettings);
+    //         return client;
+    //     });
+    //     
+    //     serviceCollection.AddSingleton<IJobSearchRepository, ElasticJobSearchRepository>();
+    //     serviceCollection.AddSingleton<ILocationSearchRepository, ElasticLocationSearchRepository>();
+    //     serviceCollection.AddSingleton<IJobApplicationSearchRepository, ElasticJobApplicationSearchRepository>();
+    // }
     
     public static void ConfigureTextExtraction(this IServiceCollection serviceCollection)
     {
@@ -330,8 +316,8 @@ public static class ServiceExtensions
 
         // 2. Register your abstraction
         serviceCollection.AddScoped<IGeneralCacheRepository, RedisGeneralCacheRepository>();
-        serviceCollection.AddScoped<IUserSessionCacheRepository, RedisUserSessionCacheRepository>();
-        serviceCollection.AddScoped<IJobPageVisitCacheRepository, RedisJobPageVisitCacheRepository>();
-        serviceCollection.AddScoped<ICompanyLastVisitedJobsCacheRepository, RedisCompanyLastVisitedJobsCacheRepository>();
+        // serviceCollection.AddScoped<IUserSessionCacheRepository, RedisUserSessionCacheRepository>();
+        // serviceCollection.AddScoped<IJobPageVisitCacheRepository, RedisJobPageVisitCacheRepository>();
+        // serviceCollection.AddScoped<ICompanyLastVisitedJobsCacheRepository, RedisCompanyLastVisitedJobsCacheRepository>();
     }
 }

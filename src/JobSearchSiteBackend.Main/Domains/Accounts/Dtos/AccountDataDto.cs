@@ -1,6 +1,6 @@
 ﻿using JobSearchSiteBackend.Core.Domains.Companies.Dtos;
 
-namespace JobSearchSiteBackend.Core.Domains.Accounts.Dtos;
+namespace JobSearchSiteBackend.Main.Domains.Accounts.Dtos;
 
 public record AccountDataDto(
     long Id,

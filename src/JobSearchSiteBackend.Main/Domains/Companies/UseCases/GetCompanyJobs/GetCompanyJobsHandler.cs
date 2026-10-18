@@ -6,8 +6,8 @@ using JobSearchSiteBackend.Core.Domains.Jobs.Dtos;
 using JobSearchSiteBackend.Core.Domains.Jobs.Search;
 using JobSearchSiteBackend.Core.Domains.Locations.Dtos;
 using JobSearchSiteBackend.Core.Persistence;
-using JobSearchSiteBackend.Core.Services.Auth;
-using JobSearchSiteBackend.Core.Services.FileStorage;
+using JobSearchSiteBackend.Main.Services.Auth;
+using JobSearchSiteBackend.Main.Services.FileStorage;
 using Microsoft.EntityFrameworkCore;
 
 namespace JobSearchSiteBackend.Core.Domains.Companies.UseCases.GetCompanyJobs;

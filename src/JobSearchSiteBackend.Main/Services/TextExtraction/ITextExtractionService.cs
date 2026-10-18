@@ -1,4 +1,4 @@
-﻿namespace JobSearchSiteBackend.Core.Services.TextExtraction;
+﻿namespace JobSearchSiteBackend.Main.Services.TextExtraction;
 
 public interface ITextExtractionService
 {

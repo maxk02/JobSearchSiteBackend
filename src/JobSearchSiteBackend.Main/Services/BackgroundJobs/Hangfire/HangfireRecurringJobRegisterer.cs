@@ -4,7 +4,7 @@ using JobSearchSiteBackend.Core.Domains.JobApplications.RecurringJobRunners;
 using JobSearchSiteBackend.Core.Domains.Jobs.RecurringJobRunners;
 using JobSearchSiteBackend.Core.Domains.PersonalFiles.RecurringJobRunners;
 
-namespace JobSearchSiteBackend.Infrastructure.BackgroundJobs.Hangfire;
+namespace JobSearchSiteBackend.Main.Services.BackgroundJobs.Hangfire;
 
 public class HangfireRecurringJobRegisterer(IRecurringJobManager recurringJobManager) : IRecurringJobRegisterer
 {
