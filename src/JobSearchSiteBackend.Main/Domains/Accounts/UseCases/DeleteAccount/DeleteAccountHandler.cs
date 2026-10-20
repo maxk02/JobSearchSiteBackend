@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Identity;
 using Ardalis.Result;
 using JobSearchSiteBackend.Core.Persistence;
+using JobSearchSiteBackend.Main.Domains.Accounts;
 using JobSearchSiteBackend.Main.Services.Auth;
 using Microsoft.EntityFrameworkCore;
 

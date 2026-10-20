@@ -9,6 +9,7 @@ using JobSearchSiteBackend.Core.Services.EmailSender;
 using JobSearchSiteBackend.Shared.MyAppSettings.Email;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
+using MyDefaultEmailSenderSettings = JobSearchSiteBackend.Core.MyAppSettings.Email.MyDefaultEmailSenderSettings;
 
 namespace JobSearchSiteBackend.Core.Domains.JobApplications.UseCases.UpdateJobApplicationStatus;
 

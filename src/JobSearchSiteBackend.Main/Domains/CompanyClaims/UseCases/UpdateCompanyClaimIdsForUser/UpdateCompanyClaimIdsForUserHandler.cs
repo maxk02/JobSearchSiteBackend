@@ -4,6 +4,7 @@ using Ardalis.Result;
 using Ardalis.Result.FluentValidation;
 using JobSearchSiteBackend.Core.Domains.Accounts;
 using JobSearchSiteBackend.Core.Persistence;
+using JobSearchSiteBackend.Main.Domains.Accounts;
 using JobSearchSiteBackend.Main.Services.Auth;
 using Microsoft.AspNetCore.Identity;
 

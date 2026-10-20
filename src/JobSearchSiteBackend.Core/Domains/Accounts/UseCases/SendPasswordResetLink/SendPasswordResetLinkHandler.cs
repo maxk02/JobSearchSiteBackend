@@ -7,12 +7,13 @@ using Ardalis.Result;
 using JobSearchSiteBackend.Core.Domains.Accounts.BackgroundJobRunners;
 using JobSearchSiteBackend.Core.Domains.Accounts.EmailMessageTemplates;
 using JobSearchSiteBackend.Shared.MyAppSettings.Email;
+using MyDefaultEmailSenderSettings = JobSearchSiteBackend.Core.MyAppSettings.Email.MyDefaultEmailSenderSettings;
 
 namespace JobSearchSiteBackend.Core.Domains.Accounts.UseCases.SendPasswordResetLink;
 
 public class SendPasswordResetLinkHandler(
     UserManager<MyIdentityUser> userManager,
-    IOptions<MyAppSettings> injectedAppSettings,
+    IOptions<MyAppSettings.MyAppSettings> injectedAppSettings,
     ISendPasswordResetLinkRunner sendPasswordResetLinkRunner,
     StandardEmailRenderer emailRenderer,
     IOptions<MyDefaultEmailSenderSettings> emailSenderSettings) : IRequestHandler<SendPasswordResetLinkCommand, Result>

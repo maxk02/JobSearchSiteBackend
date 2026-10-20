@@ -7,10 +7,10 @@ using JobSearchSiteBackend.Core.Domains.CompanyClaims;
 using JobSearchSiteBackend.Core.Domains.JobApplications.EmailMessageTemplates;
 using JobSearchSiteBackend.Core.Domains.JobApplications.BackgroundJobRunners;
 using JobSearchSiteBackend.Core.Services.EmailSender;
+using JobSearchSiteBackend.Main.MyAppSettings.Email;
 using JobSearchSiteBackend.Main.Services.Auth;
 using JobSearchSiteBackend.Main.Services.FileStorage;
 using Microsoft.Extensions.Options;
-using JobSearchSiteBackend.Shared.MyAppSettings.Email;
 
 namespace JobSearchSiteBackend.Core.Domains.JobApplications.UseCases.GetFileDownloadLinkFromJobApplication;
 

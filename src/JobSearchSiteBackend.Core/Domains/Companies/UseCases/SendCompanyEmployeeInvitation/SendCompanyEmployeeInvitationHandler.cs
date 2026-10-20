@@ -13,6 +13,7 @@ using JobSearchSiteBackend.Shared.MyAppSettings.Email;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
+using MyDefaultEmailSenderSettings = JobSearchSiteBackend.Core.MyAppSettings.Email.MyDefaultEmailSenderSettings;
 
 namespace JobSearchSiteBackend.Core.Domains.Companies.UseCases.SendCompanyEmployeeInvitation;
 
@@ -22,7 +23,7 @@ public class SendCompanyEmployeeInvitationHandler(
     UserManager<MyIdentityUser> userManager,
     StandardEmailRenderer emailRenderer,
     IOptions<MyDefaultEmailSenderSettings> emailSenderSettings,
-    IOptions<MyAppSettings> appSettings,
+    IOptions<MyAppSettings.MyAppSettings> appSettings,
     ISendCompanyEmployeeInvitationEmailRunner sendCompanyEmployeeInvitationEmailRunner)
     : IRequestHandler<SendCompanyEmployeeInvitationCommand, Result<SendCompanyEmployeeInvitationResult>>
 {

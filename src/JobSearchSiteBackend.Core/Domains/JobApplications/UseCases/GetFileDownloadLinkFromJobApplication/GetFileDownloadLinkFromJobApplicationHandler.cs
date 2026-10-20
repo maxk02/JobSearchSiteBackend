@@ -11,6 +11,7 @@ using JobSearchSiteBackend.Core.Domains.JobApplications.BackgroundJobRunners;
 using JobSearchSiteBackend.Core.Services.EmailSender;
 using Microsoft.Extensions.Options;
 using JobSearchSiteBackend.Shared.MyAppSettings.Email;
+using MyDefaultEmailSenderSettings = JobSearchSiteBackend.Core.MyAppSettings.Email.MyDefaultEmailSenderSettings;
 
 namespace JobSearchSiteBackend.Core.Domains.JobApplications.UseCases.GetFileDownloadLinkFromJobApplication;
 

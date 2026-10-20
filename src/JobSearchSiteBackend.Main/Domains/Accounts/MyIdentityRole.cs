@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Identity;
 
-namespace JobSearchSiteBackend.Core.Domains.Accounts;
+namespace JobSearchSiteBackend.Main.Domains.Accounts;
 
 public class MyIdentityRole : IdentityRole<long>;

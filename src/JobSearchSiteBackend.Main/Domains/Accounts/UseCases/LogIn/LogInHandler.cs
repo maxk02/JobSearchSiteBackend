@@ -8,6 +8,7 @@ using JobSearchSiteBackend.Core.Domains.Companies.Dtos;
 using JobSearchSiteBackend.Core.Domains.Companies.Persistence;
 using JobSearchSiteBackend.Core.Domains.UserProfiles.Persistence;
 using JobSearchSiteBackend.Core.Persistence;
+using JobSearchSiteBackend.Main.Domains.Accounts;
 using JobSearchSiteBackend.Main.Domains.Accounts.Dtos;
 using JobSearchSiteBackend.Main.Services.Auth;
 using JobSearchSiteBackend.Main.Services.Cookies;

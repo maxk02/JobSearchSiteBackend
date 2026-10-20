@@ -1,6 +1,4 @@
-﻿using JobSearchSiteBackend.Shared.MyAppSettings.Email;
-
-namespace JobSearchSiteBackend.Core.Services.EmailSender;
+﻿namespace JobSearchSiteBackend.Core.Services.EmailSender;
 
 public class EmailToSend
 {

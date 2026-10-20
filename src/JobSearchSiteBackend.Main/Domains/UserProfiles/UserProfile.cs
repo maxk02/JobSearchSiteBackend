@@ -4,6 +4,7 @@ using JobSearchSiteBackend.Core.Domains.Companies;
 using JobSearchSiteBackend.Core.Domains.CompanyClaims;
 using JobSearchSiteBackend.Core.Domains.JobApplications;
 using JobSearchSiteBackend.Core.Domains.PersonalFiles;
+using JobSearchSiteBackend.Main.Domains.Accounts;
 
 namespace JobSearchSiteBackend.Core.Domains.UserProfiles;
 

@@ -19,6 +19,7 @@ using JobSearchSiteBackend.Core.Services.EmailSender;
 using JobSearchSiteBackend.Infrastructure.EmailSender.MailKit;
 using JobSearchSiteBackend.Infrastructure.Persistence.EfCore;
 using JobSearchSiteBackend.Infrastructure.Persistence.SqlServer;
+using JobSearchSiteBackend.Main.Domains.Accounts;
 using JobSearchSiteBackend.Main.Domains.Accounts.BackgroundJobRunners;
 using JobSearchSiteBackend.Main.Domains.Accounts.BackgroundJobRunners.Hangfire;
 using JobSearchSiteBackend.Main.Domains.Companies.BackgroundJobRunners.Hangfire;

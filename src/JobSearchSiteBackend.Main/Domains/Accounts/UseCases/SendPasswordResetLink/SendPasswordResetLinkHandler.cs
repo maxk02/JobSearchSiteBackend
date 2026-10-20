@@ -4,9 +4,11 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Options;
 using JobSearchSiteBackend.Shared.MyAppSettings;
 using Ardalis.Result;
+using JobSearchSiteBackend.Main.Domains.Accounts;
 using JobSearchSiteBackend.Main.Domains.Accounts.BackgroundJobRunners;
 using JobSearchSiteBackend.Main.Domains.Accounts.EmailMessageTemplates;
-using JobSearchSiteBackend.Shared.MyAppSettings.Email;
+using JobSearchSiteBackend.Main.MyAppSettings;
+using JobSearchSiteBackend.Main.MyAppSettings.Email;
 
 namespace JobSearchSiteBackend.Core.Domains.Accounts.UseCases.SendPasswordResetLink;
 

@@ -10,6 +10,7 @@ using JobSearchSiteBackend.Core.Domains.Locations;
 using JobSearchSiteBackend.Core.Domains.PersonalFiles;
 using JobSearchSiteBackend.Core.Domains.UserProfiles;
 using JobSearchSiteBackend.Core.Persistence;
+using JobSearchSiteBackend.Main.Domains.Accounts;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;

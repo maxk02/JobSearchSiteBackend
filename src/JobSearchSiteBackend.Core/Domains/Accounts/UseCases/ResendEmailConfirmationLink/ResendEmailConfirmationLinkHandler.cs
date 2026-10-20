@@ -8,6 +8,7 @@ using JobSearchSiteBackend.Shared.MyAppSettings;
 using JobSearchSiteBackend.Shared.MyAppSettings.Email;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Options;
+using MyDefaultEmailSenderSettings = JobSearchSiteBackend.Core.MyAppSettings.Email.MyDefaultEmailSenderSettings;
 
 namespace JobSearchSiteBackend.Core.Domains.Accounts.UseCases.ResendEmailConfirmationLink;
 
@@ -15,7 +16,7 @@ public class ResendEmailConfirmationLinkHandler(
     ICurrentAccountService currentAccountService,
     UserManager<MyIdentityUser> userManager,
     IResendEmailConfirmationLinkRunner resendEmailConfirmationLinkRunner,
-    IOptions<MyAppSettings> injectedAppSettings,
+    IOptions<MyAppSettings.MyAppSettings> injectedAppSettings,
     StandardEmailRenderer emailRenderer,
     IOptions<MyDefaultEmailSenderSettings> emailSenderSettings) : IRequestHandler<ResendEmailConfirmationLinkCommand, Result>
 {

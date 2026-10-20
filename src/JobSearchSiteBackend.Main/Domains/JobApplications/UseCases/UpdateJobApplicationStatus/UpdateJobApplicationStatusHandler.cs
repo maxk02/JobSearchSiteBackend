@@ -5,8 +5,8 @@ using JobSearchSiteBackend.Core.Domains.JobApplications.BackgroundJobRunners;
 using JobSearchSiteBackend.Core.Domains.JobApplications.EmailMessageTemplates;
 using JobSearchSiteBackend.Core.Persistence;
 using JobSearchSiteBackend.Core.Services.EmailSender;
+using JobSearchSiteBackend.Main.MyAppSettings.Email;
 using JobSearchSiteBackend.Main.Services.Auth;
-using JobSearchSiteBackend.Shared.MyAppSettings.Email;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 

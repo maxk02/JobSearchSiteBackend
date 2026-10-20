@@ -8,9 +8,8 @@ using JobSearchSiteBackend.Core.Domains.Accounts.UseCases.LogOut;
 using JobSearchSiteBackend.Core.Domains.Accounts.UseCases.ResendEmailConfirmationLink;
 using JobSearchSiteBackend.Core.Domains.Accounts.UseCases.ResetForgottenPassword;
 using JobSearchSiteBackend.Core.Domains.Accounts.UseCases.SendPasswordResetLink;
-using Microsoft.Extensions.DependencyInjection;
 
-namespace JobSearchSiteBackend.Core.Domains.Accounts;
+namespace JobSearchSiteBackend.Main.Domains.Accounts;
 
 public static class AccountUseCasesDi
 {
