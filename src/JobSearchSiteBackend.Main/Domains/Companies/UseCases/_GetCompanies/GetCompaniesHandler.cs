@@ -1,14 +1,14 @@
 ﻿// using Ardalis.Result;
 // using AutoMapper;
 // using AutoMapper.QueryableExtensions;
-// using JobSearchSiteBackend.Core.Domains._Shared.Pagination;
-// using JobSearchSiteBackend.Core.Domains._Shared.UseCaseStructure;
-// using JobSearchSiteBackend.Core.Domains.Companies.Dtos;
-// using JobSearchSiteBackend.Core.Domains.Companies.Search;
-// using JobSearchSiteBackend.Core.Persistence;
+// using JobSearchSiteBackend.Main.Domains._Shared.Pagination;
+// using JobSearchSiteBackend.Main.Domains._Shared.UseCaseStructure;
+// using JobSearchSiteBackend.Main.Domains.Companies.Dtos;
+// using JobSearchSiteBackend.Main.Domains.Companies.Search;
+// using JobSearchSiteBackend.Main.Persistence;
 // using Microsoft.EntityFrameworkCore;
 //
-// namespace JobSearchSiteBackend.Core.Domains.Companies.UseCases.GetCompanies;
+// namespace JobSearchSiteBackend.Main.Domains.Companies.UseCases.GetCompanies;
 //
 // public class GetCompaniesHandler(
 //     ICompanySearchRepository companySearchRepository,

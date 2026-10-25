@@ -1,11 +1,11 @@
 ﻿using Ardalis.Result;
-using JobSearchSiteBackend.Core.Domains._Shared.UseCaseStructure;
-using JobSearchSiteBackend.Core.Domains.CompanyClaims;
-using JobSearchSiteBackend.Core.Persistence;
+using JobSearchSiteBackend.Main.Domains._Shared.UseCaseStructure;
+using JobSearchSiteBackend.Main.Domains.CompanyClaims;
+using JobSearchSiteBackend.Main.Persistence;
 using JobSearchSiteBackend.Main.Services.Auth;
 using Microsoft.EntityFrameworkCore;
 
-namespace JobSearchSiteBackend.Core.Domains.Companies.UseCases.TopUpCompanyBalance;
+namespace JobSearchSiteBackend.Main.Domains.Companies.UseCases.TopUpCompanyBalance;
 
 public class TopUpCompanyBalanceHandler(
     ICurrentAccountService currentAccountService,

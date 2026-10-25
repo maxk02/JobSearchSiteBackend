@@ -1,6 +1,6 @@
-﻿using JobSearchSiteBackend.Core.Domains.Locations.Dtos;
+﻿using JobSearchSiteBackend.Main.Domains.Locations.Dtos;
 
-namespace JobSearchSiteBackend.Core.Domains.Locations;
+namespace JobSearchSiteBackend.Main.Domains.Locations;
 
 public static class LocationDtoMappings
 {

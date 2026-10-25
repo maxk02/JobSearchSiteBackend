@@ -1,10 +1,10 @@
-﻿using JobSearchSiteBackend.Core.Domains._Shared.EntityInterfaces;
-using JobSearchSiteBackend.Core.Domains.JobApplications;
-using JobSearchSiteBackend.Core.Domains.UserProfiles;
+﻿using JobSearchSiteBackend.Main.Domains._Shared.EntityInterfaces;
+using JobSearchSiteBackend.Main.Domains.JobApplications;
 using Ardalis.Result;
 using Ardalis.Result.FluentValidation;
+using JobSearchSiteBackend.Main.Domains.UserProfiles;
 
-namespace JobSearchSiteBackend.Core.Domains.PersonalFiles;
+namespace JobSearchSiteBackend.Main.Domains.PersonalFiles;
 
 public class PersonalFile : IEntityWithId, IEntityWithGuid, IEntityWithUploadStatus, IEntityWithDateTimeCreatedUtc
 {

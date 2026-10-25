@@ -1,8 +1,8 @@
-﻿using JobSearchSiteBackend.Core.Domains.JobApplications.Enums;
-using JobSearchSiteBackend.Core.Domains.Locations.Dtos;
-using JobSearchSiteBackend.Core.Domains.PersonalFiles.Dtos;
+﻿using JobSearchSiteBackend.Main.Domains.JobApplications.Enums;
+using JobSearchSiteBackend.Main.Domains.Locations.Dtos;
+using JobSearchSiteBackend.Main.Domains.PersonalFiles.Dtos;
 
-namespace JobSearchSiteBackend.Core.Domains.JobApplications.Dtos;
+namespace JobSearchSiteBackend.Main.Domains.JobApplications.Dtos;
 
 public record JobApplicationForManagersDto(
     long Id,

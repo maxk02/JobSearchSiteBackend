@@ -1,8 +1,8 @@
 ﻿using System.Collections.Immutable;
-using JobSearchSiteBackend.Core.Domains.EmploymentOptions.Enums;
-using JobSearchSiteBackend.Core.Domains.Jobs;
+using JobSearchSiteBackend.Main.Domains.EmploymentOptions.Enums;
+using JobSearchSiteBackend.Main.Domains.Jobs;
 
-namespace JobSearchSiteBackend.Core.Domains.EmploymentOptions;
+namespace JobSearchSiteBackend.Main.Domains.EmploymentOptions;
 
 public class EmploymentOption
 {

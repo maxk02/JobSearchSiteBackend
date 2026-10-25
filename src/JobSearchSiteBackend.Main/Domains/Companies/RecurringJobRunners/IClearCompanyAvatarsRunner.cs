@@ -1,4 +1,4 @@
-﻿namespace JobSearchSiteBackend.Core.Domains.Companies.RecurringJobRunners;
+﻿namespace JobSearchSiteBackend.Main.Domains.Companies.RecurringJobRunners;
 
 public interface IClearCompanyAvatarsRunner
 {

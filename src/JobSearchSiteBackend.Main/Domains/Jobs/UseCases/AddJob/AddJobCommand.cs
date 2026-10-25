@@ -1,8 +1,8 @@
-﻿using JobSearchSiteBackend.Core.Domains._Shared.UseCaseStructure;
+﻿using JobSearchSiteBackend.Main.Domains._Shared.UseCaseStructure;
 using Ardalis.Result;
-using JobSearchSiteBackend.Core.Domains.Jobs.Dtos;
+using JobSearchSiteBackend.Main.Domains.Jobs.Dtos;
 
-namespace JobSearchSiteBackend.Core.Domains.Jobs.UseCases.AddJob;
+namespace JobSearchSiteBackend.Main.Domains.Jobs.UseCases.AddJob;
 
 public record AddJobCommand(
     long CompanyId,

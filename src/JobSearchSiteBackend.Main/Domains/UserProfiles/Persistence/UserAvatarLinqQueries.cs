@@ -1,4 +1,4 @@
-﻿namespace JobSearchSiteBackend.Core.Domains.UserProfiles.Persistence;
+﻿namespace JobSearchSiteBackend.Main.Domains.UserProfiles.Persistence;
 
 public static class UserAvatarLinqQueries
 {

@@ -1,7 +1,7 @@
-﻿using JobSearchSiteBackend.Core.Domains._Shared.Pagination;
-using JobSearchSiteBackend.Core.Domains.Jobs.Dtos;
+﻿using JobSearchSiteBackend.Main.Domains._Shared.Pagination;
+using JobSearchSiteBackend.Main.Domains.Jobs.Dtos;
 
-namespace JobSearchSiteBackend.Core.Domains.UserProfiles.UseCases.GetBookmarkedJobs;
+namespace JobSearchSiteBackend.Main.Domains.UserProfiles.UseCases.GetBookmarkedJobs;
 
 public record GetBookmarkedJobsResult(
     ICollection<JobCardDto> JobInfos,

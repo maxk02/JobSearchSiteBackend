@@ -1,6 +1,6 @@
-﻿using JobSearchSiteBackend.Core.Domains.Countries.Enums;
+﻿using JobSearchSiteBackend.Main.Domains.Countries.Enums;
 
-namespace JobSearchSiteBackend.Core.Domains.Companies;
+namespace JobSearchSiteBackend.Main.Domains.Companies;
 
 public static class CountrySpecificCompanyFieldsJsonSchemas
 {

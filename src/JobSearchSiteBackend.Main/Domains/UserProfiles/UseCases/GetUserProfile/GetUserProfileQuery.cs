@@ -1,6 +1,6 @@
 ﻿using Ardalis.Result;
-using JobSearchSiteBackend.Core.Domains._Shared.UseCaseStructure;
+using JobSearchSiteBackend.Main.Domains._Shared.UseCaseStructure;
 
-namespace JobSearchSiteBackend.Core.Domains.UserProfiles.UseCases.GetUserProfile;
+namespace JobSearchSiteBackend.Main.Domains.UserProfiles.UseCases.GetUserProfile;
 
 public record GetUserProfileQuery : IRequest<Result<GetUserProfileResult>>;

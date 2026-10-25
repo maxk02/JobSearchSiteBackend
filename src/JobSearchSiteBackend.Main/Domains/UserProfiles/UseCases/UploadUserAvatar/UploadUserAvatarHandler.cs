@@ -1,9 +1,9 @@
 ﻿using Ardalis.Result;
-using JobSearchSiteBackend.Core.Domains._Shared.UseCaseStructure;
-using JobSearchSiteBackend.Core.Persistence;
+using JobSearchSiteBackend.Main.Domains._Shared.UseCaseStructure;
+using JobSearchSiteBackend.Main.Persistence;
 using JobSearchSiteBackend.Main.Services.Auth;
 
-namespace JobSearchSiteBackend.Core.Domains.UserProfiles.UseCases.UploadUserAvatar;
+namespace JobSearchSiteBackend.Main.Domains.UserProfiles.UseCases.UploadUserAvatar;
 
 public class UploadUserAvatarHandler(
     ICurrentAccountService currentAccountService,

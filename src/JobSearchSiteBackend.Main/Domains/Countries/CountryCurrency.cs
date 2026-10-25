@@ -1,12 +1,12 @@
 ﻿using System.Collections.Immutable;
-using JobSearchSiteBackend.Core.Domains._Shared.EntityInterfaces;
-using JobSearchSiteBackend.Core.Domains._Shared.Enums;
-using JobSearchSiteBackend.Core.Domains.Companies;
-using JobSearchSiteBackend.Core.Domains.JobContractTypes;
-using JobSearchSiteBackend.Core.Domains.Jobs;
-using JobSearchSiteBackend.Core.Domains.Locations;
+using JobSearchSiteBackend.Main.Domains._Shared.EntityInterfaces;
+using JobSearchSiteBackend.Main.Domains._Shared.Enums;
+using JobSearchSiteBackend.Main.Domains.Companies;
+using JobSearchSiteBackend.Main.Domains.JobContractTypes;
+using JobSearchSiteBackend.Main.Domains.Jobs;
+using JobSearchSiteBackend.Main.Domains.Locations;
 
-namespace JobSearchSiteBackend.Core.Domains.Countries;
+namespace JobSearchSiteBackend.Main.Domains.Countries;
 
 public class CountryCurrency : IEntityWithId
 {

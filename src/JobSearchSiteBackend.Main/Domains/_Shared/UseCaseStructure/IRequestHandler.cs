@@ -1,4 +1,4 @@
-﻿namespace JobSearchSiteBackend.Core.Domains._Shared.UseCaseStructure;
+﻿namespace JobSearchSiteBackend.Main.Domains._Shared.UseCaseStructure;
 
 public interface IRequestHandler<TRequest, TResponse> where TRequest : IRequest<TResponse>
 {

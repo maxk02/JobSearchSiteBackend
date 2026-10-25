@@ -1,8 +1,8 @@
-using JobSearchSiteBackend.Core.Persistence;
-using JobSearchSiteBackend.Core.Services.EmailSender;
+using JobSearchSiteBackend.Main.Services.EmailSender;
 using JobSearchSiteBackend.Main.Domains.Accounts.BackgroundJobRunners;
 using JobSearchSiteBackend.Main.Domains.Accounts.EmailMessageTemplates;
 using JobSearchSiteBackend.Main.MyAppSettings.Email;
+using JobSearchSiteBackend.Main.Persistence;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;

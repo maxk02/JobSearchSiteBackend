@@ -1,6 +1,6 @@
 ﻿using JobSearchSiteBackend.Main.Services.Search;
 
-namespace JobSearchSiteBackend.Core.Domains.JobApplications.Search;
+namespace JobSearchSiteBackend.Main.Domains.JobApplications.Search;
 
 public interface IJobApplicationSearchRepository : ISearchRepository<JobApplicationSearchModel>,
     IUpdatableSearchRepository<JobApplicationSearchModel>

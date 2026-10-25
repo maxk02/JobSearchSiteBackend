@@ -1,6 +1,6 @@
-﻿using JobSearchSiteBackend.Core.Domains.PersonalFiles.Dtos;
+﻿using JobSearchSiteBackend.Main.Domains.PersonalFiles.Dtos;
 
-namespace JobSearchSiteBackend.Core.Domains.PersonalFiles;
+namespace JobSearchSiteBackend.Main.Domains.PersonalFiles;
 
 public static class PersonalFileDtoMappings
 {

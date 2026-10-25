@@ -1,11 +1,11 @@
-﻿using JobSearchSiteBackend.Core.Domains._Shared.EntityInterfaces;
-using JobSearchSiteBackend.Core.Domains.JobApplications.Enums;
-using JobSearchSiteBackend.Core.Domains.Jobs;
-using JobSearchSiteBackend.Core.Domains.Locations;
-using JobSearchSiteBackend.Core.Domains.PersonalFiles;
-using JobSearchSiteBackend.Core.Domains.UserProfiles;
+﻿using JobSearchSiteBackend.Main.Domains._Shared.EntityInterfaces;
+using JobSearchSiteBackend.Main.Domains.JobApplications.Enums;
+using JobSearchSiteBackend.Main.Domains.Jobs;
+using JobSearchSiteBackend.Main.Domains.Locations;
+using JobSearchSiteBackend.Main.Domains.PersonalFiles;
+using JobSearchSiteBackend.Main.Domains.UserProfiles;
 
-namespace JobSearchSiteBackend.Core.Domains.JobApplications;
+namespace JobSearchSiteBackend.Main.Domains.JobApplications;
 
 public class JobApplication : IEntityWithId, IEntityWithDateTimeCreatedUtc, IEntityWithSearchSync
 {

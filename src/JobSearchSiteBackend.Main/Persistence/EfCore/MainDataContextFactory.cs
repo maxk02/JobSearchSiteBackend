@@ -1,4 +1,4 @@
-﻿// using JobSearchSiteBackend.Core.Persistence;
+﻿// using JobSearchSiteBackend.Main.Persistence;
 // using Microsoft.EntityFrameworkCore;
 // using Microsoft.EntityFrameworkCore.Design;
 //

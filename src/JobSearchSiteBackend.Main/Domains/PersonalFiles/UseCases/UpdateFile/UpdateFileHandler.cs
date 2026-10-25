@@ -1,9 +1,9 @@
-﻿using JobSearchSiteBackend.Core.Domains._Shared.UseCaseStructure;
+﻿using JobSearchSiteBackend.Main.Domains._Shared.UseCaseStructure;
 using Ardalis.Result;
-using JobSearchSiteBackend.Core.Persistence;
 using JobSearchSiteBackend.Main.Services.Auth;
+using JobSearchSiteBackend.Main.Persistence;
 
-namespace JobSearchSiteBackend.Core.Domains.PersonalFiles.UseCases.UpdateFile;
+namespace JobSearchSiteBackend.Main.Domains.PersonalFiles.UseCases.UpdateFile;
 
 public class UpdateFileHandler(ICurrentAccountService currentAccountService,
     MainDataContext context) : IRequestHandler<UpdateFileCommand, Result>

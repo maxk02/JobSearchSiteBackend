@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace JobSearchSiteBackend.Core.Domains.CompanyClaims.Persistence;
+namespace JobSearchSiteBackend.Main.Domains.CompanyClaims.Persistence;
 
 public class UserCompanyClaimConfiguration : IEntityTypeConfiguration<UserCompanyClaim>
 {

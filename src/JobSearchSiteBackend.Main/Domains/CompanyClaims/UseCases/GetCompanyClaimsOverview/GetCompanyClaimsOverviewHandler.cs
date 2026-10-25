@@ -1,12 +1,12 @@
 ﻿using Ardalis.Result;
-using JobSearchSiteBackend.Core.Domains._Shared.Pagination;
-using JobSearchSiteBackend.Core.Domains._Shared.UseCaseStructure;
-using JobSearchSiteBackend.Core.Domains.CompanyClaims.Dtos;
-using JobSearchSiteBackend.Core.Persistence;
+using JobSearchSiteBackend.Main.Domains._Shared.Pagination;
+using JobSearchSiteBackend.Main.Domains._Shared.UseCaseStructure;
+using JobSearchSiteBackend.Main.Domains.CompanyClaims.Dtos;
+using JobSearchSiteBackend.Main.Persistence;
 using JobSearchSiteBackend.Main.Services.Auth;
 using Microsoft.EntityFrameworkCore;
 
-namespace JobSearchSiteBackend.Core.Domains.CompanyClaims.UseCases.GetCompanyClaimsOverview;
+namespace JobSearchSiteBackend.Main.Domains.CompanyClaims.UseCases.GetCompanyClaimsOverview;
 
 public class GetCompanyClaimsOverviewHandler(
     ICurrentAccountService currentAccountService,

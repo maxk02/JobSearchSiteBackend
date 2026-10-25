@@ -1,10 +1,10 @@
-﻿using JobSearchSiteBackend.Core.Domains._Shared.EntityInterfaces;
-using JobSearchSiteBackend.Core.Domains.CompanyClaims;
-using JobSearchSiteBackend.Core.Domains.Countries;
-using JobSearchSiteBackend.Core.Domains.Jobs;
-using JobSearchSiteBackend.Core.Domains.UserProfiles;
+﻿using JobSearchSiteBackend.Main.Domains._Shared.EntityInterfaces;
+using JobSearchSiteBackend.Main.Domains.CompanyClaims;
+using JobSearchSiteBackend.Main.Domains.Countries;
+using JobSearchSiteBackend.Main.Domains.Jobs;
+using JobSearchSiteBackend.Main.Domains.UserProfiles;
 
-namespace JobSearchSiteBackend.Core.Domains.Companies;
+namespace JobSearchSiteBackend.Main.Domains.Companies;
 
 public class Company : IEntityWithId
 {

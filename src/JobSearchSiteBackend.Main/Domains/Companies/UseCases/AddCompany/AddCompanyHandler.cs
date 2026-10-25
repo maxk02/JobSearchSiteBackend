@@ -1,14 +1,14 @@
 ﻿using Ardalis.Result;
-using JobSearchSiteBackend.Core.Domains._Shared.UseCaseStructure;
-using JobSearchSiteBackend.Core.Domains.CompanyClaims;
-using JobSearchSiteBackend.Core.Persistence;
+using JobSearchSiteBackend.Main.Domains._Shared.UseCaseStructure;
+using JobSearchSiteBackend.Main.Domains.CompanyClaims;
+using JobSearchSiteBackend.Main.Persistence;
 using JobSearchSiteBackend.Main.Services.Auth;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Newtonsoft.Json.Schema;
 using Newtonsoft.Json.Serialization;
 
-namespace JobSearchSiteBackend.Core.Domains.Companies.UseCases.AddCompany;
+namespace JobSearchSiteBackend.Main.Domains.Companies.UseCases.AddCompany;
 
 public class AddCompanyHandler(
     ICurrentAccountService currentAccountService,

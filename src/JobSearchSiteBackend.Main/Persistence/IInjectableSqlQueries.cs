@@ -1,4 +1,4 @@
-﻿namespace JobSearchSiteBackend.Core.Persistence;
+﻿namespace JobSearchSiteBackend.Main.Persistence;
 
 public interface IInjectableSqlQueries
 {

@@ -1,8 +1,9 @@
 ﻿using FluentValidation;
+using JobSearchSiteBackend.Main.Domains.UserProfiles;
 using JobSearchSiteBackend.Shared.FluentValidationAddons;
 using JobSearchSiteBackend.Shared.FluentValidationAddons.StringFiltering;
 
-namespace JobSearchSiteBackend.Core.Domains.UserProfiles;
+namespace JobSearchSiteBackend.Main.Domains.UserProfiles;
 
 public class UserProfileValidator : AbstractValidator<UserProfile>
 {

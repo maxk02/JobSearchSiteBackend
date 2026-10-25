@@ -1,7 +1,7 @@
-﻿using JobSearchSiteBackend.Core.Domains._Shared.Pagination;
-using JobSearchSiteBackend.Core.Domains.Companies.Dtos;
+﻿using JobSearchSiteBackend.Main.Domains._Shared.Pagination;
+using JobSearchSiteBackend.Main.Domains.Companies.Dtos;
 
-namespace JobSearchSiteBackend.Core.Domains.Companies.UseCases.GetCompanyBalanceTransactions;
+namespace JobSearchSiteBackend.Main.Domains.Companies.UseCases.GetCompanyBalanceTransactions;
 
 public record GetCompanyBalanceTransactionsResult(
     ICollection<CompanyBalanceTransactionDto> CompanyBalanceTransactionDtos,

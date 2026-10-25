@@ -1,7 +1,7 @@
 ﻿using Ardalis.Result;
-using JobSearchSiteBackend.Core.Domains._Shared.UseCaseStructure;
+using JobSearchSiteBackend.Main.Domains._Shared.UseCaseStructure;
 
-namespace JobSearchSiteBackend.Core.Domains.Companies.UseCases.GetCompanyJobManagementCardDtos;
+namespace JobSearchSiteBackend.Main.Domains.Companies.UseCases.GetCompanyJobManagementCardDtos;
 
 public record GetCompanyJobManagementCardDtosQuery(
     long CompanyId,

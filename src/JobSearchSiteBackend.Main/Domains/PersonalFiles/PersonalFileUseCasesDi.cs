@@ -1,10 +1,10 @@
-﻿using JobSearchSiteBackend.Core.Domains.PersonalFiles.UseCases.DeleteFile;
-using JobSearchSiteBackend.Core.Domains.PersonalFiles.UseCases.GetDownloadLink;
-using JobSearchSiteBackend.Core.Domains.PersonalFiles.UseCases.UpdateFile;
-using JobSearchSiteBackend.Core.Domains.PersonalFiles.UseCases.UploadFile;
+﻿using JobSearchSiteBackend.Main.Domains.PersonalFiles.UseCases.DeleteFile;
+using JobSearchSiteBackend.Main.Domains.PersonalFiles.UseCases.GetDownloadLink;
+using JobSearchSiteBackend.Main.Domains.PersonalFiles.UseCases.UpdateFile;
+using JobSearchSiteBackend.Main.Domains.PersonalFiles.UseCases.UploadFile;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace JobSearchSiteBackend.Core.Domains.PersonalFiles;
+namespace JobSearchSiteBackend.Main.Domains.PersonalFiles;
 
 public static class PersonalFileUseCasesDi
 {

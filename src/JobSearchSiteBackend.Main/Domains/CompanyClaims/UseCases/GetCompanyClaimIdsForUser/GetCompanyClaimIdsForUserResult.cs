@@ -1,3 +1,3 @@
-﻿namespace JobSearchSiteBackend.Core.Domains.CompanyClaims.UseCases.GetCompanyClaimIdsForUser;
+﻿namespace JobSearchSiteBackend.Main.Domains.CompanyClaims.UseCases.GetCompanyClaimIdsForUser;
 
 public record GetCompanyClaimIdsForUserResult(ICollection<long> ClaimIds);

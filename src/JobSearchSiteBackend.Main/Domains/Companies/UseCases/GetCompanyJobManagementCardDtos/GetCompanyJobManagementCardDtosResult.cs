@@ -1,7 +1,7 @@
-﻿using JobSearchSiteBackend.Core.Domains._Shared.Pagination;
-using JobSearchSiteBackend.Core.Domains.Jobs.Dtos;
+﻿using JobSearchSiteBackend.Main.Domains._Shared.Pagination;
+using JobSearchSiteBackend.Main.Domains.Jobs.Dtos;
 
-namespace JobSearchSiteBackend.Core.Domains.Companies.UseCases.GetCompanyJobManagementCardDtos;
+namespace JobSearchSiteBackend.Main.Domains.Companies.UseCases.GetCompanyJobManagementCardDtos;
 
 public record GetCompanyJobManagementCardDtosResult(
     ICollection<JobManagementCardDto> JobManagementCardDtos,

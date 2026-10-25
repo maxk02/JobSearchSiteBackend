@@ -1,5 +1,5 @@
-﻿using JobSearchSiteBackend.Core.Domains.Companies.Dtos;
+﻿using JobSearchSiteBackend.Main.Domains.Companies.Dtos;
 
-namespace JobSearchSiteBackend.Core.Domains.Companies.UseCases.GetCompany;
+namespace JobSearchSiteBackend.Main.Domains.Companies.UseCases.GetCompany;
 
 public record GetCompanyResult(CompanyDto Company);

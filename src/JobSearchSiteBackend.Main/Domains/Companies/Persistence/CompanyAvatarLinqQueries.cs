@@ -1,4 +1,4 @@
-﻿namespace JobSearchSiteBackend.Core.Domains.Companies.Persistence;
+﻿namespace JobSearchSiteBackend.Main.Domains.Companies.Persistence;
 
 public static class CompanyAvatarLinqQueries
 {

@@ -1,6 +1,6 @@
 ﻿using JobSearchSiteBackend.Main.Services.Search;
 
-namespace JobSearchSiteBackend.Core.Domains.Locations.Search;
+namespace JobSearchSiteBackend.Main.Domains.Locations.Search;
 
 public interface ILocationSearchRepository : ISearchRepository<LocationSearchModel>
 {

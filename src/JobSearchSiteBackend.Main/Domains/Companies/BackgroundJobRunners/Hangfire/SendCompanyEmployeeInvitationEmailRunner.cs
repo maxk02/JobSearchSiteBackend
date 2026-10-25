@@ -1,6 +1,6 @@
 ﻿using Hangfire;
-using JobSearchSiteBackend.Core.Domains.Companies.BackgroundJobRunners;
-using JobSearchSiteBackend.Core.Services.EmailSender;
+using JobSearchSiteBackend.Main.Domains.Companies.BackgroundJobRunners;
+using JobSearchSiteBackend.Main.Services.EmailSender;
 
 namespace JobSearchSiteBackend.Main.Domains.Companies.BackgroundJobRunners.Hangfire;
 

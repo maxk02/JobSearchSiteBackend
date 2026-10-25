@@ -1,13 +1,13 @@
-﻿using JobSearchSiteBackend.Core.Domains.JobApplications.UseCases.AddJobApplication;
-using JobSearchSiteBackend.Core.Domains.JobApplications.UseCases.AddJobApplicationTag;
-using JobSearchSiteBackend.Core.Domains.JobApplications.UseCases.DeleteJobApplication;
-using JobSearchSiteBackend.Core.Domains.JobApplications.UseCases.GetFileDownloadLinkFromJobApplication;
-using JobSearchSiteBackend.Core.Domains.JobApplications.UseCases.RemoveJobApplicationTag;
-using JobSearchSiteBackend.Core.Domains.JobApplications.UseCases.UpdateJobApplicationFiles;
-using JobSearchSiteBackend.Core.Domains.JobApplications.UseCases.UpdateJobApplicationStatus;
+﻿using JobSearchSiteBackend.Main.Domains.JobApplications.UseCases.AddJobApplication;
+using JobSearchSiteBackend.Main.Domains.JobApplications.UseCases.AddJobApplicationTag;
+using JobSearchSiteBackend.Main.Domains.JobApplications.UseCases.DeleteJobApplication;
+using JobSearchSiteBackend.Main.Domains.JobApplications.UseCases.GetFileDownloadLinkFromJobApplication;
+using JobSearchSiteBackend.Main.Domains.JobApplications.UseCases.RemoveJobApplicationTag;
+using JobSearchSiteBackend.Main.Domains.JobApplications.UseCases.UpdateJobApplicationFiles;
+using JobSearchSiteBackend.Main.Domains.JobApplications.UseCases.UpdateJobApplicationStatus;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace JobSearchSiteBackend.Core.Domains.JobApplications;
+namespace JobSearchSiteBackend.Main.Domains.JobApplications;
 
 public static class JobApplicationUseCasesDi
 {

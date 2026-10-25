@@ -1,16 +1,14 @@
-﻿using JobSearchSiteBackend.Core.Domains.Accounts.UseCases.GetAccountData;
-using JobSearchSiteBackend.Core.Domains.UserProfiles.UseCases.AddJobBookmark;
-using JobSearchSiteBackend.Core.Domains.UserProfiles.UseCases.AddUserProfile;
-using JobSearchSiteBackend.Core.Domains.UserProfiles.UseCases.DeleteJobBookmark;
-using JobSearchSiteBackend.Core.Domains.UserProfiles.UseCases.GetBookmarkedJobs;
-using JobSearchSiteBackend.Core.Domains.UserProfiles.UseCases.GetJobApplications;
-using JobSearchSiteBackend.Core.Domains.UserProfiles.UseCases.GetPersonalFiles;
-using JobSearchSiteBackend.Core.Domains.UserProfiles.UseCases.GetUserProfile;
-using JobSearchSiteBackend.Core.Domains.UserProfiles.UseCases.UpdateUserProfile;
-using JobSearchSiteBackend.Core.Domains.UserProfiles.UseCases.UploadUserAvatar;
-using Microsoft.Extensions.DependencyInjection;
+﻿using JobSearchSiteBackend.Main.Domains.UserProfiles.UseCases.AddJobBookmark;
+using JobSearchSiteBackend.Main.Domains.UserProfiles.UseCases.AddUserProfile;
+using JobSearchSiteBackend.Main.Domains.UserProfiles.UseCases.DeleteJobBookmark;
+using JobSearchSiteBackend.Main.Domains.UserProfiles.UseCases.GetBookmarkedJobs;
+using JobSearchSiteBackend.Main.Domains.UserProfiles.UseCases.GetJobApplications;
+using JobSearchSiteBackend.Main.Domains.UserProfiles.UseCases.GetPersonalFiles;
+using JobSearchSiteBackend.Main.Domains.UserProfiles.UseCases.GetUserProfile;
+using JobSearchSiteBackend.Main.Domains.UserProfiles.UseCases.UpdateUserProfile;
+using JobSearchSiteBackend.Main.Domains.UserProfiles.UseCases.UploadUserAvatar;
 
-namespace JobSearchSiteBackend.Core.Domains.UserProfiles;
+namespace JobSearchSiteBackend.Main.Domains.UserProfiles;
 
 public static class UserProfilesUseCasesDi
 {

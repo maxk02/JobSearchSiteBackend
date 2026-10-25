@@ -1,6 +1,6 @@
-﻿using JobSearchSiteBackend.Core.Domains.Companies.Dtos;
+﻿using JobSearchSiteBackend.Main.Domains.Companies.Dtos;
 
-namespace JobSearchSiteBackend.Core.Domains.Companies;
+namespace JobSearchSiteBackend.Main.Domains.Companies;
 
 public static class CompanyDtoMappings
 {

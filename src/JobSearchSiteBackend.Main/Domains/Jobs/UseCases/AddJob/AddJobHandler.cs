@@ -1,15 +1,15 @@
 ﻿using System.Globalization;
 using Ardalis.Result;
-using JobSearchSiteBackend.Core.Domains._Shared.UseCaseStructure;
-using JobSearchSiteBackend.Core.Domains.Categories;
-using JobSearchSiteBackend.Core.Domains.Companies;
-using JobSearchSiteBackend.Core.Domains.CompanyClaims;
-using JobSearchSiteBackend.Core.Domains.EmploymentOptions;
-using JobSearchSiteBackend.Core.Persistence;
+using JobSearchSiteBackend.Main.Domains._Shared.UseCaseStructure;
+using JobSearchSiteBackend.Main.Domains.Categories;
+using JobSearchSiteBackend.Main.Domains.Companies;
+using JobSearchSiteBackend.Main.Domains.CompanyClaims;
+using JobSearchSiteBackend.Main.Domains.EmploymentOptions;
+using JobSearchSiteBackend.Main.Persistence;
 using JobSearchSiteBackend.Main.Services.Auth;
 using Microsoft.EntityFrameworkCore;
 
-namespace JobSearchSiteBackend.Core.Domains.Jobs.UseCases.AddJob;
+namespace JobSearchSiteBackend.Main.Domains.Jobs.UseCases.AddJob;
 
 public class AddJobHandler(
     ICurrentAccountService currentAccountService,

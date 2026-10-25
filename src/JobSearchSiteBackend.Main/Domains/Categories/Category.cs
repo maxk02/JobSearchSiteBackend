@@ -1,8 +1,8 @@
 ﻿using System.Collections.Immutable;
-using JobSearchSiteBackend.Core.Domains._Shared.EntityInterfaces;
-using JobSearchSiteBackend.Core.Domains.Jobs;
+using JobSearchSiteBackend.Main.Domains._Shared.EntityInterfaces;
+using JobSearchSiteBackend.Main.Domains.Jobs;
 
-namespace JobSearchSiteBackend.Core.Domains.Categories;
+namespace JobSearchSiteBackend.Main.Domains.Categories;
 
 public class Category : IEntityWithId
 {

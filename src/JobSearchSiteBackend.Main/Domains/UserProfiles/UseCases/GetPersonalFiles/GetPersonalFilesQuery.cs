@@ -1,8 +1,8 @@
-﻿using JobSearchSiteBackend.Core.Domains._Shared.Pagination;
-using JobSearchSiteBackend.Core.Domains._Shared.UseCaseStructure;
+﻿using JobSearchSiteBackend.Main.Domains._Shared.Pagination;
+using JobSearchSiteBackend.Main.Domains._Shared.UseCaseStructure;
 using Ardalis.Result;
 
-namespace JobSearchSiteBackend.Core.Domains.UserProfiles.UseCases.GetPersonalFiles;
+namespace JobSearchSiteBackend.Main.Domains.UserProfiles.UseCases.GetPersonalFiles;
 
 public record GetPersonalFilesQuery(int Page, int Size) 
     : IRequest<Result<GetPersonalFilesResult>>;

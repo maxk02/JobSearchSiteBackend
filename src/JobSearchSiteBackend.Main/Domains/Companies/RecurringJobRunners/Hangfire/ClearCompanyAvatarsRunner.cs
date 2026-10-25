@@ -1,5 +1,5 @@
-﻿using JobSearchSiteBackend.Core.Domains.Companies.RecurringJobRunners;
-using JobSearchSiteBackend.Core.Persistence;
+﻿using JobSearchSiteBackend.Main.Domains.Companies.RecurringJobRunners;
+using JobSearchSiteBackend.Main.Persistence;
 using JobSearchSiteBackend.Main.Services.FileStorage;
 using Microsoft.EntityFrameworkCore;
 

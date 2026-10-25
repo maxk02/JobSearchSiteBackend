@@ -1,7 +1,7 @@
-﻿using JobSearchSiteBackend.Core.Domains._Shared.Pagination;
-using JobSearchSiteBackend.Core.Domains.JobApplications.Dtos;
+﻿using JobSearchSiteBackend.Main.Domains._Shared.Pagination;
+using JobSearchSiteBackend.Main.Domains.JobApplications.Dtos;
 
-namespace JobSearchSiteBackend.Core.Domains.UserProfiles.UseCases.GetJobApplications;
+namespace JobSearchSiteBackend.Main.Domains.UserProfiles.UseCases.GetJobApplications;
 
 public record GetJobApplicationsResult(
     ICollection<JobApplicationInUserProfileDto> JobApplications,

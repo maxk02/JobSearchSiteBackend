@@ -1,7 +1,7 @@
 ﻿using Ardalis.Result;
-using JobSearchSiteBackend.Core.Domains._Shared.UseCaseStructure;
+using JobSearchSiteBackend.Main.Domains._Shared.UseCaseStructure;
 
-namespace JobSearchSiteBackend.Core.Domains.Jobs.UseCases.GetJobs;
+namespace JobSearchSiteBackend.Main.Domains.Jobs.UseCases.GetJobs;
 
 public record GetJobsQuery(
     string? Query,

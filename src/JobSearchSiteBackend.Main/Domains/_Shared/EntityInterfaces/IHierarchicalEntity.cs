@@ -1,4 +1,4 @@
-﻿namespace JobSearchSiteBackend.Core.Domains._Shared.EntityInterfaces;
+﻿namespace JobSearchSiteBackend.Main.Domains._Shared.EntityInterfaces;
 
 public interface IHierarchicalEntity<T, TClosure> where T : IEntityWithId where TClosure : IHierarchicalEntityRelation<T>
 {

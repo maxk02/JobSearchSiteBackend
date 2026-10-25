@@ -1,15 +1,15 @@
 ﻿using Ardalis.Result;
 using AutoMapper;
-using JobSearchSiteBackend.Core.Domains._Shared.UseCaseStructure;
-using JobSearchSiteBackend.Core.Domains.Companies.Dtos;
-using JobSearchSiteBackend.Core.Domains.Companies.Persistence;
-using JobSearchSiteBackend.Core.Domains.CompanyClaims;
-using JobSearchSiteBackend.Core.Persistence;
+using JobSearchSiteBackend.Main.Domains._Shared.UseCaseStructure;
+using JobSearchSiteBackend.Main.Domains.Companies.Dtos;
+using JobSearchSiteBackend.Main.Domains.Companies.Persistence;
+using JobSearchSiteBackend.Main.Domains.CompanyClaims;
+using JobSearchSiteBackend.Main.Persistence;
 using JobSearchSiteBackend.Main.Services.Auth;
 using JobSearchSiteBackend.Main.Services.FileStorage;
 using Microsoft.EntityFrameworkCore;
 
-namespace JobSearchSiteBackend.Core.Domains.Companies.UseCases.GetCompany;
+namespace JobSearchSiteBackend.Main.Domains.Companies.UseCases.GetCompany;
 
 public class GetCompanyHandler(
     ICurrentAccountService currentAccountService,

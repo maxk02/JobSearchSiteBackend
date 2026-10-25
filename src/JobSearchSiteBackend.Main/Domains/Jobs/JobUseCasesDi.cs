@@ -1,15 +1,15 @@
-﻿using JobSearchSiteBackend.Core.Domains.Jobs.UseCases.AddJob;
-using JobSearchSiteBackend.Core.Domains.Jobs.UseCases.DeleteJob;
-using JobSearchSiteBackend.Core.Domains.Jobs.UseCases.GetApplicationsForJob;
-using JobSearchSiteBackend.Core.Domains.Jobs.UseCases.GetDailyApplicationsForJobForDateRange;
-using JobSearchSiteBackend.Core.Domains.Jobs.UseCases.GetDailyViewsForJobForDateRange;
-using JobSearchSiteBackend.Core.Domains.Jobs.UseCases.GetJob;
-using JobSearchSiteBackend.Core.Domains.Jobs.UseCases.GetJobManagementDto;
-using JobSearchSiteBackend.Core.Domains.Jobs.UseCases.GetJobs;
-using JobSearchSiteBackend.Core.Domains.Jobs.UseCases.UpdateJob;
+﻿using JobSearchSiteBackend.Main.Domains.Jobs.UseCases.AddJob;
+using JobSearchSiteBackend.Main.Domains.Jobs.UseCases.DeleteJob;
+using JobSearchSiteBackend.Main.Domains.Jobs.UseCases.GetApplicationsForJob;
+using JobSearchSiteBackend.Main.Domains.Jobs.UseCases.GetDailyApplicationsForJobForDateRange;
+using JobSearchSiteBackend.Main.Domains.Jobs.UseCases.GetDailyViewsForJobForDateRange;
+using JobSearchSiteBackend.Main.Domains.Jobs.UseCases.GetJob;
+using JobSearchSiteBackend.Main.Domains.Jobs.UseCases.GetJobManagementDto;
+using JobSearchSiteBackend.Main.Domains.Jobs.UseCases.GetJobs;
+using JobSearchSiteBackend.Main.Domains.Jobs.UseCases.UpdateJob;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace JobSearchSiteBackend.Core.Domains.Jobs;
+namespace JobSearchSiteBackend.Main.Domains.Jobs;
 
 public static class JobUseCasesDi
 {

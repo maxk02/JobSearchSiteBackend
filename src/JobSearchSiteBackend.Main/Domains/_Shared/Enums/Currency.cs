@@ -1,4 +1,4 @@
-﻿// namespace JobSearchSiteBackend.Core.Domains._Shared.Enums;
+﻿// namespace JobSearchSiteBackend.Main.Domains._Shared.Enums;
 //
 // public enum Currency
 // {

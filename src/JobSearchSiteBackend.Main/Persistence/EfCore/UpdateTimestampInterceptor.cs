@@ -1,8 +1,8 @@
-﻿using JobSearchSiteBackend.Core.Domains._Shared.EntityInterfaces;
+﻿using JobSearchSiteBackend.Main.Domains._Shared.EntityInterfaces;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 
-namespace JobSearchSiteBackend.Infrastructure.Persistence.EfCore;
+namespace JobSearchSiteBackend.Main.Persistence.EfCore;
 
 public class UpdateTimestampInterceptor : SaveChangesInterceptor
 {

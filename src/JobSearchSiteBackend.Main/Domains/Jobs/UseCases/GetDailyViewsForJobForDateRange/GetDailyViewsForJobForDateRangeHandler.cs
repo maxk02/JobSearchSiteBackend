@@ -1,17 +1,17 @@
 ﻿using Ardalis.Result;
-using JobSearchSiteBackend.Core.Domains._Shared.Pagination;
-using JobSearchSiteBackend.Core.Domains._Shared.UseCaseStructure;
-using JobSearchSiteBackend.Core.Domains.CompanyClaims;
-using JobSearchSiteBackend.Core.Domains.JobApplications.Dtos;
-using JobSearchSiteBackend.Core.Domains.JobApplications.Search;
-using JobSearchSiteBackend.Core.Domains.Locations;
-using JobSearchSiteBackend.Core.Domains.PersonalFiles;
-using JobSearchSiteBackend.Core.Domains.UserProfiles.Persistence;
-using JobSearchSiteBackend.Core.Persistence;
+using JobSearchSiteBackend.Main.Domains._Shared.Pagination;
+using JobSearchSiteBackend.Main.Domains._Shared.UseCaseStructure;
+using JobSearchSiteBackend.Main.Domains.CompanyClaims;
+using JobSearchSiteBackend.Main.Domains.JobApplications.Dtos;
+using JobSearchSiteBackend.Main.Domains.JobApplications.Search;
+using JobSearchSiteBackend.Main.Domains.Locations;
+using JobSearchSiteBackend.Main.Domains.PersonalFiles;
+using JobSearchSiteBackend.Main.Domains.UserProfiles.Persistence;
+using JobSearchSiteBackend.Main.Persistence;
 using JobSearchSiteBackend.Main.Services.Auth;
 using Microsoft.EntityFrameworkCore;
 
-namespace JobSearchSiteBackend.Core.Domains.Jobs.UseCases.GetDailyViewsForJobForDateRange;
+namespace JobSearchSiteBackend.Main.Domains.Jobs.UseCases.GetDailyViewsForJobForDateRange;
 
 public class GetDailyViewsForJobForDateRangeHandler(
     ICurrentAccountService currentAccountService,

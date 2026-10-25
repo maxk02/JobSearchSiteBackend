@@ -1,4 +1,4 @@
-﻿namespace JobSearchSiteBackend.Core.Domains.CompanyClaims.Dtos;
+﻿namespace JobSearchSiteBackend.Main.Domains.CompanyClaims.Dtos;
 
 public record CompanyClaimOverviewDto(
     long UserCompanyClaimId,

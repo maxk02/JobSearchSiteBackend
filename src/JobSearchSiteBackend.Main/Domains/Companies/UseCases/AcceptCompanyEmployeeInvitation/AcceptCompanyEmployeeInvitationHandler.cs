@@ -1,10 +1,10 @@
 ﻿using Ardalis.Result;
-using JobSearchSiteBackend.Core.Domains._Shared.UseCaseStructure;
-using JobSearchSiteBackend.Core.Persistence;
+using JobSearchSiteBackend.Main.Domains._Shared.UseCaseStructure;
+using JobSearchSiteBackend.Main.Persistence;
 using JobSearchSiteBackend.Main.Services.Auth;
 using Microsoft.EntityFrameworkCore;
 
-namespace JobSearchSiteBackend.Core.Domains.Companies.UseCases.AcceptCompanyEmployeeInvitation;
+namespace JobSearchSiteBackend.Main.Domains.Companies.UseCases.AcceptCompanyEmployeeInvitation;
 
 public class AcceptCompanyEmployeeInvitationHandler(
     ICurrentAccountService currentAccountService,

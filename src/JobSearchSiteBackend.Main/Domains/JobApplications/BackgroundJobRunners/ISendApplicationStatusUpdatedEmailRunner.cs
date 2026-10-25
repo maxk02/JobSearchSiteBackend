@@ -1,6 +1,6 @@
-﻿using JobSearchSiteBackend.Core.Services.EmailSender;
+﻿using JobSearchSiteBackend.Main.Services.EmailSender;
 
-namespace JobSearchSiteBackend.Core.Domains.JobApplications.BackgroundJobRunners;
+namespace JobSearchSiteBackend.Main.Domains.JobApplications.BackgroundJobRunners;
 
 public interface ISendApplicationStatusUpdatedEmailRunner
 {

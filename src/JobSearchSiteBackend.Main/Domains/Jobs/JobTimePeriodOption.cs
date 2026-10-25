@@ -1,6 +1,6 @@
 ﻿using System.Collections.Immutable;
 
-namespace JobSearchSiteBackend.Core.Domains.Jobs;
+namespace JobSearchSiteBackend.Main.Domains.Jobs;
 
 public class JobTimePeriodOption
 {

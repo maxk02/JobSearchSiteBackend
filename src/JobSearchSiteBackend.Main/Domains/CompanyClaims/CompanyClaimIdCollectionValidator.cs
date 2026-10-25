@@ -1,7 +1,7 @@
 ﻿using FluentValidation;
 using JobSearchSiteBackend.Shared.FluentValidationAddons;
 
-namespace JobSearchSiteBackend.Core.Domains.CompanyClaims;
+namespace JobSearchSiteBackend.Main.Domains.CompanyClaims;
 
 public class CompanyClaimIdCollectionValidator : AbstractValidator<ICollection<long>>
 {

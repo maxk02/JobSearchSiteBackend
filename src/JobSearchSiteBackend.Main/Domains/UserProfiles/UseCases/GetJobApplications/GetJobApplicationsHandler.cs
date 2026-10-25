@@ -1,19 +1,19 @@
 ﻿using Ardalis.Result;
 using AutoMapper;
 using AutoMapper.QueryableExtensions;
-using JobSearchSiteBackend.Core.Domains._Shared.Pagination;
-using JobSearchSiteBackend.Core.Domains._Shared.UseCaseStructure;
-using JobSearchSiteBackend.Core.Domains.Companies.Persistence;
-using JobSearchSiteBackend.Core.Domains.JobApplications.Dtos;
-using JobSearchSiteBackend.Core.Domains.Jobs;
-using JobSearchSiteBackend.Core.Domains.Locations;
-using JobSearchSiteBackend.Core.Domains.PersonalFiles;
-using JobSearchSiteBackend.Core.Persistence;
+using JobSearchSiteBackend.Main.Domains._Shared.Pagination;
+using JobSearchSiteBackend.Main.Domains._Shared.UseCaseStructure;
+using JobSearchSiteBackend.Main.Domains.Companies.Persistence;
+using JobSearchSiteBackend.Main.Domains.JobApplications.Dtos;
+using JobSearchSiteBackend.Main.Domains.Jobs;
+using JobSearchSiteBackend.Main.Domains.Locations;
+using JobSearchSiteBackend.Main.Domains.PersonalFiles;
+using JobSearchSiteBackend.Main.Persistence;
 using JobSearchSiteBackend.Main.Services.Auth;
 using JobSearchSiteBackend.Main.Services.FileStorage;
 using Microsoft.EntityFrameworkCore;
 
-namespace JobSearchSiteBackend.Core.Domains.UserProfiles.UseCases.GetJobApplications;
+namespace JobSearchSiteBackend.Main.Domains.UserProfiles.UseCases.GetJobApplications;
 
 public class GetJobApplicationsHandler(
     ICurrentAccountService currentAccountService,

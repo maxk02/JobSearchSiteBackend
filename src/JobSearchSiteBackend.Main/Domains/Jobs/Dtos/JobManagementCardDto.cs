@@ -1,6 +1,6 @@
-﻿using JobSearchSiteBackend.Core.Domains.Locations.Dtos;
+﻿using JobSearchSiteBackend.Main.Domains.Locations.Dtos;
 
-namespace JobSearchSiteBackend.Core.Domains.Jobs.Dtos;
+namespace JobSearchSiteBackend.Main.Domains.Jobs.Dtos;
 
 public record JobManagementCardDto(
     long Id,

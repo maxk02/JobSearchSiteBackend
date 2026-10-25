@@ -1,10 +1,10 @@
-﻿using JobSearchSiteBackend.Core.Domains._Shared.EntityInterfaces;
-using JobSearchSiteBackend.Core.Domains.Countries;
-using JobSearchSiteBackend.Core.Domains.JobApplications;
-using JobSearchSiteBackend.Core.Domains.Jobs;
-using JobSearchSiteBackend.Core.Domains.UserProfiles;
+﻿using JobSearchSiteBackend.Main.Domains._Shared.EntityInterfaces;
+using JobSearchSiteBackend.Main.Domains.Countries;
+using JobSearchSiteBackend.Main.Domains.JobApplications;
+using JobSearchSiteBackend.Main.Domains.Jobs;
+using JobSearchSiteBackend.Main.Domains.UserProfiles;
 
-namespace JobSearchSiteBackend.Core.Domains.Locations;
+namespace JobSearchSiteBackend.Main.Domains.Locations;
 
 public class Location : IEntityWithId
 {

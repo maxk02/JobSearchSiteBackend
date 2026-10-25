@@ -1,4 +1,4 @@
-﻿namespace JobSearchSiteBackend.Core.Services.EmailSender;
+﻿namespace JobSearchSiteBackend.Main.Services.EmailSender;
 
 public class EmailToSend
 {

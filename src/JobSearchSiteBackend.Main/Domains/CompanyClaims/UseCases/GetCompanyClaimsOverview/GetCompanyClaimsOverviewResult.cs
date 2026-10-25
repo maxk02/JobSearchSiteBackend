@@ -1,7 +1,7 @@
-﻿using JobSearchSiteBackend.Core.Domains._Shared.Pagination;
-using JobSearchSiteBackend.Core.Domains.CompanyClaims.Dtos;
+﻿using JobSearchSiteBackend.Main.Domains._Shared.Pagination;
+using JobSearchSiteBackend.Main.Domains.CompanyClaims.Dtos;
 
-namespace JobSearchSiteBackend.Core.Domains.CompanyClaims.UseCases.GetCompanyClaimsOverview;
+namespace JobSearchSiteBackend.Main.Domains.CompanyClaims.UseCases.GetCompanyClaimsOverview;
 
 public record GetCompanyClaimsOverviewResult(
     ICollection<CompanyClaimOverviewDto> CompanyClaimOverviewDtos,

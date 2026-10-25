@@ -1,7 +1,7 @@
-﻿// using JobSearchSiteBackend.Core.Domains._Shared.Pagination;
-// using JobSearchSiteBackend.Core.Domains.JobFolders.Dtos;
+﻿// using JobSearchSiteBackend.Main.Domains._Shared.Pagination;
+// using JobSearchSiteBackend.Main.Domains.JobFolders.Dtos;
 
-// namespace JobSearchSiteBackend.Core.Domains.JobFolders.UseCases.GetFolderJobs;
+// namespace JobSearchSiteBackend.Main.Domains.JobFolders.UseCases.GetFolderJobs;
 
 // public record GetFolderJobsResult(
 //     ICollection<JobManagementCardDto> Jobs,

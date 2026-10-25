@@ -1,7 +1,7 @@
-﻿using JobSearchSiteBackend.Core.Domains._Shared.EntityInterfaces;
-using JobSearchSiteBackend.Core.Domains.UserProfiles;
+﻿using JobSearchSiteBackend.Main.Domains._Shared.EntityInterfaces;
+using JobSearchSiteBackend.Main.Domains.UserProfiles;
 
-namespace JobSearchSiteBackend.Core.Domains.Companies;
+namespace JobSearchSiteBackend.Main.Domains.Companies;
 
 public class CompanyAvatar : IEntityWithId, IEntityWithGuid, IEntityWithUpdDelDate, IEntityWithUploadStatus
 {

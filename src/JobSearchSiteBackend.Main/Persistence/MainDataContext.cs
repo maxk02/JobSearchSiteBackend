@@ -1,20 +1,19 @@
-﻿using JobSearchSiteBackend.Core.Domains.Accounts;
-using JobSearchSiteBackend.Core.Domains.Categories;
-using JobSearchSiteBackend.Core.Domains.Companies;
-using JobSearchSiteBackend.Core.Domains.CompanyClaims;
-using JobSearchSiteBackend.Core.Domains.Countries;
-using JobSearchSiteBackend.Core.Domains.EmploymentOptions;
-using JobSearchSiteBackend.Core.Domains.JobApplications;
-using JobSearchSiteBackend.Core.Domains.JobContractTypes;
-using JobSearchSiteBackend.Core.Domains.Jobs;
-using JobSearchSiteBackend.Core.Domains.Locations;
-using JobSearchSiteBackend.Core.Domains.PersonalFiles;
-using JobSearchSiteBackend.Core.Domains.UserProfiles;
+﻿using JobSearchSiteBackend.Main.Domains.Categories;
+using JobSearchSiteBackend.Main.Domains.Companies;
+using JobSearchSiteBackend.Main.Domains.CompanyClaims;
+using JobSearchSiteBackend.Main.Domains.Countries;
+using JobSearchSiteBackend.Main.Domains.EmploymentOptions;
+using JobSearchSiteBackend.Main.Domains.JobApplications;
+using JobSearchSiteBackend.Main.Domains.JobContractTypes;
+using JobSearchSiteBackend.Main.Domains.Jobs;
+using JobSearchSiteBackend.Main.Domains.Locations;
+using JobSearchSiteBackend.Main.Domains.PersonalFiles;
 using JobSearchSiteBackend.Main.Domains.Accounts;
+using JobSearchSiteBackend.Main.Domains.UserProfiles;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
-namespace JobSearchSiteBackend.Core.Persistence;
+namespace JobSearchSiteBackend.Main.Persistence;
 
 public class MainDataContext : IdentityDbContext<MyIdentityUser, MyIdentityRole, long>
 {

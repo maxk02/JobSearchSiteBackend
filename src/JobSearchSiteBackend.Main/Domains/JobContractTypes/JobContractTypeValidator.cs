@@ -2,7 +2,7 @@
 using JobSearchSiteBackend.Shared.FluentValidationAddons;
 using JobSearchSiteBackend.Shared.FluentValidationAddons.StringFiltering;
 
-namespace JobSearchSiteBackend.Core.Domains.JobContractTypes;
+namespace JobSearchSiteBackend.Main.Domains.JobContractTypes;
 
 public class JobContractTypeValidator : AbstractValidator<JobContractType>
 {

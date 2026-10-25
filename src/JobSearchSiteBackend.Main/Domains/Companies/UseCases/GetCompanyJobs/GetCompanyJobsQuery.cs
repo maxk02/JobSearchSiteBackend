@@ -1,9 +1,9 @@
 ﻿using Ardalis.Result;
-using JobSearchSiteBackend.Core.Domains._Shared.Pagination;
-using JobSearchSiteBackend.Core.Domains._Shared.UseCaseStructure;
-using JobSearchSiteBackend.Core.Domains.Jobs.UseCases.GetJobs;
+using JobSearchSiteBackend.Main.Domains._Shared.Pagination;
+using JobSearchSiteBackend.Main.Domains._Shared.UseCaseStructure;
+using JobSearchSiteBackend.Main.Domains.Jobs.UseCases.GetJobs;
 
-namespace JobSearchSiteBackend.Core.Domains.Companies.UseCases.GetCompanyJobs;
+namespace JobSearchSiteBackend.Main.Domains.Companies.UseCases.GetCompanyJobs;
 
 public record GetCompanyJobsQuery(
     long CompanyId,

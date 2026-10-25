@@ -1,14 +1,14 @@
 ﻿using Ardalis.Result;
-using JobSearchSiteBackend.Core.Domains._Shared.UseCaseStructure;
-using JobSearchSiteBackend.Core.Domains.CompanyClaims;
-using JobSearchSiteBackend.Core.Domains.Jobs.Dtos;
-using JobSearchSiteBackend.Core.Domains.Locations;
-using JobSearchSiteBackend.Core.Persistence;
+using JobSearchSiteBackend.Main.Domains._Shared.UseCaseStructure;
+using JobSearchSiteBackend.Main.Domains.CompanyClaims;
+using JobSearchSiteBackend.Main.Domains.Jobs.Dtos;
+using JobSearchSiteBackend.Main.Domains.Locations;
+using JobSearchSiteBackend.Main.Persistence;
 using JobSearchSiteBackend.Main.Services.Auth;
 using JobSearchSiteBackend.Main.Services.FileStorage;
 using Microsoft.EntityFrameworkCore;
 
-namespace JobSearchSiteBackend.Core.Domains.Jobs.UseCases.GetJobManagementDto;
+namespace JobSearchSiteBackend.Main.Domains.Jobs.UseCases.GetJobManagementDto;
 
 public class GetJobManagementDtoHandler(
     ICurrentAccountService currentAccountService,

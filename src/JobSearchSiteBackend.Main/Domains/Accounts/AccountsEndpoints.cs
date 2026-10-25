@@ -1,4 +1,13 @@
 using JobSearchSiteBackend.Main.Domains.Accounts.UseCases.ChangePassword;
+using JobSearchSiteBackend.Main.Domains.Accounts.UseCases.ConfirmEmail;
+using JobSearchSiteBackend.Main.Domains.Accounts.UseCases.CreateAccount;
+using JobSearchSiteBackend.Main.Domains.Accounts.UseCases.DeleteAccount;
+using JobSearchSiteBackend.Main.Domains.Accounts.UseCases.GetAccountData;
+using JobSearchSiteBackend.Main.Domains.Accounts.UseCases.LogIn;
+using JobSearchSiteBackend.Main.Domains.Accounts.UseCases.LogOut;
+using JobSearchSiteBackend.Main.Domains.Accounts.UseCases.ResendEmailConfirmationLink;
+using JobSearchSiteBackend.Main.Domains.Accounts.UseCases.ResetForgottenPassword;
+using JobSearchSiteBackend.Main.Domains.Accounts.UseCases.SendPasswordResetLink;
 
 namespace JobSearchSiteBackend.Main.Domains.Accounts;
 

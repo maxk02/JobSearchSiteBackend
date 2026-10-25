@@ -1,7 +1,7 @@
-﻿using JobSearchSiteBackend.Core.Domains.Locations.UseCases.GetLocations;
+﻿using JobSearchSiteBackend.Main.Domains.Locations.UseCases.GetLocations;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace JobSearchSiteBackend.Core.Domains.Locations;
+namespace JobSearchSiteBackend.Main.Domains.Locations;
 
 public static class LocationUseCasesDi
 {

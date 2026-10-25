@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace JobSearchSiteBackend.Core.Domains.Countries.Persistence;
+namespace JobSearchSiteBackend.Main.Domains.Countries.Persistence;
 
 public class CountryCurrencyConfiguration : IEntityTypeConfiguration<CountryCurrency>
 {

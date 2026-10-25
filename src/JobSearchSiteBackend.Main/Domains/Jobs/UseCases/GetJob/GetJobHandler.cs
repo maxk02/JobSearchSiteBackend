@@ -1,14 +1,14 @@
 ﻿using Ardalis.Result;
 using AutoMapper;
-using JobSearchSiteBackend.Core.Domains._Shared.UseCaseStructure;
-using JobSearchSiteBackend.Core.Domains.Companies.Persistence;
-using JobSearchSiteBackend.Core.Domains.Jobs.Dtos;
-using JobSearchSiteBackend.Core.Domains.Locations;
-using JobSearchSiteBackend.Core.Persistence;
+using JobSearchSiteBackend.Main.Domains._Shared.UseCaseStructure;
+using JobSearchSiteBackend.Main.Domains.Companies.Persistence;
+using JobSearchSiteBackend.Main.Domains.Jobs.Dtos;
+using JobSearchSiteBackend.Main.Domains.Locations;
+using JobSearchSiteBackend.Main.Persistence;
 using JobSearchSiteBackend.Main.Services.FileStorage;
 using Microsoft.EntityFrameworkCore;
 
-namespace JobSearchSiteBackend.Core.Domains.Jobs.UseCases.GetJob;
+namespace JobSearchSiteBackend.Main.Domains.Jobs.UseCases.GetJob;
 
 public class GetJobHandler(
     MainDataContext context,

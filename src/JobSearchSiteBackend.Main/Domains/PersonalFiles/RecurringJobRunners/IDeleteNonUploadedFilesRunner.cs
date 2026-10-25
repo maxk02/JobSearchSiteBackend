@@ -1,4 +1,4 @@
-﻿namespace JobSearchSiteBackend.Core.Domains.PersonalFiles.RecurringJobRunners;
+﻿namespace JobSearchSiteBackend.Main.Domains.PersonalFiles.RecurringJobRunners;
 
 public interface IDeleteNonUploadedFilesRunner
 {

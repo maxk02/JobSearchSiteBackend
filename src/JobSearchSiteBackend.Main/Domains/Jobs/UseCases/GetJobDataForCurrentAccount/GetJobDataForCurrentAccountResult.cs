@@ -1,6 +1,6 @@
-﻿using JobSearchSiteBackend.Core.Domains.JobApplications.Dtos;
-using JobSearchSiteBackend.Core.Domains.Jobs.Dtos;
+﻿using JobSearchSiteBackend.Main.Domains.JobApplications.Dtos;
+using JobSearchSiteBackend.Main.Domains.Jobs.Dtos;
 
-namespace JobSearchSiteBackend.Core.Domains.Jobs.UseCases.GetJob;
+namespace JobSearchSiteBackend.Main.Domains.Jobs.UseCases.GetJob;
 
 public record GetJobDataForCurrentAccountResult(JobApplicationOnJobPageDto? JobApplicationOnJobPageDto, bool IsBookmarked);

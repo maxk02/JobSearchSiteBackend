@@ -1,18 +1,18 @@
-﻿using JobSearchSiteBackend.Core.Domains._Shared.UseCaseStructure;
-using JobSearchSiteBackend.Core.Domains.JobApplications.Enums;
+﻿using JobSearchSiteBackend.Main.Domains._Shared.UseCaseStructure;
+using JobSearchSiteBackend.Main.Domains.JobApplications.Enums;
 using Microsoft.EntityFrameworkCore;
 using Ardalis.Result;
-using JobSearchSiteBackend.Core.Persistence;
-using JobSearchSiteBackend.Core.Domains.CompanyClaims;
-using JobSearchSiteBackend.Core.Domains.JobApplications.EmailMessageTemplates;
-using JobSearchSiteBackend.Core.Domains.JobApplications.BackgroundJobRunners;
-using JobSearchSiteBackend.Core.Services.EmailSender;
+using JobSearchSiteBackend.Main.Domains.CompanyClaims;
+using JobSearchSiteBackend.Main.Domains.JobApplications.EmailMessageTemplates;
+using JobSearchSiteBackend.Main.Domains.JobApplications.BackgroundJobRunners;
+using JobSearchSiteBackend.Main.Services.EmailSender;
 using JobSearchSiteBackend.Main.MyAppSettings.Email;
 using JobSearchSiteBackend.Main.Services.Auth;
 using JobSearchSiteBackend.Main.Services.FileStorage;
 using Microsoft.Extensions.Options;
+using JobSearchSiteBackend.Main.Persistence;
 
-namespace JobSearchSiteBackend.Core.Domains.JobApplications.UseCases.GetFileDownloadLinkFromJobApplication;
+namespace JobSearchSiteBackend.Main.Domains.JobApplications.UseCases.GetFileDownloadLinkFromJobApplication;
 
 public class GetFileDownloadLinkFromJobApplicationHandler(
     ICurrentAccountService currentAccountService,

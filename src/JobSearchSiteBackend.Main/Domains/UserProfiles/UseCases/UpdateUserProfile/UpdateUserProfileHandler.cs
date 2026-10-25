@@ -1,10 +1,10 @@
-﻿using JobSearchSiteBackend.Core.Domains._Shared.UseCaseStructure;
+﻿using JobSearchSiteBackend.Main.Domains._Shared.UseCaseStructure;
 using Microsoft.EntityFrameworkCore;
 using Ardalis.Result;
-using JobSearchSiteBackend.Core.Persistence;
 using JobSearchSiteBackend.Main.Services.Auth;
+using JobSearchSiteBackend.Main.Persistence;
 
-namespace JobSearchSiteBackend.Core.Domains.UserProfiles.UseCases.UpdateUserProfile;
+namespace JobSearchSiteBackend.Main.Domains.UserProfiles.UseCases.UpdateUserProfile;
 
 public class UpdateUserProfileHandler(ICurrentAccountService currentAccountService,
     MainDataContext context) : IRequestHandler<UpdateUserProfileCommand, Result>

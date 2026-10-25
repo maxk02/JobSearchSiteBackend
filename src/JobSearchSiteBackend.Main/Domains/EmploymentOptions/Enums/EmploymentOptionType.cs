@@ -1,4 +1,4 @@
-﻿namespace JobSearchSiteBackend.Core.Domains.EmploymentOptions.Enums;
+﻿namespace JobSearchSiteBackend.Main.Domains.EmploymentOptions.Enums;
 
 public enum EmploymentOptionType
 {

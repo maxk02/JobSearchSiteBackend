@@ -1,6 +1,6 @@
 ﻿using JobSearchSiteBackend.Main.Services.Search;
 
-namespace JobSearchSiteBackend.Core.Domains.JobApplications.Search;
+namespace JobSearchSiteBackend.Main.Domains.JobApplications.Search;
 
 public record JobApplicationSearchModel(
     long Id,

@@ -1,11 +1,11 @@
-﻿using JobSearchSiteBackend.Core.Domains._Shared.UseCaseStructure;
-using JobSearchSiteBackend.Core.Domains.JobApplications.Enums;
+﻿using JobSearchSiteBackend.Main.Domains._Shared.UseCaseStructure;
+using JobSearchSiteBackend.Main.Domains.JobApplications.Enums;
 using Microsoft.EntityFrameworkCore;
 using Ardalis.Result;
-using JobSearchSiteBackend.Core.Persistence;
 using JobSearchSiteBackend.Main.Services.Auth;
+using JobSearchSiteBackend.Main.Persistence;
 
-namespace JobSearchSiteBackend.Core.Domains.JobApplications.UseCases.AddJobApplication;
+namespace JobSearchSiteBackend.Main.Domains.JobApplications.UseCases.AddJobApplication;
 
 public class AddJobApplicationHandler(
     ICurrentAccountService currentAccountService,

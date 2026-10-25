@@ -1,13 +1,13 @@
-﻿using JobSearchSiteBackend.Core.Domains._Shared.EntityInterfaces;
-using JobSearchSiteBackend.Core.Domains.Categories;
-using JobSearchSiteBackend.Core.Domains.Companies;
-using JobSearchSiteBackend.Core.Domains.EmploymentOptions;
-using JobSearchSiteBackend.Core.Domains.JobApplications;
-using JobSearchSiteBackend.Core.Domains.JobContractTypes;
-using JobSearchSiteBackend.Core.Domains.Locations;
-using JobSearchSiteBackend.Core.Domains.UserProfiles;
+﻿using JobSearchSiteBackend.Main.Domains._Shared.EntityInterfaces;
+using JobSearchSiteBackend.Main.Domains.Categories;
+using JobSearchSiteBackend.Main.Domains.Companies;
+using JobSearchSiteBackend.Main.Domains.EmploymentOptions;
+using JobSearchSiteBackend.Main.Domains.JobApplications;
+using JobSearchSiteBackend.Main.Domains.JobContractTypes;
+using JobSearchSiteBackend.Main.Domains.Locations;
+using JobSearchSiteBackend.Main.Domains.UserProfiles;
 
-namespace JobSearchSiteBackend.Core.Domains.Jobs;
+namespace JobSearchSiteBackend.Main.Domains.Jobs;
 
 public class Job : IEntityWithId, IEntityWithSearchSync
 {

@@ -1,13 +1,13 @@
 ﻿using Ardalis.Result;
 using AutoMapper;
 using AutoMapper.QueryableExtensions;
-using JobSearchSiteBackend.Core.Domains._Shared.UseCaseStructure;
-using JobSearchSiteBackend.Core.Domains.Locations.Dtos;
-using JobSearchSiteBackend.Core.Domains.Locations.Search;
-using JobSearchSiteBackend.Core.Persistence;
+using JobSearchSiteBackend.Main.Domains._Shared.UseCaseStructure;
+using JobSearchSiteBackend.Main.Domains.Locations.Dtos;
+using JobSearchSiteBackend.Main.Domains.Locations.Search;
+using JobSearchSiteBackend.Main.Persistence;
 using Microsoft.EntityFrameworkCore;
 
-namespace JobSearchSiteBackend.Core.Domains.Locations.UseCases.GetLocations;
+namespace JobSearchSiteBackend.Main.Domains.Locations.UseCases.GetLocations;
 
 public class GetLocationsHandler(
     ILocationSearchRepository locationSearchRepository)

@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace JobSearchSiteBackend.Core.Domains.Companies.Persistence;
+namespace JobSearchSiteBackend.Main.Domains.Companies.Persistence;
 
 public class CompanyBalanceTransactionConfiguration : IEntityTypeConfiguration<CompanyBalanceTransaction>
 {

@@ -1,4 +1,4 @@
-﻿namespace JobSearchSiteBackend.Core.Domains.JobApplications;
+﻿namespace JobSearchSiteBackend.Main.Domains.JobApplications;
 
 public class JobApplicationTag
 {

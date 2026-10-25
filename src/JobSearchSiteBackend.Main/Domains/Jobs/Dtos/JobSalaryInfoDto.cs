@@ -1,6 +1,6 @@
-﻿using JobSearchSiteBackend.Core.Domains._Shared.Enums;
+﻿using JobSearchSiteBackend.Main.Domains._Shared.Enums;
 
-namespace JobSearchSiteBackend.Core.Domains.Jobs.Dtos;
+namespace JobSearchSiteBackend.Main.Domains.Jobs.Dtos;
 
 public record JobSalaryInfoDto(
     decimal? Minimum,

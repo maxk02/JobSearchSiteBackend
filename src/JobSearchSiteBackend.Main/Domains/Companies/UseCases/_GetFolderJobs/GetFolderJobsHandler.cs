@@ -1,20 +1,20 @@
 ﻿// using Ardalis.Result;
 // using AutoMapper;
 // using AutoMapper.QueryableExtensions;
-// using JobSearchSiteBackend.Core.Domains._Shared.Pagination;
-// using JobSearchSiteBackend.Core.Domains._Shared.UseCaseStructure;
-// using JobSearchSiteBackend.Core.Domains.JobFolderClaims;
-// using JobSearchSiteBackend.Core.Domains.JobFolders.Dtos;
-// using JobSearchSiteBackend.Core.Domains.JobFolders.Persistence;
-// using JobSearchSiteBackend.Core.Domains.Jobs;
-// using JobSearchSiteBackend.Core.Domains.Jobs.Dtos;
-// using JobSearchSiteBackend.Core.Domains.Locations;
-// using JobSearchSiteBackend.Core.Persistence;
-// using JobSearchSiteBackend.Core.Services.Auth;
-// using JobSearchSiteBackend.Core.Services.Caching;
+// using JobSearchSiteBackend.Main.Domains._Shared.Pagination;
+// using JobSearchSiteBackend.Main.Domains._Shared.UseCaseStructure;
+// using JobSearchSiteBackend.Main.Domains.JobFolderClaims;
+// using JobSearchSiteBackend.Main.Domains.JobFolders.Dtos;
+// using JobSearchSiteBackend.Main.Domains.JobFolders.Persistence;
+// using JobSearchSiteBackend.Main.Domains.Jobs;
+// using JobSearchSiteBackend.Main.Domains.Jobs.Dtos;
+// using JobSearchSiteBackend.Main.Domains.Locations;
+// using JobSearchSiteBackend.Main.Persistence;
+// using JobSearchSiteBackend.Main.Services.Auth;
+// using JobSearchSiteBackend.Main.Services.Caching;
 // using Microsoft.EntityFrameworkCore;
 
-// namespace JobSearchSiteBackend.Core.Domains.JobFolders.UseCases.GetFolderJobs;
+// namespace JobSearchSiteBackend.Main.Domains.JobFolders.UseCases.GetFolderJobs;
 
 // public class GetFolderJobsHandler(
 //     ICurrentAccountService currentAccountService,

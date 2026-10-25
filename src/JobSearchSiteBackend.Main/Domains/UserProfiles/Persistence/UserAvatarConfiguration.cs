@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace JobSearchSiteBackend.Core.Domains.UserProfiles.Persistence;
+namespace JobSearchSiteBackend.Main.Domains.UserProfiles.Persistence;
 
 public class UserAvatarConfiguration : IEntityTypeConfiguration<UserAvatar>
 {

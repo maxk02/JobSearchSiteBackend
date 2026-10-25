@@ -1,6 +1,6 @@
-﻿using JobSearchSiteBackend.Core.Persistence;
+﻿using JobSearchSiteBackend.Main.Persistence;
 
-namespace JobSearchSiteBackend.Infrastructure.Persistence.SqlServer;
+namespace JobSearchSiteBackend.Main.Persistence.SqlServer;
 
 public class SqlServerInjectableSqlQueries : IInjectableSqlQueries
 {

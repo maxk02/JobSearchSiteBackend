@@ -1,8 +1,8 @@
 ﻿using Hangfire;
-using JobSearchSiteBackend.Core.Domains.Companies.RecurringJobRunners;
-using JobSearchSiteBackend.Core.Domains.JobApplications.RecurringJobRunners;
-using JobSearchSiteBackend.Core.Domains.Jobs.RecurringJobRunners;
-using JobSearchSiteBackend.Core.Domains.PersonalFiles.RecurringJobRunners;
+using JobSearchSiteBackend.Main.Domains.Companies.RecurringJobRunners;
+using JobSearchSiteBackend.Main.Domains.JobApplications.RecurringJobRunners;
+using JobSearchSiteBackend.Main.Domains.Jobs.RecurringJobRunners;
+using JobSearchSiteBackend.Main.Domains.PersonalFiles.RecurringJobRunners;
 
 namespace JobSearchSiteBackend.Main.Services.BackgroundJobs.Hangfire;
 

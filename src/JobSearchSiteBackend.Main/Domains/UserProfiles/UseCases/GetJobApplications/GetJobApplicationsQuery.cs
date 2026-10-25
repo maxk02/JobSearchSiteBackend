@@ -1,8 +1,8 @@
 ﻿using Ardalis.Result;
-using JobSearchSiteBackend.Core.Domains._Shared.Pagination;
-using JobSearchSiteBackend.Core.Domains._Shared.UseCaseStructure;
+using JobSearchSiteBackend.Main.Domains._Shared.Pagination;
+using JobSearchSiteBackend.Main.Domains._Shared.UseCaseStructure;
 
-namespace JobSearchSiteBackend.Core.Domains.UserProfiles.UseCases.GetJobApplications;
+namespace JobSearchSiteBackend.Main.Domains.UserProfiles.UseCases.GetJobApplications;
 
 public record GetJobApplicationsQuery(int? StatusId, int Page, int Size) 
     : IRequest<Result<GetJobApplicationsResult>>;

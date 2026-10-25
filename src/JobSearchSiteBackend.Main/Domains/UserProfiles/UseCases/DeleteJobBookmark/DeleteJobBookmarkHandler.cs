@@ -1,10 +1,10 @@
-﻿using JobSearchSiteBackend.Core.Domains._Shared.UseCaseStructure;
+﻿using JobSearchSiteBackend.Main.Domains._Shared.UseCaseStructure;
 using Microsoft.EntityFrameworkCore;
 using Ardalis.Result;
-using JobSearchSiteBackend.Core.Persistence;
 using JobSearchSiteBackend.Main.Services.Auth;
+using JobSearchSiteBackend.Main.Persistence;
 
-namespace JobSearchSiteBackend.Core.Domains.UserProfiles.UseCases.DeleteJobBookmark;
+namespace JobSearchSiteBackend.Main.Domains.UserProfiles.UseCases.DeleteJobBookmark;
 
 public class DeleteJobBookmarkHandler(ICurrentAccountService currentAccountService,
     MainDataContext context) : IRequestHandler<DeleteJobBookmarkCommand, Result>

@@ -1,6 +1,6 @@
-﻿using JobSearchSiteBackend.Core.Domains._Shared.EntityInterfaces;
+﻿using JobSearchSiteBackend.Main.Domains._Shared.EntityInterfaces;
 
-namespace JobSearchSiteBackend.Core.Domains.UserProfiles;
+namespace JobSearchSiteBackend.Main.Domains.UserProfiles;
 
 public class UserAvatar : IEntityWithId, IEntityWithGuid, IEntityWithUpdDelDate, IEntityWithUploadStatus
 {

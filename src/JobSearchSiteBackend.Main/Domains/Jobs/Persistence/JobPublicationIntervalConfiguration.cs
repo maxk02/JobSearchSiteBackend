@@ -1,8 +1,8 @@
-﻿using JobSearchSiteBackend.Core.Domains.Countries;
+﻿using JobSearchSiteBackend.Main.Domains.Countries;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace JobSearchSiteBackend.Core.Domains.Jobs.Persistence;
+namespace JobSearchSiteBackend.Main.Domains.Jobs.Persistence;
 
 public class JobPublicationIntervalConfiguration : IEntityTypeConfiguration<JobPublicationInterval>
 {

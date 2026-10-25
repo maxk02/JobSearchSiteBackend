@@ -1,4 +1,4 @@
-﻿using JobSearchSiteBackend.Core.Domains.UserProfiles;
+﻿using JobSearchSiteBackend.Main.Domains.UserProfiles;
 using Microsoft.AspNetCore.Identity;
 
 namespace JobSearchSiteBackend.Main.Domains.Accounts;

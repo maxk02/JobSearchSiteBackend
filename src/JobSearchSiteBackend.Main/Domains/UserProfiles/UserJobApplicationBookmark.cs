@@ -1,8 +1,8 @@
-﻿using JobSearchSiteBackend.Core.Domains._Shared.EntityInterfaces;
-using JobSearchSiteBackend.Core.Domains.JobApplications;
-using JobSearchSiteBackend.Core.Domains.Jobs;
+﻿using JobSearchSiteBackend.Main.Domains._Shared.EntityInterfaces;
+using JobSearchSiteBackend.Main.Domains.JobApplications;
+using JobSearchSiteBackend.Main.Domains.Jobs;
 
-namespace JobSearchSiteBackend.Core.Domains.UserProfiles;
+namespace JobSearchSiteBackend.Main.Domains.UserProfiles;
 
 public class UserJobApplicationBookmark : IEntityWithId, IEntityWithDateTimeCreatedUtc
 {

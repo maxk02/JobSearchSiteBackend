@@ -1,5 +1,5 @@
-﻿using JobSearchSiteBackend.Core.Domains.PersonalFiles.RecurringJobRunners;
-using JobSearchSiteBackend.Core.Persistence;
+﻿using JobSearchSiteBackend.Main.Domains.PersonalFiles.RecurringJobRunners;
+using JobSearchSiteBackend.Main.Persistence;
 using Microsoft.EntityFrameworkCore;
 
 namespace JobSearchSiteBackend.Main.Domains.PersonalFiles.RecurringJobRunners.Hangfire;

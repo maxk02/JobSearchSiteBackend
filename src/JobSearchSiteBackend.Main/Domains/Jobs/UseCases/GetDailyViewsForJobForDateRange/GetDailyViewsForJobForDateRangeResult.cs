@@ -1,3 +1,3 @@
-﻿namespace JobSearchSiteBackend.Core.Domains.Jobs.UseCases.GetDailyViewsForJobForDateRange;
+﻿namespace JobSearchSiteBackend.Main.Domains.Jobs.UseCases.GetDailyViewsForJobForDateRange;
 
 public record GetDailyViewsForJobForDateRangeResult(List<Dictionary<DateTime, long>> DailyViews);

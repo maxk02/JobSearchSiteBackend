@@ -1,7 +1,7 @@
-﻿using JobSearchSiteBackend.Core.Domains.JobApplications.Enums;
-using JobSearchSiteBackend.Core.Services.EmailSender;
+﻿using JobSearchSiteBackend.Main.Domains.JobApplications.Enums;
+using JobSearchSiteBackend.Main.Services.EmailSender;
 
-namespace JobSearchSiteBackend.Core.Domains.JobApplications.EmailMessageTemplates;
+namespace JobSearchSiteBackend.Main.Domains.JobApplications.EmailMessageTemplates;
 
 public class JobApplicationStatusChangeEmail(JobApplicationStatus newStatus, string jobName, string companyName) : IEmailTemplate
 {

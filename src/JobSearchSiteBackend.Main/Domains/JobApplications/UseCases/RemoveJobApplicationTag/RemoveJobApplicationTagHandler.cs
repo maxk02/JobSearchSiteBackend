@@ -1,11 +1,11 @@
 ﻿using Ardalis.Result;
-using JobSearchSiteBackend.Core.Domains._Shared.UseCaseStructure;
-using JobSearchSiteBackend.Core.Domains.CompanyClaims;
-using JobSearchSiteBackend.Core.Persistence;
+using JobSearchSiteBackend.Main.Domains._Shared.UseCaseStructure;
+using JobSearchSiteBackend.Main.Domains.CompanyClaims;
+using JobSearchSiteBackend.Main.Persistence;
 using JobSearchSiteBackend.Main.Services.Auth;
 using Microsoft.EntityFrameworkCore;
 
-namespace JobSearchSiteBackend.Core.Domains.JobApplications.UseCases.RemoveJobApplicationTag;
+namespace JobSearchSiteBackend.Main.Domains.JobApplications.UseCases.RemoveJobApplicationTag;
 
 public class RemoveJobApplicationTagHandler(
     ICurrentAccountService currentAccountService,

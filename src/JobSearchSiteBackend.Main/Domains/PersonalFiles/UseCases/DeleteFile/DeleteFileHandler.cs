@@ -1,11 +1,11 @@
-﻿using JobSearchSiteBackend.Core.Domains._Shared.UseCaseStructure;
+﻿using JobSearchSiteBackend.Main.Domains._Shared.UseCaseStructure;
 using Ardalis.Result;
-using JobSearchSiteBackend.Core.Persistence;
 using JobSearchSiteBackend.Main.Domains.PersonalFiles.BackgroundJobRunners;
 using JobSearchSiteBackend.Main.Services.Auth;
 using JobSearchSiteBackend.Main.Services.FileStorage;
+using JobSearchSiteBackend.Main.Persistence;
 
-namespace JobSearchSiteBackend.Core.Domains.PersonalFiles.UseCases.DeleteFile;
+namespace JobSearchSiteBackend.Main.Domains.PersonalFiles.UseCases.DeleteFile;
 
 public class DeleteFileHandler(
     ICurrentAccountService currentAccountService,

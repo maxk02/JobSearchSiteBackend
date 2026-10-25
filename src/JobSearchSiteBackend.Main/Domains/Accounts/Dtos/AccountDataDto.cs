@@ -1,4 +1,4 @@
-﻿using JobSearchSiteBackend.Core.Domains.Companies.Dtos;
+﻿using JobSearchSiteBackend.Main.Domains.Companies.Dtos;
 
 namespace JobSearchSiteBackend.Main.Domains.Accounts.Dtos;
 

@@ -2,7 +2,7 @@
 using JobSearchSiteBackend.Shared.FluentValidationAddons;
 using JobSearchSiteBackend.Shared.FluentValidationAddons.StringFiltering;
 
-namespace JobSearchSiteBackend.Core.Domains.PersonalFiles;
+namespace JobSearchSiteBackend.Main.Domains.PersonalFiles;
 
 public class PersonalFileValidator : AbstractValidator<PersonalFile>
 {

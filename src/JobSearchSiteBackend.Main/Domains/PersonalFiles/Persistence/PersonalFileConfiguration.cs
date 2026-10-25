@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace JobSearchSiteBackend.Core.Domains.PersonalFiles.Persistence;
+namespace JobSearchSiteBackend.Main.Domains.PersonalFiles.Persistence;
 
 public class PersonalFileConfiguration : IEntityTypeConfiguration<PersonalFile>
 {

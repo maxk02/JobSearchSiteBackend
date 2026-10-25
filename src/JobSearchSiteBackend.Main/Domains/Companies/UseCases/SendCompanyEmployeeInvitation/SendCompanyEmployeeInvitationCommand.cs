@@ -1,6 +1,6 @@
 ﻿using Ardalis.Result;
-using JobSearchSiteBackend.Core.Domains._Shared.UseCaseStructure;
+using JobSearchSiteBackend.Main.Domains._Shared.UseCaseStructure;
 
-namespace JobSearchSiteBackend.Core.Domains.Companies.UseCases.SendCompanyEmployeeInvitation;
+namespace JobSearchSiteBackend.Main.Domains.Companies.UseCases.SendCompanyEmployeeInvitation;
 
 public record SendCompanyEmployeeInvitationCommand(long CompanyId, string InvitedUserEmail): IRequest<Result<SendCompanyEmployeeInvitationResult>>;

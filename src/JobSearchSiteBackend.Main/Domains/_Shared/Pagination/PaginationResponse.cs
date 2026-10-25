@@ -1,4 +1,4 @@
-﻿namespace JobSearchSiteBackend.Core.Domains._Shared.Pagination;
+﻿namespace JobSearchSiteBackend.Main.Domains._Shared.Pagination;
 
 public record PaginationResponse
 {

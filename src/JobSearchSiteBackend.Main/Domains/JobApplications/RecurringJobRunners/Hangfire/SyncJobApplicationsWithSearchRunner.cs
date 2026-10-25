@@ -1,6 +1,6 @@
-﻿using JobSearchSiteBackend.Core.Domains.JobApplications.RecurringJobRunners;
-using JobSearchSiteBackend.Core.Domains.JobApplications.Search;
-using JobSearchSiteBackend.Core.Persistence;
+﻿using JobSearchSiteBackend.Main.Domains.JobApplications.RecurringJobRunners;
+using JobSearchSiteBackend.Main.Domains.JobApplications.Search;
+using JobSearchSiteBackend.Main.Persistence;
 using Microsoft.EntityFrameworkCore;
 
 namespace JobSearchSiteBackend.Main.Domains.JobApplications.RecurringJobRunners.Hangfire;

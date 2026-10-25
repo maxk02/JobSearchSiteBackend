@@ -1,8 +1,8 @@
 ﻿using System.Collections.Immutable;
-using JobSearchSiteBackend.Core.Domains._Shared.EntityInterfaces;
-using JobSearchSiteBackend.Core.Domains.Countries;
+using JobSearchSiteBackend.Main.Domains._Shared.EntityInterfaces;
+using JobSearchSiteBackend.Main.Domains.Countries;
 
-namespace JobSearchSiteBackend.Core.Domains.Jobs;
+namespace JobSearchSiteBackend.Main.Domains.Jobs;
 
 public class JobPublicationInterval : IEntityWithId
 {

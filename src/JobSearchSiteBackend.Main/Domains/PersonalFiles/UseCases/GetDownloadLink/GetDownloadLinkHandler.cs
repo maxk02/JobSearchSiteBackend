@@ -1,11 +1,11 @@
 ﻿using Ardalis.Result;
 using AutoMapper;
-using JobSearchSiteBackend.Core.Domains._Shared.UseCaseStructure;
-using JobSearchSiteBackend.Core.Persistence;
+using JobSearchSiteBackend.Main.Domains._Shared.UseCaseStructure;
+using JobSearchSiteBackend.Main.Persistence;
 using JobSearchSiteBackend.Main.Services.Auth;
 using JobSearchSiteBackend.Main.Services.FileStorage;
 
-namespace JobSearchSiteBackend.Core.Domains.PersonalFiles.UseCases.GetDownloadLink;
+namespace JobSearchSiteBackend.Main.Domains.PersonalFiles.UseCases.GetDownloadLink;
 
 public class GetDownloadLinkHandler(
     MainDataContext context,

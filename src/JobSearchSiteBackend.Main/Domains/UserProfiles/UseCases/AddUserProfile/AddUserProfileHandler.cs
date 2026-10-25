@@ -1,10 +1,10 @@
-﻿using JobSearchSiteBackend.Core.Domains._Shared.UseCaseStructure;
+﻿using JobSearchSiteBackend.Main.Domains._Shared.UseCaseStructure;
 using Ardalis.Result;
-using JobSearchSiteBackend.Core.Persistence;
 using JobSearchSiteBackend.Main.Services.Auth;
 using Microsoft.EntityFrameworkCore;
+using JobSearchSiteBackend.Main.Persistence;
 
-namespace JobSearchSiteBackend.Core.Domains.UserProfiles.UseCases.AddUserProfile;
+namespace JobSearchSiteBackend.Main.Domains.UserProfiles.UseCases.AddUserProfile;
 
 public class AddUserProfileHandler(ICurrentAccountService currentAccountService,
     MainDataContext context) : IRequestHandler<AddUserProfileCommand, Result<AddUserProfileResult>>

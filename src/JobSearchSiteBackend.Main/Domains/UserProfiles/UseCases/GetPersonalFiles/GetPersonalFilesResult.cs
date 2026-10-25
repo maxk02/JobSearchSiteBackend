@@ -1,7 +1,7 @@
-﻿using JobSearchSiteBackend.Core.Domains._Shared.Pagination;
-using JobSearchSiteBackend.Core.Domains.PersonalFiles.Dtos;
+﻿using JobSearchSiteBackend.Main.Domains._Shared.Pagination;
+using JobSearchSiteBackend.Main.Domains.PersonalFiles.Dtos;
 
-namespace JobSearchSiteBackend.Core.Domains.UserProfiles.UseCases.GetPersonalFiles;
+namespace JobSearchSiteBackend.Main.Domains.UserProfiles.UseCases.GetPersonalFiles;
 
 public record GetPersonalFilesResult(
     ICollection<PersonalFileInfoDto> PersonalFileInfos,

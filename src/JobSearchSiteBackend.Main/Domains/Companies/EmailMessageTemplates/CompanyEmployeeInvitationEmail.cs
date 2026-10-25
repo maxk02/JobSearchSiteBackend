@@ -1,6 +1,6 @@
-﻿using JobSearchSiteBackend.Core.Services.EmailSender;
+﻿using JobSearchSiteBackend.Main.Services.EmailSender;
 
-namespace JobSearchSiteBackend.Core.Domains.Companies.EmailMessageTemplates;
+namespace JobSearchSiteBackend.Main.Domains.Companies.EmailMessageTemplates;
 
 public class CompanyEmployeeInvitationEmail(string ConfirmationLink, string CompanyName) : IEmailTemplate
 {

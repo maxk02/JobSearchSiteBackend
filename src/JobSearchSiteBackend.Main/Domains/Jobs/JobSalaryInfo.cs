@@ -1,6 +1,6 @@
-﻿using JobSearchSiteBackend.Core.Domains._Shared.Enums;
+﻿using JobSearchSiteBackend.Main.Domains._Shared.Enums;
 
-namespace JobSearchSiteBackend.Core.Domains.Jobs;
+namespace JobSearchSiteBackend.Main.Domains.Jobs;
 
 public class JobSalaryInfo
 {

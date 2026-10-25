@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace JobSearchSiteBackend.Core.Domains.EmploymentOptions.Persistence;
+namespace JobSearchSiteBackend.Main.Domains.EmploymentOptions.Persistence;
 
 public class EmploymentOptionConfiguration : IEntityTypeConfiguration<EmploymentOption>
 {

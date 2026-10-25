@@ -1,4 +1,4 @@
-﻿namespace JobSearchSiteBackend.Core.Domains.JobApplications.RecurringJobRunners;
+﻿namespace JobSearchSiteBackend.Main.Domains.JobApplications.RecurringJobRunners;
 
 public interface ISyncJobApplicationsWithSearchRunner
 {

@@ -1,8 +1,8 @@
 ﻿using Ardalis.Result;
-using JobSearchSiteBackend.Core.Domains._Shared.UseCaseStructure;
+using JobSearchSiteBackend.Main.Domains._Shared.UseCaseStructure;
 using JobSearchSiteBackend.Main.Services.Auth;
 
-namespace JobSearchSiteBackend.Core.Domains.Companies.UseCases.RemoveCompanyLastVisitedJobs;
+namespace JobSearchSiteBackend.Main.Domains.Companies.UseCases.RemoveCompanyLastVisitedJobs;
 
 public class RemoveCompanyLastVisitedJobsHandler(
     ICurrentAccountService currentAccountService,

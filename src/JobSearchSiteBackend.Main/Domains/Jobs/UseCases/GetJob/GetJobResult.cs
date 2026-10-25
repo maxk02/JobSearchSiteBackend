@@ -1,5 +1,5 @@
-﻿using JobSearchSiteBackend.Core.Domains.Jobs.Dtos;
+﻿using JobSearchSiteBackend.Main.Domains.Jobs.Dtos;
 
-namespace JobSearchSiteBackend.Core.Domains.Jobs.UseCases.GetJob;
+namespace JobSearchSiteBackend.Main.Domains.Jobs.UseCases.GetJob;
 
 public record GetJobResult(JobDetailedDto Job);

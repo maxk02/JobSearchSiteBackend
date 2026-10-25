@@ -1,9 +1,9 @@
-﻿using JobSearchSiteBackend.Core.Domains.CompanyClaims.UseCases.GetCompanyClaimIdsForUser;
-using JobSearchSiteBackend.Core.Domains.CompanyClaims.UseCases.GetCompanyClaimsOverview;
-using JobSearchSiteBackend.Core.Domains.CompanyClaims.UseCases.UpdateCompanyClaimIdsForUser;
+﻿using JobSearchSiteBackend.Main.Domains.CompanyClaims.UseCases.GetCompanyClaimIdsForUser;
+using JobSearchSiteBackend.Main.Domains.CompanyClaims.UseCases.GetCompanyClaimsOverview;
+using JobSearchSiteBackend.Main.Domains.CompanyClaims.UseCases.UpdateCompanyClaimIdsForUser;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace JobSearchSiteBackend.Core.Domains.CompanyClaims;
+namespace JobSearchSiteBackend.Main.Domains.CompanyClaims;
 
 public static class CompanyClaimUseCasesDi
 {

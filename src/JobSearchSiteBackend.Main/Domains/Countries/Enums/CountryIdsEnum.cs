@@ -1,4 +1,4 @@
-﻿namespace JobSearchSiteBackend.Core.Domains.Countries.Enums;
+﻿namespace JobSearchSiteBackend.Main.Domains.Countries.Enums;
 
 public enum CountryIdsEnum
 {

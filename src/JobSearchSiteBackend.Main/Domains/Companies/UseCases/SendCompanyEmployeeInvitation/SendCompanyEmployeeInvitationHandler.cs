@@ -1,22 +1,22 @@
 ﻿using Ardalis.Result;
-using JobSearchSiteBackend.Core.Domains._Shared.UseCaseStructure;
-using JobSearchSiteBackend.Core.Domains.Accounts;
-using JobSearchSiteBackend.Core.Domains.Companies.BackgroundJobRunners;
-using JobSearchSiteBackend.Core.Domains.Companies.Dtos;
-using JobSearchSiteBackend.Core.Domains.Companies.EmailMessageTemplates;
-using JobSearchSiteBackend.Core.Domains.CompanyClaims;
-using JobSearchSiteBackend.Core.Persistence;
-using JobSearchSiteBackend.Core.Services.EmailSender;
+using JobSearchSiteBackend.Main.Domains._Shared.UseCaseStructure;
+using JobSearchSiteBackend.Main.Domains.Accounts;
+using JobSearchSiteBackend.Main.Domains.Companies.BackgroundJobRunners;
+using JobSearchSiteBackend.Main.Domains.Companies.Dtos;
+using JobSearchSiteBackend.Main.Domains.Companies.EmailMessageTemplates;
+using JobSearchSiteBackend.Main.Domains.CompanyClaims;
+using JobSearchSiteBackend.Main.Services.EmailSender;
 using JobSearchSiteBackend.Main.Domains.Accounts;
 using JobSearchSiteBackend.Main.MyAppSettings;
 using JobSearchSiteBackend.Main.MyAppSettings.Email;
+using JobSearchSiteBackend.Main.Persistence;
 using JobSearchSiteBackend.Main.Services.Auth;
 using JobSearchSiteBackend.Shared.MyAppSettings;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 
-namespace JobSearchSiteBackend.Core.Domains.Companies.UseCases.SendCompanyEmployeeInvitation;
+namespace JobSearchSiteBackend.Main.Domains.Companies.UseCases.SendCompanyEmployeeInvitation;
 
 public class SendCompanyEmployeeInvitationHandler(
     ICurrentAccountService currentAccountService,

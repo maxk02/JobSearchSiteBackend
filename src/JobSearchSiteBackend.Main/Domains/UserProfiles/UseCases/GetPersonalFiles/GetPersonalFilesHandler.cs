@@ -1,15 +1,15 @@
 ﻿using Ardalis.Result;
 using AutoMapper;
 using AutoMapper.QueryableExtensions;
-using JobSearchSiteBackend.Core.Domains._Shared.Pagination;
-using JobSearchSiteBackend.Core.Domains._Shared.UseCaseStructure;
-using JobSearchSiteBackend.Core.Domains.PersonalFiles;
-using JobSearchSiteBackend.Core.Domains.PersonalFiles.Dtos;
-using JobSearchSiteBackend.Core.Persistence;
+using JobSearchSiteBackend.Main.Domains._Shared.Pagination;
+using JobSearchSiteBackend.Main.Domains._Shared.UseCaseStructure;
+using JobSearchSiteBackend.Main.Domains.PersonalFiles;
+using JobSearchSiteBackend.Main.Domains.PersonalFiles.Dtos;
+using JobSearchSiteBackend.Main.Persistence;
 using JobSearchSiteBackend.Main.Services.Auth;
 using Microsoft.EntityFrameworkCore;
 
-namespace JobSearchSiteBackend.Core.Domains.UserProfiles.UseCases.GetPersonalFiles;
+namespace JobSearchSiteBackend.Main.Domains.UserProfiles.UseCases.GetPersonalFiles;
 
 public class GetPersonalFilesHandler(
     ICurrentAccountService currentAccountService,

@@ -1,6 +1,6 @@
-﻿using JobSearchSiteBackend.Core.Services.EmailSender;
+﻿using JobSearchSiteBackend.Main.Services.EmailSender;
 
-namespace JobSearchSiteBackend.Core.Domains.Companies.BackgroundJobRunners;
+namespace JobSearchSiteBackend.Main.Domains.Companies.BackgroundJobRunners;
 
 public interface ISendCompanyEmployeeInvitationEmailRunner
 {

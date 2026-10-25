@@ -1,6 +1,6 @@
-﻿using JobSearchSiteBackend.Core.Domains._Shared.EntityInterfaces;
+﻿using JobSearchSiteBackend.Main.Domains._Shared.EntityInterfaces;
 
-namespace JobSearchSiteBackend.Core.Domains.Locations;
+namespace JobSearchSiteBackend.Main.Domains.Locations;
 
 public class LocationRelation : IHierarchicalEntityRelation<Location>
 {

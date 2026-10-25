@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace JobSearchSiteBackend.Core.Domains.JobApplications.Persistence;
+namespace JobSearchSiteBackend.Main.Domains.JobApplications.Persistence;
 
 public class JobApplicationTagConfiguration : IEntityTypeConfiguration<JobApplicationTag>
 {

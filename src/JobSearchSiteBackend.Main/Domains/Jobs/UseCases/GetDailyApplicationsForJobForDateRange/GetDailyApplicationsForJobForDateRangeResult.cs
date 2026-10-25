@@ -1,3 +1,3 @@
-﻿namespace JobSearchSiteBackend.Core.Domains.Jobs.UseCases.GetDailyApplicationsForJobForDateRange;
+﻿namespace JobSearchSiteBackend.Main.Domains.Jobs.UseCases.GetDailyApplicationsForJobForDateRange;
 
 public record GetDailyApplicationsForJobForDateRangeResult(List<Dictionary<DateTime, long>> DailyApplications);

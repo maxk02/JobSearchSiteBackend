@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace JobSearchSiteBackend.Core.Domains.Locations.Persistence;
+namespace JobSearchSiteBackend.Main.Domains.Locations.Persistence;
 
 public class LocationConfiguration : IEntityTypeConfiguration<Location>
 {

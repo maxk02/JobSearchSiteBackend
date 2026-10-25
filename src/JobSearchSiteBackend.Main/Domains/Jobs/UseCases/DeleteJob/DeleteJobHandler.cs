@@ -1,11 +1,11 @@
-﻿using JobSearchSiteBackend.Core.Domains._Shared.UseCaseStructure;
+﻿using JobSearchSiteBackend.Main.Domains._Shared.UseCaseStructure;
 using Microsoft.EntityFrameworkCore;
 using Ardalis.Result;
-using JobSearchSiteBackend.Core.Persistence;
-using JobSearchSiteBackend.Core.Domains.CompanyClaims;
+using JobSearchSiteBackend.Main.Domains.CompanyClaims;
 using JobSearchSiteBackend.Main.Services.Auth;
+using JobSearchSiteBackend.Main.Persistence;
 
-namespace JobSearchSiteBackend.Core.Domains.Jobs.UseCases.DeleteJob;
+namespace JobSearchSiteBackend.Main.Domains.Jobs.UseCases.DeleteJob;
 
 public class DeleteJobHandler(
     ICurrentAccountService currentAccountService,

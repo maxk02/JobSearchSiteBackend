@@ -1,4 +1,4 @@
-﻿namespace JobSearchSiteBackend.Core.Domains.JobApplications.Enums;
+﻿namespace JobSearchSiteBackend.Main.Domains.JobApplications.Enums;
 
 public enum JobApplicationStatus
 {

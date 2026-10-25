@@ -1,7 +1,8 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using JobSearchSiteBackend.Main.Domains.UserProfiles;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace JobSearchSiteBackend.Core.Domains.UserProfiles.Persistence;
+namespace JobSearchSiteBackend.Main.Domains.UserProfiles.Persistence;
 
 public class UserJobBookmarkConfiguration : IEntityTypeConfiguration<UserJobBookmark>
 {
